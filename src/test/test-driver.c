@@ -42,15 +42,19 @@ do_test(char ** _test_names, size_t _n_tests_to_run, const char * test_name) {
 
 void
 run_tests(char ** _test_names, size_t _n_tests_to_run, int _run_all) {
-    size_t i;
+    size_t       i;
+    const char * res;
     fprintf(stdout, "----------------- Starting Tests -----------------\n");
     for (i = 0; i < ntests; ++i) {
         die_assert(tests[i].name && tests[i].func,
                    "Error, unitialized test struct!\n");
         if (_run_all || do_test(_test_names, _n_tests_to_run, tests[i].name)) {
             fprintf(stdout, "Running - %-24s ...", tests[i].name);
-            tests[i].func();
-            fprintf(stdout, "\rRunning - %-24s -> PASSED\n", tests[i].name);
+            res = "PASSED";
+            if (tests[i].func()) {
+                res = "FAILED";
+            }
+            fprintf(stdout, "\rRunning - %-24s -> %s\n", tests[i].name, res);
         }
     }
     fprintf(stdout, "---------------- Finished Testing ----------------\n");

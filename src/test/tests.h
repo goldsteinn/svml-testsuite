@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "util/macro.h"
 
-typedef void (*test_f)();
+typedef int32_t (*test_f)();
 
 typedef struct test {
     const char * name;
@@ -15,8 +15,9 @@ typedef struct test {
     { V_TO_STR(name), &name }
 
 
-/* Replace NULL, NULL before running tests. */
-static const test_t tests[] = { { NULL, NULL } };
+extern int32_t test_p2();
+
+static const test_t tests[] = { make_test(test_p2) };
 static const size_t ntests  = sizeof(tests) / sizeof(test_t);
 
 #endif
