@@ -14,10 +14,18 @@ typedef struct test {
 #define make_test(name)                                                        \
     { V_TO_STR(name), &name }
 
+#define decl_test(name) extern int32_t name();
 
-extern int32_t test_p2();
+#define make_tests(...)                                                        \
+    APPLY(decl_test, ;, __VA_ARGS__);                                          \
+    static const test_t tests[] = { APPLY(make_test, COMMA, __VA_ARGS__) };    \
+    static const size_t ntests  = sizeof(tests) / sizeof(test_t);
 
-static const test_t tests[] = { make_test(test_p2) };
-static const size_t ntests  = sizeof(tests) / sizeof(test_t);
+
+/* Append all here. */
+#define TESTS test_p2
+
+make_tests(TESTS);
+
 
 #endif
