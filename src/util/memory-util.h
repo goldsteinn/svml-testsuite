@@ -10,29 +10,6 @@
 #include "util/error-util.h"
 #include "util/macro.h"
 
-
-/* Use safe_<type> for aliasing casts. */
-typedef wchar_t  safe_wchar_t __attribute__((may_alias));
-typedef uint32_t safe_uint32_t __attribute__((may_alias, aligned(1)));
-typedef int32_t  safe_int32_t __attribute__((may_alias, aligned(1)));
-typedef uint64_t safe_uint64_t __attribute__((may_alias, aligned(1)));
-typedef int64_t  safe_int64_t __attribute__((may_alias, aligned(1)));
-
-typedef char               safe_char __attribute__((may_alias, aligned(1)));
-typedef unsigned char      safe_uchar __attribute__((may_alias, aligned(1)));
-typedef short              safe_short __attribute__((may_alias, aligned(1)));
-typedef unsigned short     safe_ushort __attribute__((may_alias, aligned(1)));
-typedef int                safe_int __attribute__((may_alias, aligned(1)));
-typedef unsigned int       safe_uint __attribute__((may_alias, aligned(1)));
-typedef long               safe_long __attribute__((may_alias, aligned(1)));
-typedef unsigned long      safe_ulong __attribute__((may_alias, aligned(1)));
-typedef long long          safe_llong __attribute__((may_alias, aligned(1)));
-typedef unsigned long long safe_ullong __attribute__((may_alias, aligned(1)));
-typedef float              safe_float __attribute__((may_alias, aligned(1)));
-typedef double             safe_double __attribute__((may_alias, aligned(1)));
-typedef float              safe_float __attribute__((may_alias, aligned(1)));
-typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
-
 #define PAGE_SIZE 4096
 
 #define safe_calloc(n, sz) _safe_calloc(n, sz, __FILENAME__, __func__, __LINE__)

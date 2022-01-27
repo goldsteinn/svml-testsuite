@@ -2,11 +2,11 @@
 #define _COMMON_H_
 
 #include <assert.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "lib/commonlib.h"
+#include "util/types.h"
 
 #define ALWAYS_INLINE inline __attribute__((always_inline))
 #define NEVER_INLINE  __attribute__((noinline))
@@ -29,12 +29,5 @@
         __builtin_unreachable();                                               \
     }
 
-#define CAST(x, y) ((x)(y))
-
-typedef uint64_t ptr_int_t;
-
-
-#define MIN(x, y) ((x) < (y) ? (x) : (y))
-#define MAX(x, y) ((x) > (y) ? (x) : (y))
 
 #endif
