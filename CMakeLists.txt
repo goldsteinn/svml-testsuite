@@ -10,7 +10,7 @@ set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
 
-add_compile_options(-D_GNU_SOURCE -O2 -Wpedantic -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -Wno-gnu-zero-variadic-macro-arguments -march=native -mtune=native -std=gnu11)
+add_compile_options(-D_GNU_SOURCE -O2 -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -Wno-gnu-zero-variadic-macro-arguments -march=native -mtune=native -std=gnu11)
 
 
 set(EXE_SRC ${SRC_DIR}/driver.c)
