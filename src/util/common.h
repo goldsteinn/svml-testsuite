@@ -5,12 +5,15 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+#include "lib/commonlib.h"
 
 #define ALWAYS_INLINE inline __attribute__((always_inline))
 #define NEVER_INLINE  __attribute__((noinline))
 
 #define ALIGNED(x) __attribute__((aligned(x)))
+
+#define UNUSED(x) ((void)(x))
 
 /* NOLINT to suppress warning from clang not supporting noclone attribute. */
 #define BENCH_FUNC                                                             \

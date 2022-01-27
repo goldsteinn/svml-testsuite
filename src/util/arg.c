@@ -9,11 +9,12 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 #include "util/arg.h"
 #include "util/error-util.h"
 #include "util/memory-util.h"
+
+#include "lib/commonlib.h"
 
 typedef uint32_t bool;
 static const bool false = 0;
@@ -74,7 +75,7 @@ arg2str(ArgOption * desc) {
             die_assert(n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
-            p += strlen(p);
+            p += strlen_c(p);
             break;
         case Rest:
             die_assert(desc->kind == KindRest);
@@ -83,7 +84,7 @@ arg2str(ArgOption * desc) {
             die_assert(n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
-            p += strlen(p);
+            p += strlen_c(p);
             break;
         case Help:
         case Toggle:
@@ -93,7 +94,7 @@ arg2str(ArgOption * desc) {
             die_assert(n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
-            p += strlen(p);
+            p += strlen_c(p);
             break;
 
         default:
@@ -101,9 +102,9 @@ arg2str(ArgOption * desc) {
             die("Unknown type: %d\n", desc->type);
     }
     if (desc->kind == KindRest) {
-        n = strlen("...") + 1;
+        n = strlen_c("...") + 1;
         die_assert(avail_length > n, "Buffer overflow creating help message\n");
-        memcpy(p, "...", n);
+        memcpy_c(p, "...", n);
         p += n;
         avail_length -= n;
     }
@@ -189,13 +190,13 @@ void
 makeCommandline(int32_t argc, char ** argv) {
     int32_t len = 2;
     for (int32_t i = 0; i < argc; i++) {
-        len += (1 + strlen(argv[i]));
+        len += (1 + strlen_c(argv[i]));
     }
     char * p = (char *)safe_calloc(len, 1);
     len      = 0;
     for (int32_t i = 0; i < argc; i++) {
-        strcpy(p + len, argv[i]);
-        len += strlen(argv[i]);
+        strcpy_c(p + len, argv[i]);
+        len += strlen_c(argv[i]);
         p[len++] = ' ';
     }
     p[len - 1] = 0;
@@ -459,7 +460,7 @@ parseArguments(ArgParser * ap, int32_t argc, char ** argv) {
                 ArgOption * desc = apn->parser->args;
                 for (int32_t j = 0; notfound && (desc[j].kind != KindEnd);
                      j++) {
-                    if (strcmp(desc[j].longarg, arg) == 0) {
+                    if (strcmp_c(desc[j].longarg, arg) == 0) {
                         ok       = true;
                         notfound = false;
                         // see if it is special

@@ -2,42 +2,6 @@
 #include "util/common.h"
 #include "util/error-util.h"
 
-void *
-_safe_calloc(uint64_t           n,
-             uint64_t           sz,
-             const char * const fn,
-             const char *       func,
-             int32_t            ln) {
-    void * p = calloc(n, sz);
-    if (UNLIKELY(p == NULL)) {
-        _errdie(fn, func, ln, errno, NULL);
-    }
-    return p;
-}
-
-void *
-_safe_malloc(uint64_t           sz,
-             const char * const fn,
-             const char *       func,
-             int32_t            ln) {
-    void * p = malloc(sz);
-    if (UNLIKELY(p == NULL)) {
-        _errdie(fn, func, ln, errno, NULL);
-    }
-    return p;
-}
-void *
-_safe_realloc(void *             p,
-              uint64_t           sz,
-              const char * const fn,
-              const char *       func,
-              int32_t            ln) {
-    void * newp = realloc(p, sz);
-    if (UNLIKELY(p == NULL)) {
-        _errdie(fn, func, ln, errno, NULL);
-    }
-    return newp;
-}
 
 void *
 _safe_mmap(void *             addr,
@@ -76,12 +40,5 @@ _safe_mprotect(void *             addr,
                const int32_t      ln) {
     if (UNLIKELY(mprotect(addr, sz, prot_flags))) {
         _errdie(fn, func, ln, errno, NULL);
-    }
-}
-
-void
-_safe_free(void * addr) {
-    if (LIKELY(addr != NULL)) {
-        free(addr);
     }
 }

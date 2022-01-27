@@ -1,5 +1,6 @@
-#ifndef _ERROR_UTIL_H_
-#define _ERROR_UTIL_H_
+#ifndef _SRC__UTIL__ERROR_UTIL_H_
+#define _SRC__UTIL__ERROR_UTIL_H_
+
 
 #include <errno.h>
 #include <stdarg.h>

@@ -1,5 +1,6 @@
-#ifndef _VERBOSITY_H_
-#define _VERBOSITY_H_
+#ifndef _SRC__UTIL__VERBOSITY_H_
+#define _SRC__UTIL__VERBOSITY_H_
+
 
 #include <stdint.h>
 #include <stdio.h>

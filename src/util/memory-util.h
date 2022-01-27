@@ -1,12 +1,15 @@
-#ifndef _MEMORY_UTIL_H_
-#define _MEMORY_UTIL_H_
+#ifndef _SRC__UTIL__MEMORY_UTIL_H_
+#define _SRC__UTIL__MEMORY_UTIL_H_
 
 #include <stdint.h>
 #include <stdlib.h>
 #include <sys/mman.h>
 #include <wchar.h>
 
+#include "util/common.h"
+#include "util/error-util.h"
 #include "util/macro.h"
+
 
 /* Use safe_<type> for aliasing casts. */
 typedef wchar_t  safe_wchar_t __attribute__((may_alias));
@@ -46,23 +49,65 @@ typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
     _safe_munmap(addr, sz, __FILENAME__, __func__, __LINE__)
 #define safe_mprotect(addr, sz, prot_flags)                                    \
     _safe_mprotect(addr, sz, prot_flags, __FILENAME__, __func__, __LINE__)
-#define safe_free(addr) _safe_free(addr)
 
-void * _safe_calloc(uint64_t           n,
-                    uint64_t           sz,
-                    const char * const fn,
-                    const char *       func,
-                    int32_t            ln);
+#define safe_free(addr)  _safe_free(addr)
+#define safe_sfree(addr) _safe_sfree(addr)
 
-void * _safe_malloc(uint64_t           sz,
-                    const char * const fn,
-                    const char *       func,
-                    int32_t            ln);
-void * _safe_realloc(void *             p,
-                     uint64_t           sz,
-                     const char * const fn,
-                     const char *       func,
-                     int32_t            ln);
+
+static void *
+_safe_calloc(uint64_t           n,
+             uint64_t           sz,
+             const char * const fn,
+             const char *       func,
+             int32_t            ln) {
+    void * p = calloc_c(n, sz);
+    if (UNLIKELY(p == NULL)) {
+        _errdie(fn, func, ln, errno, NULL);
+    }
+    return p;
+}
+
+static void *
+_safe_malloc(uint64_t           sz,
+             const char * const fn,
+             const char *       func,
+             int32_t            ln) {
+    void * p = malloc_c(sz);
+    if (UNLIKELY(p == NULL)) {
+        _errdie(fn, func, ln, errno, NULL);
+    }
+    return p;
+}
+
+static void *
+_safe_realloc(void *             p,
+              uint64_t           sz,
+              const char * const fn,
+              const char *       func,
+              int32_t            ln) {
+    void * newp = realloc_c(p, sz);
+    if (UNLIKELY(p == NULL)) {
+        _errdie(fn, func, ln, errno, NULL);
+    }
+    return newp;
+}
+
+static void
+_safe_free(void * addr) {
+    if (LIKELY(addr != NULL)) {
+        free_c(addr);
+    }
+}
+
+
+static void
+_safe_sfree(void * addr, uint64_t sz) {
+    UNUSED(sz);
+    if (LIKELY(addr != NULL)) {
+        sfree_c(addr, sz);
+    }
+}
+
 
 void * _safe_mmap(void *             addr,
                   uint64_t           sz,
@@ -87,5 +132,4 @@ void _safe_mprotect(void *             addr,
                     const char *       func,
                     const int32_t      ln);
 
-void _safe_free(void * addr);
 #endif

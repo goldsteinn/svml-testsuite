@@ -1,5 +1,6 @@
-#ifndef _INLINE_MATH_H_
-#define _INLINE_MATH_H_
+#ifndef _SRC__UTIL__INLINE_MATH_H_
+#define _SRC__UTIL__INLINE_MATH_H_
+
 
 #include "util/common.h"
 

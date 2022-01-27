@@ -1,5 +1,6 @@
-#ifndef _FILE_UTIL_H_
-#define _FILE_UTIL_H_
+#ifndef _SRC__UTIL__FILE_UTIL_H_
+#define _SRC__UTIL__FILE_UTIL_H_
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -154,4 +155,6 @@ int    _safe_fclose(FILE * restrict stream,
                     const char * fn,
                     const char * func,
                     int          ln);
+
+
 #endif

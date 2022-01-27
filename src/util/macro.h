@@ -1,5 +1,6 @@
-#ifndef _MACRO_H_
-#define _MACRO_H_
+#ifndef _SRC__UTIL__MACRO_H_
+#define _SRC__UTIL__MACRO_H_
+
 
 //////////////////////////////////////////////////////////////////////
 /*
