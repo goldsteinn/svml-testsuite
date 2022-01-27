@@ -43,7 +43,7 @@
             }                                                                  \
             else if (sizeof(x) == sizeof(long)) {                              \
                 _next_p2_tmp_ = (2UL << ((8 * sizeof(long) - 1) -              \
-                                         __builtin_clz(_next_p2_tmp_ - 1)));   \
+                                         __builtin_clzl(_next_p2_tmp_ - 1)));  \
             }                                                                  \
             else {                                                             \
                 _next_p2_tmp_ =                                                \
@@ -78,7 +78,7 @@
             }                                                                  \
             else if (sizeof(x) == sizeof(long)) {                              \
                 _prev_p2_tmp_ &= (1UL << ((8 * sizeof(long) - 1) -             \
-                                          __builtin_clz(_prev_p2_tmp_)));      \
+                                          __builtin_clzl(_prev_p2_tmp_)));     \
             }                                                                  \
             else {                                                             \
                 _prev_p2_tmp_ &=                                               \
