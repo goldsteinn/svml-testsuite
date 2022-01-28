@@ -2,7 +2,7 @@
 #define _SRC__UTIL__TYPES_H_
 
 #include <stdint.h>
-
+#include <wchar.h>
 
 /* Use safe_<type> for aliasing casts. */
 typedef wchar_t  safe_wchar_t __attribute__((may_alias));

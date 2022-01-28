@@ -23,7 +23,7 @@ typedef struct test {
 
 
 /* Append all here. */
-#define TESTS test_p2
+#define TESTS test_p2, test_random
 
 make_tests(TESTS);
 

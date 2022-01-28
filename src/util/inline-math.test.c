@@ -4,15 +4,15 @@
 #include "util/inline-math.h"
 #include "util/macro.h"
 
+#include "test/test-common.h"
+
 
 #define testeq(impl, ref, val)                                                 \
     res   = impl(val);                                                         \
     expec = ref(val);                                                          \
-    if (UNLIKELY((res) != (expec))) {                                          \
-        err_v    = (val);                                                      \
-        err_impl = V_TO_STR(ref);                                              \
-        goto test_failed;                                                      \
-    }
+    test_assert(res == expec, "%-20s(%lu): %lu != %lu\n", V_TO_STR(ref),       \
+                CAST(uint64_t, (val)), res, expec);
+
 
 #define testall(v)                                                             \
     testeq(next_p2, simple_next_p2_32, CAST(uint32_t, v));                     \
@@ -59,8 +59,7 @@ simple_prev_p2_32(uint64_t v) {
 
 int32_t
 test_p2() {
-    uint64_t     res, expec, err_v, i, j;
-    const char * err_impl = NULL;
+    uint64_t res, expec, i, j;
 
     for (i = 0; i < RAND_MAX;) {
         for (j = 1; j; j <<= 1) {
@@ -95,8 +94,4 @@ test_p2() {
         }
     }
     return 0;
-
-test_failed:
-    fprintf(stderr, "%-20s(%lu): %lu != %lu\n", err_impl, err_v, res, expec);
-    return -1;
 }

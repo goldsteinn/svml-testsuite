@@ -2,6 +2,7 @@
 #include "test/tests.h"
 
 #include "util/arg.h"
+#include "util/error-util.h"
 #include "util/verbosity.h"
 
 static int32_t    verbosity  = 0;

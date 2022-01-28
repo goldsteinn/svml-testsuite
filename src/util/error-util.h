@@ -11,8 +11,8 @@
 #include "util/macro.h"
 
 #define err_assert(...) CAT(err_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
-
 #define die_assert(...) CAT(die_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
+
 
 #define msg_assert(X, msg, args...)                                            \
     if (UNLIKELY(!(X))) {                                                      \

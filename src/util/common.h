@@ -11,6 +11,9 @@
 #define ALWAYS_INLINE inline __attribute__((always_inline))
 #define NEVER_INLINE  __attribute__((noinline))
 
+#define CONST_FUNC __attribute__((const))
+#define PURE_FUNC  __attribute__((const))
+
 #define ALIGNED(x) __attribute__((aligned(x)))
 
 #define UNUSED(x) ((void)(x))
