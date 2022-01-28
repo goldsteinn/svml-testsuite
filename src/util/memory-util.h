@@ -31,7 +31,7 @@
 #define safe_sfree(addr) _safe_sfree(addr)
 
 
-static void *
+static MALLOC_FUNC void *
 _safe_calloc(uint64_t           n,
              uint64_t           sz,
              const char * const fn,
@@ -44,7 +44,7 @@ _safe_calloc(uint64_t           n,
     return p;
 }
 
-static void *
+static MALLOC_FUNC void *
 _safe_malloc(uint64_t           sz,
              const char * const fn,
              const char *       func,
@@ -56,7 +56,7 @@ _safe_malloc(uint64_t           sz,
     return p;
 }
 
-static void *
+static MALLOC_FUNC void *
 _safe_realloc(void *             p,
               uint64_t           sz,
               const char * const fn,
@@ -86,15 +86,15 @@ _safe_sfree(void * addr, uint64_t sz) {
 }
 
 
-void * _safe_mmap(void *             addr,
-                  uint64_t           sz,
-                  int32_t            prot_flags,
-                  int32_t            mmap_flags,
-                  int32_t            fd,
-                  int32_t            offset,
-                  const char * const fn,
-                  const char *       func,
-                  const int32_t      ln);
+MALLOC_FUNC void * _safe_mmap(void *             addr,
+                              uint64_t           sz,
+                              int32_t            prot_flags,
+                              int32_t            mmap_flags,
+                              int32_t            fd,
+                              int32_t            offset,
+                              const char * const fn,
+                              const char *       func,
+                              const int32_t      ln);
 
 void _safe_munmap(void *             addr,
                   uint64_t           sz,
