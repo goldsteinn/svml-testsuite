@@ -2,15 +2,15 @@
 #define _SRC__TEST__TEST_COMMON_H_
 
 #include "util/attrs.h"
+#include "util/common.h"
 #include "util/macro.h"
 #include "util/types.h"
 
 MALLOC_FUNC uint8_t * make_buf(uint64_t sz);
-uint8_t *             free_buf(uint8_t * buf, uint64_t sz);
-void                  randomize_buf(uint8_t * buf, uint64_t sz);
-void                  seq_buf(uint8_t * buf, uint64_t sz);
-int32_t               is_seq(uint8_t * buf, uint64_t sz);
-
+NONNULL(1) void free_buf(uint8_t * buf, uint64_t sz);
+NONNULL(1) void randomize_buf(uint8_t * buf, uint64_t sz);
+NONNULL(1) void seq_buf(uint8_t * buf, uint64_t sz);
+NONNULL(1) int32_t is_seq(uint8_t * buf, uint64_t sz);
 
 #define test_assert(...)                                                       \
     CAT(test_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)

@@ -5,6 +5,8 @@
 #include "util/error-util.h"
 #include "util/verbosity.h"
 
+#include "util/func-decl-utils.h"
+
 static int32_t    verbosity  = 0;
 static int32_t    list_all   = 0;
 static int32_t    run_all    = 0;
@@ -24,59 +26,15 @@ static ArgOption args[] = {
 
 static ArgDefs argp = { args, "Test Driver", NULL, NULL };
 
-int
-do_test(char ** _test_names, size_t _n_tests_to_run, const char * test_name) {
-    die_assert(_test_names, "Error, no tests specified!\n");
-    die_assert(test_name, "Error, null test name!\n");
-    size_t i;
-    for (i = 0; i < _n_tests_to_run; ++i) {
-        if (_test_names[i] == NULL) {
-            continue;
-        }
-        if (!strcmp(_test_names[i], test_name)) {
-            _test_names[i] = NULL;
-            return 1;
-        }
-    }
-    return 0;
-}
 
-void
-run_tests(char ** _test_names, size_t _n_tests_to_run, int _run_all) {
-    size_t       i;
-    const char * res;
-    fprintf(stdout, "----------------- Starting Tests -----------------\n");
-    for (i = 0; i < ntests; ++i) {
-        die_assert(tests[i].name && tests[i].func,
-                   "Error, unitialized test struct!\n");
-        if (_run_all || do_test(_test_names, _n_tests_to_run, tests[i].name)) {
-            fprintf(stdout, "Running - %-24s ...", tests[i].name);
-            res = "PASSED";
-            if (tests[i].func()) {
-                res = "FAILED";
-            }
-            fprintf(stdout, "\rRunning - %-24s -> %s\n", tests[i].name, res);
-        }
+static void
+run_test(const func_decl_t * test) {
+    const char * res = "PASSED";
+    fprintf(stdout, "Running - %-24s ...", test->name);
+    if (test->test_func()) {
+        res = "FAILED";
     }
-    fprintf(stdout, "---------------- Finished Testing ----------------\n");
-    for (i = 0; (!_run_all) && i < _n_tests_to_run; ++i) {
-        if (_test_names[i]) {
-            fprintf(stdout, "Unable To Find - %s\n", _test_names[i]);
-        }
-    }
-}
-
-void
-list_tests() {
-    size_t i;
-
-    fprintf(stdout, "----------------- Listing Tests ------------------\n");
-    for (i = 0; i < ntests; ++i) {
-        die_assert(tests[i].name && tests[i].func,
-                   "Error, unitialized test struct!\n");
-        fprintf(stdout, "%-24s\n", tests[i].name);
-    }
-    fprintf(stdout, "------------- Finished Listing Tests -------------\n");
+    fprintf(stdout, "\rRunning - %-24s -> %s\n", test->name, res);
 }
 
 int
@@ -85,9 +43,10 @@ main(int argc, char ** argv) {
     set_verbosity(verbosity);
 
     if (list_all) {
-        list_tests();
+        list_decls(&tests);
     }
     else {
-        run_tests(test_names.ptrs, test_names.n, run_all);
+        run_decls(&tests, run_all ? NULL : test_names.ptrs, test_names.n,
+                  &run_test);
     }
 }
