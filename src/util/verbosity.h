@@ -31,12 +31,12 @@
         fprintf(fp, __VA_ARGS__);                                              \
     }
 
-int32_t           check_verbosity(int32_t verbosity_bound);
-void              set_verbosity(int32_t verbosity);
-NEVER_INLINE void vcheck_print(int32_t      verbosity_bound,
-                               FILE *       fp,
-                               const char * msg,
-                               ...);
+int32_t      check_verbosity(int32_t verbosity_bound);
+void         set_verbosity(int32_t verbosity);
+NEVER_INLINE NONNULL(2, 3) void vcheck_print(int32_t      verbosity_bound,
+                                             FILE *       fp,
+                                             const char * msg,
+                                             ...);
 
 
 #endif

@@ -31,12 +31,12 @@
 #define safe_sfree(addr) _safe_sfree(addr)
 
 
-static MALLOC_FUNC void *
-_safe_calloc(uint64_t           n,
-             uint64_t           sz,
-             const char * const fn,
-             const char *       func,
-             int32_t            ln) {
+static MALLOC_FUNC
+NONNULL(3, 4) void * _safe_calloc(uint64_t           n,
+                                  uint64_t           sz,
+                                  const char * const fn,
+                                  const char *       func,
+                                  int32_t            ln) {
     void * p = calloc_c(n, sz);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -44,11 +44,11 @@ _safe_calloc(uint64_t           n,
     return p;
 }
 
-static MALLOC_FUNC void *
-_safe_malloc(uint64_t           sz,
-             const char * const fn,
-             const char *       func,
-             int32_t            ln) {
+static MALLOC_FUNC
+NONNULL(2, 3) void * _safe_malloc(uint64_t           sz,
+                                  const char * const fn,
+                                  const char *       func,
+                                  int32_t            ln) {
     void * p = malloc_c(sz);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -56,12 +56,12 @@ _safe_malloc(uint64_t           sz,
     return p;
 }
 
-static MALLOC_FUNC void *
-_safe_realloc(void *             p,
-              uint64_t           sz,
-              const char * const fn,
-              const char *       func,
-              int32_t            ln) {
+static MALLOC_FUNC
+NONNULL(1, 3, 4) void * _safe_realloc(void *             p,
+                                      uint64_t           sz,
+                                      const char * const fn,
+                                      const char *       func,
+                                      int32_t            ln) {
     void * newp = realloc_c(p, sz);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -86,22 +86,24 @@ _safe_sfree(void * addr, uint64_t sz) {
 }
 
 
-MALLOC_FUNC void * _safe_mmap(void *             addr,
-                              uint64_t           sz,
-                              int32_t            prot_flags,
-                              int32_t            mmap_flags,
-                              int32_t            fd,
-                              int32_t            offset,
-                              const char * const fn,
-                              const char *       func,
-                              const int32_t      ln);
+MALLOC_FUNC NONNULL(7, 8) void * _safe_mmap(void *             addr,
+                                            uint64_t           sz,
+                                            int32_t            prot_flags,
+                                            int32_t            mmap_flags,
+                                            int32_t            fd,
+                                            int32_t            offset,
+                                            const char * const fn,
+                                            const char *       func,
+                                            const int32_t      ln);
 
+NONNULL(1, 3, 4)
 void _safe_munmap(void *             addr,
                   uint64_t           sz,
                   const char * const fn,
                   const char *       func,
                   const int32_t      ln);
 
+NONNULL(1, 4, 5)
 void _safe_mprotect(void *             addr,
                     uint64_t           sz,
                     int32_t            prot_flags,

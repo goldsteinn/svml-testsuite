@@ -11,4 +11,6 @@
 #define EXIT_FUNC                                                              \
     __attribute__((noclone /* NOLINT */, noinline, cold, noreturn))
 
+#define NONNULL(...) __attribute__((nonnull(__VA_ARGS__)))
+
 #endif

@@ -3,7 +3,7 @@
 #include "util/error-util.h"
 
 
-MALLOC_FUNC void *
+void *
 _safe_mmap(void *             addr,
            uint64_t           sz,
            int32_t            prot_flags,

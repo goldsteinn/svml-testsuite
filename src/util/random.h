@@ -14,7 +14,7 @@ _rand64(uint64_t _seed) {
     return CAST(uint64_t, t >> 64) ^ CAST(uint64_t, t);
 }
 
-static uint64_t
+NONNULL(1) static uint64_t
 rand64s(uint64_t * seed) {
     uint64_t _seed;
     _seed = *seed;
@@ -34,7 +34,7 @@ _rand32(uint64_t _seed) {
     return CAST(uint32_t, _rand64(_seed));
 }
 
-static uint32_t
+NONNULL(1) static uint32_t
 rand32s(uint64_t * seed) {
     return CAST(uint32_t, rand64s(seed));
 }
