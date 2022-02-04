@@ -1,8 +1,6 @@
 #ifndef _SRC__ASM__ASM_COMMON_H_
 #define _SRC__ASM__ASM_COMMON_H_
 
-#define USE_MULTIARCH
-#define IS_IN(x) 1
 
 #define L(name)          L##name
 #define NAME_LABEL(name) name##:
@@ -25,7 +23,6 @@
 #define ENTRY_P2ALIGN(name, alignment)                                         \
     .align ALIGNARG(alignment);                                                \
     ENTRY_END(name)
-
 
 #define PAGE_ALIGN_CODE .align 4096;
 #ifndef ALIGN_ENTRY
@@ -59,26 +56,6 @@
     END_DEF(name)                                                              \
     PAGE_ALIGN_CODE;
 #endif
-
-
-#define ZERO_UPPER_VEC_REGISTERS_RETURN VZEROUPPER_RETURN
-#define VZEROUPPER_RETURN                                                      \
-    VZEROUPPER;                                                                \
-    ret
-
-#define RAX_LP rax
-#define RDI_LP rdi
-#define RSI_LP rsi
-#define RDX_LP rdx
-#define RCX_LP rcx
-
-#define R8_LP r8
-#define R9_LP r9
-
-#define R10_LP r10
-#define R11_LP r11
-#define R12_LP r12
-#define R13_LP r13
 
 #define cfi_startproc              .cfi_startproc
 #define cfi_endproc                .cfi_endproc
