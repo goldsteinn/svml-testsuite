@@ -30,6 +30,9 @@
 #define safe_free(addr)  _safe_free(addr)
 #define safe_sfree(addr) _safe_sfree(addr)
 
+#define is_valid_addr(addr)                                                    \
+    (CAST(uint64_t, addr) > CAST(uint64_t, 65536) &&                           \
+     (!(CAST(uint64_t, addr) >> 48)))
 
 static MALLOC_FUNC
 NONNULL(3, 4) void * _safe_calloc(uint64_t           n,

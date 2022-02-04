@@ -14,7 +14,7 @@ _safe_mmap(void *             addr,
            const char *       func,
            const int32_t      ln) {
     void * p = mmap(addr, sz, prot_flags, mmap_flags, fd, offset);
-    if (UNLIKELY(p == NULL)) {
+    if (UNLIKELY(!is_valid_addr(p))) {
         _errdie(fn, func, ln, errno, NULL);
     }
     return p;

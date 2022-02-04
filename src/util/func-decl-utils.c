@@ -80,6 +80,6 @@ run_decls(const decl_list_t * decl_list,
         if (has_run[i]) {
             continue;
         }
-        fprintf(stdout, "Unable To Find - %s\n", decls[i].name);
+        fprintf(stdout, "Unable To Find - %s\n", decl_names[i]);
     }
 }
