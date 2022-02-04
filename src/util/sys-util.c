@@ -1,18 +1,6 @@
 #include "util/sys-util.h"
 
 
-void
-_setcpu(pid_t         pid,
-        uint32_t      cpu,
-        const char *  fn,
-        const char *  func,
-        const int32_t ln) {
-    cpu_set_t cset;
-    CPU_ZERO(&cset);
-    CPU_SET(cpu, &cset);
-    return _setcpu_aff(pid, sizeof(cpu_set_t), &cset, fn, func, ln);
-}
-
 
 void
 _setcpu_aff(pid_t         pid,

@@ -35,11 +35,7 @@ void NONNULL(1, 2)
 uint32_t NONNULL(1, 2)
     _safe_get_cpu(const char * fn, const char * func, const int32_t ln);
 
-void NONNULL(3, 4) _setcpu(pid_t         pid,
-                           uint32_t      cpu,
-                           const char *  fn,
-                           const char *  func,
-                           const int32_t ln);
+
 
 void NONNULL(3, 4, 5) _setcpu_aff(pid_t         pid,
                                   size_t        cpusetsize,
@@ -57,6 +53,19 @@ void NONNULL(3, 4, 5) _getcpu_aff(pid_t         pid,
 
 
 void setcpu_and_wait(pid_t pid, uint32_t cpu);
+
+static void
+NONNULL(3, 4) _setcpu(pid_t         pid,
+                      uint32_t      cpu,
+                      const char *  fn,
+                      const char *  func,
+                      const int32_t ln) {
+    cpu_set_t cset;
+    CPU_ZERO(&cset);
+    CPU_SET(cpu, &cset);
+    _setcpu_aff(pid, sizeof(cpu_set_t), &cset, fn, func, ln);
+}
+
 
 static void
 proc_setcpu_and_wait(uint32_t cpu) {
