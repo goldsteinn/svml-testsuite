@@ -45,6 +45,10 @@ typedef uint64_t ptr_int_t;
              : (unsigned long)(x), long long                                   \
              : (unsigned long long)(x), default                                \
              : x)
+
+#define get_type(x) __typeof__(x)
+#define is_same_type(x, y)                                                     \
+    __builtin_types_compatible_p(get_type(x), get_type(y))
 #endif
 
 #endif
