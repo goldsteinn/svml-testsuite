@@ -30,11 +30,11 @@ static ArgDefs argp = { args, "Test Driver", NULL, NULL };
 static void
 run_test(const func_decl_t * test) {
     const char * res = "PASSED";
-    fprintf(stdout, "Running - %-24s ...", test->name);
+    fprintf(stderr, "Running - %-24s ...", test->name);
     if (test->test_func()) {
         res = "FAILED";
     }
-    fprintf(stdout, "\rRunning - %-24s -> %s\n", test->name, res);
+    fprintf(stderr, "\rRunning - %-24s -> %s\n", test->name, res);
 }
 
 int

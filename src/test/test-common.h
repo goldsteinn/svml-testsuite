@@ -14,7 +14,6 @@ NONNULL(1) int32_t is_seq(uint8_t * buf, uint64_t sz);
 
 #define test_assert(...)                                                       \
     CAT(test_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
-
 #define _test_assert(X, todo)                                                  \
     if (UNLIKELY(!(X))) {                                                      \
         fprintf(stderr, "\n\t%-20s:%-4u", __FILENAME__, __LINE__);             \
