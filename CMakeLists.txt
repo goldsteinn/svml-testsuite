@@ -10,7 +10,7 @@ set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
 
-add_compile_options(-D_GNU_SOURCE -O2 -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -Wno-gnu-zero-variadic-macro-arguments -march=native -mtune=native -std=gnu11)
+add_compile_options(-D_GNU_SOURCE -O2 -Wstrict-aliasing=3 -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -Wno-gnu-zero-variadic-macro-arguments -march=native -mtune=native -std=gnu11)
 
 
 set(EXE_SRC ${SRC_DIR}/driver.c)
@@ -65,10 +65,10 @@ target_link_libraries(driver)
 
 
 add_executable(tests ${TEST_EXE_SRC} ${TEST_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
-target_link_libraries(tests)
+target_link_libraries(tests "-lpthread")
 set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
 
 add_executable(bench ${BENCH_EXE_SRC} ${BENCH_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
-target_link_libraries(bench)
+target_link_libraries(bench "-lpthread")
 set_target_properties(bench PROPERTIES EXCLUDE_FROM_ALL TRUE)
