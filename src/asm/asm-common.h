@@ -11,9 +11,13 @@
     NAME_LABEL(name)                                                           \
     cfi_startproc;
 
+#ifndef ENDBR4_NOPS
+#define ENDBR4_NOPS NOP0
+#endif
+
 #define ENTRY_END(name)                                                        \
     ENTRY_DEF(name)                                                            \
-    NOP4
+    ENDBR4_NOPS
 
 #define END_DEF(name)                                                          \
     cfi_endproc;                                                               \

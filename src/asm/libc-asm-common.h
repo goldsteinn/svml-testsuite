@@ -35,6 +35,8 @@
 #define R12_LP r12
 #define R13_LP r13
 
+#define ENDBR4_NOPS NOP4
+
 #include "asm-common.h"
 
 #endif
