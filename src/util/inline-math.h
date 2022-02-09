@@ -17,7 +17,9 @@
 #define is_p2(x) (!((x) & ((x)-1)))
 #define next_p2(x)                                                             \
     ({                                                                         \
-        typeof(UNSIGNED(x)) _next_p2_tmp_ = (x);                               \
+        get_type(x) _tmp_evaluated_x = (x);                                    \
+        get_type(UNSIGNED(_tmp_evaluated_x)) _next_p2_tmp_ =                   \
+            (_tmp_evaluated_x);                                                \
         /* If constant compiler can calculate this version at compile          \
          * time. */                                                            \
         if (__builtin_constant_p(_next_p2_tmp_)) {                             \
@@ -27,8 +29,9 @@
             _next_p2_tmp_ |= _next_p2_tmp_ >> 4;                               \
             _next_p2_tmp_ |= _next_p2_tmp_ >> 8;                               \
             _next_p2_tmp_ |= _next_p2_tmp_ >> 16;                              \
-            if (sizeof(x) == 8) {                                              \
-                _next_p2_tmp_ |= _next_p2_tmp_ >> (4 * sizeof(x));             \
+            if (sizeof(_tmp_evaluated_x) == 8) {                               \
+                _next_p2_tmp_ |=                                               \
+                    _next_p2_tmp_ >> (4 * sizeof(_tmp_evaluated_x));           \
             }                                                                  \
             ++_next_p2_tmp_;                                                   \
         }                                                                      \
@@ -37,11 +40,11 @@
             if (UNLIKELY(_next_p2_tmp_ <= 2)) {                                \
                 ;                                                              \
             }                                                                  \
-            else if (sizeof(x) == sizeof(long long)) {                         \
+            else if (sizeof(_tmp_evaluated_x) == sizeof(long long)) {          \
                 _next_p2_tmp_ = (2UL << ((8 * sizeof(long long) - 1) -         \
                                          __builtin_clzll(_next_p2_tmp_ - 1))); \
             }                                                                  \
-            else if (sizeof(x) == sizeof(long)) {                              \
+            else if (sizeof(_tmp_evaluated_x) == sizeof(long)) {               \
                 _next_p2_tmp_ = (2UL << ((8 * sizeof(long) - 1) -              \
                                          __builtin_clzl(_next_p2_tmp_ - 1)));  \
             }                                                                  \
@@ -57,7 +60,9 @@
 
 #define prev_p2(x)                                                             \
     ({                                                                         \
-        typeof(UNSIGNED(x)) _prev_p2_tmp_ = (x);                               \
+        get_type(x) _tmp_evaluated_x = (x);                                    \
+        get_type(UNSIGNED(_tmp_evaluated_x)) _prev_p2_tmp_ =                   \
+            (_tmp_evaluated_x);                                                \
         /* If constant compiler can calculate this version at compile          \
          * time. */                                                            \
         if (__builtin_constant_p(_prev_p2_tmp_)) {                             \
@@ -66,17 +71,18 @@
             _prev_p2_tmp_ |= _prev_p2_tmp_ >> 4;                               \
             _prev_p2_tmp_ |= _prev_p2_tmp_ >> 8;                               \
             _prev_p2_tmp_ |= _prev_p2_tmp_ >> 16;                              \
-            if (sizeof(x) == 8) {                                              \
-                _prev_p2_tmp_ |= _prev_p2_tmp_ >> (4 * sizeof(x));             \
+            if (sizeof(_tmp_evaluated_x) == 8) {                               \
+                _prev_p2_tmp_ |=                                               \
+                    _prev_p2_tmp_ >> (4 * sizeof(_tmp_evaluated_x));           \
             }                                                                  \
             _prev_p2_tmp_ -= (_prev_p2_tmp_ >> 1);                             \
         }                                                                      \
         else {                                                                 \
-            if (sizeof(x) == sizeof(long long)) {                              \
+            if (sizeof(_tmp_evaluated_x) == sizeof(long long)) {               \
                 _prev_p2_tmp_ &= (1UL << ((8 * sizeof(long long) - 1) -        \
                                           __builtin_clzll(_prev_p2_tmp_)));    \
             }                                                                  \
-            else if (sizeof(x) == sizeof(long)) {                              \
+            else if (sizeof(_tmp_evaluated_x) == sizeof(long)) {               \
                 _prev_p2_tmp_ &= (1UL << ((8 * sizeof(long) - 1) -             \
                                           __builtin_clzl(_prev_p2_tmp_)));     \
             }                                                                  \

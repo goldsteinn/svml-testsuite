@@ -26,8 +26,8 @@ typedef double             safe_double __attribute__((may_alias, aligned(1)));
 typedef float              safe_float __attribute__((may_alias, aligned(1)));
 typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
 
-
 typedef uint64_t ptr_int_t;
+
 
 #define CAST(x, y)        ((x)(y))
 #define AGU(base, offset) (CAST(ptr_int_t, base) + CAST(ptr_int_t, idx))
