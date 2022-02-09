@@ -1,5 +1,5 @@
-#ifndef _SRC__BENCH__ARCH__X86_LL_TIMING_H_
-#define _SRC__BENCH__ARCH__X86_LL_TIMING_H_
+#ifndef _SRC__ARCH__X86__X86_TIMING_H_
+#define _SRC__ARCH__X86__X86_TIMING_H_
 
 #include <x86intrin.h>
 

@@ -6,7 +6,7 @@
 #include "util/attrs.h"
 #include "util/types.h"
 
-#include "bench/arch/ll-timing.h"
+#include "arch/ll-timing.h"
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t to_ns(struct timespec * ts) {

@@ -3,10 +3,9 @@
 
 #include "util/arg.h"
 #include "util/error-util.h"
-#include "util/sys-util.h"
-#include "util/verbosity.h"
-
 #include "util/func-decl-utils.h"
+#include "util/sched-util.h"
+#include "util/verbosity.h"
 
 static int32_t    verbosity       = 0;
 static int32_t    list_all        = 0;

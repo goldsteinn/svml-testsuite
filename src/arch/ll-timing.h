@@ -2,7 +2,7 @@
 #define _SRC__BENCH__ARCH__LL_TIMING_H_
 
 #ifdef __x86_64__
-#include "bench/arch/x86/x86-ll-timing.h"
+#include "arch/x86/x86-timing.h"
 #else
 #error "Unsupported architecture"
 #endif
