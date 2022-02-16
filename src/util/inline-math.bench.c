@@ -25,7 +25,6 @@ bench_p2(uint32_t trials) {
         trials = 1000 * 1000;
     }
 
-
     run_bench(names[0], times[0], next_p2);
     run_bench(names[1], times[1], prev_p2);
 

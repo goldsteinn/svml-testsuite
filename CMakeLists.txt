@@ -58,7 +58,7 @@ add_custom_target(
   ${ALL_C_SOURCES}
   -p=${CMAKE_CURRENT_BINARY_DIR}
   -checks=-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
-)
+  )
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})
 target_link_libraries(driver)
@@ -72,3 +72,7 @@ set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL TRUE)
 add_executable(bench ${BENCH_EXE_SRC} ${BENCH_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
 target_link_libraries(bench "-lpthread")
 set_target_properties(bench PROPERTIES EXCLUDE_FROM_ALL TRUE)
+
+
+add_custom_target(full)
+add_dependencies(full driver tests bench)

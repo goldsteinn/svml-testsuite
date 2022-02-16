@@ -7,27 +7,27 @@
 #include "util/error-util.h"
 #include "util/file-util.h"
 
-int
-_safe_open2(const char * path,
-            int          flags,
-            const char * fn,
-            const char * func,
-            int          ln) {
-    int ret = open(path, flags);
+int32_t
+_safe_open2(char const * restrict path,
+            int32_t flags,
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
+    int32_t ret = open(path, flags);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno,
                 "Unable to open \"%s\" with [flags=0x%03x]\n", path, flags);
     }
     return ret;
 }
-int
-_safe_open3(const char * path,
-            int          flags,
-            int          mode,
-            const char * fn,
-            const char * func,
-            int          ln) {
-    int ret = open(path, mode);
+int32_t
+_safe_open3(char const * restrict path,
+            int32_t flags,
+            int32_t mode,
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
+    int32_t ret = open(path, mode);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno,
                 "Unable to open \"%s\" with [flags=0x%03x][mode=0x%03x])\n",
@@ -35,66 +35,66 @@ _safe_open3(const char * path,
     }
     return ret;
 }
-ssize_t
-_safe_read(int          fd,
-           void *       buf,
-           size_t       count,
-           const char * fn,
-           const char * func,
-           int          ln) {
-    ssize_t ret = read(fd, buf, count);
+int64_t
+_safe_read(int32_t fd,
+           void *  buf,
+           size_t  count,
+           char const * restrict fn,
+           char const * restrict func,
+           int32_t ln) {
+    int64_t ret = read(fd, buf, count);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno, NULL);
     }
     return ret;
 }
-ssize_t
-_safe_write(int          fd,
-            void *       buf,
-            size_t       count,
-            const char * fn,
-            const char * func,
-            int          ln) {
-    ssize_t ret = write(fd, buf, count);
+int64_t
+_safe_write(int32_t fd,
+            void const * restrict buf,
+            size_t count,
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
+    int64_t ret = write(fd, buf, count);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno, NULL);
     }
     return ret;
 }
 
-int
-_safe_stat(const char *  path,
-           struct stat * buf,
-           const char *  fn,
-           const char *  func,
-           int           ln) {
-    int ret = stat(path, buf);
+int32_t
+_safe_stat(char const * restrict path,
+           struct stat * restrict buf,
+           char const * restrict fn,
+           char const * restrict func,
+           int32_t ln) {
+    int32_t ret = stat(path, buf);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno, "Unable to stat \"%s\"\n", path);
     }
     return ret;
 }
 
-int
-_safe_fstat(int           fd,
-            struct stat * buf,
-            const char *  fn,
-            const char *  func,
-            int           ln) {
-    int ret = fstat(fd, buf);
+int32_t
+_safe_fstat(int32_t fd,
+            struct stat * restrict buf,
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
+    int32_t ret = fstat(fd, buf);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno, NULL);
     }
     return ret;
 }
 
-int
-_safe_access(const char * path,
-             int          mode,
-             const char * fn,
-             const char * func,
-             int          ln) {
-    int ret = access(path, mode);
+int32_t
+_safe_access(char const * restrict path,
+             int32_t mode,
+             char const * restrict fn,
+             char const * restrict func,
+             int32_t ln) {
+    int32_t ret = access(path, mode);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno,
                 "Unable to access \"%s\" with [mode=0x%03x]\n", path, mode);
@@ -102,24 +102,27 @@ _safe_access(const char * path,
     return ret;
 }
 
-int
-_safe_close(int fd, const char * fn, const char * func, int ln) {
-    int ret = close(fd);
+int32_t
+_safe_close(int32_t fd,
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
+    int32_t ret = close(fd);
     if (UNLIKELY(ret < 0)) {
         _errdie(fn, func, ln, errno, NULL);
     }
     return ret;
 }
 
-int
+int32_t
 _check_open2(const char * path,
-             int          flags,
+             int32_t      flags,
              const char * fn,
              const char * func,
-             int          ln,
+             int32_t      ln,
              const char * msg,
              ...) {
-    int ret = open(path, flags);
+    int32_t ret = open(path, flags);
     if (UNLIKELY(ret < 0)) {
         va_list ap;
         va_start(ap, msg);
@@ -129,16 +132,16 @@ _check_open2(const char * path,
     return ret;
 }
 
-int
+int32_t
 _check_open3(const char * path,
-             int          flags,
-             int          mode,
+             int32_t      flags,
+             int32_t      mode,
              const char * fn,
              const char * func,
-             int          ln,
+             int32_t      ln,
              const char * msg,
              ...) {
-    int ret = open(path, flags, mode);
+    int32_t ret = open(path, flags, mode);
     if (UNLIKELY(ret < 0)) {
         va_list ap;
         va_start(ap, msg);
@@ -148,15 +151,15 @@ _check_open3(const char * path,
     return ret;
 }
 
-int
+int32_t
 _check_access(const char * path,
-              int          mode,
+              int32_t      mode,
               const char * fn,
               const char * func,
-              int          ln,
+              int32_t      ln,
               const char * msg,
               ...) {
-    int ret = access(path, mode);
+    int32_t ret = access(path, mode);
     if (UNLIKELY(ret < 0)) {
         va_list ap;
         va_start(ap, msg);
@@ -167,11 +170,11 @@ _check_access(const char * path,
 }
 
 FILE *
-_safe_fopen(const char * restrict path,
-            const char * restrict mode,
-            const char * fn,
-            const char * func,
-            int          ln) {
+_safe_fopen(char const * restrict path,
+            char const * restrict mode,
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
     FILE * fp = fopen(path, mode);
     if (UNLIKELY(fp == NULL)) {
         _errdie(fn, func, ln, errno, "Unable to open \"%s\" with [mode=%-8s]\n",
@@ -181,11 +184,12 @@ _safe_fopen(const char * restrict path,
 }
 
 FILE *
-_safe_fdopen(int          fd,
-             const char * mode,
-             const char * fn,
-             const char * func,
-             int          ln) {
+_safe_fdopen(int32_t fd,
+             char const * restrict mode,
+             char const * restrict fn,
+
+             char const * restrict func,
+             int32_t ln) {
     FILE * fp = fdopen(fd, mode);
     if (UNLIKELY(fp == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -198,9 +202,9 @@ _safe_fread(void * restrict ptr,
             size_t size,
             size_t nmemb,
             FILE * restrict stream,
-            const char * fn,
-            const char * func,
-            int          ln) {
+            char const * restrict fn,
+            char const * restrict func,
+            int32_t ln) {
     size_t ret = fread(ptr, size, nmemb, stream);
     if (UNLIKELY(ret == 0)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -213,9 +217,9 @@ _safe_fwrite(const void * restrict ptr,
              size_t size,
              size_t nmemb,
              FILE * restrict stream,
-             const char * fn,
-             const char * func,
-             int          ln) {
+             char const * restrict fn,
+             char const * restrict func,
+             int32_t ln) {
     size_t ret = fwrite(ptr, size, nmemb, stream);
     if (UNLIKELY(ret == 0)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -228,7 +232,7 @@ _check_fopen(const char * restrict path,
              const char * restrict mode,
              const char * fn,
              const char * func,
-             int          ln,
+             int32_t      ln,
              const char * msg,
              ...) {
     FILE * fp = fopen(path, mode);
@@ -241,12 +245,12 @@ _check_fopen(const char * restrict path,
     return fp;
 }
 
-int
+int32_t
 _safe_fclose(FILE * restrict stream,
-             const char * fn,
-             const char * func,
-             int          ln) {
-    int ret = fclose(stream);
+             char const * restrict fn,
+             char const * restrict func,
+             int32_t ln) {
+    int32_t ret = fclose(stream);
     if (UNLIKELY(ret != 0)) {
         _errdie(fn, func, ln, errno, NULL);
     }

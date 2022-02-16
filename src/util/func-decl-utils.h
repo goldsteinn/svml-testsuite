@@ -3,10 +3,10 @@
 
 #include "util/func-decl-types.h"
 
-void list_decls(const decl_list_t * decl_list);
-void run_decls(const decl_list_t * decl_list,
-               char * const *       decl_names,
-               uint64_t            ndecls_to_run,
-               const run_decl_f    run_decl_func);
+void list_decls(decl_list_t const * decl_list);
+void run_decls(decl_list_t const * restrict decl_list,
+               char * restrict const * restrict decls_to_run,
+               uint64_t         ndecls_to_run,
+               const run_decl_f run_decl_func);
 
 #endif

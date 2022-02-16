@@ -60,25 +60,25 @@
 #define PRINTFFL
 #endif
 
-EXIT_FUNC NONNULL(1, 2) void _va_errdie(const char * const file_name,
-                                        const char * const func_name,
-                                        uint32_t           line_number,
-                                        int32_t            error_number,
-                                        const char * const msg,
-                                        va_list            ap);
+EXIT_FUNC NONNULL(1, 2) void _va_errdie(char const * restrict file_name,
+                                        char const * restrict func_name,
+                                        uint32_t line_number,
+                                        int32_t  error_number,
+                                        char const * restrict msg,
+                                        va_list ap);
 
-EXIT_FUNC NONNULL(1, 2) void _errdie(const char * const file_name,
-                                     const char * const func_name,
-                                     uint32_t           line_number,
-                                     int32_t            error_number,
-                                     const char * const msg,
+EXIT_FUNC NONNULL(1, 2) void _errdie(char const * restrict file_name,
+                                     char const * restrict func_name,
+                                     uint32_t line_number,
+                                     int32_t  error_number,
+                                     char const * restrict msg,
                                      ...);
 
-EXIT_FUNC NONNULL(1, 2) void _die(const char * const file_name,
-                                  const char * const func_name,
-                                  uint32_t           line_number,
-                                  const char * const msg,
+EXIT_FUNC NONNULL(1, 2) void _die(char const * restrict file_name,
+                                  char const * restrict func_name,
+                                  uint32_t line_number,
+                                  char const * restrict msg,
                                   ...);
 
-EXIT_FUNC void _msg_die(const char * const msg, ...);
+EXIT_FUNC void _msg_die(char const * restrict msg, ...);
 #endif

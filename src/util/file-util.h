@@ -55,106 +55,108 @@
 
 /* Declarataions. */
 
-int     _safe_open2(const char * path,
-                    int          flags,
-                    const char * fn,
-                    const char * func,
-                    int          ln);
-int     _safe_open3(const char * path,
-                    int          flags,
-                    int          mode,
-                    const char * fn,
-                    const char * func,
-                    int          ln);
-ssize_t _safe_read(int          fd,
-                   void *       buf,
-                   size_t       count,
-                   const char * fn,
-                   const char * func,
-                   int          ln);
-ssize_t _safe_write(int          fd,
-                    void *       buf,
-                    size_t       count,
-                    const char * fn,
-                    const char * func,
-                    int          ln);
-int     _safe_stat(const char *  path,
-                   struct stat * buf,
-                   const char *  fn,
-                   const char *  func,
-                   int           ln);
-int     _safe_fstat(int           fd,
-                    struct stat * buf,
-                    const char *  fn,
-                    const char *  func,
-                    int           ln);
-int     _safe_access(const char * path,
-                     int          mode,
-                     const char * fn,
-                     const char * func,
-                     int          ln);
-int     _safe_close(int fd, const char * fn, const char * func, int ln);
+int32_t _safe_open2(char const * restrict path,
+                    int32_t flags,
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+int32_t _safe_open3(char const * restrict path,
+                    int32_t flags,
+                    int32_t mode,
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+int64_t _safe_read(int32_t fd,
+                   void *  buf,
+                   size_t  count,
+                   char const * restrict fn,
+                   char const * restrict func,
+                   int32_t ln);
+int64_t _safe_write(int32_t fd,
+                    void const * restrict buf,
+                    size_t count,
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+int32_t _safe_stat(char const * restrict path,
+                   struct stat * restrict buf,
+                   char const * restrict fn,
+                   char const * restrict func,
+                   int32_t ln);
+int32_t _safe_fstat(int32_t fd,
+                    struct stat * restrict buf,
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+int32_t _safe_access(char const * restrict path,
+                     int32_t mode,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     int32_t ln);
+int32_t _safe_close(int32_t fd,
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+int32_t _check_open2(char const * restrict path,
+                     int32_t flags,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     int32_t ln,
+                     char const * restrict msg,
+                     ...);
+int32_t _check_open3(char const * restrict path,
+                     int32_t flags,
+                     int32_t mode,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     int32_t ln,
+                     char const * restrict msg,
+                     ...);
 
-int _check_open2(const char * path,
-                 int          flags,
-                 const char * fn,
-                 const char * func,
-                 int          ln,
-                 const char * msg,
-                 ...);
-int _check_open3(const char * path,
-                 int          flags,
-                 int          mode,
-                 const char * fn,
-                 const char * func,
-                 int          ln,
-                 const char * msg,
-                 ...);
+int32_t _check_access(char const * restrict path,
+                      int32_t mode,
+                      char const * restrict fn,
+                      char const * restrict func,
+                      int32_t ln,
+                      char const * restrict msg,
+                      ...);
 
-int _check_access(const char * path,
-                  int          mode,
-                  const char * fn,
-                  const char * func,
-                  int          ln,
-                  const char * msg,
-                  ...);
+FILE *  _safe_fopen(char const * restrict path,
+                    char const * restrict mode,
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+FILE *  _safe_fdopen(int32_t fd,
+                     char const * restrict mode,
+                     char const * restrict fn,
 
-FILE * _safe_fopen(const char * restrict path,
-                   const char * restrict mode,
-                   const char * fn,
-                   const char * func,
-                   int          ln);
-FILE * _safe_fdopen(int          fd,
-                    const char * mode,
-                    const char * fn,
-
-                    const char * func,
-                    int          ln);
-size_t _safe_fread(void * restrict ptr,
-                   size_t size,
-                   size_t nmemb,
-                   FILE * restrict stream,
-                   const char * fn,
-                   const char * func,
-                   int          ln);
-size_t _safe_fwrite(const void * restrict ptr,
+                     char const * restrict func,
+                     int32_t ln);
+size_t  _safe_fread(void * restrict ptr,
                     size_t size,
                     size_t nmemb,
                     FILE * restrict stream,
-                    const char * fn,
-                    const char * func,
-                    int          ln);
-FILE * _check_fopen(const char * restrict path,
-                    const char * restrict mode,
-                    const char * fn,
-                    const char * func,
-                    int          ln,
-                    const char * msg,
-                    ...);
-int    _safe_fclose(FILE * restrict stream,
-                    const char * fn,
-                    const char * func,
-                    int          ln);
+                    char const * restrict fn,
+                    char const * restrict func,
+                    int32_t ln);
+size_t  _safe_fwrite(const void * restrict ptr,
+                     size_t size,
+                     size_t nmemb,
+                     FILE * restrict stream,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     int32_t ln);
+FILE *  _check_fopen(char const * restrict path,
+                     char const * restrict mode,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     int32_t ln,
+                     char const * restrict msg,
+                     ...);
+int32_t _safe_fclose(FILE * restrict stream,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     int32_t ln);
 
 
 #endif

@@ -25,7 +25,6 @@ bench_random(uint32_t trials) {
         trials = 1000 * 1000;
     }
 
-
     run_bench(names[0], times[0], rand64);
 
     print_res(names[0], times[0], trials, get_ll_units());

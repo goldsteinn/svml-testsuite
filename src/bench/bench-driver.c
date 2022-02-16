@@ -42,7 +42,7 @@ main(int argc, char ** argv) {
     die_assert(!doParse(&argp, argc, argv), "Error parsing arguments\n");
     set_verbosity(verbosity);
 
-    if (list_all) {
+    if (list_all || (!run_all && benchmark_names.n == 0)) {
         list_decls(&benchmarks);
     }
     else {
