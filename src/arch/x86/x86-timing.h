@@ -7,6 +7,8 @@
 #include "util/common.h"
 #include "util/types.h"
 
+#include "arch/ll-syscall.h"
+
 typedef uint64_t ll_time_t;
 
 static ALWAYS_INLINE ll_time_t

@@ -5,6 +5,7 @@
 
 #include "util/attrs.h"
 #include "util/types.h"
+#include "util/vdso-util.h"
 
 #include "arch/ll-timing.h"
 
@@ -74,14 +75,32 @@ NONNULL(1, 2) double dif_ms_dbl(struct timespec * ts0, struct timespec * ts1) {
 }
 
 static ALWAYS_INLINE
+NONNULL(2) void _gettime(clockid_t clk, struct timespec * ts) {
+    _syscall_cc(SYS_clock_gettime, (clk, ts), /* No +m */, /* No m */,
+                ((struct timespec(*)[1])ts));
+}
+
+static ALWAYS_INLINE
 NONNULL(1) void gettime(struct timespec * ts) {
     clock_gettime(CLOCK_THREAD_CPUTIME_ID, ts);
+}
+
+static ALWAYS_INLINE
+NONNULL(1) void vdso_gettime(struct timespec * ts) {
+    vdso_clock_gettime(CLOCK_THREAD_CPUTIME_ID, ts);
 }
 
 static ALWAYS_INLINE uint64_t
 get_ns() {
     struct timespec ts;
     gettime(&ts);
+    return to_ns(&ts);
+}
+
+static ALWAYS_INLINE uint64_t
+vdso_get_ns() {
+    struct timespec ts;
+    vdso_gettime(&ts);
     return to_ns(&ts);
 }
 

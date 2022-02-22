@@ -7,7 +7,8 @@
 #include "arch/x86/x86-syscall.h"
 #else
 #include <unistd.h>
-#define _syscall syscall
+#define _syscall            syscall
+#define _syscall_cc(x, ...) _syscall(DEPAREN(x))
 #endif
 
 

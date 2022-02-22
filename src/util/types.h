@@ -28,9 +28,9 @@ typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
 
 typedef uint64_t ptr_int_t;
 
-
-#define CAST(x, y)        ((x)(y))
-#define AGU(base, offset) (CAST(ptr_int_t, base) + CAST(ptr_int_t, idx))
+#define CAST_TO_FUNC(func, x) ((__typeof__(&(func)))(x))
+#define CAST(x, y)            ((x)(y))
+#define AGU(base, offset)     (CAST(ptr_int_t, base) + CAST(ptr_int_t, idx))
 
 #ifdef __cplusplus
 #include <type_traits>
@@ -52,5 +52,6 @@ typedef uint64_t ptr_int_t;
     __builtin_types_compatible_p(get_type(x), get_type(y))
 #define is_same_func_type(decl, func)                                          \
     __builtin_types_compatible_p(get_type(decl), get_type(&(func)))
+
 
 #endif

@@ -4,11 +4,11 @@
 #include "util/macro.h"
 
 #define run_bench(res_name, res_time, func)                                    \
-    start = get_ll_time();                                                     \
+    start = get_ns();                                                     \
     for (i = trials; i; --i) {                                                 \
         compiler_do_not_optimize_out(func(i));                                 \
     }                                                                          \
-    end      = get_ll_time();                                                  \
+    end      = get_ns();                                                  \
     res_name = V_TO_STR(func);                                                 \
     res_time = get_ll_dif(end, start);
 

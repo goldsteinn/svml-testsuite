@@ -6,6 +6,7 @@
 
 #include "util/error-util.h"
 
+#include "arch/ll-getcpu.h"
 #include "arch/ll-syscall.h"
 
 #include "thread/cpuset.h"
@@ -25,7 +26,7 @@
 
 static uint32_t
 get_cpu() {
-    return sched_getcpu();
+    return _get_cpu();
 }
 
 static void
