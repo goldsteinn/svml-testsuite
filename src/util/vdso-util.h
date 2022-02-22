@@ -21,10 +21,14 @@ uint64_t CONST_FUNC get_vdso_expec_mask();
 uint64_t            vdso_init();
 int32_t             safe_vdso_init();
 
+static FUNC_T(clock_gettime)
+get_vdso_clock_gettime() {
+    return vdso_funcs[vdso_clock_gettime_offset];
+}
+
 static int32_t
 NONNULL(2) vdso_clock_gettime(clockid_t clockid, struct timespec * ts) {
-    return (CAST_TO_FUNC(clock_gettime,
-                         vdso_funcs[vdso_clock_gettime_offset]))(clockid, ts);
+    return get_vdso_clock_gettime()(clockid, ts);
 }
 
 static int32_t
@@ -43,6 +47,8 @@ static time_t
 NONNULL(1) vdso_time(time_t * tloc) {
     return CAST_TO_FUNC(time, vdso_funcs[vdso_time_offset])(tloc);
 }
+
+
 
 
 #endif

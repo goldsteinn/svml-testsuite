@@ -1,8 +1,7 @@
 #ifndef _SRC__BENCH__BENCH_COMMON_H_
 #define _SRC__BENCH__BENCH_COMMON_H_
 
-#include "bench/timing.h"
-
+#include "util/time-util.h"
 #include "util/attrs.h"
 #include "util/common.h"
 #include "util/types.h"

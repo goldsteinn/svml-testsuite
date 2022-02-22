@@ -29,6 +29,7 @@ typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
 typedef uint64_t ptr_int_t;
 
 #define CAST_TO_FUNC(func, x) ((__typeof__(&(func)))(x))
+#define FUNC_T(func)          __typeof__(&(func))
 #define CAST(x, y)            ((x)(y))
 #define AGU(base, offset)     (CAST(ptr_int_t, base) + CAST(ptr_int_t, idx))
 

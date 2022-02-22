@@ -3,8 +3,10 @@
 #include "util/error-util.h"
 #include "util/vdso-util.h"
 
+#include "util/internal/timers.h"
 
-void const * vdso_funcs[] = { CAST(void const *, &clock_gettime),
+
+void const * vdso_funcs[] = { CAST(void const *, &_clock_gettime),
                               CAST(void const *, &gettimeofday),
                               CAST(void const *, &getcpu),
                               CAST(void const *, &time) };
@@ -25,6 +27,7 @@ get_vdso_expec_mask() {
     die("Unsupported arch!");
 #endif
 }
+
 
 static uint64_t
 set_vdso_func(void const * fptr, size_t offset) {

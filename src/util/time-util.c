@@ -1,4 +1,4 @@
-#include "bench/timing.h"
+#include "util/time-util.h"
 
 
 void
@@ -14,6 +14,6 @@ print_res(const char * desc,
         _units = units;
     }
 
-    printf("%-16s -> %10.3lf %s\n", _desc,
+    printf("%-24s -> %10.3lf %s\n", _desc,
            CAST(double, time) / CAST(double, trials), _units);
 }
