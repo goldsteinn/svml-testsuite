@@ -11,18 +11,16 @@
 
 #include "thread/cpuset.h"
 
-#define setcpu(pid, cpu) _setcpu(pid, cpu, __FILENAME__, __func__, __LINE__)
-#define setcpu_aff(pid, mask)                                                  \
-    _setcpu_aff(pid, sizeof(cpuset_t), mask, __FILENAME__, __func__, __LINE__)
-#define getcpu_aff(pid, mask)                                                  \
-    _setcpu_aff(pid, sizeof(cpuset_t), mask, __FILENAME__, __func__, __LINE__)
+#define setcpu(pid, cpu)      _setcpu(pid, cpu, ERR_ARGS)
+#define setcpu_aff(pid, mask) _setcpu_aff(pid, sizeof(cpuset_t), mask, ERR_ARGS)
+#define getcpu_aff(pid, mask) _setcpu_aff(pid, sizeof(cpuset_t), mask, ERR_ARGS)
 
 #define proc_setcpu(cpu)      setcpu(0, cpu)
 #define proc_setcpu_aff(mask) setcpu_aff(0, mask)
 #define proc_getcpu_aff(mask) getcpu_aff(0, mask)
 
-#define safe_get_cpu() _safe_get_cpu(__FILENAME__, __func__, __LINE__)
-#define safe_yield()   _safe_yield(__FILENAME__, __func__, __LINE__)
+#define safe_get_cpu() _safe_get_cpu(ERR_ARGS)
+#define safe_yield()   _safe_yield(ERR_ARGS)
 
 static uint32_t
 get_cpu() {
@@ -31,7 +29,8 @@ get_cpu() {
 
 static void
 yield() {
-    _syscall(SYS_sched_yield);
+    _syscall_cc(SYS_sched_yield, /* None */, /* None */, /* None */,
+                /* None */);
 }
 
 void NONNULL(1, 2)

@@ -44,16 +44,14 @@
         die(NULL);                                                             \
     }
 
-#define die(msg, args...) _die(__FILENAME__, __func__, __LINE__, msg, ##args);
-#define errdie(msg, args...)                                                   \
-    _errdie(__FILENAME__, __func__, __LINE__, errno, msg, ##args);
+#define die(msg, args...)    _die(ERR_ARGS, msg, ##args);
+#define errdie(msg, args...) _errdie(ERR_ARGS, errno, msg, ##args);
 
 //#define WITH_DBG_PRINT
 #ifdef WITH_DBG_PRINT
 #define dbg_assert(...) die_assert(__VA_ARGS__)
 #define dbg_print(...)  fprintf(stderr, __VA_ARGS__)
-#define PRINTFFL                                                               \
-    fprintf(stderr, "%-20s:%-20s:%-4d\n", __FILENAME__, __func__, __LINE__)
+#define PRINTFFL        fprintf(stderr, "%-20s:%-20s:%-4d\n", ERR_ARGS)
 #else
 #define dbg_print(...)
 #define dbg_assert(...)

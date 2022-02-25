@@ -12,22 +12,20 @@
 
 #define PAGE_SIZE 4096
 
-#define safe_calloc(n, sz) _safe_calloc(n, sz, __FILENAME__, __func__, __LINE__)
-#define safe_realloc(p, sz)                                                    \
-    _safe_realloc(p, sz, __FILENAME__, __func__, __LINE__)
+#define safe_calloc(n, sz)  _safe_calloc(n, sz, ERR_ARGS)
+#define safe_realloc(p, sz) _safe_realloc(p, sz, ERR_ARGS)
 #define safe_srealloc(p, sz_old, sz_new)                                       \
-    _safe_srealloc(p, sz_old, sz_new, __FILENAME__, __func__, __LINE__)
-#define safe_malloc(sz) _safe_malloc(sz, __FILENAME__, __func__, __LINE__)
+    _safe_srealloc(p, sz_old, sz_new, ERR_ARGS)
+#define safe_malloc(sz) _safe_malloc(sz, ERR_ARGS)
 #define safe_mmap(addr, sz, prot_flags, mmap_flags, fd, offset)                \
     _safe_mmap(addr, sz, prot_flags, mmap_flags, fd, offset, __FILENAME__,     \
                __func__, __LINE__)
 #define safe_mmap_alloc(sz)                                                    \
     safe_mmap(NULL, sz, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS,   \
               -1, 0)
-#define safe_munmap(addr, sz)                                                  \
-    _safe_munmap(addr, sz, __FILENAME__, __func__, __LINE__)
+#define safe_munmap(addr, sz) _safe_munmap(addr, sz, ERR_ARGS)
 #define safe_mprotect(addr, sz, prot_flags)                                    \
-    _safe_mprotect(addr, sz, prot_flags, __FILENAME__, __func__, __LINE__)
+    _safe_mprotect(addr, sz, prot_flags, ERR_ARGS)
 
 #define safe_free(addr)  _safe_free(addr)
 #define safe_sfree(addr) _safe_sfree(addr)
