@@ -13,23 +13,6 @@ void const * vdso_funcs[] = { CAST(void const *, &_clock_gettime),
 
 
 static uint64_t
-get_x86_vdso_expec_mask() {
-    return (1UL << vdso_clock_gettime_offset) |
-           (1UL << vdso_gettimeofday_offset) | (1UL << vdso_getcpu_offset) |
-           (1UL << vdso_time_offset);
-}
-
-uint64_t
-get_vdso_expec_mask() {
-#if __x86_64__
-    return get_x86_vdso_expec_mask();
-#else
-    die("Unsupported arch!");
-#endif
-}
-
-
-static uint64_t
 set_vdso_func(void const * fptr, size_t offset) {
     if (fptr) {
         vdso_funcs[offset] = fptr;
@@ -44,10 +27,17 @@ safe_vdso_init() {
     err_assert(ret != -1UL, "%s\n", dlerror());
 
     if (ret != get_vdso_expec_mask()) {
-        return -1;
+        return ret;
     }
 
     return 0;
+}
+
+void
+safe_vdso_init_all() {
+    uint64_t ret = vdso_init();
+    err_assert(ret != -1UL, "%s\n", dlerror());
+    die_assert(ret == get_vdso_expec_mask(), "Only partially initialized\n");
 }
 
 uint64_t

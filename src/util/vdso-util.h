@@ -8,25 +8,21 @@
 #include "util/attrs.h"
 #include "util/types.h"
 
+#include "util/vdso-arch-masks.h"
+#include "util/vdso-func-enum.h"
+
 extern void const * vdso_funcs[];
 
-enum {
-    vdso_clock_gettime_offset = 0,
-    vdso_gettimeofday_offset  = 1,
-    vdso_getcpu_offset        = 2,
-    vdso_time_offset          = 3
-};
+int32_t  safe_vdso_init();
+void     safe_vdso_init_all();
+uint64_t vdso_init();
 
-uint64_t CONST_FUNC get_vdso_expec_mask();
-uint64_t            vdso_init();
-int32_t             safe_vdso_init();
-
-static FUNC_T(clock_gettime)
-get_vdso_clock_gettime() {
+static ALWAYS_INLINE
+FUNC_T(clock_gettime) get_vdso_clock_gettime() {
     return vdso_funcs[vdso_clock_gettime_offset];
 }
 
-static int32_t
+static ALWAYS_INLINE int32_t
 NONNULL(2) vdso_clock_gettime(clockid_t clockid, struct timespec * ts) {
     return get_vdso_clock_gettime()(clockid, ts);
 }
@@ -47,8 +43,6 @@ static time_t
 NONNULL(1) vdso_time(time_t * tloc) {
     return CAST_TO_FUNC(time, vdso_funcs[vdso_time_offset])(tloc);
 }
-
-
 
 
 #endif
