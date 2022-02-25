@@ -79,18 +79,22 @@
     _x86_internal_syscall(_x86_internal_pin_regN(N, __VA_ARGS__),              \
                           CAT(_x86_internal_reg, N))
 
-#define _x86_internal_syscallN_cc(N, sys_num, vars, rw_clobbers, rd_clobbers,  \
+#define _x86_internal_syscallN_cc(N, vars, rw_clobbers, rd_clobbers,           \
                                   w_clobbers)                                  \
-    _x86_internal_syscall_cc(                                                  \
-        _x86_internal_pin_regN(N, sys_num, DEPAREN(vars)),                     \
-        (CAT(_x86_internal_reg, N)), rw_clobbers, rd_clobbers, w_clobbers)
+    _x86_internal_syscall_cc(_x86_internal_pin_regN(N, DEPAREN(vars)),         \
+                             (CAT(_x86_internal_reg, N)), rw_clobbers,         \
+                             rd_clobbers, w_clobbers)
 
 #define _syscall(...) _x86_internal_syscallN(PP_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define _syscall_cc_combined(vars, rw_mem, rd_mem, w_mem)                      \
+    _x86_internal_syscallN_cc(                                                 \
+        PP_NARG(DEPAREN(vars)), vars, x86_add_rw_clobbers(rw_mem),             \
+        x86_add_rd_clobbers(rd_mem), x86_add_w_clobbers(w_mem))
+
 #define _syscall_cc(sys_num, vars, rw_mem, rd_mem, w_mem)                      \
-    _x86_internal_syscallN_cc(PP_NARG(sys_num, DEPAREN(vars)), sys_num, vars,  \
-                              x86_add_rw_clobbers(rw_mem),                     \
-                              x86_add_rd_clobbers(rd_mem),                     \
-                              x86_add_w_clobbers(w_mem))
+    _syscall_cc_combined((ADD_ARG_FRONT(sys_num, DEPAREN(vars))), rw_mem,      \
+                         rd_mem, w_mem)
 
 
 #endif

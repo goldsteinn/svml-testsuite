@@ -18,6 +18,7 @@
     (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1   \
                                       : __FILE__)
 #endif
+#define ERR_ARGS __FILENAME__, __func__, __LINE__
 //////////////////////////////////////////////////////////////////////
 #define PRIMITIVE_CAT(x, y) x##y
 #define CAT(x, y)           PRIMITIVE_CAT(x, y)
@@ -407,7 +408,9 @@
 #define DEPAREN(...)                                                           \
     DEPAREN_EVALUATING_PASTE(DEPAREN_NOTHING_, DEPAREN_EXTRACT __VA_ARGS__)
 
-
+#define _ADD_ARG0(...) __VA_ARGS__
+#define _ADD_ARG1(x, ...) x
+#define ADD_ARG_FRONT(x, ...) CAT(_ADD_ARG, IS_EMPTY(__VA_ARGS__))(x, __VA_ARGS__)
 
 #define FORWARD(...) __VA_ARGS__
 
