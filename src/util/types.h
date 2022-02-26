@@ -28,14 +28,21 @@ typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
 
 typedef uint64_t ptr_int_t;
 
+#ifndef __cplusplus
+typedef int bool;
+static const bool false = 0;
+static const bool true  = !false;
+#endif
+
 #define CAST_TO_FUNC(func, x) ((__typeof__(&(func)))(x))
 #define FUNC_T(func)          __typeof__(&(func))
 #define CAST(x, y)            ((x)(y))
-#define AGU(base, offset)     (CAST(ptr_int_t, base) + CAST(ptr_int_t, idx))
+#define AGU(base, offset)     (CAST(ptr_int_t, base) + CAST(ptr_int_t, offset))
+#define AGU_T(base, offset)   CAST(get_type(base), AGU(base, offset))
 
 #ifdef __cplusplus
 #include <type_traits>
-#define UNSIGNED(x) std::make_unsigned<typeof(x)>::type
+#define UNSIGNED(x) std::make_unsigned<get_type(x)>::type
 #else
 #define UNSIGNED(x)                                                            \
     _Generic((x), char                                                         \

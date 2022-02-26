@@ -8,6 +8,7 @@
 #include "lib/commonlib.h"
 #include "util/attrs.h"
 #include "util/types.h"
+#include "util/portability.h"
 
 #define ALWAYS_INLINE inline __attribute__((always_inline))
 #define NEVER_INLINE  __attribute__((noinline))

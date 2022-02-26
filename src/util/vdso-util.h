@@ -19,7 +19,7 @@ uint64_t vdso_init();
 
 static ALWAYS_INLINE
 FUNC_T(clock_gettime) get_vdso_clock_gettime() {
-    return vdso_funcs[vdso_clock_gettime_offset];
+    return CAST_TO_FUNC(clock_gettime, vdso_funcs[vdso_clock_gettime_offset]);
 }
 
 static ALWAYS_INLINE int32_t

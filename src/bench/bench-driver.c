@@ -41,7 +41,6 @@ int
 main(int argc, char ** argv) {
     die_assert(!doParse(&argp, argc, argv), "Error parsing arguments\n");
     set_verbosity(verbosity);
-
     if (list_all || (!run_all && benchmark_names.n == 0)) {
         list_decls(&benchmarks);
     }
@@ -50,4 +49,5 @@ main(int argc, char ** argv) {
         run_decls(&benchmarks, run_all ? NULL : benchmark_names.ptrs,
                   benchmark_names.n, &run_benchmark);
     }
+    return 0;
 }

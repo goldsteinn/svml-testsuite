@@ -1,6 +1,28 @@
 cmake_minimum_required(VERSION 3.1.3)
-project(MATMUL C ASM)
+project(Project_Template C CXX ASM)
 
+set(LANG "C" CACHE STRING "Set Language (CXX or C")
+set_property(CACHE LANG
+  PROPERTY STRINGS "C" "CXX")
+
+
+set(cxx_lang "CXX" "C++" "CPP" "CC" "cxx" "c++" "cpp" "cc")
+set(c_lang "C" "c")
+
+
+list(FIND cxx_lang ${LANG} cxx_lang)
+list(FIND c_lang ${LANG} c_lang)
+if(${cxx_lang} GREATER -1)
+  set(LANG "CXX")
+  set(STD "c++11")
+  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type")
+elseif(${c_lang} GREATER -1)
+  set(LANG "C")
+  set(STD "gnu11")
+  set(LANG_FLAGS "")
+else()
+  message(FATAL_ERROR "Invalid language selection: ${LANG}")
+endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
@@ -10,7 +32,7 @@ set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
 
-add_compile_options(-D_GNU_SOURCE -O2 -Wstrict-aliasing=3 -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -Wno-gnu-zero-variadic-macro-arguments -march=native -mtune=native -std=gnu11)
+add_compile_options(-D_GNU_SOURCE -O2 -Wstrict-aliasing=3 -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -march=native -mtune=native -std=${STD} ${LANG_FLAGS})
 
 set(link_libraries  "")
 list(APPEND link_libraries "-ldl")
@@ -23,6 +45,8 @@ set(EXE "driver")
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}")
 file(GLOB_RECURSE C_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.c")
+set_source_files_properties(${C_SOURCES} PROPERTIES LANGUAGE ${LANG})
+
 set(ALL_C_SOURCES ${C_SOURCES})
 list(REMOVE_ITEM C_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/${EXE_SRC}")
 
@@ -67,17 +91,17 @@ add_custom_target(
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})
 target_link_libraries(driver ${link_libraries})
-
+set_target_properties(driver PROPERTIES LINKER_LANGUAGE ${LANG})
 
 add_executable(tests ${TEST_EXE_SRC} ${TEST_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
 target_link_libraries(tests ${test_and_bench_libraries})
 set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL TRUE)
-
+set_target_properties(tests PROPERTIES LINKER_LANGUAGE ${LANG})
 
 add_executable(bench ${BENCH_EXE_SRC} ${BENCH_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
 target_link_libraries(bench ${test_and_bench_libraries})
 set_target_properties(bench PROPERTIES EXCLUDE_FROM_ALL TRUE)
-
+set_target_properties(bench PROPERTIES LINKER_LANGUAGE ${LANG})
 
 add_custom_target(full)
 add_dependencies(full driver tests bench)

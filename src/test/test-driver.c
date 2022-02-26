@@ -49,4 +49,6 @@ main(int argc, char ** argv) {
         run_decls(&tests, run_all ? NULL : test_names.ptrs, test_names.n,
                   &run_test);
     }
+
+    return 0;
 }

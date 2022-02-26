@@ -16,10 +16,6 @@
 
 #include "lib/commonlib.h"
 
-typedef uint32_t bool;
-static const bool false = 0;
-static const bool true  = !false;
-
 static int32_t      argp_verbose = 0;
 static char *       commandLine;
 static const char * pname;

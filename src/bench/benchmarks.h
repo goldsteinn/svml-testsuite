@@ -6,5 +6,4 @@
 #include "util/func-decl-types.h"
 
 extern const decl_list_t benchmarks;
-
 #endif
