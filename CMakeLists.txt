@@ -18,7 +18,7 @@ if(${cxx_lang} GREATER -1)
   set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type")
 elseif(${c_lang} GREATER -1)
   set(LANG "C")
-  set(STD "gnu11")
+  set(STD "c11")
   set(LANG_FLAGS "")
 else()
   message(FATAL_ERROR "Invalid language selection: ${LANG}")
@@ -26,13 +26,22 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
+#set(CMAKE_C_COMPILER "/usr/bin/gcc")
+#set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 
 set(SRC_DIR "src")
 set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
 
-add_compile_options(-D_GNU_SOURCE -O2 -Wstrict-aliasing=3 -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -march=native -mtune=native -std=${STD} ${LANG_FLAGS})
+set(attrs "pure" "const" "noreturn" "format" "cold" "malloc")
+set(wattrs)
+foreach(attr ${attrs})
+  list(APPEND wattrs "-Wsuggest-attribute=${attr}")
+endforeach()
+
+
+add_compile_options(-D_GNU_SOURCE -O2 -Wstrict-aliasing -Wstrict-overflow  -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -march=native -mtune=native -std=${STD} ${LANG_FLAGS})
 
 set(link_libraries  "")
 list(APPEND link_libraries "-ldl")
