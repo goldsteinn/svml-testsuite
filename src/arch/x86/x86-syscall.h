@@ -7,10 +7,10 @@
 #define _x86_internal_syscall(reg_setup, reg_decls...)                         \
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
-        asm volatile("syscall"                                                 \
-                     : "+r"(_rax)                                              \
-                     : reg_decls                                               \
-                     : "memory", "r11", "rcx");                                \
+        __asm__ volatile("syscall"                                             \
+                         : "+r"(_rax)                                          \
+                         : reg_decls                                           \
+                         : "memory", "r11", "rcx");                            \
         _rax;                                                                  \
     })
 
@@ -18,10 +18,10 @@
                                  rd_clobbers, w_clobbers)                      \
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
-        asm volatile("syscall"                                                 \
-                     : "+r"(_rax)DEPAREN(rw_clobbers) DEPAREN(w_clobbers)      \
-                     : DEPAREN(reg_decls) DEPAREN(rd_clobbers)                 \
-                     : "r11", "rcx");                                          \
+        __asm__ volatile("syscall"                                             \
+                         : "+r"(_rax)DEPAREN(rw_clobbers) DEPAREN(w_clobbers)  \
+                         : DEPAREN(reg_decls) DEPAREN(rd_clobbers)             \
+                         : "r11", "rcx");                                      \
         _rax;                                                                  \
     })
 

@@ -12,9 +12,9 @@ static int32_t    list_all   = 0;
 static int32_t    run_all    = 0;
 static arg_rest_t test_names = INIT_ARG_REST_T;
 
-// clang-format off
+/* clang-format off */
 static ArgOption args[] = {
-    //  Kind,           Method,		name,	    reqd,   variable,           help
+    /*  Kind,           Method,		name,	    reqd,   variable,           help */
   {     KindOption,     Integer,	"-v", 		0,      &verbosity,         "Turn on verbosity" },
   {     KindOption,     Set,		"--list",	0,      &list_all,          "List all tests" },
   {     KindOption,     Set,		"--all",    0,      &run_all,           "Run all tests" },
@@ -22,7 +22,7 @@ static ArgOption args[] = {
   {     KindRest,       Rest,		"",         0,      &test_names,        "Tests to run. Just include at end" },
   {     KindEnd,        EndOptions, "",         0,      NULL,               ""  }
 };
-// clang-format on
+/* clang-format on */
 
 static ArgDefs argp = { args, "Test Driver", NULL, NULL };
 

@@ -41,7 +41,7 @@ seq_buf(uint8_t * buf, uint64_t sz) {
 }
 
 int32_t
-is_seq(uint8_t * buf, uint64_t sz) {
+is_seq(uint8_t const * buf, uint64_t sz) {
     for (uint64_t i = 0; i < sz; ++i) {
         uint8_t bufi = buf[i];
         if (bufi != CAST(uint8_t, i)) {

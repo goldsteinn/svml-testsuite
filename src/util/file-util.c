@@ -37,8 +37,8 @@ _safe_open3(char const * restrict path,
 }
 int64_t
 _safe_read(int32_t fd,
-           void *  buf,
-           size_t  count,
+           void * restrict buf,
+           size_t count,
            char const * restrict fn,
            char const * restrict func,
            int32_t ln) {

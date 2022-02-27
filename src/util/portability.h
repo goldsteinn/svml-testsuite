@@ -11,7 +11,6 @@
 #warning "Untested and likely unsupported compiler"
 #endif
 
-
 #ifdef __cplusplus
 #define restrict
 #define _static_assert static_assert

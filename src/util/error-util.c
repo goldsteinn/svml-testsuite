@@ -1,6 +1,6 @@
 #include "util/error-util.h"
 
-EXIT_FUNC void
+void
 _va_errdie(char const * restrict file_name,
            char const * restrict func_name,
            uint32_t line_number,
@@ -10,14 +10,15 @@ _va_errdie(char const * restrict file_name,
     fprintf(stderr, "%s:%s:%d: [%d] -> %s\n", file_name, func_name, line_number,
             error_number, strerror(error_number));
     if (msg) {
-        vfprintf(stderr,  // NOLINT
-                 msg,     // NOLINT
-                 ap);     // NOLINT /* This warning is a clang-tidy bug */
+        /* va_list warning is a clang-tidy bug */
+        vfprintf(stderr, /* NOLINT */
+                 msg,    /* NOLINT */
+                 ap);    /* NOLINT */
     }
     abort();
 }
 
-EXIT_FUNC void
+void
 _errdie(char const * restrict file_name,
         char const * restrict func_name,
         uint32_t line_number,
@@ -29,15 +30,16 @@ _errdie(char const * restrict file_name,
     va_list ap;
     if (msg) {
         va_start(ap, msg);
-        vfprintf(stderr,  // NOLINT
-                 msg,     // NOLINT
-                 ap);     // NOLINT /* This warning is a clang-tidy bug */
+        /* va_list warning is a clang-tidy bug */
+        vfprintf(stderr, /* NOLINT */
+                 msg,    /* NOLINT */
+                 ap);    /* NOLINT */
         va_end(ap);
     }
     abort();
 }
 
-EXIT_FUNC void
+void
 _die(char const * restrict file_name,
      char const * restrict func_name,
      uint32_t line_number,
@@ -47,22 +49,24 @@ _die(char const * restrict file_name,
     va_list ap;
     if (msg) {
         va_start(ap, msg);
-        vfprintf(stderr,  // NOLINT
-                 msg,     // NOLINT
-                 ap);     // NOLINT /* This warning is a clang-tidy bug */
+        /* va_list warning is a clang-tidy bug */
+        vfprintf(stderr, /* NOLINT */
+                 msg,    /* NOLINT */
+                 ap);    /* NOLINT */
         va_end(ap);
     }
     abort();
 }
 
-EXIT_FUNC void
+void
 _msg_die(char const * restrict msg, ...) {
     va_list ap;
     if (msg) {
         va_start(ap, msg);
-        vfprintf(stderr,  // NOLINT
-                 msg,     // NOLINT
-                 ap);     // NOLINT /* This warning is a clang-tidy bug */
+        /* va_list warning is a clang-tidy bug */
+        vfprintf(stderr, /* NOLINT */
+                 msg,    /* NOLINT */
+                 ap);    /* NOLINT */
         va_end(ap);
     }
     abort();

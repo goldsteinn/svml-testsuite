@@ -13,5 +13,5 @@
     __attribute__((noclone, noinline, cold, noreturn))
 
 #define NONNULL(...) __attribute__((nonnull(__VA_ARGS__)))
-
+#define FORMATF(...) __attribute__((format(printf, ##__VA_ARGS__)))
 #endif

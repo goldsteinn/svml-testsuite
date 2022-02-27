@@ -10,7 +10,7 @@ MALLOC_FUNC uint8_t * make_buf(uint64_t sz);
 NONNULL(1) void free_buf(uint8_t * buf, uint64_t sz);
 NONNULL(1) void randomize_buf(uint8_t * buf, uint64_t sz);
 NONNULL(1) void seq_buf(uint8_t * buf, uint64_t sz);
-NONNULL(1) int32_t is_seq(uint8_t * buf, uint64_t sz);
+NONNULL(1) PURE_FUNC int32_t is_seq(uint8_t const * buf, uint64_t sz);
 
 #define test_assert(...)                                                       \
     CAT(test_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
