@@ -4,6 +4,7 @@
 
 #include "util/common.h"
 
+#include "arch/ll-intrin.h"
 
 #define ROUNDUP(x, y)   ((y) * (((x) + ((y)-1)) / (y)))
 #define ROUNDDOWN(x, y) ((y) * ((x) / (y)))
@@ -14,7 +15,22 @@
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 
-#define is_p2(x) (!((x) & ((x)-1)))
+#define is_p2(x)     (!((x) & ((x)-1)))
+#define p2_factor(x) ((x) & (~((x)-1)))
+
+#define clz(x)                                                                 \
+    _choose_const_expr(                                                        \
+        sizeof(x) == sizeof(long long), ll_clzll(x),                           \
+        _choose_const_expr(sizeof(x) == sizeof(long), ll_clzl(x), ll_clz(x)))
+
+#define ctz(x)                                                                 \
+    _choose_const_expr(                                                        \
+        sizeof(x) == sizeof(long long), ll_ctzll(x),                           \
+        _choose_const_expr(sizeof(x) == sizeof(long), ll_ctzl(x), ll_ctz(x)))
+
+#define log2_ru(x) (sizeof_bits(get_type(x)) - clz((x)-1))
+#define log2_rd(x) ((sizeof_bits(get_type(x)) - 1) - clz(x))
+
 #define next_p2(x)                                                             \
     ({                                                                         \
         get_type(x) _tmp_evaluated_x = (x);                                    \
@@ -40,18 +56,10 @@
             if (UNLIKELY(_next_p2_tmp_ <= 2)) {                                \
                 ;                                                              \
             }                                                                  \
-            else if (sizeof(_tmp_evaluated_x) == sizeof(long long)) {          \
-                _next_p2_tmp_ = (2UL << ((8 * sizeof(long long) - 1) -         \
-                                         __builtin_clzll(_next_p2_tmp_ - 1))); \
-            }                                                                  \
-            else if (sizeof(_tmp_evaluated_x) == sizeof(long)) {               \
-                _next_p2_tmp_ = (2UL << ((8 * sizeof(long) - 1) -              \
-                                         __builtin_clzl(_next_p2_tmp_ - 1)));  \
-            }                                                                  \
             else {                                                             \
                 _next_p2_tmp_ =                                                \
-                    CAST(uint32_t,                                             \
-                         (2UL << (31 - __builtin_clz(_next_p2_tmp_ - 1))));    \
+                    (CAST(get_type(x), 2) << ((sizeof_bits(get_type(x)) - 1) - \
+                                              clz(_next_p2_tmp_ - 1)));        \
             }                                                                  \
         }                                                                      \
         _next_p2_tmp_;                                                         \
@@ -78,19 +86,9 @@
             _prev_p2_tmp_ -= (_prev_p2_tmp_ >> 1);                             \
         }                                                                      \
         else {                                                                 \
-            if (sizeof(_tmp_evaluated_x) == sizeof(long long)) {               \
-                _prev_p2_tmp_ &= (1UL << ((8 * sizeof(long long) - 1) -        \
-                                          __builtin_clzll(_prev_p2_tmp_)));    \
-            }                                                                  \
-            else if (sizeof(_tmp_evaluated_x) == sizeof(long)) {               \
-                _prev_p2_tmp_ &= (1UL << ((8 * sizeof(long) - 1) -             \
-                                          __builtin_clzl(_prev_p2_tmp_)));     \
-            }                                                                  \
-            else {                                                             \
-                _prev_p2_tmp_ &=                                               \
-                    (1UL << (31 -                                              \
-                             __builtin_clz(CAST(uint32_t, _prev_p2_tmp_))));   \
-            }                                                                  \
+            _prev_p2_tmp_ &=                                                   \
+                (CAST(get_type(x), 1)                                          \
+                 << ((sizeof_bits(get_type(x)) - 1) - clz(_prev_p2_tmp_)));    \
         }                                                                      \
         _prev_p2_tmp_;                                                         \
     })

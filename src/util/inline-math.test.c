@@ -7,10 +7,27 @@
 #include "test/test-common.h"
 
 
+/********************************************************************/
+/* Static tests. */
+_static_assert(p2_factor(24) == 8);
+_static_assert(p2_factor(1) == 1);
+_static_assert(p2_factor(8) == 8);
+_static_assert(p2_factor(2) == 2);
+
+_static_assert(is_p2(0));
+_static_assert(is_p2(1));
+_static_assert(is_p2(1U << 31));
+_static_assert(is_p2(1UL << 63));
+
+_static_assert(!is_p2(-1));
+_static_assert(!is_p2(3));
+
+
 #define testeq(impl, ref, val)                                                 \
     res   = impl(val);                                                         \
     expec = ref(val);                                                          \
-    test_assert(res == expec, "%-20s(%lu): %lu != %lu\n", V_TO_STR(ref),       \
+    test_assert(res == expec && is_p2(res) && p2_factor(res) == res,           \
+                "%-20s(%lu): %lu != %lu\n", V_TO_STR(ref),                     \
                 CAST(uint64_t, (val)), res, expec);
 
 
@@ -55,6 +72,28 @@ simple_next_p2_32(uint64_t v) {
 static uint64_t
 simple_prev_p2_32(uint64_t v) {
     return CAST(uint32_t, simple_prev_p2_64(v));
+}
+
+
+int32_t
+test_log2() {
+    uint64_t j, expec;
+    for (expec = 0, j = 1; j; ++expec, j <<= 1) {
+        test_assert(expec == log2_ru(j), "%lu (%lu != %lu)\n", j, expec,
+                    log2_ru(j));
+        test_assert(expec == log2_rd(j));
+
+    }
+
+    for (expec = 2, j = 4; j; ++expec, j <<= 1) {
+        test_assert(expec == log2_ru(j - 1));
+        test_assert(expec - 1 == log2_rd(j - 1));
+
+        test_assert(expec + 1 == log2_ru(j + 1));
+        test_assert(expec == log2_rd(j + 1));
+    }
+
+    return 0;
 }
 
 int32_t

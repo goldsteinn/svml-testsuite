@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <wchar.h>
+#include <limits.h>
 
 /* Use safe_<type> for aliasing casts. */
 typedef wchar_t  safe_wchar_t __attribute__((may_alias));
@@ -33,6 +34,8 @@ typedef int bool;
 static const bool false = 0;
 static const bool true  = !false;
 #endif
+
+#define sizeof_bits(x) (sizeof(x) * CHAR_BIT)
 
 #define CAST_TO_FUNC(func, x) ((__typeof__(&(func)))(x))
 #define FUNC_T(func)          __typeof__(&(func))
