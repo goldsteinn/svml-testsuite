@@ -4,7 +4,7 @@
 #include "util/common.h"
 
 typedef int32_t (*test_f)();
-typedef int32_t (*bench_f)(uint32_t);
+typedef void * (*bench_f)(void *);
 
 
 typedef struct func_decl {

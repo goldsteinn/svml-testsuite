@@ -17,9 +17,10 @@
 
 
 NONNULL(1, 2)
-static int32_t _re_compile(regex_t * restrict re,
-                           const char * restrict pattern,
-                           int32_t flags) {
+static int32_t
+_re_compile(regex_t * restrict re,
+            const char * restrict pattern,
+            int32_t flags) {
     return regcomp(re, pattern, flags);
 }
 
@@ -29,7 +30,7 @@ _re_exec(regex_t const * restrict re,
          char const * restrict str,
          uint64_t   nmatch,
          regmatch_t pmatch[restrict],
-         int        eflags) {
+         int32_t    eflags) {
     return regexec(re, str, nmatch, pmatch, eflags);
 }
 
@@ -42,7 +43,7 @@ EXIT_FUNC NONNULL(2, 3, 4) void _re_errdie(int32_t errcode,
                                            regex_t const * restrict re,
                                            char const * restrict file_name,
                                            char const * restrict func_name,
-                                           int32_t line_num);
+                                           uint32_t line_num);
 
 NONNULL(1, 2, 4, 5)
 int32_t _safe_re_compile(regex_t * restrict re,
@@ -50,7 +51,7 @@ int32_t _safe_re_compile(regex_t * restrict re,
                          int32_t cflags,
                          char const * restrict file_name,
                          char const * restrict func_name,
-                         int32_t line_num);
+                         uint32_t line_num);
 
 NONNULL(1, 2, 6, 7)
 int32_t _safe_re_exec(regex_t const * restrict re,
@@ -60,7 +61,7 @@ int32_t _safe_re_exec(regex_t const * restrict re,
                       int        eflags,
                       char const * restrict file_name,
                       char const * restrict func_name,
-                      int32_t line_num);
+                      uint32_t line_num);
 
 
 #endif

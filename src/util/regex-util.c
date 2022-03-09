@@ -18,7 +18,7 @@ _re_errdie(int32_t errcode,
            regex_t const * restrict re,
            char const * restrict file_name,
            char const * restrict func_name,
-           int32_t line_num) {
+           uint32_t line_num) {
 
     char errbuf[512];
     _re_error(errcode, re, errbuf, 512);
@@ -33,7 +33,7 @@ _safe_re_compile(regex_t * restrict re,
                  int32_t cflags,
                  char const * restrict file_name,
                  char const * restrict func_name,
-                 int32_t line_num) {
+                 uint32_t line_num) {
     int32_t ret = _re_compile(re, pattern, cflags);
     if (UNLIKELY(ret)) {
         _re_errdie(ret, re, file_name, func_name, line_num);
@@ -49,7 +49,7 @@ _safe_re_exec(regex_t const * restrict re,
               int        eflags,
               char const * restrict file_name,
               char const * restrict func_name,
-              int32_t line_num) {
+              uint32_t line_num) {
     int32_t ret = _re_exec(re, pattern, nmatch, pmatch, eflags);
     if (UNLIKELY(ret != 0 && ret != REG_NOMATCH)) {
         _re_errdie(ret, re, file_name, func_name, line_num);

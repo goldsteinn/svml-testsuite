@@ -2,11 +2,11 @@
 
 
 void
-print_res(const char * desc,
+print_res(char const * desc,
           uint64_t     time,
           uint64_t     trials,
-          const char * units) {
-    const char *_desc = "", *_units = "";
+          char const * units) {
+    char const *_desc = "", *_units = "";
     if (desc) {
         _desc = desc;
     }

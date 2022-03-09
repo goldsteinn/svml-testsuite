@@ -11,12 +11,12 @@ enum { decl_do_nothing = 0, decl_re_built = 2, decl_ran = 4 };
 enum { decl_did_one = 1, decl_did_any = 0 };
 
 
-static int32_t
+static uint32_t
 build_re_wildcard_matcher(regex_t * restrict re,
                           char const * restrict decl_to_run) {
     char const * decl_to_run_next;
     uint64_t     copy_len;
-    int32_t      match_any;
+    uint32_t      match_any;
     /* Max possible length. */
     char   pattern_buf[strlen_c(decl_to_run) * 2 + 3];
     char * pattern_buf_pos;
@@ -30,6 +30,7 @@ build_re_wildcard_matcher(regex_t * restrict re,
     match_any = decl_did_one;
     for (;;) {
         decl_to_run_next = strchrnul_c(decl_to_run, '*');
+        die_assert(decl_to_run_next >= decl_to_run);
         copy_len         = (decl_to_run_next - decl_to_run);
         if (!(*decl_to_run_next)) {
             memcpy_c(pattern_buf_pos, decl_to_run, copy_len);

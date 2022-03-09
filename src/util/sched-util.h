@@ -34,10 +34,10 @@ yield() {
 }
 
 void NONNULL(1, 2)
-    _safe_yield(const char * fn, const char * func, const int32_t ln);
+    _safe_yield(const char * fn, const char * func, uint32_t ln);
 
 uint32_t NONNULL(1, 2)
-    _safe_get_cpu(const char * fn, const char * func, const int32_t ln);
+    _safe_get_cpu(const char * fn, const char * func, uint32_t ln);
 
 
 void NONNULL(3, 4, 5) _setcpu_aff(pid_t         pid,
@@ -45,14 +45,14 @@ void NONNULL(3, 4, 5) _setcpu_aff(pid_t         pid,
                                   cpuset_t *    mask,
                                   const char *  fn,
                                   const char *  func,
-                                  const int32_t ln);
+                                  uint32_t ln);
 
 void NONNULL(3, 4, 5) _getcpu_aff(pid_t         pid,
                                   size_t        cpusetsize,
                                   cpuset_t *    mask,
                                   const char *  fn,
                                   const char *  func,
-                                  const int32_t ln);
+                                  uint32_t ln);
 
 
 void setcpu_and_wait(pid_t pid, uint32_t cpu);
@@ -62,7 +62,7 @@ NONNULL(3, 4) _setcpu(pid_t         pid,
                       uint32_t      cpu,
                       const char *  fn,
                       const char *  func,
-                      const int32_t ln) {
+                      uint32_t ln) {
     cpuset_t cset;
     cset_zero(&cset);
     cset_set(cpu, &cset);

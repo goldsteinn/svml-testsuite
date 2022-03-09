@@ -16,12 +16,12 @@ _sched_getaffinity(pid_t pid, size_t cpusetsize, cpuset_t * mask) {
 }
 
 void
-_setcpu_aff(pid_t         pid,
-            size_t        cpusetsize,
-            cpuset_t *    mask,
-            const char *  fn,
-            const char *  func,
-            const int32_t ln) {
+_setcpu_aff(pid_t        pid,
+            size_t       cpusetsize,
+            cpuset_t *   mask,
+            const char * fn,
+            const char * func,
+            uint32_t     ln) {
     if (UNLIKELY(_sched_setaffinity(pid, cpusetsize, mask))) {
         _errdie(fn, func, ln, errno, NULL);
     }
@@ -34,7 +34,7 @@ _getcpu_aff(pid_t         pid,
             cpuset_t *    mask,
             const char *  fn,
             const char *  func,
-            const int32_t ln) {
+            uint32_t ln) {
     if (UNLIKELY(_sched_getaffinity(pid, cpusetsize, mask))) {
         _errdie(fn, func, ln, errno, NULL);
     }
@@ -56,7 +56,7 @@ setcpu_and_wait(pid_t pid, uint32_t cpu) {
 }
 
 uint32_t
-_safe_get_cpu(const char * fn, const char * func, const int32_t ln) {
+_safe_get_cpu(const char * fn, const char * func, uint32_t ln) {
     int32_t cpu = get_cpu();
     if (UNLIKELY(cpu < 0)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -65,7 +65,7 @@ _safe_get_cpu(const char * fn, const char * func, const int32_t ln) {
 }
 
 void
-_safe_yield(const char * fn, const char * func, const int32_t ln) {
+_safe_yield(const char * fn, const char * func, uint32_t ln) {
     if (UNLIKELY(sched_yield())) {
         _errdie(fn, func, ln, errno, NULL);
     }

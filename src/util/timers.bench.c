@@ -14,12 +14,13 @@
 static ALWAYS_INLINE uint64_t
 vdso_direct_get_ns(const FUNC_T(clock_gettime) vdso_direct) {
     struct timespec ts;
-    vdso_direct(CLOCK_THREAD_CPUTIME_ID, &ts);
+    (void)vdso_direct(CLOCK_THREAD_CPUTIME_ID, &ts);
     return to_ns(&ts);
 }
 
-int32_t
-bench_timers(uint32_t trials) {
+void *
+bench_timers(void * bench_args) {
+    uint32_t  trials = CAST(uint32_t, CAST(uint64_t, bench_args));
     ll_time_t start, end;
     uint32_t  i;
 

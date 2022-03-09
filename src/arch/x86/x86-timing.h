@@ -27,6 +27,6 @@ get_ll_dif(ll_time_t t0, ll_time_t t1) {
     return t0 - t1;
 }
 
-#define serialize_ooe() asm volatile("lfence" : : :)
+#define serialize_ooe() __asm__ volatile("lfence" : : :)
 
 #endif

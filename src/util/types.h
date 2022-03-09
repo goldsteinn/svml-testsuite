@@ -37,7 +37,7 @@ static const bool true  = !false;
 
 #define sizeof_bits(x) (sizeof(x) * CHAR_BIT)
 
-#define CAST_TO_FUNC(func, x) ((__typeof__(&(func)))(x))
+#define CAST_TO_FUNC(func, x) ((FUNC_T(func))(x))
 #define FUNC_T(func)          __typeof__(&(func))
 #define CAST(x, y)            ((x)(y))
 #define AGU(base, offset)     (CAST(ptr_int_t, base) + CAST(ptr_int_t, offset))

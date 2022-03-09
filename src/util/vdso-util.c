@@ -5,16 +5,15 @@
 
 #include "util/internal/timers.h"
 
-
-void const * vdso_funcs[] = { CAST(void const *, &_clock_gettime),
-                              CAST(void const *, &gettimeofday),
-                              CAST(void const *, &getcpu),
-                              CAST(void const *, &time) };
+_vdso_placeholder_f vdso_funcs[] = { CAST(_vdso_placeholder_f, &_clock_gettime),
+                                     CAST(_vdso_placeholder_f, &gettimeofday),
+                                     CAST(_vdso_placeholder_f, &getcpu),
+                                     CAST(_vdso_placeholder_f, &time) };
 
 
 static uint64_t
-set_vdso_func(void const * fptr, size_t offset) {
-    if (fptr) {
+set_vdso_func(_vdso_placeholder_f fptr, size_t offset) {
+    if (fptr != NULL) {
         vdso_funcs[offset] = fptr;
         return 1UL << offset;
     }
@@ -51,15 +50,17 @@ vdso_init() {
     }
 
     ret |= set_vdso_func(
-        CAST(void const *, dlsym(vdso_lib, "__vdso_clock_gettime")),
+        CAST(_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_clock_gettime")),
         vdso_clock_gettime_offset);
     ret |= set_vdso_func(
-        CAST(void const *, dlsym(vdso_lib, "__vdso_gettimeofday")),
+        CAST(_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_gettimeofday")),
         vdso_gettimeofday_offset);
-    ret |= set_vdso_func(CAST(void const *, dlsym(vdso_lib, "__vdso_getcpu")),
-                         vdso_getcpu_offset);
-    ret |= set_vdso_func(CAST(void const *, dlsym(vdso_lib, "__vdso_time")),
-                         vdso_time_offset);
+    ret |= set_vdso_func(
+        CAST(_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_getcpu")),
+        vdso_getcpu_offset);
+    ret |=
+        set_vdso_func(CAST(_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_time")),
+                      vdso_time_offset);
 
     dlclose(vdso_lib);
 

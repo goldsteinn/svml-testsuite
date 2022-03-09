@@ -39,7 +39,7 @@ NONNULL(3, 4) void * _safe_calloc(uint64_t n,
                                   uint64_t sz,
                                   char const * restrict fn,
                                   char const * restrict func,
-                                  int32_t ln) {
+                                  uint32_t ln) {
     void * p = calloc_c(n, sz);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -51,7 +51,7 @@ static MALLOC_FUNC
 NONNULL(2, 3) void * _safe_malloc(uint64_t sz,
                                   char const * restrict fn,
                                   char const * restrict func,
-                                  int32_t ln) {
+                                  uint32_t ln) {
     void * p = malloc_c(sz);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -64,7 +64,7 @@ NONNULL(1, 3, 4) void * _safe_realloc(void * restrict p,
                                       uint64_t sz,
                                       char const * restrict fn,
                                       char const * restrict func,
-                                      int32_t ln) {
+                                      uint32_t ln) {
     void * newp = realloc_c(p, sz);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -79,7 +79,7 @@ NONNULL(1, 4, 5) void * _safe_srealloc(void * restrict p,
                                        uint64_t sz_new,
                                        char const * restrict fn,
                                        char const * restrict func,
-                                       int32_t ln) {
+                                       uint32_t ln) {
     void * newp = srealloc_c(p, sz_old, sz_new);
     if (UNLIKELY(p == NULL)) {
         _errdie(fn, func, ln, errno, NULL);
@@ -111,14 +111,14 @@ MALLOC_FUNC NONNULL(7, 8) void * _safe_mmap(void * restrict addr,
                                             int32_t  offset,
                                             char const * restrict fn,
                                             char const * restrict func,
-                                            int32_t ln);
+                                            uint32_t ln);
 
 NONNULL(1, 3, 4)
 void _safe_munmap(void * restrict addr,
                   uint64_t sz,
                   char const * restrict fn,
                   char const * restrict func,
-                  int32_t ln);
+                  uint32_t ln);
 
 NONNULL(1, 4, 5)
 void _safe_mprotect(void * restrict addr,
@@ -126,6 +126,6 @@ void _safe_mprotect(void * restrict addr,
                     int32_t  prot_flags,
                     char const * restrict fn,
                     char const * restrict func,
-                    int32_t ln);
+                    uint32_t ln);
 
 #endif

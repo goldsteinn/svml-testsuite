@@ -13,15 +13,16 @@
     res_time = get_ll_dif(end, start);
 
 
-int32_t
-bench_p2(uint32_t trials) {
+void *
+bench_p2(void * bench_args) {
+    uint32_t  trials = CAST(uint32_t, CAST(uint64_t, bench_args));
     ll_time_t start, end;
     uint32_t  i;
 
     uint64_t     times[4] = { 0 };
     const char * names[4] = { 0 };
 
-    
+
     if (!trials) {
         trials = 10 * 1000 * 1000;
     }

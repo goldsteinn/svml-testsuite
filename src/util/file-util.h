@@ -48,50 +48,50 @@ int32_t NONNULL(1, 3, 4) _safe_open2(char const * restrict path,
                                      int32_t flags,
                                      char const * restrict fn,
                                      char const * restrict func,
-                                     int32_t ln);
+                                     uint32_t ln);
 int32_t NONNULL(1, 4, 5) _safe_open3(char const * restrict path,
                                      int32_t flags,
                                      int32_t mode,
                                      char const * restrict fn,
                                      char const * restrict func,
-                                     int32_t ln);
+                                     uint32_t ln);
 int64_t NONNULL(2, 4, 5) _safe_read(int32_t fd,
                                     void * restrict buf,
                                     size_t count,
                                     char const * restrict fn,
                                     char const * restrict func,
-                                    int32_t ln);
+                                    uint32_t ln);
 int64_t NONNULL(2, 4, 5) _safe_write(int32_t fd,
                                      void const * restrict buf,
                                      size_t count,
                                      char const * restrict fn,
                                      char const * restrict func,
-                                     int32_t ln);
+                                     uint32_t ln);
 int32_t NONNULL(1, 2, 3, 4) _safe_stat(char const * restrict path,
                                        struct stat * restrict buf,
                                        char const * restrict fn,
                                        char const * restrict func,
-                                       int32_t ln);
+                                       uint32_t ln);
 int32_t NONNULL(2, 3, 4) _safe_fstat(int32_t fd,
                                      struct stat * restrict buf,
                                      char const * restrict fn,
                                      char const * restrict func,
-                                     int32_t ln);
+                                     uint32_t ln);
 int32_t NONNULL(1, 3, 4) _safe_access(char const * restrict path,
                                       int32_t mode,
                                       char const * restrict fn,
                                       char const * restrict func,
-                                      int32_t ln);
+                                      uint32_t ln);
 int32_t NONNULL(2, 3) _safe_close(int32_t fd,
                                   char const * restrict fn,
                                   char const * restrict func,
-                                  int32_t ln);
+                                  uint32_t ln);
 int32_t NONNULL(1, 3, 4, 6) FORMATF(6, 7)
     _check_open2(char const * restrict path,
                  int32_t flags,
                  char const * restrict fn,
                  char const * restrict func,
-                 int32_t ln,
+                 uint32_t ln,
                  char const * restrict msg,
                  ...);
 int32_t NONNULL(1, 4, 5, 7) FORMATF(7, 8)
@@ -100,7 +100,7 @@ int32_t NONNULL(1, 4, 5, 7) FORMATF(7, 8)
                  int32_t mode,
                  char const * restrict fn,
                  char const * restrict func,
-                 int32_t ln,
+                 uint32_t ln,
                  char const * restrict msg,
                  ...);
 
@@ -109,7 +109,7 @@ int32_t NONNULL(1, 3, 4, 6) FORMATF(6, 7)
                   int32_t mode,
                   char const * restrict fn,
                   char const * restrict func,
-                  int32_t ln,
+                  uint32_t ln,
                   char const * restrict msg,
                   ...);
 
@@ -117,38 +117,38 @@ FILE * NONNULL(1, 2, 3, 4) _safe_fopen(char const * restrict path,
                                        char const * restrict mode,
                                        char const * restrict fn,
                                        char const * restrict func,
-                                       int32_t ln);
+                                       uint32_t ln);
 FILE * NONNULL(2, 3, 4) _safe_fdopen(int32_t fd,
                                      char const * restrict mode,
                                      char const * restrict fn,
                                      char const * restrict func,
-                                     int32_t ln);
+                                     uint32_t ln);
 size_t NONNULL(1, 4, 5, 6) _safe_fread(void * restrict ptr,
                                        size_t size,
                                        size_t nmemb,
                                        FILE * restrict stream,
                                        char const * restrict fn,
                                        char const * restrict func,
-                                       int32_t ln);
+                                       uint32_t ln);
 size_t NONNULL(1, 4, 5, 6) _safe_fwrite(const void * restrict ptr,
                                         size_t size,
                                         size_t nmemb,
                                         FILE * restrict stream,
                                         char const * restrict fn,
                                         char const * restrict func,
-                                        int32_t ln);
+                                        uint32_t ln);
 FILE * NONNULL(1, 2, 3, 4, 6) FORMATF(6, 7)
     _check_fopen(char const * restrict path,
                  char const * restrict mode,
                  char const * restrict fn,
                  char const * restrict func,
-                 int32_t ln,
+                 uint32_t ln,
                  char const * restrict msg,
                  ...);
 int32_t NONNULL(1, 2, 3) _safe_fclose(FILE * restrict stream,
                                       char const * restrict fn,
                                       char const * restrict func,
-                                      int32_t ln);
+                                      uint32_t ln);
 
 
 #endif

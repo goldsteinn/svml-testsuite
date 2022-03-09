@@ -33,8 +33,8 @@ static ArgDefs argp = { args, "Benchmark Driver", NULL, NULL };
 
 static void
 run_benchmark(const func_decl_t * benchmark) {
-    warn_assert(!benchmark->bench_func(trials), "Issue running: %s\n",
-                benchmark->name);
+    warn_assert(!benchmark->bench_func(CAST(void *, CAST(uint64_t, trials))),
+                "Issue running: %s\n", benchmark->name);
 }
 
 int

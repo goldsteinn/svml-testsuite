@@ -1,7 +1,7 @@
 #include "bench/bench-common.h"
 
-#include "util/random.h"
 #include "util/macro.h"
+#include "util/random.h"
 
 #define run_bench(res_name, res_time, func)                                    \
     start = get_ll_time();                                                     \
@@ -13,8 +13,9 @@
     res_time = get_ll_dif(end, start);
 
 
-int32_t
-bench_random(uint32_t trials) {
+void *
+bench_random(void * bench_args) {
+    uint32_t  trials = CAST(uint32_t, CAST(uint64_t, bench_args));
     ll_time_t start, end;
     uint32_t  i;
 

@@ -5,6 +5,6 @@
 
 #include "bench/bench-decls.h"
 
-#define decl_benchmark(name) extern uint64_t name(uint32_t trials);
+#define decl_benchmark(name) extern void * name(void *);
 
 make_decls(benchmarks, decl_benchmark, BENCHMARKS);

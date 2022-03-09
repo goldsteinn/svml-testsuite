@@ -48,7 +48,7 @@ FORMATF(2, 3)
 static const char *
 arg2str(ArgOption const * restrict desc) {
     static char buffer[128];
-    size_t      n, avail_length = 128;
+    ssize_t     n, avail_length = 128;
     char *      p   = buffer;
     char        sep = (desc->kind == KindPositional) ? ':' : ' ';
 
@@ -73,7 +73,7 @@ arg2str(ArgOption const * restrict desc) {
         case Double:
             n = snprintf(p, avail_length, "%s%c%s", desc->longarg, sep,
                          type2fmt[desc->type]);
-            die_assert(n < avail_length,
+            die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
             p += strlen_c(p);
@@ -82,7 +82,7 @@ arg2str(ArgOption const * restrict desc) {
             die_assert(desc->kind == KindRest);
             n = snprintf(p, avail_length, "...%c%s ", sep,
                          type2fmt[desc->type]);
-            die_assert(n < avail_length,
+            die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
             p += strlen_c(p);
@@ -92,7 +92,7 @@ arg2str(ArgOption const * restrict desc) {
         case Set:
         case Increment:
             n = snprintf(p, avail_length, "%s", desc->longarg);
-            die_assert(n < avail_length,
+            die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
             p += strlen_c(p);
@@ -104,7 +104,7 @@ arg2str(ArgOption const * restrict desc) {
     }
     if (desc->kind == KindRest) {
         n = strlen_c("...") + 1;
-        die_assert(avail_length > n, "Buffer overflow creating help message\n");
+        die_assert(n > avail_length, "Buffer overflow creating help message\n");
         memcpy_c(p, "...", n);
         p += n;
         avail_length -= n;
@@ -120,7 +120,7 @@ arg2str(ArgOption const * restrict desc) {
         *p++ = ']';
         --avail_length;
     }
-    die_assert(avail_length, "Buffer overflow creating help message\n");
+    die_assert(avail_length > 0, "Buffer overflow creating help message\n");
     *p = 0;
     return buffer;
 }
@@ -190,7 +190,8 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
 
 static void
 makeCommandline(int32_t argc, char * const * argv) {
-    int32_t i, len = 2;
+    int32_t i;
+    size_t  len = 2;
     char *  p;
     for (i = 0; i < argc; i++) {
         len += (1 + strlen_c(argv[i]));

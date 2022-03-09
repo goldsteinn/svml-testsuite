@@ -11,13 +11,15 @@
 #include "util/vdso-arch-masks.h"
 #include "util/vdso-func-enum.h"
 
-extern void const * vdso_funcs[];
+typedef void (*_vdso_placeholder_f)(void);
+
+extern _vdso_placeholder_f vdso_funcs[];
 
 int32_t  safe_vdso_init();
 void     safe_vdso_init_all();
 uint64_t vdso_init();
 
-static ALWAYS_INLINE
+static ALWAYS_INLINE PURE_FUNC
 FUNC_T(clock_gettime) get_vdso_clock_gettime() {
     return CAST_TO_FUNC(clock_gettime, vdso_funcs[vdso_clock_gettime_offset]);
 }
@@ -30,8 +32,8 @@ NONNULL(2) vdso_clock_gettime(clockid_t clockid, struct timespec * ts) {
 static int32_t
 NONNULL(1) vdso_gettimeofday(struct timeval * restrict tv,
                              struct timezone * restrict tz) {
-    return (*CAST_TO_FUNC(gettimeofday,
-                          vdso_funcs[vdso_gettimeofday_offset]))(tv, tz);
+    return (CAST_TO_FUNC(gettimeofday,
+                         vdso_funcs[vdso_gettimeofday_offset]))(tv, tz);
 }
 
 static int32_t
