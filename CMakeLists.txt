@@ -15,7 +15,7 @@ list(FIND c_lang ${LANG} c_lang)
 if(${cxx_lang} GREATER -1)
   set(LANG "CXX")
   set(STD "c++11")
-  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type")
+  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type" "-fno-rtti")
 elseif(${c_lang} GREATER -1)
   set(LANG "C")
   set(STD "c11")
@@ -88,14 +88,14 @@ list(REMOVE_ITEM BENCH_C_SOURCES ${BENCH_EXE_SRC})
 
 
 
-find_program(CLANG_TIDY_EXE clang-tidy NAMES clang-tidy-8 clang-tidy-9 clang-tidy-10 clang-tidy-11 clang-tidy-12 clang-tidy-13)
+find_program(CLANG_TIDY_EXE clang-tidy NAMES clang-tidy-13 clang-tidy-12 clang-tidy-10 clang-tidy-9 clang-tidy-8)
 # We don't get cache with this method which slows down check.
 add_custom_target(
   static-analysis
   COMMAND ${CLANG_TIDY_EXE}
   ${ALL_C_SOURCES}
   -p=${CMAKE_CURRENT_BINARY_DIR}
-  -checks=-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
+#  -checks=*,-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
   )
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})

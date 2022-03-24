@@ -2,7 +2,7 @@
 #define _SRC__TEST__TEST_DECLS_H_
 
 /* Append all here. */
-#define TESTS test_p2, test_log2, test_random, test_vdso
+#define TESTS test_p2, test_log2, test_random, test_vdso, test_max_min
 
 
 #endif

@@ -25,10 +25,14 @@
         __builtin_unreachable();                                               \
     }
 
+#define GURANTEED(x) IMPOSSIBLE(!(x))
 
-#define _static_assert(...)                                                    \
-    CAT(_static_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
-#define _static_assert_ONE(x)       _static_assert_base(x, "")
-#define _static_assert_MANY(x, ...) _static_assert_base(x, __VA_ARGS__)
+
+#define const_assert(...)                                                      \
+    CAT(I_const_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
+#define I_const_assert_ONE(x)       I_static_assert_base(x, "")
+#define I_const_assert_MANY(x, ...) I_static_assert_base(x, __VA_ARGS__)
+
+#define choose_const_expr I_choose_const_expr
 
 #endif

@@ -1,9 +1,9 @@
 #ifndef _SRC__UTIL__TYPES_H_
 #define _SRC__UTIL__TYPES_H_
 
+#include <limits.h>
 #include <stdint.h>
 #include <wchar.h>
-#include <limits.h>
 
 /* Use safe_<type> for aliasing casts. */
 typedef wchar_t  safe_wchar_t __attribute__((may_alias));
@@ -30,7 +30,7 @@ typedef long double        safe_ldouble __attribute__((may_alias, aligned(1)));
 typedef uint64_t ptr_int_t;
 
 #ifndef __cplusplus
-typedef int bool;
+typedef int32_t bool;
 static const bool false = 0;
 static const bool true  = !false;
 #endif

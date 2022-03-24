@@ -16,7 +16,7 @@ build_re_wildcard_matcher(regex_t * restrict re,
                           char const * restrict decl_to_run) {
     char const * decl_to_run_next;
     uint64_t     copy_len;
-    uint32_t      match_any;
+    uint32_t     match_any;
     /* Max possible length. */
     char   pattern_buf[strlen_c(decl_to_run) * 2 + 3];
     char * pattern_buf_pos;
@@ -31,7 +31,7 @@ build_re_wildcard_matcher(regex_t * restrict re,
     for (;;) {
         decl_to_run_next = strchrnul_c(decl_to_run, '*');
         die_assert(decl_to_run_next >= decl_to_run);
-        copy_len         = (decl_to_run_next - decl_to_run);
+        copy_len = (decl_to_run_next - decl_to_run);
         if (!(*decl_to_run_next)) {
             memcpy_c(pattern_buf_pos, decl_to_run, copy_len);
             pattern_buf_pos[copy_len]     = '$';
@@ -160,6 +160,4 @@ run_decls(decl_list_t const * restrict decl_list,
         }
         fprintf(stdout, "Unable To Find - %s\n", decls_to_run[i]);
     }
-
-    
 }

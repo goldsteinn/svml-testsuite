@@ -28,7 +28,7 @@ static const char * type2fmt[] = { "",       "<int>",    "<char>", "<string>",
 enum { BAD_STRING = -1, BAD_REST = -2, BAD_DOUBLE = -3, BAD_INT = -4 };
 
 
-static void usage(char const * restrict pname, ArgParser const * restrict def);
+static void usage(char const * restrict pname, ArgParser const * restrict ap);
 
 static void
 FORMATF(2, 3)
@@ -47,10 +47,13 @@ FORMATF(2, 3)
 
 static const char *
 arg2str(ArgOption const * restrict desc) {
-    static char buffer[128];
-    ssize_t     n, avail_length = 128;
-    char *      p   = buffer;
-    char        sep = (desc->kind == KindPositional) ? ':' : ' ';
+    enum { OUTBUF_LEN = 128 };
+    static char buffer[OUTBUF_LEN];
+    ssize_t     n;
+    ssize_t     avail_length = OUTBUF_LEN;
+    char *      p            = buffer;
+    char        sep          = (desc->kind == KindPositional) ? ':' : ' ';
+
 
     if (desc->kind == (ArgKind)Help) {
         return "[-h]";
@@ -71,8 +74,9 @@ arg2str(ArgOption const * restrict desc) {
         case String:
         case Boolean:
         case Double:
-            n = snprintf(p, avail_length, "%s%c%s", desc->longarg, sep,
-                         type2fmt[desc->type]);
+            n = snprintf(
+                p, avail_length, "%s%c%s", desc->longarg, sep,
+                type2fmt[desc->type] /* NOLINT(*-constant-array-index) */);
             die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
@@ -80,8 +84,9 @@ arg2str(ArgOption const * restrict desc) {
             break;
         case Rest:
             die_assert(desc->kind == KindRest);
-            n = snprintf(p, avail_length, "...%c%s ", sep,
-                         type2fmt[desc->type]);
+            n = snprintf(
+                p, avail_length, "...%c%s ", sep,
+                type2fmt[desc->type] /* NOLINT(*-constant-array-index) */);
             die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
@@ -151,8 +156,8 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
             switch (args[i].type) {
                 case Increment:
                 case Integer:
-                    fprintf(stderr, "(default: %d)",
-                            *(safe_int32_t *)(args[i].dest));
+                    fprintf(stderr, "(default: %ld)",
+                            *(safe_int64_t *)(args[i].dest));
                     break;
 
                 case Character:
@@ -217,15 +222,15 @@ assignArg(ArgOption * restrict desc,
           int32_t        offset,
           char * const * argv_end) {
     switch (desc->type) {
-        case Increment:
+        case Increment: {
             vprint("incremement %s\n", desc->longarg);
             {
                 safe_int32_t * p = (safe_int32_t *)desc->dest;
                 (*p)++;
             }
-            break;
+        } break;
 
-        case String:
+        case String: {
             if (!argv[offset]) {
                 return BAD_STRING;
             }
@@ -235,9 +240,9 @@ assignArg(ArgOption * restrict desc,
                 *p              = argv[offset];
                 return 1;
             }
-            break;
+        } break;
 
-        case Rest:
+        case Rest: {
             if (!argv[offset]) {
                 return BAD_REST;
             }
@@ -250,52 +255,58 @@ assignArg(ArgOption * restrict desc,
                 p->n           = n;
                 return 1;
             }
-            break;
+        } break;
 
-        case Set:
+        case Set: {
             vprint("Setting %s to 1\n", desc->longarg);
             {
                 safe_int32_t * p = (safe_int32_t *)desc->dest;
                 *p               = 1;
             }
-            break;
+        } break;
 
-        case Toggle:
+        case Toggle: {
             vprint("toggeling %s\n", desc->longarg);
             {
                 safe_int32_t * p = (safe_int32_t *)desc->dest;
                 *p               = !(*p);
             }
-            break;
+        } break;
 
-        case Double:
+        case Double: {
+            double user_v;
             if (!argv[offset]) {
                 return BAD_DOUBLE;
             }
-            vprint("double -> [%s] = %lf\n", desc->longarg, atof(argv[offset]));
+            user_v = strtod(argv[offset], NULL);
+            vprint("double -> [%s] = %lf\n", desc->longarg, user_v);
             {
                 safe_double * p = (safe_double *)desc->dest;
-                *p              = atof(argv[offset]);
+                const_assert(sizeof(desc->dest) >= sizeof(double));
+                *p = user_v;
                 return 1;
             }
-            break;
+        } break;
 
-        case Integer:
+        case Integer: {
+            int64_t user_v;
             if (!argv[offset]) {
                 return BAD_INT;
             }
-            vprint("int -> [%s] = %d\n", desc->longarg, atoi(argv[offset]));
+            user_v = strtoll(argv[offset], NULL, 10);
+            vprint("int -> [%s] = %ld\n", desc->longarg, user_v);
             {
-                safe_int32_t * p = (safe_int32_t *)desc->dest;
-                *p               = atoi(argv[offset]);
+                safe_int64_t * p = (safe_int64_t *)desc->dest;
+                const_assert(sizeof(desc->dest) >= sizeof(int64_t));
+                *p = user_v;
                 return 1;
             }
-            break;
+        } break;
 
-        case Help:
+        case Help: {
             usage(pname, ap);
             exit(-1);
-
+        }
         default:
             die("NIY: type\n");
     }
@@ -363,7 +374,9 @@ checkArgParser(ArgParser const * ap) {
     for (apn = ap->parsers; apn; apn = apn->next) {
         hashelp |= checkArgDef(ap, apn->parser, apn->main);
     }
-    if (!hashelp) argdie(ap, "No help string");
+    if (!hashelp) {
+        argdie(ap, "No help string");
+    }
 }
 
 int32_t
@@ -414,8 +427,9 @@ addArgumentParser(ArgParser * restrict ap,
 
     if (order > 0) {
         ArgParserNode * nextp;
-        for (nextp = ap->parsers; nextp->next; nextp = nextp->next)
+        for (nextp = ap->parsers; nextp->next; nextp = nextp->next) {
             ;
+        }
         nextp->next = p;
     }
     else {

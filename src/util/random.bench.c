@@ -8,9 +8,9 @@
     for (i = trials; i; --i) {                                                 \
         compiler_do_not_optimize_out(func());                                  \
     }                                                                          \
-    end      = get_ll_time();                                                  \
-    res_name = V_TO_STR(func);                                                 \
-    res_time = get_ll_dif(end, start);
+    end        = get_ll_time();                                                \
+    (res_name) = V_TO_STR(func);                                               \
+    (res_time) = get_ll_dif(end, start);
 
 
 void *
@@ -22,8 +22,9 @@ bench_random(void * bench_args) {
     uint64_t     times[1] = { 0 };
     const char * names[1] = { 0 };
 
+    enum { DEFAULT_TRIALS = 1000 * 1000 };
     if (!trials) {
-        trials = 1000 * 1000;
+        trials = DEFAULT_TRIALS;
     }
 
     run_bench(names[0], times[0], rand64);

@@ -24,12 +24,14 @@ bench_timers(void * bench_args) {
     ll_time_t start, end;
     uint32_t  i;
 
-    uint64_t     times[6]             = { 0 };
-    const char * names[6]             = { 0 };
+    enum { NUM_TIMERS = 6, DEFAULT_TRIALS = 1000 * 1000 };
+
+    uint64_t     times[NUM_TIMERS]    = { 0 };
+    const char * names[NUM_TIMERS]    = { 0 };
     FUNC_T(clock_gettime) vdso_direct = get_vdso_clock_gettime();
 
     if (!trials) {
-        trials = 1000 * 1000;
+        trials = DEFAULT_TRIALS;
     }
 
     run_bench(names[0], times[0], vdso_get_ns);
@@ -37,11 +39,11 @@ bench_timers(void * bench_args) {
     names[0] = "vdso_get_ns_preinit";
     run_bench(names[1], times[1], vdso_get_ns);
     run_bench(names[2], times[2], get_ns);
-    run_bench(names[3], times[3], _get_ns);
+    run_bench(names[3], times[3], direct_get_ns);
     run_bench(names[4], times[4], get_ll_time);
     run_bench(names[5], times[5], vdso_direct_get_ns, vdso_direct);
 
-    for (i = 0; i < 6; ++i) {
+    for (i = 0; i < NUM_TIMERS; ++i) {
         print_res(names[i], times[i], trials, get_ll_units());
     }
 

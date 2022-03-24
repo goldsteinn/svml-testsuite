@@ -11,7 +11,8 @@ test_vdso() {
     struct timezone tz;
     uint32_t        cpu, cpu2, node;
     time_t          tloc;
-    uint8_t         cmp_bytes[64];
+    uint8_t cmp_bytes[MAX(sizeof(ts), sizeof(tv), sizeof(tz), sizeof(cpu),
+                          sizeof(node), sizeof(tloc))];
 
     test_assert(safe_vdso_init() == 0);
 

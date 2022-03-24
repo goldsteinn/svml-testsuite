@@ -21,6 +21,6 @@ int
 main(int argc, char * argv[]) {
     die_assert(!doParse(&argp, argc, argv), "Error parsing arguments\n");
     set_verbosity(verbosity);
-    
+
     return 0;
 }

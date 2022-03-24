@@ -8,12 +8,12 @@
 
 
 #include "arch/ll-timing.h"
-#include "util/vdso-util.h"
 #include "util/internal/timers.h"
+#include "util/vdso-util.h"
 
 static ALWAYS_INLINE
-NONNULL(1) void _gettime(struct timespec * ts) {
-    _clock_gettime(CLOCK_THREAD_CPUTIME_ID, ts);
+NONNULL(1) void direct_gettime(struct timespec * ts) {
+    direct_clock_gettime(CLOCK_THREAD_CPUTIME_ID, ts);
 }
 
 static ALWAYS_INLINE

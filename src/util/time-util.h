@@ -82,9 +82,9 @@ NONNULL(1, 2) double dif_ms_dbl(struct timespec const * ts0,
 }
 
 static ALWAYS_INLINE uint64_t
-_get_ns() {
+direct_get_ns() {
     struct timespec ts;
-    _gettime(&ts);
+    direct_gettime(&ts);
     return to_ns(&ts);
 }
 

@@ -9,9 +9,9 @@
 #include "arch/ll-syscall.h"
 
 static ALWAYS_INLINE
-NONNULL(2) void _clock_gettime(clockid_t clk, struct timespec * ts) {
-    _syscall_cc(SYS_clock_gettime, (clk, ts), /* No +m */, /* No m */,
-                ((struct timespec(*)[1])ts));
+NONNULL(2) void direct_clock_gettime(clockid_t clk, struct timespec * ts) {
+    ll_syscall_cc(SYS_clock_gettime, (clk, ts), /* No +m */, /* No m */,
+                  ((struct timespec(*)[1])ts));
 }
 
 #endif

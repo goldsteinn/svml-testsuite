@@ -11,9 +11,9 @@
 #include "util/vdso-arch-masks.h"
 #include "util/vdso-func-enum.h"
 
-typedef void (*_vdso_placeholder_f)(void);
+typedef void (*I_vdso_placeholder_f)(void);
 
-extern _vdso_placeholder_f vdso_funcs[];
+extern I_vdso_placeholder_f vdso_funcs[];
 
 int32_t  safe_vdso_init();
 void     safe_vdso_init_all();

@@ -2,21 +2,21 @@
 
 #include "util/verbosity.h"
 
-static int32_t verbose = 0;
+static int32_t I_verbose_ = 0;
 
 int32_t
 check_verbosity(int32_t verbosity_bound) {
-    return verbosity_bound <= verbose;
+    return verbosity_bound <= I_verbose_;
 }
 
 int32_t
 get_verbosity() {
-    return verbose;
+    return I_verbose_;
 }
 
 void
 set_verbosity(int32_t verbosity) {
-    verbose = verbosity;
+    I_verbose_ = verbosity;
 }
 
 void

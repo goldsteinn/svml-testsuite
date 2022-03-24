@@ -17,11 +17,11 @@
 #endif
 #define ERR_ARGS __FILENAME__, __func__, __LINE__
 /******************************************************************************/
-#define PRIMITIVE_CAT(x, y) x##y
-#define CAT(x, y)           PRIMITIVE_CAT(x, y)
+#define _CAT(x, y) x##y
+#define CAT(x, y)  _CAT(x, y)
 
-#define PRIMITIVE_V_TO_STR(X) #X
-#define V_TO_STR(X)           PRIMITIVE_V_TO_STR(X)
+#define _V_TO_STR(X) #X
+#define V_TO_STR(X)  _V_TO_STR(X)
 /******************************************************************************/
 /* clang-format off */
 #define PP_NARG(...) \
@@ -177,6 +177,75 @@
 #define APPLY_61(m, OP, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61) m(x1) OP m(x2) OP m(x3) OP m(x4) OP m(x5) OP m(x6) OP m(x7) OP m(x8) OP m(x9) OP m(x10) OP m(x11) OP m(x12) OP m(x13) OP m(x14) OP m(x15) OP m(x16) OP m(x17) OP m(x18) OP m(x19) OP m(x20) OP  m(x21)  OP  m(x22)  OP  m(x23)  OP  m(x24)  OP  m(x25)  OP  m(x26)  OP  m(x27)  OP  m(x28)  OP  m(x29)  OP  m(x30)  OP  m(x31)  OP  m(x32)  OP  m(x33)  OP  m(x34)  OP  m(x35)  OP  m(x36)  OP  m(x37)  OP  m(x38)  OP  m(x39)  OP  m(x40)  OP  m(x41)  OP  m(x42)  OP  m(x43)  OP  m(x44)  OP  m(x45)  OP  m(x46)  OP  m(x47)  OP  m(x48)  OP  m(x49)  OP  m(x50)  OP  m(x51)  OP  m(x52)  OP  m(x53)  OP  m(x54)  OP  m(x55)  OP  m(x56)  OP  m(x57)  OP  m(x58)  OP  m(x59)  OP  m(x60)  OP  m(x61)
 #define APPLY_62(m, OP, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62) m(x1) OP m(x2) OP m(x3) OP m(x4) OP m(x5) OP m(x6) OP m(x7) OP m(x8) OP m(x9) OP m(x10) OP m(x11) OP m(x12) OP m(x13) OP m(x14) OP m(x15) OP m(x16) OP m(x17) OP m(x18) OP m(x19) OP m(x20) OP  m(x21)  OP  m(x22)  OP  m(x23)  OP  m(x24)  OP  m(x25)  OP  m(x26)  OP  m(x27)  OP  m(x28)  OP  m(x29)  OP  m(x30)  OP  m(x31)  OP  m(x32)  OP  m(x33)  OP  m(x34)  OP  m(x35)  OP  m(x36)  OP  m(x37)  OP  m(x38)  OP  m(x39)  OP  m(x40)  OP  m(x41)  OP  m(x42)  OP  m(x43)  OP  m(x44)  OP  m(x45)  OP  m(x46)  OP  m(x47)  OP  m(x48)  OP  m(x49)  OP  m(x50)  OP  m(x51)  OP  m(x52)  OP  m(x53)  OP  m(x54)  OP  m(x55)  OP  m(x56)  OP  m(x57)  OP  m(x58)  OP  m(x59)  OP  m(x60)  OP  m(x61)  OP  m(x62)
 #define APPLY_63(m, OP, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62,x63) m(x1) OP m(x2) OP m(x3) OP m(x4) OP m(x5) OP m(x6) OP m(x7) OP m(x8) OP m(x9) OP m(x10) OP m(x11) OP m(x12) OP m(x13) OP m(x14) OP m(x15) OP m(x16) OP m(x17) OP m(x18) OP m(x19) OP m(x20) OP  m(x21)  OP  m(x22)  OP  m(x23)  OP  m(x24)  OP  m(x25)  OP  m(x26)  OP  m(x27)  OP  m(x28)  OP  m(x29)  OP  m(x30)  OP  m(x31)  OP  m(x32)  OP  m(x33)  OP  m(x34)  OP  m(x35)  OP  m(x36)  OP  m(x37)  OP  m(x38)  OP  m(x39)  OP  m(x40)  OP  m(x41)  OP  m(x42)  OP  m(x43)  OP  m(x44)  OP  m(x45)  OP  m(x46)  OP  m(x47)  OP  m(x48)  OP  m(x49)  OP  m(x50)  OP  m(x51)  OP  m(x52)  OP  m(x53)  OP  m(x54)  OP  m(x55)  OP  m(x56)  OP  m(x57)  OP  m(x58)  OP  m(x59)  OP  m(x60)  OP  m(x61)  OP  m(x62)  OP  m(x63)
+
+#define APPLY_RECURSE(macro, ...) CAT(APPLY_RECURSE, IS_EMPTY(__VA_ARGS__))(macro, __VA_ARGS__)
+#define APPLY_RECURSE1(macro, ...)
+#define APPLY_RECURSE0(macro, ...) CAT(APPLY_RECURSE_, PP_NARG(__VA_ARGS__))(macro, __VA_ARGS__)
+
+#define APPLY_RECURSE_2(m, x1, x2) m(x1, x2)
+#define APPLY_RECURSE_3(m, x1, ...) m(x1, APPLY_RECURSE_2(m, __VA_ARGS__))
+#define APPLY_RECURSE_4(m, x1, ...) m(x1, APPLY_RECURSE_3(m, __VA_ARGS__))
+#define APPLY_RECURSE_5(m, x1, ...) m(x1, APPLY_RECURSE_4(m, __VA_ARGS__))
+#define APPLY_RECURSE_6(m, x1, ...) m(x1, APPLY_RECURSE_5(m, __VA_ARGS__))
+#define APPLY_RECURSE_7(m, x1, ...) m(x1, APPLY_RECURSE_6(m, __VA_ARGS__))
+#define APPLY_RECURSE_8(m, x1, ...) m(x1, APPLY_RECURSE_7(m, __VA_ARGS__))
+#define APPLY_RECURSE_9(m, x1, ...) m(x1, APPLY_RECURSE_8(m, __VA_ARGS__))
+#define APPLY_RECURSE_10(m, x1, ...) m(x1, APPLY_RECURSE_9(m, __VA_ARGS__))
+#define APPLY_RECURSE_11(m, x1, ...) m(x1, APPLY_RECURSE_10(m, __VA_ARGS__))
+#define APPLY_RECURSE_12(m, x1, ...) m(x1, APPLY_RECURSE_11(m, __VA_ARGS__))
+#define APPLY_RECURSE_13(m, x1, ...) m(x1, APPLY_RECURSE_12(m, __VA_ARGS__))
+#define APPLY_RECURSE_14(m, x1, ...) m(x1, APPLY_RECURSE_13(m, __VA_ARGS__))
+#define APPLY_RECURSE_15(m, x1, ...) m(x1, APPLY_RECURSE_14(m, __VA_ARGS__))
+#define APPLY_RECURSE_16(m, x1, ...) m(x1, APPLY_RECURSE_15(m, __VA_ARGS__))
+#define APPLY_RECURSE_17(m, x1, ...) m(x1, APPLY_RECURSE_16(m, __VA_ARGS__))
+#define APPLY_RECURSE_18(m, x1, ...) m(x1, APPLY_RECURSE_17(m, __VA_ARGS__))
+#define APPLY_RECURSE_19(m, x1, ...) m(x1, APPLY_RECURSE_18(m, __VA_ARGS__))
+#define APPLY_RECURSE_20(m, x1, ...) m(x1, APPLY_RECURSE_19(m, __VA_ARGS__))
+#define APPLY_RECURSE_21(m, x1, ...) m(x1, APPLY_RECURSE_20(m, __VA_ARGS__))
+#define APPLY_RECURSE_22(m, x1, ...) m(x1, APPLY_RECURSE_21(m, __VA_ARGS__))
+#define APPLY_RECURSE_23(m, x1, ...) m(x1, APPLY_RECURSE_22(m, __VA_ARGS__))
+#define APPLY_RECURSE_24(m, x1, ...) m(x1, APPLY_RECURSE_23(m, __VA_ARGS__))
+#define APPLY_RECURSE_25(m, x1, ...) m(x1, APPLY_RECURSE_24(m, __VA_ARGS__))
+#define APPLY_RECURSE_26(m, x1, ...) m(x1, APPLY_RECURSE_25(m, __VA_ARGS__))
+#define APPLY_RECURSE_27(m, x1, ...) m(x1, APPLY_RECURSE_26(m, __VA_ARGS__))
+#define APPLY_RECURSE_28(m, x1, ...) m(x1, APPLY_RECURSE_27(m, __VA_ARGS__))
+#define APPLY_RECURSE_29(m, x1, ...) m(x1, APPLY_RECURSE_28(m, __VA_ARGS__))
+#define APPLY_RECURSE_30(m, x1, ...) m(x1, APPLY_RECURSE_29(m, __VA_ARGS__))
+#define APPLY_RECURSE_31(m, x1, ...) m(x1, APPLY_RECURSE_30(m, __VA_ARGS__))
+#define APPLY_RECURSE_32(m, x1, ...) m(x1, APPLY_RECURSE_31(m, __VA_ARGS__))
+#define APPLY_RECURSE_33(m, x1, ...) m(x1, APPLY_RECURSE_32(m, __VA_ARGS__))
+#define APPLY_RECURSE_34(m, x1, ...) m(x1, APPLY_RECURSE_33(m, __VA_ARGS__))
+#define APPLY_RECURSE_35(m, x1, ...) m(x1, APPLY_RECURSE_34(m, __VA_ARGS__))
+#define APPLY_RECURSE_36(m, x1, ...) m(x1, APPLY_RECURSE_35(m, __VA_ARGS__))
+#define APPLY_RECURSE_37(m, x1, ...) m(x1, APPLY_RECURSE_36(m, __VA_ARGS__))
+#define APPLY_RECURSE_38(m, x1, ...) m(x1, APPLY_RECURSE_37(m, __VA_ARGS__))
+#define APPLY_RECURSE_39(m, x1, ...) m(x1, APPLY_RECURSE_38(m, __VA_ARGS__))
+#define APPLY_RECURSE_40(m, x1, ...) m(x1, APPLY_RECURSE_39(m, __VA_ARGS__))
+#define APPLY_RECURSE_41(m, x1, ...) m(x1, APPLY_RECURSE_40(m, __VA_ARGS__))
+#define APPLY_RECURSE_42(m, x1, ...) m(x1, APPLY_RECURSE_41(m, __VA_ARGS__))
+#define APPLY_RECURSE_43(m, x1, ...) m(x1, APPLY_RECURSE_42(m, __VA_ARGS__))
+#define APPLY_RECURSE_44(m, x1, ...) m(x1, APPLY_RECURSE_43(m, __VA_ARGS__))
+#define APPLY_RECURSE_45(m, x1, ...) m(x1, APPLY_RECURSE_44(m, __VA_ARGS__))
+#define APPLY_RECURSE_46(m, x1, ...) m(x1, APPLY_RECURSE_45(m, __VA_ARGS__))
+#define APPLY_RECURSE_47(m, x1, ...) m(x1, APPLY_RECURSE_46(m, __VA_ARGS__))
+#define APPLY_RECURSE_48(m, x1, ...) m(x1, APPLY_RECURSE_47(m, __VA_ARGS__))
+#define APPLY_RECURSE_49(m, x1, ...) m(x1, APPLY_RECURSE_48(m, __VA_ARGS__))
+#define APPLY_RECURSE_50(m, x1, ...) m(x1, APPLY_RECURSE_49(m, __VA_ARGS__))
+#define APPLY_RECURSE_51(m, x1, ...) m(x1, APPLY_RECURSE_50(m, __VA_ARGS__))
+#define APPLY_RECURSE_52(m, x1, ...) m(x1, APPLY_RECURSE_51(m, __VA_ARGS__))
+#define APPLY_RECURSE_53(m, x1, ...) m(x1, APPLY_RECURSE_52(m, __VA_ARGS__))
+#define APPLY_RECURSE_54(m, x1, ...) m(x1, APPLY_RECURSE_53(m, __VA_ARGS__))
+#define APPLY_RECURSE_55(m, x1, ...) m(x1, APPLY_RECURSE_54(m, __VA_ARGS__))
+#define APPLY_RECURSE_56(m, x1, ...) m(x1, APPLY_RECURSE_55(m, __VA_ARGS__))
+#define APPLY_RECURSE_57(m, x1, ...) m(x1, APPLY_RECURSE_56(m, __VA_ARGS__))
+#define APPLY_RECURSE_58(m, x1, ...) m(x1, APPLY_RECURSE_57(m, __VA_ARGS__))
+#define APPLY_RECURSE_59(m, x1, ...) m(x1, APPLY_RECURSE_58(m, __VA_ARGS__))
+#define APPLY_RECURSE_60(m, x1, ...) m(x1, APPLY_RECURSE_59(m, __VA_ARGS__))
+#define APPLY_RECURSE_61(m, x1, ...) m(x1, APPLY_RECURSE_60(m, __VA_ARGS__))
+#define APPLY_RECURSE_62(m, x1, ...) m(x1, APPLY_RECURSE_61(m, __VA_ARGS__))
+#define APPLY_RECURSE_63(m, x1, ...) m(x1, APPLY_RECURSE_62(m, __VA_ARGS__))
+#define APPLY_RECURSE_64(m, x1, ...) m(x1, APPLY_RECURSE_63(m, __VA_ARGS__))
+
 
 /* Do macro on all args in __VA_ARGS__.  */
 #define APPLY_PACKR(argp, ...) CAT(APPLY_PACKR, IS_EMPTY(__VA_ARGS__))(argp, __VA_ARGS__)

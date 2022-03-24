@@ -1,8 +1,8 @@
 #ifndef _SRC__UTIL__ATTRS_H_
 #define _SRC__UTIL__ATTRS_H_
 
-#include "util/portability.h"
 #include "util/macro.h"
+#include "util/portability.h"
 
 
 #define MALLOC_FUNC __attribute__((malloc))

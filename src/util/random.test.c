@@ -15,7 +15,8 @@ test_random() {
     sink = rand64();
     test_assert(sink != rand64());
 
-    for (seed = 0; !(seed & (1UL << 63)); seed += 0x0123456789abcdef) {
+    enum { SEED_MAX = (1UL << 63), SEED_INCR = 0x0123456789abcdef };
+    for (seed = 0; seed < SEED_MAX; seed += SEED_INCR) {
         seed_rand(seed);
         lseed = seed;
         sink  = rand32();
@@ -26,7 +27,7 @@ test_random() {
 
         seed_rand(seed);
         test_assert(sink == rand32());
-        test_assert(sink == _rand32(seed));
+        test_assert(sink == rand32c(seed));
 
         seed_rand(seed);
         lseed = seed;
@@ -38,7 +39,7 @@ test_random() {
 
         seed_rand(seed);
         test_assert(sink == rand64());
-        test_assert(sink == _rand64(seed));
+        test_assert(sink == rand64c(seed));
     }
 
     return 0;

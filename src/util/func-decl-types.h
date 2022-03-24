@@ -20,9 +20,13 @@ typedef struct func_decl {
 typedef void (*run_decl_f)(const func_decl_t *);
 
 typedef struct decl_list {
-    const uint64_t    ndecls;
-    const char *      decl_desc;
+    const uint64_t ndecls;
+    const char *   decl_desc;
+#ifdef __cplusplus
     const func_decl_t decls[30];
+#else
+    const func_decl_t decls[];
+#endif
 } decl_list_t;
 
 #endif

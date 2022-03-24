@@ -44,8 +44,8 @@
         die(NULL);                                                             \
     }
 
-#define die(msg, args...)    _die(ERR_ARGS, msg, ##args);
-#define errdie(msg, args...) _errdie(ERR_ARGS, errno, msg, ##args);
+#define die(msg, args...)    I_die(ERR_ARGS, msg, ##args);
+#define errdie(msg, args...) I_errdie(ERR_ARGS, errno, msg, ##args);
 
 /* #define WITH_DBG_PRINT */
 #ifdef WITH_DBG_PRINT
@@ -58,26 +58,27 @@
 #define PRINTFFL
 #endif
 
-EXIT_FUNC NONNULL(1, 2) void _va_errdie(char const * restrict file_name,
-                                        char const * restrict func_name,
-                                        uint32_t line_number,
-                                        int32_t  error_number,
-                                        char const * restrict msg,
-                                        va_list ap);
+EXIT_FUNC NONNULL(1, 2) void I_va_errdie(char const * restrict file_name,
+                                         char const * restrict func_name,
+                                         uint32_t line_number,
+                                         int32_t  error_number,
+                                         char const * restrict msg,
+                                         va_list ap);
 
 EXIT_FUNC NONNULL(1, 2)
-    FORMATF(5, 6) void _errdie(char const * restrict file_name,
-                               char const * restrict func_name,
-                               uint32_t line_number,
-                               int32_t  error_number,
-                               char const * restrict msg,
-                               ...);
+    FORMATF(5, 6) void I_errdie(char const * restrict file_name,
+                                char const * restrict func_name,
+                                uint32_t line_number,
+                                int32_t  error_number,
+                                char const * restrict msg,
+                                ...);
 
-EXIT_FUNC NONNULL(1, 2) FORMATF(4, 5) void _die(char const * restrict file_name,
-                                                char const * restrict func_name,
-                                                uint32_t line_number,
-                                                char const * restrict msg,
-                                                ...);
+EXIT_FUNC NONNULL(1, 2)
+    FORMATF(4, 5) void I_die(char const * restrict file_name,
+                             char const * restrict func_name,
+                             uint32_t line_number,
+                             char const * restrict msg,
+                             ...);
 
-EXIT_FUNC FORMATF(1, 2) void _msg_die(char const * restrict msg, ...);
+EXIT_FUNC FORMATF(1, 2) void I_msg_die(char const * restrict msg, ...);
 #endif

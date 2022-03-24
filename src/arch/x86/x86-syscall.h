@@ -4,7 +4,7 @@
 #include "../../util/macro.h"
 #include "../../util/types.h"
 
-#define _x86_internal_syscall(reg_setup, reg_decls...)                         \
+#define I_x86_internal_syscall(reg_setup, reg_decls...)                        \
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
         __asm__ volatile("syscall"                                             \
@@ -14,8 +14,8 @@
         _rax;                                                                  \
     })
 
-#define _x86_internal_syscall_cc(reg_setup, reg_decls, rw_clobbers,            \
-                                 rd_clobbers, w_clobbers)                      \
+#define I_x86_internal_syscall_cc(reg_setup, reg_decls, rw_clobbers,           \
+                                  rd_clobbers, w_clobbers)                     \
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
         __asm__ volatile("syscall"                                             \
@@ -26,75 +26,77 @@
     })
 
 
-#define _x86_internal_pin_reg(reg, val)                                        \
+#define I_x86_internal_pin_reg(reg, val)                                       \
     register get_type(val) CAT(_, reg) __asm__(V_TO_STR(reg)) = (val)
-#define _x86_internal_pin_reg1(SYS_num) _x86_internal_pin_reg(rax, SYS_num)
-#define _x86_internal_pin_reg2(SYS_num, arg0)                                  \
-    _x86_internal_pin_reg1(SYS_num);                                           \
-    _x86_internal_pin_reg(rdi, arg0)
-#define _x86_internal_pin_reg3(SYS_num, arg0, arg1)                            \
-    _x86_internal_pin_reg2(SYS_num, arg0);                                     \
-    _x86_internal_pin_reg(rsi, arg1)
-#define _x86_internal_pin_reg4(SYS_num, arg0, arg1, arg2)                      \
-    _x86_internal_pin_reg3(SYS_num, arg0, arg1);                               \
-    _x86_internal_pin_reg(rdx, arg2)
-#define _x86_internal_pin_reg5(SYS_num, arg0, arg1, arg2, arg3)                \
-    _x86_internal_pin_reg4(SYS_num, arg0, arg1, arg2);                         \
-    _x86_internal_pin_reg(r10, arg3)
-#define _x86_internal_pin_reg6(SYS_num, arg0, arg1, arg2, arg3, arg4)          \
-    _x86_internal_pin_reg5(SYS_num, arg0, arg1, arg2, arg3);                   \
-    _x86_internal_pin_reg(r8, arg4)
-#define _x86_internal_pin_reg7(SYS_num, arg0, arg1, arg2, arg3, arg4, arg5)    \
-    _x86_internal_pin_reg6(SYS_num, arg0, arg1, arg2, arg3, arg4);             \
-    _x86_internal_pin_reg(r9, arg5)
+#define I_x86_internal_pin_reg1(SYS_num) I_x86_internal_pin_reg(rax, SYS_num)
+#define I_x86_internal_pin_reg2(SYS_num, arg0)                                 \
+    I_x86_internal_pin_reg1(SYS_num);                                          \
+    I_x86_internal_pin_reg(rdi, arg0)
+#define I_x86_internal_pin_reg3(SYS_num, arg0, arg1)                           \
+    I_x86_internal_pin_reg2(SYS_num, arg0);                                    \
+    I_x86_internal_pin_reg(rsi, arg1)
+#define I_x86_internal_pin_reg4(SYS_num, arg0, arg1, arg2)                     \
+    I_x86_internal_pin_reg3(SYS_num, arg0, arg1);                              \
+    I_x86_internal_pin_reg(rdx, arg2)
+#define I_x86_internal_pin_reg5(SYS_num, arg0, arg1, arg2, arg3)               \
+    I_x86_internal_pin_reg4(SYS_num, arg0, arg1, arg2);                        \
+    I_x86_internal_pin_reg(r10, arg3)
+#define I_x86_internal_pin_reg6(SYS_num, arg0, arg1, arg2, arg3, arg4)         \
+    I_x86_internal_pin_reg5(SYS_num, arg0, arg1, arg2, arg3);                  \
+    I_x86_internal_pin_reg(r8, arg4)
+#define I_x86_internal_pin_reg7(SYS_num, arg0, arg1, arg2, arg3, arg4, arg5)   \
+    I_x86_internal_pin_reg6(SYS_num, arg0, arg1, arg2, arg3, arg4);            \
+    I_x86_internal_pin_reg(r9, arg5)
 
-#define _x86_internal_pin_regN(N, ...)                                         \
-    CAT(_x86_internal_pin_reg, N)(__VA_ARGS__)
+#define I_x86_internal_pin_regN(N, ...)                                        \
+    CAT(I_x86_internal_pin_reg, N)(__VA_ARGS__)
 
-#define _x86_internal_reg1
-#define _x86_internal_reg2 "r"(_rdi)
-#define _x86_internal_reg3 _x86_internal_reg2, "r"(_rsi)
-#define _x86_internal_reg4 _x86_internal_reg3, "r"(_rdx)
-#define _x86_internal_reg5 _x86_internal_reg4, "r"(_r10)
-#define _x86_internal_reg6 _x86_internal_reg5, "r"(_r8)
-#define _x86_internal_reg7 _x86_internal_reg6, "r"(_r9)
-
-
-#define x86_add_rw_clobber(mem) , "+m"(*(mem))
-#define x86_add_rd_clobber(mem) , "m"(*(mem))
-#define x86_add_w_clobber(mem)  , "=m"(*(mem))
-
-#define _x86_add_clobbers(clobber, ...) APPLY(clobber, EMPTY(), __VA_ARGS__)
-#define x86_add_clobbers(clobber, ...)  (_x86_add_clobbers(clobber, __VA_ARGS__))
-
-#define x86_add_rw_clobbers(to_clobber)                                        \
-    x86_add_clobbers(x86_add_rw_clobber, DEPAREN(to_clobber))
-#define x86_add_rd_clobbers(to_clobber)                                        \
-    x86_add_clobbers(x86_add_rd_clobber, DEPAREN(to_clobber))
-#define x86_add_w_clobbers(to_clobber)                                         \
-    x86_add_clobbers(x86_add_w_clobber, DEPAREN(to_clobber))
+#define I_x86_internal_reg1
+#define I_x86_internal_reg2 "r"(_rdi)
+#define I_x86_internal_reg3 I_x86_internal_reg2, "r"(_rsi)
+#define I_x86_internal_reg4 I_x86_internal_reg3, "r"(_rdx)
+#define I_x86_internal_reg5 I_x86_internal_reg4, "r"(_r10)
+#define I_x86_internal_reg6 I_x86_internal_reg5, "r"(_r8)
+#define I_x86_internal_reg7 I_x86_internal_reg6, "r"(_r9)
 
 
-#define _x86_internal_syscallN(N, ...)                                         \
-    _x86_internal_syscall(_x86_internal_pin_regN(N, __VA_ARGS__),              \
-                          CAT(_x86_internal_reg, N))
+#define I_x86_add_rw_clobber(mem) , "+m"(*(mem))
+#define I_x86_add_rd_clobber(mem) , "m"(*(mem))
+#define I_x86_add_w_clobber(mem)  , "=m"(*(mem))
 
-#define _x86_internal_syscallN_cc(N, vars, rw_clobbers, rd_clobbers,           \
-                                  w_clobbers)                                  \
-    _x86_internal_syscall_cc(_x86_internal_pin_regN(N, DEPAREN(vars)),         \
-                             (CAT(_x86_internal_reg, N)), rw_clobbers,         \
-                             rd_clobbers, w_clobbers)
+#define I_x86_add_clobbers_(clobber, ...) APPLY(clobber, EMPTY(), __VA_ARGS__)
+#define I_x86_add_clobbers(clobber, ...)                                       \
+    (I_x86_add_clobbers_(clobber, __VA_ARGS__))
 
-#define _syscall(...) _x86_internal_syscallN(PP_NARG(__VA_ARGS__), __VA_ARGS__)
+#define I_x86_add_rw_clobbers(to_clobber)                                      \
+    I_x86_add_clobbers(I_x86_add_rw_clobber, DEPAREN(to_clobber))
+#define I_x86_add_rd_clobbers(to_clobber)                                      \
+    I_x86_add_clobbers(I_x86_add_rd_clobber, DEPAREN(to_clobber))
+#define I_x86_add_w_clobbers(to_clobber)                                       \
+    I_x86_add_clobbers(I_x86_add_w_clobber, DEPAREN(to_clobber))
 
-#define _syscall_cc_combined(vars, rw_mem, rd_mem, w_mem)                      \
-    _x86_internal_syscallN_cc(                                                 \
-        PP_NARG(DEPAREN(vars)), vars, x86_add_rw_clobbers(rw_mem),             \
-        x86_add_rd_clobbers(rd_mem), x86_add_w_clobbers(w_mem))
 
-#define _syscall_cc(sys_num, vars, rw_mem, rd_mem, w_mem)                      \
-    _syscall_cc_combined((ADD_ARG_FRONT(sys_num, DEPAREN(vars))), rw_mem,      \
-                         rd_mem, w_mem)
+#define I_x86_internal_syscallN(N, ...)                                        \
+    I_x86_internal_syscall(I_x86_internal_pin_regN(N, __VA_ARGS__),            \
+                           CAT(I_x86_internal_reg, N))
+
+#define I_x86_internal_syscallN_cc(N, vars, rw_clobbers, rd_clobbers,          \
+                                   w_clobbers)                                 \
+    I_x86_internal_syscall_cc(I_x86_internal_pin_regN(N, DEPAREN(vars)),       \
+                              (CAT(I_x86_internal_reg, N)), rw_clobbers,       \
+                              rd_clobbers, w_clobbers)
+
+#define ll_syscall(...)                                                        \
+    I_x86_internal_syscallN(PP_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#define I_ll_syscall_cc_combined(vars, rw_mem, rd_mem, w_mem)                  \
+    I_x86_internal_syscallN_cc(                                                \
+        PP_NARG(DEPAREN(vars)), vars, I_x86_add_rw_clobbers(rw_mem),           \
+        I_x86_add_rd_clobbers(rd_mem), I_x86_add_w_clobbers(w_mem))
+
+#define ll_syscall_cc(sys_num, vars, rw_mem, rd_mem, w_mem)                    \
+    I_ll_syscall_cc_combined((ADD_ARG_FRONT(sys_num, DEPAREN(vars))), rw_mem,  \
+                             rd_mem, w_mem)
 
 
 #endif
