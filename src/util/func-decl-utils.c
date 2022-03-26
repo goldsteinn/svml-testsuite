@@ -109,7 +109,7 @@ list_decls(decl_list_t const * restrict decl_list) {
     for (i = 0; i < ndecls; ++i) {
         decls = decl_list->decls;
 
-        die_assert(decls[i].name && decls[i]._func_ptr,
+        die_assert(decls[i].name && decls[i].data,
                    "Error, unitialized decl struct!\n");
         fprintf(stdout, "%-24s\n", decls[i].name);
     }
@@ -136,7 +136,7 @@ run_decls(decl_list_t const * restrict decl_list,
     ndecls = decl_list->ndecls;
     decls  = decl_list->decls;
     for (i = 0; i < ndecls; ++i) {
-        die_assert(decls[i].name && decls[i]._func_ptr,
+        die_assert(decls[i].name && decls[i].data,
                    "Error, unitialized decl struct!\n");
         if (should_run_decl(decls[i].name, decls_to_run, ndecls_to_run,
                             decl_states, re_matchers)) {

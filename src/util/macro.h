@@ -17,11 +17,13 @@
 #endif
 #define ERR_ARGS __FILENAME__, __func__, __LINE__
 /******************************************************************************/
-#define _CAT(x, y) x##y
-#define CAT(x, y)  _CAT(x, y)
+#define I__CAT_BASE(x, y) x##y
+#define CAT_BASE(x, y)    I__CAT_BASE(x, y)
+#define CAT(...)          APPLY_RECURSE(CAT_BASE, __VA_ARGS__)
 
-#define _V_TO_STR(X) #X
-#define V_TO_STR(X)  _V_TO_STR(X)
+
+#define I__V_TO_STR(X) #X
+#define V_TO_STR(X)    I__V_TO_STR(X)
 /******************************************************************************/
 /* clang-format off */
 #define PP_NARG(...) \
@@ -61,7 +63,7 @@
 
 /******************************************************************************/
 /* Macros for detecting is __VA_ARGS__ is empty.  */
-#define _IS_EMPTY_ARG64(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, \
+#define I__IS_EMPTY_ARG64(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, \
                         _13, _14, _15, _16, _17, _18, _19, _20, _21, _22, _23, \
                         _24, _25, _26, _27, _28, _29, _30, _31, _32, _33, _34, \
                         _35, _36, _37, _38, _39, _40, _41, _42, _43, _44, _45, \
@@ -70,22 +72,22 @@
     _63
 
 #define IS_EMPTY_HAS_COMMA(...)                                                \
-    _IS_EMPTY_ARG64(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  \
+    I__IS_EMPTY_ARG64(__VA_ARGS__, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  \
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   \
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,   \
                     1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
 
 
-#define _IS_EMPTY_TRIGGER_PARENTHESIS_(...) ,
+#define I__IS_EMPTY_TRIGGER_PARENTHESIS_(...) ,
 
 #define IS_EMPTY_PASTE5(_0, _1, _2, _3, _4) _0##_1##_2##_3##_4
-#define _IS_EMPTY_RESULT(_0, _1, _2, _3)                                       \
-    IS_EMPTY_HAS_COMMA(IS_EMPTY_PASTE5(_IS_EMPTY_RESULT_CASE_, _0, _1, _2, _3))
-#define _IS_EMPTY_RESULT_CASE_0001 ,
+#define I__IS_EMPTY_RESULT(_0, _1, _2, _3)                                       \
+    IS_EMPTY_HAS_COMMA(IS_EMPTY_PASTE5(I__IS_EMPTY_RESULT_CASE_, _0, _1, _2, _3))
+#define I__IS_EMPTY_RESULT_CASE_0001 ,
 
-#define IS_EMPTY(...) _IS_EMPTY_(DEPAREN(__VA_ARGS__))
-#define _IS_EMPTY_(...)                                                        \
-    _IS_EMPTY_RESULT(/* test if there is just one argument, eventually an      \
+#define IS_EMPTY(...) I__IS_EMPTY_(DEPAREN(__VA_ARGS__))
+#define I__IS_EMPTY_(...)                                                        \
+    I__IS_EMPTY_RESULT(/* test if there is just one argument, eventually an      \
                         empty one */                                                                        \
                      IS_EMPTY_HAS_COMMA(                                       \
                          __VA_ARGS__), /* test if                              \
@@ -93,7 +95,7 @@
                                           together with the argument adds a                                                                        \
                                           comma */                             \
                      IS_EMPTY_HAS_COMMA(                                       \
-                         _IS_EMPTY_TRIGGER_PARENTHESIS_                        \
+                         I__IS_EMPTY_TRIGGER_PARENTHESIS_                        \
                              __VA_ARGS__), /* test if the argument together    \
                                               with a parenthesis               \
                                               adds a comma */                  \
@@ -102,16 +104,16 @@
                                          _IS_EMPTY_TRIGGER_PARENTHESIS_ and    \
                                          the parenthesis adds a comma */                                                   \
                      IS_EMPTY_HAS_COMMA(                                       \
-                         _IS_EMPTY_TRIGGER_PARENTHESIS_ __VA_ARGS__(           \
+                         I__IS_EMPTY_TRIGGER_PARENTHESIS_ __VA_ARGS__(           \
                              /*empty*/)))
 
 
 
 /******************************************************************************/
 /* Do macro on all args in __VA_ARGS__.  */
-#define APPLY(macro, OP, ...) CAT(APPLY, IS_EMPTY(__VA_ARGS__))(macro, FWD_TOKEN(OP), __VA_ARGS__)
+#define APPLY(macro, OP, ...) CAT_BASE(APPLY, IS_EMPTY(__VA_ARGS__))(macro, FWD_TOKEN(OP), __VA_ARGS__)
 #define APPLY1(macro, OP, ...)
-#define APPLY0(macro, OP, ...) CAT(APPLY_, PP_NARG(__VA_ARGS__))(macro, OP, __VA_ARGS__)
+#define APPLY0(macro, OP, ...) CAT_BASE(APPLY_, PP_NARG(__VA_ARGS__))(macro, OP, __VA_ARGS__)
 
 
 #define APPLY_1(m, OP, x1) m(x1)
@@ -178,9 +180,9 @@
 #define APPLY_62(m, OP, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62) m(x1) OP m(x2) OP m(x3) OP m(x4) OP m(x5) OP m(x6) OP m(x7) OP m(x8) OP m(x9) OP m(x10) OP m(x11) OP m(x12) OP m(x13) OP m(x14) OP m(x15) OP m(x16) OP m(x17) OP m(x18) OP m(x19) OP m(x20) OP  m(x21)  OP  m(x22)  OP  m(x23)  OP  m(x24)  OP  m(x25)  OP  m(x26)  OP  m(x27)  OP  m(x28)  OP  m(x29)  OP  m(x30)  OP  m(x31)  OP  m(x32)  OP  m(x33)  OP  m(x34)  OP  m(x35)  OP  m(x36)  OP  m(x37)  OP  m(x38)  OP  m(x39)  OP  m(x40)  OP  m(x41)  OP  m(x42)  OP  m(x43)  OP  m(x44)  OP  m(x45)  OP  m(x46)  OP  m(x47)  OP  m(x48)  OP  m(x49)  OP  m(x50)  OP  m(x51)  OP  m(x52)  OP  m(x53)  OP  m(x54)  OP  m(x55)  OP  m(x56)  OP  m(x57)  OP  m(x58)  OP  m(x59)  OP  m(x60)  OP  m(x61)  OP  m(x62)
 #define APPLY_63(m, OP, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62,x63) m(x1) OP m(x2) OP m(x3) OP m(x4) OP m(x5) OP m(x6) OP m(x7) OP m(x8) OP m(x9) OP m(x10) OP m(x11) OP m(x12) OP m(x13) OP m(x14) OP m(x15) OP m(x16) OP m(x17) OP m(x18) OP m(x19) OP m(x20) OP  m(x21)  OP  m(x22)  OP  m(x23)  OP  m(x24)  OP  m(x25)  OP  m(x26)  OP  m(x27)  OP  m(x28)  OP  m(x29)  OP  m(x30)  OP  m(x31)  OP  m(x32)  OP  m(x33)  OP  m(x34)  OP  m(x35)  OP  m(x36)  OP  m(x37)  OP  m(x38)  OP  m(x39)  OP  m(x40)  OP  m(x41)  OP  m(x42)  OP  m(x43)  OP  m(x44)  OP  m(x45)  OP  m(x46)  OP  m(x47)  OP  m(x48)  OP  m(x49)  OP  m(x50)  OP  m(x51)  OP  m(x52)  OP  m(x53)  OP  m(x54)  OP  m(x55)  OP  m(x56)  OP  m(x57)  OP  m(x58)  OP  m(x59)  OP  m(x60)  OP  m(x61)  OP  m(x62)  OP  m(x63)
 
-#define APPLY_RECURSE(macro, ...) CAT(APPLY_RECURSE, IS_EMPTY(__VA_ARGS__))(macro, __VA_ARGS__)
+#define APPLY_RECURSE(macro, ...) CAT_BASE(APPLY_RECURSE, IS_EMPTY(__VA_ARGS__))(macro, __VA_ARGS__)
 #define APPLY_RECURSE1(macro, ...)
-#define APPLY_RECURSE0(macro, ...) CAT(APPLY_RECURSE_, PP_NARG(__VA_ARGS__))(macro, __VA_ARGS__)
+#define APPLY_RECURSE0(macro, ...) CAT_BASE(APPLY_RECURSE_, PP_NARG(__VA_ARGS__))(macro, __VA_ARGS__)
 
 #define APPLY_RECURSE_2(m, x1, x2) m(x1, x2)
 #define APPLY_RECURSE_3(m, x1, ...) m(x1, APPLY_RECURSE_2(m, __VA_ARGS__))
@@ -248,9 +250,9 @@
 
 
 /* Do macro on all args in __VA_ARGS__.  */
-#define APPLY_PACKR(argp, ...) CAT(APPLY_PACKR, IS_EMPTY(__VA_ARGS__))(argp, __VA_ARGS__)
+#define APPLY_PACKR(argp, ...) CAT_BASE(APPLY_PACKR, IS_EMPTY(__VA_ARGS__))(argp, __VA_ARGS__)
 #define APPLY_PACKR1(argp, ...)
-#define APPLY_PACKR0(argp, ...) CAT(APPLY_PACKR_, PP_NARG(__VA_ARGS__))(argp, __VA_ARGS__)
+#define APPLY_PACKR0(argp, ...) CAT_BASE(APPLY_PACKR_, PP_NARG(__VA_ARGS__))(argp, __VA_ARGS__)
 
 #define APPLY_PACKR_1(argp, x1) (x1, argp)
 #define APPLY_PACKR_2(argp, x1, x2) (x1, argp) , (x2, argp)
@@ -318,9 +320,9 @@
 
 
 /* Do macro on all args in __VA_ARGS__.  */
-#define APPLY_PACKL(argp, ...) CAT(APPLY_PACKL, IS_EMPTY(__VA_ARGS__))(argp, __VA_ARGS__))
+#define APPLY_PACKL(argp, ...) CAT_BASE(APPLY_PACKL, IS_EMPTY(__VA_ARGS__))(argp, __VA_ARGS__))
 #define APPLY_PACKL1(argp, ...)
-#define APPLY_PACKL0(argp, ...)CAT(APPLY_PACKL_, PP_NARG(__VA_ARGS__))(argp, __VA_ARGS__)
+#define APPLY_PACKL0(argp, ...)CAT_BASE(APPLY_PACKL_, PP_NARG(__VA_ARGS__))(argp, __VA_ARGS__)
 
 #define APPLY_PACKL_1(argp, x1) (x1, argp)
 #define APPLY_PACKL_2(argp, x1, x2) (x1, argp) , (x2, argp)
@@ -386,9 +388,9 @@
 #define APPLY_PACKL_62(argp, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62) (x1, argp) , (x2, argp) , (x3, argp) , (x4, argp) , (x5, argp) , (x6, argp) , (x7, argp) , (x8, argp) , (x9, argp) , (x10, argp) , (x11, argp) , (x12, argp) , (x13, argp) , (x14, argp) , (x15, argp) , (x16, argp) , (x17, argp) , (x18, argp) , (x19, argp) , (x20, argp) ,  (x21, argp)  ,  (x22, argp)  ,  (x23, argp)  ,  (x24, argp)  ,  (x25, argp)  ,  (x26, argp)  ,  (x27, argp)  ,  (x28, argp)  ,  (x29, argp)  ,  (x30, argp)  ,  (x31, argp)  ,  (x32, argp)  ,  (x33, argp)  ,  (x34, argp)  ,  (x35, argp)  ,  (x36, argp)  ,  (x37, argp)  ,  (x38, argp)  ,  (x39, argp)  ,  (x40, argp)  ,  (x41, argp)  ,  (x42, argp)  ,  (x43, argp)  ,  (x44, argp)  ,  (x45, argp)  ,  (x46, argp)  ,  (x47, argp)  ,  (x48, argp)  ,  (x49, argp)  ,  (x50, argp)  ,  (x51, argp)  ,  (x52, argp)  ,  (x53, argp)  ,  (x54, argp)  ,  (x55, argp)  ,  (x56, argp)  ,  (x57, argp)  ,  (x58, argp)  ,  (x59, argp)  ,  (x60, argp)  ,  (x61, argp)  ,  (x62, argp)
 #define APPLY_PACKL_63(argp, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15, x16, x17, x18, x19, x20, x21,x22,x23,x24,x25,x26,x27,x28,x29,x30,x31,x32,x33,x34,x35,x36,x37,x38,x39,x40,x41,x42,x43,x44,x45,x46,x47,x48,x49,x50,x51,x52,x53,x54,x55,x56,x57,x58,x59,x60,x61,x62,x63) (x1, argp) , (x2, argp) , (x3, argp) , (x4, argp) , (x5, argp) , (x6, argp) , (x7, argp) , (x8, argp) , (x9, argp) , (x10, argp) , (x11, argp) , (x12, argp) , (x13, argp) , (x14, argp) , (x15, argp) , (x16, argp) , (x17, argp) , (x18, argp) , (x19, argp) , (x20, argp) ,  (x21, argp)  ,  (x22, argp)  ,  (x23, argp)  ,  (x24, argp)  ,  (x25, argp)  ,  (x26, argp)  ,  (x27, argp)  ,  (x28, argp)  ,  (x29, argp)  ,  (x30, argp)  ,  (x31, argp)  ,  (x32, argp)  ,  (x33, argp)  ,  (x34, argp)  ,  (x35, argp)  ,  (x36, argp)  ,  (x37, argp)  ,  (x38, argp)  ,  (x39, argp)  ,  (x40, argp)  ,  (x41, argp)  ,  (x42, argp)  ,  (x43, argp)  ,  (x44, argp)  ,  (x45, argp)  ,  (x46, argp)  ,  (x47, argp)  ,  (x48, argp)  ,  (x49, argp)  ,  (x50, argp)  ,  (x51, argp)  ,  (x52, argp)  ,  (x53, argp)  ,  (x54, argp)  ,  (x55, argp)  ,  (x56, argp)  ,  (x57, argp)  ,  (x58, argp)  ,  (x59, argp)  ,  (x60, argp)  ,  (x61, argp)  ,  (x62, argp)  ,  (x63, argp)
 
-#define ARGP_APPLY(argp, OP, ...) CAT(ARGP_APPLY, IS_EMPTY(__VA_ARGS__))(argp, FWD_TOKEN(OP), __VA_ARGS__)
+#define ARGP_APPLY(argp, OP, ...) CAT_BASE(ARGP_APPLY, IS_EMPTY(__VA_ARGS__))(argp, FWD_TOKEN(OP), __VA_ARGS__)
 #define ARGP_APPLY1(argp, OP, ...)
-#define ARGP_APPLY0(argp, OP, ...) CAT(ARGP_APPLY_, PP_NARG(__VA_ARGS__))(argp, OP, __VA_ARGS__)
+#define ARGP_APPLY0(argp, OP, ...) CAT_BASE(ARGP_APPLY_, PP_NARG(__VA_ARGS__))(argp, OP, __VA_ARGS__)
 
 #define ARGP_APPLY_1(argp, OP, x1) x1 argp
 #define ARGP_APPLY_2(argp, OP, x1, x2) x1 argp OP x2 argp
@@ -457,14 +459,14 @@
 
 /* For comma chaing of elements. Useful for initialization.  */
 #define EMPTY()
-#define DEFER(id) id EMPTY()
-#define _COMMA()  ,
-#define COMMA     DEFER(_COMMA)()
+#define DEFER(id)  id EMPTY()
+#define I__COMMA() ,
+#define COMMA      DEFER(I__COMMA)()
 
 /* Take advatage of fact that macro(,) has two arguments but
    macro(OP_THATS_NOT_COMMA) only has one. */
 #define FWD_TOKEN(...)                                                         \
-    CAT(REMAKE_COMMA_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
+    CAT_BASE(REMAKE_COMMA_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define REMAKE_COMMA_ONE(...)  __VA_ARGS__
 #define REMAKE_COMMA_MANY(...) COMMA
 
@@ -475,10 +477,10 @@
 #define DEPAREN(...)                                                           \
     DEPAREN_EVALUATING_PASTE(DEPAREN_NOTHING_, DEPAREN_EXTRACT __VA_ARGS__)
 
-#define _ADD_ARG0(...)    __VA_ARGS__
-#define _ADD_ARG1(x, ...) x
+#define I__ADD_ARG0(...)    __VA_ARGS__
+#define I__ADD_ARG1(x, ...) x
 #define ADD_ARG_FRONT(x, ...)                                                  \
-    CAT(_ADD_ARG, IS_EMPTY(__VA_ARGS__))(x, __VA_ARGS__)
+    CAT_BASE(I__ADD_ARG, IS_EMPTY(__VA_ARGS__))(x, __VA_ARGS__)
 
 #define FORWARD(...) __VA_ARGS__
 

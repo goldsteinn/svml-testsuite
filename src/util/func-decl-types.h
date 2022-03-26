@@ -10,8 +10,7 @@ typedef void * (*bench_f)(void *);
 typedef struct func_decl {
     const char * name;
     union {
-        const void * _func_ptr;
-
+        const void *  data;
         const test_f  test_func;
         const bench_f bench_func;
     };
