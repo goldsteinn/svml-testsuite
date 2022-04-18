@@ -42,5 +42,4 @@
 // clang-format on
 
 #endif
-
 #endif

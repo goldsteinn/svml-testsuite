@@ -47,28 +47,35 @@ static const bool true  = !false;
 #define AGU_T(base, offset) CAST(get_type(base), AGU(base, offset))
 
 
-#define get_type(x) __typeof__(x)
-#define is_same_type(x, y)                                                     \
-    __builtin_types_compatible_p(get_type(x), get_type(y))
-#define is_same_func_type(decl, func)                                          \
-    __builtin_types_compatible_p(get_type(decl), get_type(&(func)))
+#define get_type(x)        __typeof__(x)
+#define is_same_type(x, y) I_is_same_type(get_type(x), get_type(y))
+
+#define is_same_func_type(decl, func) is_same_type(decl, &(func))
 
 
 /* GCC does not const evaluate `__builtin_classify_type` if `x` is void.  */
-#define I_AS_NOT_VOID(x)                                                      \
-    (__builtin_choose_expr(__builtin_types_compatible_p(get_type(x), void), 0, \
-                           (x)))
+#define I_AS_NOT_VOID(x)                                                       \
+    (I_choose_const_expr(I_is_same_type(get_type(x), void), 0, (x)))
 
 /* GCC / LLVM only.  */
 #define IS_PTR(x)                                                              \
     (__builtin_classify_type(I_AS_NOT_VOID(x)) == 5 /* 5 is ptr type.  */)
 
 /* Use to make derefencing never a compiler error/warning.  */
-#define I_AS_PTR(x)                                                           \
-    (__builtin_choose_expr(IS_PTR(x), (x), ((void **)(NULL))) + 0)
+#define I_AS_PTR(x) (I_choose_const_expr(IS_PTR(x), (x), ((void **)(NULL))) + 0)
 
 #ifdef __cplusplus
 #include <type_traits>
+
+#define I_PTR_TYPE(x)                                                          \
+    typename std::conditional<std::is_pointer<get_type(x)>::value,             \
+                              get_type(x), void **>::type
+
+
+#define sizeof_deref(x)        sizeof(*CAST(I_PTR_TYPE(x), x))
+#define I_is_same_type(T0, T1) std::is_same<T0, T1>::value
+
+
 #define MAKE_UNSIGNED(x) CAST(std::make_unsigned<get_type(x)>::type, x)
 #define MAKE_SIGNED(x)   CAST(std::make_signed<get_type(x)>::type, x)
 
@@ -81,6 +88,14 @@ static const bool true  = !false;
      std::is_unsigned<get_type(x)>::value)
 
 #else
+
+/* Use to make derefencing never a compiler error/warning.  */
+#define I_AS_PTR(x) (I_choose_const_expr(IS_PTR(x), (x), ((void **)(NULL))) + 0)
+
+#define sizeof_deref(x)        sizeof(*(x))
+#define I_is_same_type(T0, T1) __builtin_types_compatible_p(T0, T1)
+
+
 #if STDC_VERSION >= 2011
 // clang-format off
 #define MAKE_UNSIGNED(x)                            \
@@ -162,7 +177,7 @@ static const bool true  = !false;
 #define I_SIGN_PROMOTE(A, B) (1 ? (A) : (B))
 #define I_PROMOTE_1(EXPR)    I_SIGN_PROMOTE(1, (EXPR))
 #define I_PROMOTE_M1(EXPR)   I_SIGN_PROMOTE(-1, (EXPR))
-#define IS_SIGNED(EXPR)       (I_PROMOTE_M1(EXPR) < I_PROMOTE_1(EXPR))
+#define IS_SIGNED(EXPR)      (I_PROMOTE_M1(EXPR) < I_PROMOTE_1(EXPR))
 
 #endif
 
