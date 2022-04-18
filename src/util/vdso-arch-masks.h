@@ -5,14 +5,14 @@
 
 #include "util/vdso-func-enum.h"
 
-static uint64_t
+static uint32_t
 get_x86_vdso_expec_mask() {
     return (1UL << vdso_clock_gettime_offset) |
            (1UL << vdso_gettimeofday_offset) | (1UL << vdso_getcpu_offset) |
            (1UL << vdso_time_offset);
 }
 
-static uint64_t
+static uint32_t
 get_vdso_expec_mask() {
 #if __x86_64__
     return get_x86_vdso_expec_mask();

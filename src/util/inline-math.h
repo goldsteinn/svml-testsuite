@@ -59,7 +59,7 @@
 #define next_p2(x)                                                             \
     ({                                                                         \
         get_type(x) _tmp_evaluated_x = (x);                                    \
-        get_type(UNSIGNED(_tmp_evaluated_x)) _next_p2_tmp_ =                   \
+        get_type(MAKE_UNSIGNED(_tmp_evaluated_x)) _next_p2_tmp_ =              \
             (_tmp_evaluated_x);                                                \
         /* If constant compiler can calculate this version at compile          \
          * time. */                                                            \
@@ -94,7 +94,7 @@
 #define prev_p2(x)                                                             \
     ({                                                                         \
         get_type(x) _tmp_evaluated_x = (x);                                    \
-        get_type(UNSIGNED(_tmp_evaluated_x)) _prev_p2_tmp_ =                   \
+        get_type(MAKE_UNSIGNED(_tmp_evaluated_x)) _prev_p2_tmp_ =              \
             (_tmp_evaluated_x);                                                \
         /* If constant compiler can calculate this version at compile          \
          * time. */                                                            \

@@ -57,7 +57,7 @@ setcpu_and_wait(pid_t pid, uint32_t cpu) {
 
 uint32_t
 I_safe_get_cpu(const char * fn, const char * func, uint32_t ln) {
-    int32_t cpu = get_cpu();
+    int32_t cpu = CAST(int32_t, get_cpu());
     if (UNLIKELY(cpu < 0)) {
         I_errdie(fn, func, ln, errno, NULL);
     }

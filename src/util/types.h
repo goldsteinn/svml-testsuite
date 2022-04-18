@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <wchar.h>
 
+#include "util/portability.h"
+
 /* Use safe_<type> for aliasing casts. */
 typedef wchar_t  safe_wchar_t __attribute__((may_alias));
 typedef uint32_t safe_uint32_t __attribute__((may_alias, aligned(1)));
@@ -39,24 +41,11 @@ static const bool true  = !false;
 
 #define CAST_TO_FUNC(func, x) ((FUNC_T(func))(x))
 #define FUNC_T(func)          __typeof__(&(func))
-#define CAST(x, y)            ((x)(y))
-#define AGU(base, offset)     (CAST(ptr_int_t, base) + CAST(ptr_int_t, offset))
-#define AGU_T(base, offset)   CAST(get_type(base), AGU(base, offset))
 
-#ifdef __cplusplus
-#include <type_traits>
-#define UNSIGNED(x) std::make_unsigned<get_type(x)>::type
-#else
-#define UNSIGNED(x)                                                            \
-    _Generic((x), char                                                         \
-             : (unsigned char)(x), signed char                                 \
-             : (unsigned char)(x), int                                         \
-             : (unsigned int)(x), short                                        \
-             : (unsigned short)(x), long                                       \
-             : (unsigned long)(x), long long                                   \
-             : (unsigned long long)(x), default                                \
-             : x)
-#endif
+#define CAST(x, y)          ((x)(y))
+#define AGU(base, offset)   (CAST(ptr_int_t, base) + CAST(ptr_int_t, offset))
+#define AGU_T(base, offset) CAST(get_type(base), AGU(base, offset))
+
 
 #define get_type(x) __typeof__(x)
 #define is_same_type(x, y)                                                     \
@@ -64,5 +53,120 @@ static const bool true  = !false;
 #define is_same_func_type(decl, func)                                          \
     __builtin_types_compatible_p(get_type(decl), get_type(&(func)))
 
+
+/* GCC does not const evaluate `__builtin_classify_type` if `x` is void.  */
+#define I_AS_NOT_VOID(x)                                                      \
+    (__builtin_choose_expr(__builtin_types_compatible_p(get_type(x), void), 0, \
+                           (x)))
+
+/* GCC / LLVM only.  */
+#define IS_PTR(x)                                                              \
+    (__builtin_classify_type(I_AS_NOT_VOID(x)) == 5 /* 5 is ptr type.  */)
+
+/* Use to make derefencing never a compiler error/warning.  */
+#define I_AS_PTR(x)                                                           \
+    (__builtin_choose_expr(IS_PTR(x), (x), ((void **)(NULL))) + 0)
+
+#ifdef __cplusplus
+#include <type_traits>
+#define MAKE_UNSIGNED(x) CAST(std::make_unsigned<get_type(x)>::type, x)
+#define MAKE_SIGNED(x)   CAST(std::make_signed<get_type(x)>::type, x)
+
+#define MAKE_UNSIGNED_PTR(x) UNSIGNED(x)
+#define MAKE_SIGNED_PTR(x)   SIGNED(x)
+
+#define IS_SIGNED(x) std::is_signed<get_type(x)>::value
+#define IS_UNSIGNED_INT(x)                                                     \
+    (std::is_integral<get_type(x)>::value &&                                   \
+     std::is_unsigned<get_type(x)>::value)
+
+#else
+#if STDC_VERSION >= 2011
+// clang-format off
+#define MAKE_UNSIGNED(x)                            \
+    _Generic((x),                                   \
+             char       : (unsigned char)(x),       \
+             signed char: (unsigned char)(x),       \
+             int        : (unsigned int)(x),        \
+             short      : (unsigned short)(x),      \
+             long       : (unsigned long)(x),       \
+             long long  : (unsigned long long)(x),  \
+             default    : x)
+
+#define MAKE_UNSIGNED_PTR(x)                                \
+    _Generic((x),                                           \
+             char *         : (unsigned char *)(x),         \
+             signed char *  : (unsigned char *)(x),         \
+             int *          : (unsigned int *)(x),          \
+             short *        : (unsigned short *)(x),        \
+             long *         : (unsigned long *)(x),         \
+             long long *    : (unsigned long long *)(x),    \
+             default        : x)
+
+#define MAKE_SIGNED(x)                          \
+    _Generic((x),                               \
+             unsigned char      : (char) (x),   \
+             unsigned char      : (signed) (x), \
+             unsigned int       : (int) (x),    \
+             unsigned short     : (short) (x),  \
+             unsigned long      : (long) (x),   \
+             unsigned long long : (long) (x),   \
+             default            : x)
+
+#define MAKE_SIGNED_PTR(x)                              \
+    _Generic((x),                                       \
+             unsigned char *        : (char *) (x),     \
+             unsigned char *        : (signed *) (x),   \
+             unsigned int *         : (int *) (x),      \
+             unsigned short *       : (short *) (x),    \
+             unsigned long *        : (long *) (x),     \
+             unsigned long long *   : (long *) (x),     \
+             default                : x)
+
+#define IS_SIGNED(x)                            \
+    _Generic((x),                               \
+             unsigned char          : 0,        \
+             unsigned short         : 0,        \
+             unsigned int           : 0,        \
+             unsigned long          : 0,        \
+             unsigned long long     : 0,        \
+             signed char            : 1,        \
+             signed short           : 1,        \
+             signed int             : 1,        \
+             signed long            : 1,        \
+             signed long long       : 1,        \
+             char                   : 1,        \
+             default                : 0)
+
+
+#define IS_UNSIGNED_INT(x)                      \
+    _Generic((x),                               \
+             unsigned char          : 1,        \
+             unsigned short         : 1,        \
+             unsigned int           : 1,        \
+             unsigned long          : 1,        \
+             unsigned long long     : 1,        \
+             signed char            : 0,        \
+             signed short           : 0,        \
+             signed int             : 0,        \
+             signed long            : 0,        \
+             signed long long       : 0,        \
+             char                   : 0,        \
+             default                : 0)
+// clang-format on
+
+
+#else
+#error "Older standard unsupported"
+
+#define I_SIGN_PROMOTE(A, B) (1 ? (A) : (B))
+#define I_PROMOTE_1(EXPR)    I_SIGN_PROMOTE(1, (EXPR))
+#define I_PROMOTE_M1(EXPR)   I_SIGN_PROMOTE(-1, (EXPR))
+#define IS_SIGNED(EXPR)       (I_PROMOTE_M1(EXPR) < I_PROMOTE_1(EXPR))
+
+#endif
+
+#endif
+#define IS_UNSIGNED(x) (!IS_SIGNED(x))
 
 #endif

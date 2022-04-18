@@ -1,23 +1,30 @@
 #include "bench/bench-common.h"
+#include "bench/bench-generator.h"
 
 #include "util/inline-math.h"
 #include "util/macro.h"
 
+ll_make_tput_bench(bench_next_p2,
+                   trials,
+                   next_p2(i),
+                   uint32_t trials,
+                   uint32_t i);
+ll_make_tput_bench(bench_prev_p2,
+                   trials,
+                   prev_p2(i),
+                   uint32_t trials,
+                   uint32_t i);
+
+
 #define run_bench(res_name, res_time, func)                                    \
-    start = get_ll_time();                                                     \
-    for (i = trials; i; --i) {                                                 \
-        compiler_do_not_optimize_out(func(i));                                 \
-    }                                                                          \
-    end        = get_ll_time();                                                \
     (res_name) = V_TO_STR(func);                                               \
-    (res_time) = get_ll_dif(end, start);
+    (res_time) = CAT(bench_, func)(trials, i);
 
 
 void *
 bench_p2(void * bench_args) {
-    uint32_t  trials = CAST(uint32_t, CAST(uint64_t, bench_args));
-    ll_time_t start, end;
-    uint32_t  i;
+    uint32_t trials = CAST(uint32_t, CAST(uint64_t, bench_args));
+    uint32_t i      = 0;
 
     uint64_t     times[4] = { 0 };
     const char * names[4] = { 0 };

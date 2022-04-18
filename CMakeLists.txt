@@ -6,12 +6,22 @@ set_property(CACHE LANG
   PROPERTY STRINGS "C" "CXX")
 
 
-set(cxx_lang "CXX" "C++" "CPP" "CC" "cxx" "c++" "cpp" "cc")
-set(c_lang "C" "c")
+set(COMPILER "gcc" CACHE STRING "Set Language (gcc or clang")
+set_property(CACHE COMPILER
+  PROPERTY STRINGS "clang" "gcc")
 
 
-list(FIND cxx_lang ${LANG} cxx_lang)
-list(FIND c_lang ${LANG} c_lang)
+set(cxx_lang "cxx" "c++" "cpp" "cxx")
+set(c_lang "c")
+
+set(llvm_compilers "llvm" "clang" "clang++")
+set(gnu_compilers "gnu" "gcc" "gxx" "g++")
+
+string(TOLOWER ${LANG} LANG_LOWER)
+string(TOLOWER ${COMPILER} COMPILER_LOWER)
+
+list(FIND cxx_lang ${LANG_LOWER} cxx_lang)
+list(FIND c_lang ${LANG_LOWER} c_lang)
 if(${cxx_lang} GREATER -1)
   set(LANG "CXX")
   set(STD "c++11")
@@ -24,10 +34,22 @@ else()
   message(FATAL_ERROR "Invalid language selection: ${LANG}")
 endif()
 
+set(COMPILER_FLAGS_EXTRA "")
+list(FIND llvm_compilers ${COMPILER_LOWER} llvm_compilers)
+list(FIND gnu_compilers ${COMPILER_LOWER} gnu_compilers)
+if(${llvm_compilers} GREATER -1)
+  set(CMAKE_C_COMPILER "/usr/bin/clang")
+  set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+elseif(${gnu_compilers} GREATER -1)
+  set(CMAKE_C_COMPILER "/usr/bin/gcc")
+  set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+else()
+  message(FATAL_ERROR "Invalid compiler selection: ${COMPILER}")
+endif()
+
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
-#set(CMAKE_C_COMPILER "/usr/bin/gcc")
-#set(CMAKE_CXX_COMPILER "/usr/bin/g++")
 
 set(SRC_DIR "src")
 set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
@@ -40,8 +62,7 @@ foreach(attr ${attrs})
   list(APPEND wattrs "-Wsuggest-attribute=${attr}")
 endforeach()
 
-
-add_compile_options(-D_GNU_SOURCE -O2 -Wwrite-strings -Wcast-qual -Wclobbered -Wdangling-else -Woverlength-strings -Wdisabled-optimization -Wstrict-aliasing -Wstrict-overflow  -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -march=native -mtune=native -std=${STD} ${LANG_FLAGS})
+add_compile_options(-D_GNU_SOURCE -O2 -Wwrite-strings -Wcast-qual -Wdangling-else -Woverlength-strings -Wdisabled-optimization -Wstrict-aliasing -Wstrict-overflow -Werror -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -march=native -mtune=native -std=${STD} ${LANG_FLAGS} ${COMPILER_FLAGS_EXTRA})
 
 set(link_libraries  "")
 list(APPEND link_libraries "-ldl")
@@ -95,7 +116,7 @@ add_custom_target(
   COMMAND ${CLANG_TIDY_EXE}
   ${ALL_C_SOURCES}
   -p=${CMAKE_CURRENT_BINARY_DIR}
-#  -checks=*,-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
+  #  -checks=*,-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
   )
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})

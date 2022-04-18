@@ -483,6 +483,12 @@
     CAT_BASE(I__ADD_ARG, IS_EMPTY(__VA_ARGS__))(x, __VA_ARGS__)
 
 #define FORWARD(...) __VA_ARGS__
+#define EAT(...)
 
+#ifdef __clang_analyzer__
+#define NOANALYZE(expr, backup) backup
+#else
+#define NOANALYZE(expr, ...) expr
+#endif
 
 #endif

@@ -4,6 +4,7 @@
 #include "util/arg.h"
 #include "util/error-util.h"
 #include "util/func-decl-utils.h"
+#include "util/macro.h"
 #include "util/sched-util.h"
 #include "util/verbosity.h"
 
@@ -33,8 +34,12 @@ static ArgDefs argp = { args, "Benchmark Driver", NULL, NULL };
 
 static void
 run_benchmark(const func_decl_t * benchmark) {
-    warn_assert(!benchmark->bench_func(CAST(void *, CAST(uint64_t, trials))),
-                "Issue running: %s\n", benchmark->name);
+
+    warn_assert(
+        !benchmark->bench_func(
+            /* Ideally replaced with NOLINT(performance-no-int-to-ptr) */
+            NOANALYZE(CAST(void *, CAST(uint64_t, trials)), NULL)),
+        "Issue running: %s\n", benchmark->name);
 }
 
 int

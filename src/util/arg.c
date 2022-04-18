@@ -8,6 +8,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "util/arg.h"
 #include "util/error-util.h"
@@ -41,7 +42,7 @@ FORMATF(2, 3)
     va_end(ap);
     fprintf(stderr, "\n");
     usage(pname, def);
-    exit(-1);
+    _exit(-1);
 }
 
 
@@ -58,7 +59,7 @@ arg2str(ArgOption const * restrict desc) {
     if (desc->kind == (ArgKind)Help) {
         return "[-h]";
     }
-
+    
     if ((desc->kind == KindPositional) && (desc->required)) {
         *p++ = '<';
         --avail_length;
@@ -305,7 +306,7 @@ assignArg(ArgOption * restrict desc,
 
         case Help: {
             usage(pname, ap);
-            exit(-1);
+            _exit(-1);
         }
         default:
             die("NIY: type\n");

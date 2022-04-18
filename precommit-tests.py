@@ -91,9 +91,10 @@ if len(sys.argv) > 1:
     path = sys.argv[1]
 
 path = find_path_to_build(path)
-for lang in ["C", "CXX"]:
+
+for lang in [["C", "gcc"], ["CXX", "gcc"], ["C", "clang"]]:
     tst_cmds = [
-        test_cmd("cmake -DLANG={} ..".format(lang)),
+        test_cmd("cmake -DLANG={} -DCOMPILER={} ..".format(lang[0], lang[1])),
         test_cmd("make clean"),
         test_cmd("make full"),
         test_cmd("./bench --all"),

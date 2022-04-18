@@ -5,6 +5,7 @@
 
 #include "util/internal/timers.h"
 
+
 I_vdso_placeholder_f vdso_funcs[] = {
     CAST(I_vdso_placeholder_f, &direct_clock_gettime),
     CAST(I_vdso_placeholder_f, &gettimeofday),
@@ -12,19 +13,20 @@ I_vdso_placeholder_f vdso_funcs[] = {
 };
 
 
-static uint64_t
+static uint32_t
 set_vdso_func(I_vdso_placeholder_f fptr, size_t offset) {
     if (fptr != NULL) {
         vdso_funcs[offset] = fptr;
-        return 1UL << offset;
+        return 1U << offset;
     }
     return 0;
 }
 
-int32_t
+uint32_t
 safe_vdso_init() {
-    uint64_t ret = vdso_init();
-    err_assert(ret != -1UL, "%s\n", dlerror());
+    uint32_t ret = vdso_init();
+    err_assert(!is_vdso_init_error(ret), "%s\n",
+               dlerror()); /* NOLINT(concurrency-mt-unsafe) */
 
     if (ret != get_vdso_expec_mask()) {
         return ret;
@@ -35,19 +37,19 @@ safe_vdso_init() {
 
 void
 safe_vdso_init_all() {
-    uint64_t ret = vdso_init();
-    err_assert(ret != -1UL, "%s\n", dlerror());
-    die_assert(ret == get_vdso_expec_mask(), "Only partially initialized\n");
+
+    uint32_t ret = safe_vdso_init();
+    die_assert(ret == 0, "Only partially initialized\n");
 }
 
-uint64_t
+uint32_t
 vdso_init() {
-    void *  vdso_lib;
-    int32_t ret = 0;
-    vdso_lib    = CAST(void *, dlopen("linux-vdso.so.1",
+    void *   vdso_lib;
+    uint32_t ret = 0;
+    vdso_lib     = CAST(void *, dlopen("linux-vdso.so.1",
                                    RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD));
     if (vdso_lib == NULL) {
-        return -1UL;
+        return -1U;
     }
 
     ret |= set_vdso_func(

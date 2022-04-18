@@ -15,9 +15,15 @@ typedef void (*I_vdso_placeholder_f)(void);
 
 extern I_vdso_placeholder_f vdso_funcs[];
 
-int32_t  safe_vdso_init();
+
+uint32_t safe_vdso_init();
 void     safe_vdso_init_all();
-uint64_t vdso_init();
+uint32_t vdso_init();
+
+static ALWAYS_INLINE CONST_FUNC int32_t
+is_vdso_init_error(uint32_t ret) {
+    return ret == -1U;
+}
 
 static ALWAYS_INLINE PURE_FUNC
 FUNC_T(clock_gettime) get_vdso_clock_gettime() {
