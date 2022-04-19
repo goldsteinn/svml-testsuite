@@ -6,7 +6,7 @@
 
 
 #define MALLOC_FUNC __attribute__((malloc))
-#define CONST_FUNC  __attribute__((const))
+#define CONST_FUNC  __attribute__((const)) constexpr
 #define PURE_FUNC   __attribute__((pure))
 
 #define BENCH_FUNC __attribute__((noclone, noinline, aligned(4096)))

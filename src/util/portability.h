@@ -16,6 +16,7 @@
 #define I_static_assert_base              static_assert
 #define I_choose_const_expr(cond, e0, e1) ((cond) ? (e0) : (e1))
 #else
+#define constexpr
 #define I_static_assert_base              _Static_assert
 #define I_choose_const_expr(cond, e0, e1) __builtin_choose_expr(cond, e0, e1)
 
