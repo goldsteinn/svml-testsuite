@@ -7,6 +7,19 @@
 
 #include "test/test-common.h"
 
+/********************************************************************/
+/* Ensure constant evaluation. */
+enum {
+    I_const_eval_ROUNDUP      = ROUNDUP(1, 2),
+    I_const_eval_ROUNDDOWN    = ROUNDDOWN(1, 2),
+    I_const_eval_ROUNDUP_P2   = ROUNDUP_P2(1, 2),
+    I_const_eval_ROUNDDOWN_P2 = ROUNDDOWN_P2(1, 2),
+    I_const_eval_is_p2        = is_p2(1),
+    I_const_eval_p2_factor    = p2_factor(1),
+    I_const_eval_CMAX         = CMAX(1, 2, 3),
+    I_const_eval_CMIN         = CMIN(1, 2, 3),
+};
+
 
 /********************************************************************/
 /* Static tests. */

@@ -2,9 +2,8 @@
 #define _SRC__UTIL__INLINE_MATH_H_
 
 
-#include "util/common.h"
-
 #include "arch/ll-intrin.h"
+#include "util/common.h"
 
 
 #define ROUNDUP(x, y)   ((y) * (((x) + ((y)-1)) / (y)))
@@ -16,10 +15,10 @@
 #define is_p2(x)     (!((x) & ((x)-1)))
 #define p2_factor(x) ((x) & (~((x)-1)))
 
-#define I__cmax2(x, y) ((x) > (y) ? (x) : (y))
-#define I__cmin2(x, y) ((x) < (y) ? (x) : (y))
+#define I_cmax2(x, y) ((x) > (y) ? (x) : (y))
+#define I_cmin2(x, y) ((x) < (y) ? (x) : (y))
 
-#define I__max2(x, y)                                                          \
+#define I_max2(x, y)                                                           \
     ({                                                                         \
         get_type(x) _tmp_evaluated_x = (x);                                    \
         get_type(y) _tmp_evaluated_y = (y);                                    \
@@ -27,7 +26,7 @@
                                             : _tmp_evaluated_y;                \
     })
 
-#define I__min2(x, y)                                                          \
+#define I_min2(x, y)                                                           \
     ({                                                                         \
         get_type(x) _tmp_evaluated_x = (x);                                    \
         get_type(y) _tmp_evaluated_y = (y);                                    \
@@ -36,11 +35,11 @@
     })
 
 
-#define MAX(...) APPLY_RECURSE(I__max2, __VA_ARGS__)
-#define MIN(...) APPLY_RECURSE(I__min2, __VA_ARGS__)
+#define MAX(...) APPLY_RECURSE(I_max2, __VA_ARGS__)
+#define MIN(...) APPLY_RECURSE(I_min2, __VA_ARGS__)
 
-#define CMAX(...) APPLY_RECURSE(I__cmax2, __VA_ARGS__)
-#define CMIN(...) APPLY_RECURSE(I__cmin2, __VA_ARGS__)
+#define CMAX(...) APPLY_RECURSE(I_cmax2, __VA_ARGS__)
+#define CMIN(...) APPLY_RECURSE(I_cmin2, __VA_ARGS__)
 
 
 #define clz(x)                                                                 \
@@ -52,6 +51,13 @@
     choose_const_expr(                                                         \
         sizeof(x) == sizeof(long long), ll_ctzll(x),                           \
         choose_const_expr(sizeof(x) == sizeof(long), ll_ctzl(x), ll_ctz(x)))
+
+
+#define popcnt(x)                                                              \
+    choose_const_expr(                                                         \
+        sizeof(x) == sizeof(long long), __builtin_popcountll(x),               \
+        choose_const_expr(sizeof(x) == sizeof(long), __builtin_popcountl(x),   \
+                          __builtin_popcount(x)))
 
 #define log2_ru(x) (sizeof_bits(get_type(x)) - clz((x)-1))
 #define log2_rd(x) ((sizeof_bits(get_type(x)) - 1) - clz(x))

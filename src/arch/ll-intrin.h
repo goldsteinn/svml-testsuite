@@ -5,16 +5,15 @@
 #ifdef __x86_64__
 #include <x86intrin.h>
 
-#define I_ll__bitscan(x, builtin) ((uint32_t)(builtin(x)))
+#define I_ll__intrin(x, builtin) ((uint32_t)(builtin(x)))
 
-#define ll_clz(x)   I_ll__bitscan(x, _lzcnt_u32)
-#define ll_clzl(x)  I_ll__bitscan(x, _lzcnt_u64)
-#define ll_clzll(x) I_ll__bitscan(x, _lzcnt_u64)
+#define ll_clz(x)   I_ll__intrin(x, _lzcnt_u32)
+#define ll_clzl(x)  I_ll__intrin(x, _lzcnt_u64)
+#define ll_clzll(x) I_ll__intrin(x, _lzcnt_u64)
 
-#define ll_ctz(x)   I_ll__bitscan(x, _tzcnt_u32)
-#define ll_ctzl(x)  I_ll__bitscan(x, _tzcnt_u64)
-#define ll_ctzll(x) I_ll__bitscan(x, _tzcnt_u64)
-
+#define ll_ctz(x)   I_ll__intrin(x, _tzcnt_u32)
+#define ll_ctzl(x)  I_ll__intrin(x, _tzcnt_u64)
+#define ll_ctzll(x) I_ll__intrin(x, _tzcnt_u64)
 
 #else
 #include <limits.h>
