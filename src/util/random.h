@@ -14,10 +14,13 @@ uint64_t true_rand32();
 
 
 static CONST_FUNC uint64_t
-rand64c(uint64_t _seed) {
-    __uint128_t t =
-        CAST(__uint128_t, _seed) * (_seed ^ CAST(uint64_t, 0xe7037ed1a0b428db));
+I_rand64c(__uint128_t t) {
     return CAST(uint64_t, t >> 64) ^ CAST(uint64_t, t);
+}
+static CONST_FUNC uint64_t
+rand64c(uint64_t _seed) {
+    return I_rand64c(CAST(__uint128_t, _seed) *
+                     (_seed ^ CAST(uint64_t, 0xe7037ed1a0b428db)));
 }
 
 NONNULL(1) static uint64_t rand64s(uint64_t * seed) {
