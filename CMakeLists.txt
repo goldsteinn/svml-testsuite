@@ -1,6 +1,18 @@
 cmake_minimum_required(VERSION 3.1.3)
 project(Project_Template C CXX ASM)
 
+set(WITH_MATH 0 CACHE BOOL "Set to load math (enables some stats stuff)")
+set_property(CACHE WITH_MATH
+  PROPERTY STRINGS "1" "0")
+
+set(WITH_THREAD 0 CACHE BOOL "Set to load pthread")
+set_property(CACHE WITH_THREAD
+  PROPERTY STRINGS "1" "0")
+
+set(WITH_VDSO 0 CACHE BOOL "Set to include vdso (brings in -ldl)")
+set_property(CACHE WITH_VDSO
+  PROPERTY STRINGS "1" "0")
+
 set(LANG "C" CACHE STRING "Set Language (CXX or C")
 set_property(CACHE LANG
   PROPERTY STRINGS "C" "CXX")
@@ -25,7 +37,7 @@ list(FIND c_lang ${LANG_LOWER} c_lang)
 if(${cxx_lang} GREATER -1)
   set(LANG "CXX")
   set(STD "c++11")
-  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type" "-fno-rtti")
+  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type" "-fno-rtti" "-Wno-ignored-attributes")
 elseif(${c_lang} GREATER -1)
   set(LANG "C")
   set(STD "c11")
@@ -34,7 +46,27 @@ else()
   message(FATAL_ERROR "Invalid language selection: ${LANG}")
 endif()
 
-set(COMPILER_FLAGS_EXTRA "")
+set(compiler_flags_extra "")
+set(link_libraries  "")
+
+if(${WITH_MATH})
+  list(APPEND link_libraries "-lm")
+  list(APPEND compiler_flags_extra "-DWITH_MATH")
+endif()
+
+if(${WITH_THREAD})
+  list(APPEND link_libraries "-lpthread")
+  list(APPEND compiler_flags_extra "-DWITH_THREAD")
+endif()
+
+if(${WITH_VDSO})
+  list(APPEND link_libraries "-ldl")
+  list(APPEND compiler_flags_extra "-DWITH_VDSO")
+endif()
+
+
+
+
 list(FIND llvm_compilers ${COMPILER_LOWER} llvm_compilers)
 list(FIND gnu_compilers ${COMPILER_LOWER} gnu_compilers)
 if(${llvm_compilers} GREATER -1)
@@ -48,6 +80,8 @@ else()
 endif()
 
 
+
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 
 
@@ -55,6 +89,7 @@ set(SRC_DIR "src")
 set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
 
 set(attrs "pure" "const" "noreturn" "format" "cold" "malloc")
 set(wattrs)
@@ -62,13 +97,17 @@ foreach(attr ${attrs})
   list(APPEND wattrs "-Wsuggest-attribute=${attr}")
 endforeach()
 
-add_compile_options(-D_GNU_SOURCE -O2 -Wwrite-strings -Wcast-qual -Wdangling-else -Woverlength-strings -Wdisabled-optimization -Wstrict-aliasing -Wstrict-overflow -Werror -Wall -Wextra -Wno-unused-function -Wno-variadic-macros -march=native -mtune=native -std=${STD} ${LANG_FLAGS} ${COMPILER_FLAGS_EXTRA})
+set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wcast-qual" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-aliasing" "-Wstrict-overflow" "-Werror" "-Wall" "-Wextra" "-Wno-unused-function" "-Wno-variadic-macros" "-march=native" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${file_name_flag}")
 
-set(link_libraries  "")
-list(APPEND link_libraries "-ldl")
 
+set(driver_compiler_flags ${default_compiler_flags})
+list(APPEND driver_compiler_flags ${compiler_flags_extra})
+
+set(test_and_bench_compiler_flags ${default_compiler_flags})
 set(test_and_bench_libraries ${link_libraries})
-list(APPEND test_and_bench_libraries "-lpthread")
+
+list(APPEND test_and_bench_compiler_flags "-DWITH_THREAD" "-DWITH_MATH" "-DWITH_VDSO")
+list(APPEND test_and_bench_libraries "-lpthread" "-lm" "-ldl")
 
 set(EXE_SRC ${SRC_DIR}/driver.c)
 set(EXE "driver")
@@ -120,15 +159,18 @@ add_custom_target(
   )
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})
+target_compile_options(driver PRIVATE ${driver_compiler_flags})
 target_link_libraries(driver ${link_libraries})
 set_target_properties(driver PROPERTIES LINKER_LANGUAGE ${LANG})
 
 add_executable(tests ${TEST_EXE_SRC} ${TEST_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
+target_compile_options(tests PRIVATE ${test_and_bench_compiler_flags})
 target_link_libraries(tests ${test_and_bench_libraries})
 set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL TRUE)
 set_target_properties(tests PROPERTIES LINKER_LANGUAGE ${LANG})
 
 add_executable(bench ${BENCH_EXE_SRC} ${BENCH_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
+target_compile_options(bench PRIVATE ${test_and_bench_compiler_flags})
 target_link_libraries(bench ${test_and_bench_libraries})
 set_target_properties(bench PROPERTIES EXCLUDE_FROM_ALL TRUE)
 set_target_properties(bench PROPERTIES LINKER_LANGUAGE ${LANG})
