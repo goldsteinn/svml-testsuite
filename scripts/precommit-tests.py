@@ -80,10 +80,9 @@ def verify_cmd(path, cmd):
     exec_cmd = "(cd {}; {})".format(path, cmd.get_cmd())
     ret, stdout_data, stderr_data = run_process(exec_cmd)
 
-    assert cmd.check_results(
-        ret, stdout_data,
-        stderr_data), "Error Running: \"{}\" -> \n{}\n{}\n{}".format(
-            exec_cmd, ret, stdout_data, stderr_data)
+    if not cmd.check_results(ret, stdout_data, stderr_data):
+        print("Error Running: \"{}\" -> \n{}\n{}\n{}".format(
+            exec_cmd, ret, stdout_data, stderr_data))
 
 
 path = os.getcwd()
@@ -92,16 +91,25 @@ if len(sys.argv) > 1:
 
 path = find_path_to_build(path)
 
-for lang in [["C", "gcc"], ["CXX", "gcc"], ["C", "clang"]]:
-    tst_cmds = [
-        test_cmd("cmake -DLANG={} -DCOMPILER={} ..".format(lang[0], lang[1])),
-        test_cmd("make clean"),
-        test_cmd("make full"),
-        test_cmd("./bench --all"),
-        test_cmd("./tests --all"),
-        test_cmd("make static-analysis",
-                 os.path.split(path)[0], "Error")
-    ]
-
-    for tst_cmd in tst_cmds:
-        verify_cmd(path, tst_cmd)
+extra_flags = ["-DWITH_MATH={}", "-DWITH_THREAD={}", "-DWITH_VDSO={}"]
+for i in range(0, (1 << len(extra_flags))):
+    flags = []
+    for j in range(0, len(extra_flags)):
+        v = 0
+        if (i & (1 << j)) != 0:
+            v = 1
+        flags.append(extra_flags[j].format(v))
+    flags = " ".join(flags)
+    for lang in [["C", "gcc"], ["CXX", "gcc"], ["C", "clang"]]:
+        tst_cmds = [
+            test_cmd("cmake -DLANG={} -DCOMPILER={} {} ..".format(
+                lang[0], lang[1], flags)),
+            test_cmd("make clean"),
+            test_cmd("make full"),
+            test_cmd("./bench --all"),
+            test_cmd("./tests --all"),
+            test_cmd("make static-analysis",
+                     os.path.split(path)[0], "Error")
+        ]
+        for tst_cmd in tst_cmds:
+            verify_cmd(path, tst_cmd)
