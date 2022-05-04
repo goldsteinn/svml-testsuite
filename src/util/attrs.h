@@ -4,7 +4,7 @@
 #include "util/macro.h"
 #include "util/portability.h"
 
-
+#define MAYBE_UNUSED __attribute__((unused))
 #define MALLOC_FUNC __attribute__((malloc))
 #define CONST_FUNC  __attribute__((const)) constexpr
 #define PURE_FUNC   __attribute__((pure))

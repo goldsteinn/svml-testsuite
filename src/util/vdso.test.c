@@ -6,6 +6,7 @@
 
 int32_t
 test_vdso() {
+    uint32_t        ret;
     struct timespec ts;
     struct timeval  tv;
     struct timezone tz;
@@ -14,7 +15,15 @@ test_vdso() {
     uint8_t cmp_bytes[MAX(sizeof(ts), sizeof(tv), sizeof(tz), sizeof(cpu),
                           sizeof(node), sizeof(tloc))];
 
+    ret = vdso_init();
+    if (is_vdso_init_error(ret) || ret == 0) {
+        warn(
+            "Skipping VDSO tests due to inability to initailize. Probably due to valgrind or unsupported arch.\n");
+        return 0;
+    }
+
     test_assert(safe_vdso_init() == 0);
+
 
     __builtin_memset(cmp_bytes, 0, sizeof(cmp_bytes));
     __builtin_memset(&ts, 0, sizeof(ts));

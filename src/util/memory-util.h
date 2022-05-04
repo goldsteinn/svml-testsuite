@@ -28,7 +28,7 @@
     I_safe_mprotect(addr, sz, prot_flags, ERR_ARGS)
 
 #define safe_free(addr)  I_safe_free(addr)
-#define safe_sfree(addr) I_safe_sfree(addr)
+#define safe_sfree(addr, sz) I_safe_sfree(addr, sz)
 
 #define is_valid_addr(addr)                                                    \
     (CAST(uint64_t, addr) > CAST(uint64_t, 65536) &&                           \

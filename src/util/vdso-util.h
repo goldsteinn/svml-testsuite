@@ -7,6 +7,7 @@
 
 #include "util/attrs.h"
 #include "util/types.h"
+#include "util/verbosity.h"
 
 #include "util/vdso-arch-masks.h"
 #include "util/vdso-func-enum.h"
@@ -23,6 +24,11 @@ uint32_t vdso_init();
 static ALWAYS_INLINE CONST_FUNC int32_t
 is_vdso_init_error(uint32_t ret) {
     return ret == -1U;
+}
+
+static ALWAYS_INLINE CONST_FUNC int32_t
+is_vdso_full_init(uint32_t ret) {
+    return ret == get_vdso_expec_mask();
 }
 
 static ALWAYS_INLINE PURE_FUNC

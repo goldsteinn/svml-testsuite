@@ -7,10 +7,23 @@
 
 #include "util/common.h"
 
+#define warn(msg, ...) fprint(stderr, "warning: " msg, ##__VA_ARGS__)
+
+#define print(...)    fprint(stdout, __VA_ARGS__)
 #define vprint(...)   vfprint(stdout, __VA_ARGS__)
 #define vvprint(...)  vvfprint(stdout, __VA_ARGS__)
 #define vvvprint(...) vvvfprint(stdout, __VA_ARGS__)
 
+#define trace_print(msg, ...)                                                  \
+    fprint(stderr, "%-20s:%-6u: " msg, __FILENAME__, __LINE__, ##__VA_ARGS__)
+#define trace_vprint(msg, ...)                                                 \
+    vfprint(stderr, "%-20s:%-6u: " msg, __FILENAME__, __LINE__, ##__VA_ARGS__)
+#define trace_vvprint(msg, ...)                                                \
+    vvfprint(stderr, "%-20s:%-6u: " msg, __FILENAME__, __LINE__, ##__VA_ARGS__)
+#define trace_vvvprint(msg, ...)                                               \
+    vvvfprint(stderr, "%-20s:%-6u: " msg, __FILENAME__, __LINE__, ##__VA_ARGS__)
+
+#define fprint(fp, ...)    vnfprint(0, fp, __VA_ARGS__)
 #define vfprint(fp, ...)   vnfprint(1, fp, __VA_ARGS__)
 #define vvfprint(fp, ...)  vnfprint(2, fp, __VA_ARGS__)
 #define vvvfprint(fp, ...) vnfprint(3, fp, __VA_ARGS__)

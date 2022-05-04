@@ -24,6 +24,7 @@ set_vdso_func(I_vdso_placeholder_f fptr, size_t offset) {
 
 uint32_t
 safe_vdso_init() {
+#ifdef WITH_VDSO
     uint32_t ret = vdso_init();
     err_assert(!is_vdso_init_error(ret), "%s\n",
                dlerror()); /* NOLINT(concurrency-mt-unsafe) */
@@ -31,22 +32,24 @@ safe_vdso_init() {
     if (ret != get_vdso_expec_mask()) {
         return ret;
     }
-
+#else
+    warn("VDSO is disabled!\n");
+#endif
     return 0;
 }
 
 void
 safe_vdso_init_all() {
-
     uint32_t ret = safe_vdso_init();
     die_assert(ret == 0, "Only partially initialized\n");
 }
 
 uint32_t
 vdso_init() {
-    void *   vdso_lib;
     uint32_t ret = 0;
-    vdso_lib     = CAST(void *, dlopen("linux-vdso.so.1",
+#ifdef WITH_VDSO
+    void * vdso_lib;
+    vdso_lib = CAST(void *, dlopen("linux-vdso.so.1",
                                    RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD));
     if (vdso_lib == NULL) {
         return -1U;
@@ -66,6 +69,8 @@ vdso_init() {
         vdso_time_offset);
 
     dlclose(vdso_lib);
-
+#else
+    warn("VDSO is disabled!\n");
+#endif
     return ret;
 }

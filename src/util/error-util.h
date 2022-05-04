@@ -9,6 +9,7 @@
 
 #include "util/common.h"
 #include "util/macro.h"
+#include "util/verbosity.h"
 
 #define err_assert(...) CAT(err_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define die_assert(...) CAT(die_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
@@ -21,7 +22,7 @@
 
 #define warn_assert(X, ...)                                                    \
     if (UNLIKELY(!(X))) {                                                      \
-        fprintf(stderr, __VA_ARGS__);                                          \
+        warn(__VA_ARGS__);                                                     \
     }
 
 #define err_assert_MANY(X, msg, args...)                                       \

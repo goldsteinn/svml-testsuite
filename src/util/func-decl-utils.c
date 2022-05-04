@@ -6,7 +6,7 @@
 
 #include <stdint.h>
 
-
+/* TODO: replace regex logic in fnmatch. */
 enum { decl_do_nothing = 0, decl_re_built = 2, decl_ran = 4 };
 enum { decl_did_one = 1, decl_did_any = 0 };
 

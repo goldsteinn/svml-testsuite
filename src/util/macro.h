@@ -498,4 +498,18 @@
 #else
 #define NOANALYZE(expr, ...) expr
 #endif
+
+#define I_ARR_ARG_1(...)   NULL, 0
+#define I_ARR_ARG_1_T(...) NULL, 0
+
+#define I_ARR_ARG_0_T(type, ...)                                               \
+    (type const[]){ __VA_ARGS__ }, PP_NARG(__VA_ARGS__)
+#define I_ARR_ARG_0(first, ...)                                                \
+    I_ARR_ARG_0_T(get_type(first), first, ##__VA_ARGS__)
+
+#define ARR_ARG(...) CAT(I_ARR_ARG_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__)
+#define ARR_ARG_T(type, ...)                                                   \
+    CAT(I_ARR_ARG_, IS_EMPTY(__VA_ARGS__), _T)(type, __VA_ARGS__)
+
+
 #endif
