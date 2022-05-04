@@ -36,7 +36,7 @@
 #define safe_fread(ptr, size, nmemb, stream)                                   \
     I_safe_fread(ptr, size, nmemb, stream, ERR_ARGS)
 #define safe_fwrite(ptr, size, nmemb, stream)                                  \
-    I_safe_fread(ptr, size, nmemb, stream, ERR_ARGS)
+    I_safe_fwrite(ptr, size, nmemb, stream, ERR_ARGS)
 #define safe_fclose(stream) I_safe_fclose(stream, ERR_ARGS)
 
 #define check_fopen(path, mode, ...)                                           \

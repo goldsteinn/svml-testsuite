@@ -206,7 +206,7 @@ I_safe_fread(void * restrict ptr,
              char const * restrict func,
              uint32_t ln) {
     size_t ret = fread(ptr, size, nmemb, stream);
-    if (UNLIKELY(ret == 0)) {
+    if (UNLIKELY(ret != nmemb)) {
         I_errdie(fn, func, ln, errno, NULL);
     }
     return ret;
@@ -221,7 +221,7 @@ I_safe_fwrite(const void * restrict ptr,
               char const * restrict func,
               uint32_t ln) {
     size_t ret = fwrite(ptr, size, nmemb, stream);
-    if (UNLIKELY(ret == 0)) {
+    if (UNLIKELY(ret != nmemb)) {
         I_errdie(fn, func, ln, errno, NULL);
     }
     return ret;
