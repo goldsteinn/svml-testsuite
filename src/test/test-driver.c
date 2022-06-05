@@ -3,6 +3,7 @@
 
 #include "util/arg.h"
 #include "util/error-util.h"
+#include "util/print.h"
 #include "util/verbosity.h"
 
 #include "util/func-decl-utils.h"
@@ -34,12 +35,12 @@ static ArgDefs argp = { args, "Test Driver", NULL, NULL };
 static void
 run_test(const func_decl_t * test) {
     const char * res = "PASSED";
-    printf("Running - %-24s ...", test->name);
+    fprintf_stdout("Running - %-24s ...", test->name);
     if (test->test_func()) {
         res = "FAILED";
     }
-    printf("\rRunning - %-24s -> %s\n", test->name, res);
-    fflush(stdout);
+    fprintf_stdout("\rRunning - %-24s -> %s\n", test->name, res);
+    fflush_stdout();
 }
 
 int

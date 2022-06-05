@@ -8,9 +8,6 @@
 #include "thread/mutex.h"
 #include "thread/spinlock.h"
 #include "thread/thread.h"
-#else
-#warning                                                                       \
-    "Including thread headers with threading disabled. Maybe rebuild with 'WITH_THREAD'"
 #endif
 
 #endif

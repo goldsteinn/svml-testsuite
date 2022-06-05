@@ -17,7 +17,9 @@
             arr[i] = i;                                                        \
         }                                                                      \
                                                                                \
-        for (i = 0; i < MAX_ITEMS; i = (i ? (((i * 3) / 2) + 1) : 1)) {        \
+        generic_sort(arr, 0);                                                  \
+                                                                               \
+        for (i = 1; i < MAX_ITEMS; i = (((i * 3) / 2) + 1)) {                  \
             if (i > CAST(uint32_t, TYPE_MAX(T))) {                             \
                 i = CAST(uint32_t, TYPE_MAX(T));                               \
             }                                                                  \
@@ -46,10 +48,10 @@
         return 0;                                                              \
     }
 
-APPLY(make_sort_test, ;, ALL_TYPE_NAMES);
+APPLY(make_sort_test, ;, ALL_TYPE_NAMES); /* NOLINT(cert-err33-c) */
 
 int32_t
 test_sort() {
-    APPLY(run_test, ;, ALL_TYPE_NAMES);
+    APPLY(run_test, ;, ALL_TYPE_NAMES); /* NOLINT(cert-err33-c) */
     return 0;
 }

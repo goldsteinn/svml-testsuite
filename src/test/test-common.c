@@ -8,9 +8,9 @@
 
 uint8_t *
 make_buf(uint64_t sz) {
-    uint8_t * buf =
-        CAST(uint8_t *, safe_mmap(NULL, 2 * PAGE_SIZE + sz, PROT_NONE,
-                                  MAP_ANONYMOUS | MAP_PRIVATE, -1, 0));
+    uint8_t * buf = CAST(
+        uint8_t *, safe_mmap(NULL, CAST(uint64_t, 2 * PAGE_SIZE) + sz,
+                             PROT_NONE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0));
     safe_mprotect(buf + PAGE_SIZE, sz, PROT_READ | PROT_WRITE);
     return buf + PAGE_SIZE;
 }
@@ -18,7 +18,7 @@ make_buf(uint64_t sz) {
 
 void
 free_buf(uint8_t * buf, uint64_t sz) {
-    safe_munmap(buf - PAGE_SIZE, sz + 2 * PAGE_SIZE);
+    safe_munmap(buf - PAGE_SIZE, sz + CAST(uint64_t, 2 * PAGE_SIZE));
 }
 
 

@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <wchar.h>
 
+#include "util/attrs.h"
 #include "util/macro.h"
 #include "util/portability.h"
 
@@ -84,6 +85,7 @@ APPLY(I_make_ptr, ;, ALL_TYPE_NAMES);
 #define CAST(x, y)          ((x)(y))
 #define AGU(base, offset)   (CAST(ptr_int_t, base) + CAST(ptr_int_t, offset))
 #define AGU_T(base, offset) CAST(get_type(base), AGU(base, offset))
+#define PTRDIF(end, begin)  (CAST(ptr_int_t, end) - CAST(ptr_int_t, begin))
 
 
 #define get_type(x)        __typeof__(x)
@@ -98,7 +100,8 @@ APPLY(I_make_ptr, ;, ALL_TYPE_NAMES);
 #include <limits>
 #include <type_traits>
 
-/* Custom struct instead of just using std::conditional in the macro because the
+/* Custom struct instead of just using std::conditional in the macro
+ * because the
  * ',' mess up macro parsing. */
 template<typename T>
 struct I_default_type {
@@ -148,7 +151,7 @@ struct I_type_info {
     template<class Q = T>
     static constexpr
         typename std::enable_if<!std::is_pointer<Q>::value, void **>::type
-        as_ptr(Q x) {
+        as_ptr(Q x MAYBE_UNUSED) {
         return (void **)(NULL);
     }
 };
@@ -169,33 +172,32 @@ struct I_type_info {
 #define I_is_same_type(T0, T1) std::is_same<T0, T1>::value
 
 
-template<size_t N>
-struct I_int_of_size {};
+template<uint64_t N>
+struct I_int_of_size {
+    using by_byte_t = typename std::conditional<
+        N <= 1,
+        uint8_t,
+        typename std::conditional<
+            N <= 2,
+            uint16_t,
+            typename std::conditional<N <= 4, uint32_t, uint64_t>::type>::
+            type>::type;
 
-template<>
-struct I_int_of_size<1> {
-    using type = uint8_t;
-};
-
-template<>
-struct I_int_of_size<2> {
-    using type = uint16_t;
-};
-
-template<>
-struct I_int_of_size<4> {
-    using type = uint32_t;
-};
-
-template<>
-struct I_int_of_size<8> {
-    using type = uint64_t;
+    using by_size_t = typename std::conditional<
+        N <= UCHAR_MAX,
+        uint8_t,
+        typename std::conditional<
+            N <= USHRT_MAX,
+            uint16_t,
+            typename std::conditional<N <= UINT_MAX, uint32_t, uint64_t>::
+                type>::type>::type;
 };
 
 
 #define I_AS_PTR(x) (I_type_info<get_type(x)>::as_ptr(x))
 
-#define INT_OF_SIZE_T(x) I_int_of_size<x>::type
+#define INT_OF_SIZE_T(x)          I_int_of_size<x>::by_byte_t
+#define INT_HAS_CAPACITY_FOR_T(x) I_int_of_size<x>::by_size_t
 
 
 #define MAKE_UNSIGNED(x)                                                       \
@@ -257,6 +259,14 @@ static const bool true  = !false;
         I_choose_const_expr(                                                   \
             x == 2, (uint16_t)0,                                               \
             I_choose_const_expr(x == 4, (uint32_t)0, (uint64_t)0))))
+
+#define INT_HAS_CAPACITY_FOR_T(x)                                              \
+    get_type(I_choose_const_expr(                                              \
+        CAST(uint64_t, x) <= UCHAR_MAX, (uint8_t)0,                            \
+        I_choose_const_expr(CAST(uint64_t, x) <= USHRT_MAX, (uint16_t)0,       \
+                            I_choose_const_expr(CAST(uint64_t, x) <= UINT_MAX, \
+                                                (uint32_t)0, (uint64_t)0))))
+
 
 // clang-format off
 #define MAKE_UNSIGNED(x)                                            \
@@ -441,4 +451,12 @@ static const bool true  = !false;
 
 
 #define FLOAT_TO_INT_T(x) GET_SIGNED_T(INT_OF_SIZE_T(sizeof(x)))
+
+#define I_typedef_func(new_name, existing_name)                                \
+    get_type(existing_name) new_name __attribute__((                           \
+        alias(V_TO_STR(existing_name)), ATTR_COPY(existing_name)))
+
+#define typedef_func(new_name, existing_name)                                  \
+    I_typedef_func(new_name, existing_name)
+
 #endif

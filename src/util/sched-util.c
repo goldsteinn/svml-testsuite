@@ -3,8 +3,9 @@
 
 #include "util/sched-util.h"
 
-/* Use syscalls directly to avoid casting mask to 'cpu_set_t *' and possible
- * violating strict-aliasing. */
+
+/* Use syscalls directly to avoid casting mask to 'cpu_set_t *' and
+ * possible violating strict-aliasing. */
 static int64_t
 I_sched_setaffinity(pid_t pid, size_t cpusetsize, cpuset_t * mask) {
     return syscall(SYS_sched_setaffinity, pid, cpusetsize, mask);
@@ -42,8 +43,8 @@ I_getcpu_aff(pid_t        pid,
 
 void
 setcpu_and_wait(pid_t pid, uint32_t cpu) {
-    int nattempts;
-    if (cpu >= get_nprocs()) {
+    int32_t nattempts;
+    if (cpu >= get_num_cpus()) {
         return;
     }
     enum { IMM8_MAX_MINUS_ONE = 127 };

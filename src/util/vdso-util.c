@@ -9,7 +9,7 @@
 I_vdso_placeholder_f vdso_funcs[] = {
     CAST(I_vdso_placeholder_f, &direct_clock_gettime),
     CAST(I_vdso_placeholder_f, &gettimeofday),
-    CAST(I_vdso_placeholder_f, &getcpu), CAST(I_vdso_placeholder_f, &time)
+    CAST(I_vdso_placeholder_f, &getcpu_p), CAST(I_vdso_placeholder_f, &time)
 };
 
 

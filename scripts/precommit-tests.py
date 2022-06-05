@@ -6,6 +6,7 @@ import subprocess
 
 
 class test_cmd():
+
     def __init__(self,
                  shell_cmd,
                  stdout_scan=-1,
@@ -100,7 +101,8 @@ for i in range(0, (1 << len(extra_flags))):
             v = 1
         flags.append(extra_flags[j].format(v))
     flags = " ".join(flags)
-    for lang in [["C", "gcc"], ["CXX", "gcc"], ["C", "clang"]]:
+    for lang in [["C", "gcc"], ["CXX", "gcc"], ["C", "clang"],
+                 ["CXX", "clang"]]:
         tst_cmds = [
             test_cmd("cmake -DLANG={} -DCOMPILER={} {} ..".format(
                 lang[0], lang[1], flags)),

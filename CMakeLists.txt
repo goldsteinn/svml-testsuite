@@ -26,11 +26,16 @@ set_property(CACHE COMPILER
 set(cxx_lang "cxx" "c++" "cpp" "cxx")
 set(c_lang "c")
 
+
+
 set(llvm_compilers "llvm" "clang" "clang++")
 set(gnu_compilers "gnu" "gcc" "gxx" "g++")
 
 string(TOLOWER ${LANG} LANG_LOWER)
 string(TOLOWER ${COMPILER} COMPILER_LOWER)
+
+set(compiler_flags_extra "")
+set(link_libraries  "")
 
 list(FIND cxx_lang ${LANG_LOWER} cxx_lang)
 list(FIND c_lang ${LANG_LOWER} c_lang)
@@ -46,8 +51,6 @@ else()
   message(FATAL_ERROR "Invalid language selection: ${LANG}")
 endif()
 
-set(compiler_flags_extra "")
-set(link_libraries  "")
 
 if(${WITH_MATH})
   list(APPEND link_libraries "-lm")
@@ -72,9 +75,19 @@ list(FIND gnu_compilers ${COMPILER_LOWER} gnu_compilers)
 if(${llvm_compilers} GREATER -1)
   set(CMAKE_C_COMPILER "/usr/bin/clang")
   set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
+  list(APPEND compiler_flags_extra "-fbracket-depth=1024" "-Wimplicit")
+  if(${cxx_lang} GREATER -1)
+    # Clang warns on each file which is a bit annoying. This may hide
+    # real issues.
+    list(APPEND compiler_flags_extra "-Wno-deprecated")
+  endif()
 elseif(${gnu_compilers} GREATER -1)
   set(CMAKE_C_COMPILER "/usr/bin/gcc")
   set(CMAKE_CXX_COMPILER "/usr/bin/g++")
+  if(${c_lang} GREATER -1)
+    list(APPEND compiler_flags_extra "-Wimplicit")
+  endif()
+
 else()
   message(FATAL_ERROR "Invalid compiler selection: ${COMPILER}")
 endif()
@@ -88,8 +101,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS on)
 set(SRC_DIR "src")
 set(FULL_SRC_DIR "${CMAKE_SOURCE_DIR}/${SRC_DIR}")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
+# "Bug" in cmake 3.20:
+# https://discourse.cmake.org/t/base-filename-gets-set-to-compiler-depend-ts-after-update-to-cmake-3-20/3075/9
+if(${CMAKE_VERSION} VERSION_LESS "3.20.0")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__FILENAME__='\"$(subst ${FULL_SRC_DIR}/,,$(abspath $<))\"'")
+endif()
 
 set(attrs "pure" "const" "noreturn" "format" "cold" "malloc")
 set(wattrs)
@@ -97,13 +114,13 @@ foreach(attr ${attrs})
   list(APPEND wattrs "-Wsuggest-attribute=${attr}")
 endforeach()
 
-set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wcast-qual" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-aliasing" "-Wstrict-overflow" "-Werror" "-Wall" "-Wextra" "-Wno-unused-function" "-Wno-variadic-macros" "-march=native" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${file_name_flag}")
+set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wno-error=deprecated" "-Wcast-qual" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-aliasing" "-Wstrict-overflow" "-Werror" "-Wall" "-Wextra" "-Wno-unused-function" "-Wno-variadic-macros" "-march=native" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${file_name_flag}")
 
 
 set(driver_compiler_flags ${default_compiler_flags})
 list(APPEND driver_compiler_flags ${compiler_flags_extra})
 
-set(test_and_bench_compiler_flags ${default_compiler_flags})
+set(test_and_bench_compiler_flags ${default_compiler_flags} ${compiler_flags_extra})
 set(test_and_bench_libraries ${link_libraries})
 
 list(APPEND test_and_bench_compiler_flags "-DWITH_THREAD" "-DWITH_MATH" "-DWITH_VDSO")
@@ -148,7 +165,7 @@ list(REMOVE_ITEM BENCH_C_SOURCES ${BENCH_EXE_SRC})
 
 
 
-find_program(CLANG_TIDY_EXE clang-tidy NAMES clang-tidy-13 clang-tidy-12 clang-tidy-10 clang-tidy-9 clang-tidy-8)
+find_program(CLANG_TIDY_EXE clang-tidy NAMES clang-tidy-14 clang-tidy-13 clang-tidy-12 clang-tidy-10 clang-tidy-9 clang-tidy-8)
 # We don't get cache with this method which slows down check.
 add_custom_target(
   static-analysis
@@ -156,7 +173,7 @@ add_custom_target(
   ${ALL_C_SOURCES}
   -p=${CMAKE_CURRENT_BINARY_DIR}
   #  -checks=*,-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
-  )
+)
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})
 target_compile_options(driver PRIVATE ${driver_compiler_flags})

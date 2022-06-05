@@ -7,12 +7,11 @@
 
 #include "util/common.h"
 
-#define warn(msg, ...) fprint(stderr, "warning: " msg, ##__VA_ARGS__)
-
 #define print(...)    fprint(stdout, __VA_ARGS__)
 #define vprint(...)   vfprint(stdout, __VA_ARGS__)
 #define vvprint(...)  vvfprint(stdout, __VA_ARGS__)
 #define vvvprint(...) vvvfprint(stdout, __VA_ARGS__)
+
 
 #define trace_print(msg, ...)                                                  \
     fprint(stderr, "%-20s:%-6u: " msg, __FILENAME__, __LINE__, ##__VA_ARGS__)

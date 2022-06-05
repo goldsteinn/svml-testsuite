@@ -9,6 +9,7 @@
 #include "util/types.h"
 #include "util/verbosity.h"
 
+#include "util/getcpu-portable.h"
 #include "util/vdso-arch-masks.h"
 #include "util/vdso-func-enum.h"
 
@@ -44,13 +45,13 @@ NONNULL(2) vdso_clock_gettime(clockid_t clockid, struct timespec * ts) {
 static int32_t
 NONNULL(1) vdso_gettimeofday(struct timeval * restrict tv,
                              struct timezone * restrict tz) {
-    return (CAST_TO_FUNC(gettimeofday,
-                         vdso_funcs[vdso_gettimeofday_offset]))(tv, tz);
+    return (CAST_TO_FUNC(gettimeofday, vdso_funcs[vdso_gettimeofday_offset]))(
+        tv, tz);
 }
 
 static int32_t
 NONNULL(1) vdso_getcpu(uint32_t * restrict cpu, uint32_t * restrict node) {
-    return CAST_TO_FUNC(getcpu, vdso_funcs[vdso_getcpu_offset])(cpu, node);
+    return CAST_TO_FUNC(getcpu_p, vdso_funcs[vdso_getcpu_offset])(cpu, node);
 }
 
 static time_t

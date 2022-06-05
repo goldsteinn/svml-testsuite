@@ -68,7 +68,7 @@ static NONNULL(1) void I_safe_thread_spinlock_lock(
     char const * restrict fn,
     char const * restrict func,
     uint32_t ln) {
-    if (unlikely(thread_spinlock_lock(spinlock))) {
+    if (UNLIKELY(thread_spinlock_lock(spinlock))) {
         I_errdie(fn, func, ln, errno, NULL);
     }
 }
@@ -78,7 +78,7 @@ static NONNULL(1) void I_safe_thread_spinlock_unlock(
     char const * restrict fn,
     char const * restrict func,
     uint32_t ln) {
-    if (unlikely(thread_spinlock_unlock(spinlock))) {
+    if (UNLIKELY(thread_spinlock_unlock(spinlock))) {
         I_errdie(fn, func, ln, errno, NULL);
     }
 }
@@ -89,7 +89,7 @@ static NONNULL(1) int32_t
                                    char const * restrict func,
                                    uint32_t ln) {
     int32_t ret = thread_spinlock_unlock(spinlock);
-    if (unlikely(ret && (ret != EBUSY))) {
+    if (UNLIKELY(ret && (ret != EBUSY))) {
         I_errdie(fn, func, ln, errno, NULL);
     }
 

@@ -1,8 +1,9 @@
 /* simple argument parsing with documentation
 
  options can be typed as int, char, char*, bool, float, or handled by a
- special function positional parameters are always string and must be listed
- in order a special type Rest means all rest are returned as a pointer. */
+ special function positional parameters are always string and must be
+ listed in order a special type Rest means all rest are returned as a
+ pointer. */
 
 #include <assert.h>
 #include <stdarg.h>
@@ -13,6 +14,7 @@
 #include "util/arg.h"
 #include "util/error-util.h"
 #include "util/memory-util.h"
+#include "util/print.h"
 #include "util/verbosity.h"
 
 #include "lib/commonlib.h"
@@ -45,10 +47,10 @@ FORMATF(2, 3)
     va_list ap;
 
     va_start(ap, fmt);
-    fprintf(stderr, "%s: Usage Error: ", pname);
-    vfprintf(stderr, fmt, ap); /* NOLINT */
+    fprintf_stdout("%s: Usage Error: ", pname);
+    vprintf(fmt, ap); /* NOLINT */
     va_end(ap);
-    fprintf(stderr, "\n");
+    fprintf_stdout("\n");
     usage(pname, def);
     _exit(-1);
 }
@@ -174,16 +176,16 @@ arg2str(ArgOption const * restrict desc) {
 static void
 usage(char const * restrict pname, ArgParser const * restrict ap) {
     ArgParserNode const * apn;
-    fprintf(stderr, "%s: ", pname);
+    fprintf_stdout("%s: ", pname);
     /* print out shorthand for arguments.  */
     for (apn = ap->parsers; apn; apn = apn->next) {
         ArgOption const * args = apn->parser->args;
         int32_t           i    = 0;
         while (args[i].kind != KindEnd) {
-            fprintf(stderr, " %s", arg2str(args + i));
+            fprintf_stdout(" %s", arg2str(args + i));
             i++;
         }
-        fprintf(stderr, "\n%s\n", apn->parser->progdoc);
+        fprintf_stdout("\n%s\n", apn->parser->progdoc);
     }
 
     /* Now print individual descriptions.  */
@@ -191,34 +193,48 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
         ArgOption const * args = apn->parser->args;
         int32_t           i    = 0;
         while (args[i].kind != KindEnd) {
-            fprintf(
-                stderr, "   %20s\t%s\t", arg2str(args + i),
+            fprintf_stdout(
+                "   %20s\t%s\t", arg2str(args + i),
                 args[i].kind == KindHelp ? "Print this message" : args[i].desc);
             switch (args[i].type) {
                 case Increment:
                 case Integer: {
                     uint64_t default_v = 0;
+
                     memcpy_c(&default_v, args[i].dest, args[i].dest_sz);
+
                     if (args[i].is_unsigned) {
-                        fprintf(stderr, "(default: %lu)", default_v);
+                        fprintf_stdout("(default: %lu)", default_v);
                     }
                     else {
-                        fprintf(stderr, "(default: %ld)", default_v);
+                        uint32_t dst_bitwidth = 8 * args[i].dest_sz;
+                        die_assert(dst_bitwidth <= sizeof_bits(uint64_t));
+                        if (dst_bitwidth != sizeof_bits(uint64_t) &&
+                            (default_v & (1UL << (dst_bitwidth - 1)))) {
+                            uint64_t sign_extend = ~(0UL);
+                            sign_extend <<= dst_bitwidth;
+                            default_v |= sign_extend;
+                        }
+
+                        fprintf_stdout("(default: %ld)", default_v);
                     }
-                } break;
+                }
+
+                break;
                 case Character:
-                    fprintf(stderr, "(default: %c)", *(char *)(args[i].dest));
+                    fprintf_stdout("(default: %c)", *(char *)(args[i].dest));
                     break;
 
                 case String:
-                    fprintf(stderr, "(default: %s)", *(char **)(args[i].dest));
+                    fprintf_stdout("(default: %s)", *(char **)(args[i].dest));
                     break;
 
                 case Toggle:
                 case Set:
                 case Boolean:
-                    fprintf(stderr, "(default: %s)",
-                            *(safe_int32_t *)(args[i].dest) ? "true" : "false");
+                    fprintf_stdout(
+                        "(default: %s)",
+                        *(safe_int32_t *)(args[i].dest) ? "true" : "false");
                     break;
 
                 case Float: {
@@ -237,17 +253,17 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
                     }
 
 
-                    fprintf(stderr, "(default: %lf)", default_d);
+                    fprintf_stdout("(default: %lf)", default_d);
                 } break;
                 case Rest:
-                    fprintf(stderr, "(default: N/A)");
+                    fprintf_stdout("(default: N/A)");
                 case Help:
                     break;
 
                 default:
                     die("Unkown Type: %d\n", args[i].type);
             }
-            fprintf(stderr, "\n");
+            fprintf_stdout("\n");
             i++;
         }
     }
@@ -292,9 +308,9 @@ makeCommandline(int32_t argc, char * const * argv) {
 #define CHECK_OVERFLOW_ERROR(T_size)                                           \
     I_CHECK_OVERFLOW_ERROR(CAT(u, T_size, _t), CAT(T_size, _t))
 
-/* offset is 1 for option args (argv[0] points at option, argv[1] at start
- * of data) offset is 0 for positional args (argv[0] points at actual
- * argument). */
+/* offset is 1 for option args (argv[0] points at option, argv[1] at
+ * start of data) offset is 0 for positional args (argv[0] points at
+ * actual argument). */
 static int32_t
 assignArg(ArgOption * restrict desc,
           char * const * argv,
@@ -664,8 +680,9 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
         }
     }
 
-    /* ok, now we handle positional args, we handle them in the order they
-     * are declared only the main parser can define positional args.  */
+    /* ok, now we handle positional args, we handle them in the order
+     * they are declared only the main parser can define positional
+     * args.  */
     ArgOption * desc = NULL;
     for (apn = ap->parsers; apn; apn = apn->next) {
         if (apn->main) {
@@ -683,8 +700,8 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
             break;
         }
     }
-    /* base is first positional arg we are passed, j is first descriptor for
-     * positional arg.  */
+    /* base is first positional arg we are passed, j is first descriptor
+     * for positional arg.  */
     vprint("start pos: j=%d %s kind=%d basearg=%d\n", baseDestOffset,
            concat_args(desc[baseDestOffset].args_begin),
            desc[baseDestOffset].type, baseArg);
@@ -700,7 +717,7 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
         desc[baseDestOffset + j].required |=
             (desc[baseDestOffset + j].required << 1);
     }
-    /* check that we used all the arguments and don't have any extra.  */
+    /* check that we used all the arguments and don't have any extra. */
     if (desc[baseDestOffset + j].type == (ArgType)KindPositional) {
         argdie(ap, "Expected more arguments, only given %d", j);
     }
@@ -717,8 +734,8 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
             (desc[baseDestOffset + j].required << 1);
     }
 
-    /* if user defined a post parsing function, call it - main prog called
-     * last.
+    /* if user defined a post parsing function, call it - main prog
+     * called last.
      */
     for (apn = ap->parsers; apn; apn = apn->next) {
         if ((apn->main != 1) && (apn->parser->doneParsing != NULL)) {

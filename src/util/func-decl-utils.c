@@ -1,7 +1,9 @@
 #include "util/func-decl-utils.h"
 
 #include "util/error-util.h"
+#include "util/inline-math.h"
 #include "util/memory-util.h"
+#include "util/print.h"
 #include "util/regex-util.h"
 
 #include <stdint.h>
@@ -95,46 +97,42 @@ should_run_decl(char const * restrict decl_name,
     return has_hit;
 }
 
+static void
+print_decl(func_decl_t const * decl) {
+    fprintf_stdout("%s\n", decl->name);
+}
+
+void
+list_decls_filtered(decl_list_t const * decl_list,
+                    char * restrict const * restrict decls_to_list,
+                    uint64_t ndecls_to_list) {
+
+    fprintf_stdout("----------------- Listing %s ------------------\n",
+                   decl_list->decl_desc);
+    run_decls(decl_list, decls_to_list, ndecls_to_list, &print_decl);
+    fprintf_stdout("------------- Finished Listing %s -------------\n",
+                   decl_list->decl_desc);
+}
 
 void
 list_decls(decl_list_t const * restrict decl_list) {
-    uint64_t            i, ndecls;
-    func_decl_t const * decls;
-    die_assert(decl_list != NULL, "Error, trying to list null decls");
-
-    ndecls = decl_list->ndecls;
-    fprintf(stdout, "----------------- Listing %s ------------------\n",
-            decl_list->decl_desc);
-
-    for (i = 0; i < ndecls; ++i) {
-        decls = decl_list->decls;
-
-        die_assert(decls[i].name && decls[i].data,
-                   "Error, unitialized decl struct!\n");
-        fprintf(stdout, "%-24s\n", decls[i].name);
-    }
-    fprintf(stdout, "------------- Finished Listing %s -------------\n",
-            decl_list->decl_desc);
+    list_decls_filtered(decl_list, NULL, 0);
 }
 
+static NONNULL(1, 4) void I_run_decls(
+    decl_list_t const * restrict decl_list,
+    char * restrict const * restrict decls_to_run,
+    uint64_t         ndecls_to_run,
+    const run_decl_f run_decl_func) {
 
-void
-run_decls(decl_list_t const * restrict decl_list,
-          char * restrict const * restrict decls_to_run,
-          uint64_t         ndecls_to_run,
-          const run_decl_f run_decl_func) {
-    uint64_t            i, ndecls;
-    const func_decl_t * decls;
-    regex_t             re_matchers[ndecls_to_run];
-    uint8_t             decl_states[ndecls_to_run], decl_state;
-    memset_c(decl_states, 0, ndecls_to_run);
+    uint64_t            i;
+    uint64_t            ndecls = decl_list->ndecls;
+    const func_decl_t * decls  = decl_list->decls;
+    regex_t             re_matchers[MAX(ndecls, ndecls_to_run, 1UL)];
+    uint8_t decl_states[MAX(ndecls, ndecls_to_run, 1UL)], decl_state;
+    memset_c(decl_states, 0, MAX(ndecls, ndecls_to_run));
 
 
-    die_assert(decl_list != NULL, "Error, trying to list null decls");
-    die_assert(run_decl_func != NULL, "Error, runner function is null");
-
-    ndecls = decl_list->ndecls;
-    decls  = decl_list->decls;
     for (i = 0; i < ndecls; ++i) {
         die_assert(decls[i].name && decls[i].data,
                    "Error, unitialized decl struct!\n");
@@ -158,6 +156,17 @@ run_decls(decl_list_t const * restrict decl_list,
                 continue;
             }
         }
-        fprintf(stdout, "Unable To Find - %s\n", decls_to_run[i]);
+        fprintf_stdout("Unable To Find - %s\n", decls_to_run[i]);
     }
+}
+
+void
+run_decls(decl_list_t const * restrict decl_list,
+          char * restrict const * restrict decls_to_run,
+          uint64_t         ndecls_to_run,
+          const run_decl_f run_decl_func) {
+    die_assert(decl_list != NULL, "Error, trying to list null decls");
+    die_assert(run_decl_func != NULL, "Error, runner function is null");
+
+    I_run_decls(decl_list, decls_to_run, ndecls_to_run, run_decl_func);
 }

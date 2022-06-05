@@ -12,7 +12,12 @@
 
 #define PAGE_SIZE 4096
 
-#define safe_calloc(n, sz)  I_safe_calloc(n, sz, ERR_ARGS)
+#define safe_calloc(n, sz) I_safe_calloc(n, sz, ERR_ARGS)
+#define safe_zalloc(sz)    I_safe_calloc(sz, 1, ERR_ARGS)
+
+#define safe_aligned_alloc(alignment, sz)                                      \
+    I_safe_aligned_alloc(alignment, sz, ERR_ARGS)
+
 #define safe_realloc(p, sz) I_safe_realloc(p, sz, ERR_ARGS)
 #define safe_srealloc(p, sz_old, sz_new)                                       \
     I_safe_srealloc(p, sz_old, sz_new, ERR_ARGS)
@@ -27,7 +32,7 @@
 #define safe_mprotect(addr, sz, prot_flags)                                    \
     I_safe_mprotect(addr, sz, prot_flags, ERR_ARGS)
 
-#define safe_free(addr)  I_safe_free(addr)
+#define safe_free(addr)      I_safe_free(addr)
 #define safe_sfree(addr, sz) I_safe_sfree(addr, sz)
 
 #define is_valid_addr(addr)                                                    \
@@ -41,6 +46,19 @@ NONNULL(3, 4) void * I_safe_calloc(uint64_t n,
                                    char const * restrict func,
                                    uint32_t ln) {
     void * p = calloc_c(n, sz);
+    if (UNLIKELY(p == NULL)) {
+        I_errdie(fn, func, ln, errno, NULL);
+    }
+    return p;
+}
+
+static MALLOC_FUNC
+NONNULL(3, 4) void * I_safe_aligned_alloc(uint64_t alignment,
+                                          uint64_t sz,
+                                          char const * restrict fn,
+                                          char const * restrict func,
+                                          uint32_t ln) {
+    void * p = aligned_alloc_c(alignment, sz);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, errno, NULL);
     }

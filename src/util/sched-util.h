@@ -1,13 +1,16 @@
 #ifndef _SRC__UTIL__SCHED_UTIL_H_
 #define _SRC__UTIL__SCHED_UTIL_H_
 
+#include <linux/futex.h>
 #include <sched.h>
+#include <sys/sysinfo.h>
 #include <unistd.h>
 
 #include "util/error-util.h"
 
 #include "arch/ll-getcpu.h"
 #include "arch/ll-syscall.h"
+
 
 #include "thread/cpuset.h"
 
@@ -24,10 +27,25 @@
 #define safe_get_cpu() I_safe_get_cpu(ERR_ARGS)
 #define safe_yield()   I_safe_yield(ERR_ARGS)
 
+
 static uint32_t
 get_cpu() {
     return ll_get_cpu();
 }
+
+static int32_t
+futex_wait(uint32_t * addr, uint32_t val) {
+    return ll_syscall_cc(SYS_futex, (addr, FUTEX_WAIT, val, 0), /* None */,
+                         /* None */, ((uint32_t(*)[1])addr));
+}
+
+static int32_t
+futex_wake(uint32_t * addr, uint32_t n) {
+    return ll_syscall_cc(
+        SYS_futex, (addr, FUTEX_WAKE, n), /* None */, /* None */,
+        /* None */);
+}
+
 
 static void
 yield() {
@@ -75,11 +93,6 @@ NONNULL(3, 4) I_setcpu(pid_t        pid,
 static void
 proc_setcpu_and_wait(uint32_t cpu) {
     setcpu_and_wait(0, cpu);
-}
-
-static uint32_t
-get_nprocs() {
-    return sysconf(_SC_NPROCESSORS_ONLN);
 }
 
 #endif

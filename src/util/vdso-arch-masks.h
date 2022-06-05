@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "util/vdso-func-enum.h"
 #include "util/attrs.h"
+#include "util/vdso-func-enum.h"
 
 static ALWAYS_INLINE CONST_FUNC uint32_t
 get_x86_vdso_expec_mask() {

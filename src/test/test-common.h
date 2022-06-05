@@ -4,6 +4,7 @@
 #include "util/attrs.h"
 #include "util/common.h"
 #include "util/macro.h"
+#include "util/print.h"
 #include "util/types.h"
 
 MALLOC_FUNC uint8_t * make_buf(uint64_t sz);
@@ -26,17 +27,17 @@ void set_max_ulp(int32_t value);
 
 #define test_assert(...)                                                       \
     CAT(test_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
-#define _test_assert(X, todo)                                                  \
+#define I_test_assert(X, todo)                                                 \
     if (UNLIKELY(!(X))) {                                                      \
-        fprintf(stderr, "\n\t%-20s:%-4u", __FILENAME__, __LINE__);             \
-        todo;                                                                  \
+        fprintf_stderr("\n\t%-20s:%-4u", __FILENAME__, __LINE__);              \
+        (void)(todo);                                                          \
         return -1;                                                             \
     }
 
 #define test_assert_MANY(X, msg, args...)                                      \
-    _test_assert(X, fprintf(stderr, "\t" msg "\n", ##args));
+    I_test_assert(X, fprintf(stderr, "\t" msg "\n", ##args));
 
-#define test_assert_ONE(X) _test_assert(X, fprintf(stderr, "\n"))
+#define test_assert_ONE(X) I_test_assert(X, fprintf(stderr, "\n"))
 
 
 #endif
