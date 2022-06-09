@@ -39,12 +39,12 @@
     (CAST(uint64_t, addr) > CAST(uint64_t, 65536) &&                           \
      (!(CAST(uint64_t, addr) >> 48)))
 
-static MALLOC_FUNC
-NONNULL(3, 4) void * I_safe_calloc(uint64_t n,
-                                   uint64_t sz,
-                                   char const * restrict fn,
-                                   char const * restrict func,
-                                   uint32_t ln) {
+static MALLOC_FUNC(1, 2)
+    NONNULL(3, 4) void * I_safe_calloc(uint64_t n,
+                                       uint64_t sz,
+                                       char const * restrict fn,
+                                       char const * restrict func,
+                                       uint32_t ln) {
     void * p = calloc_c(n, sz);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, errno, NULL);
@@ -52,12 +52,12 @@ NONNULL(3, 4) void * I_safe_calloc(uint64_t n,
     return p;
 }
 
-static MALLOC_FUNC
-NONNULL(3, 4) void * I_safe_aligned_alloc(uint64_t alignment,
-                                          uint64_t sz,
-                                          char const * restrict fn,
-                                          char const * restrict func,
-                                          uint32_t ln) {
+static MALLOC_FUNC(2)
+    NONNULL(3, 4) void * I_safe_aligned_alloc(uint64_t alignment,
+                                              uint64_t sz,
+                                              char const * restrict fn,
+                                              char const * restrict func,
+                                              uint32_t ln) {
     void * p = aligned_alloc_c(alignment, sz);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, errno, NULL);
@@ -65,11 +65,11 @@ NONNULL(3, 4) void * I_safe_aligned_alloc(uint64_t alignment,
     return p;
 }
 
-static MALLOC_FUNC
-NONNULL(2, 3) void * I_safe_malloc(uint64_t sz,
-                                   char const * restrict fn,
-                                   char const * restrict func,
-                                   uint32_t ln) {
+static MALLOC_FUNC(1)
+    NONNULL(2, 3) void * I_safe_malloc(uint64_t sz,
+                                       char const * restrict fn,
+                                       char const * restrict func,
+                                       uint32_t ln) {
     void * p = malloc_c(sz);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, errno, NULL);
@@ -77,12 +77,12 @@ NONNULL(2, 3) void * I_safe_malloc(uint64_t sz,
     return p;
 }
 
-static MALLOC_FUNC
-NONNULL(1, 3, 4) void * I_safe_realloc(void * restrict p,
-                                       uint64_t sz,
-                                       char const * restrict fn,
-                                       char const * restrict func,
-                                       uint32_t ln) {
+static MALLOC_FUNC(2)
+    NONNULL(1, 3, 4) void * I_safe_realloc(void * restrict p,
+                                           uint64_t sz,
+                                           char const * restrict fn,
+                                           char const * restrict func,
+                                           uint32_t ln) {
     void * newp = realloc_c(p, sz);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, errno, NULL);
@@ -91,13 +91,13 @@ NONNULL(1, 3, 4) void * I_safe_realloc(void * restrict p,
 }
 
 
-static MALLOC_FUNC
-NONNULL(1, 4, 5) void * I_safe_srealloc(void * restrict p,
-                                        uint64_t sz_old,
-                                        uint64_t sz_new,
-                                        char const * restrict fn,
-                                        char const * restrict func,
-                                        uint32_t ln) {
+static MALLOC_FUNC(3)
+    NONNULL(1, 4, 5) void * I_safe_srealloc(void * restrict p,
+                                            uint64_t sz_old,
+                                            uint64_t sz_new,
+                                            char const * restrict fn,
+                                            char const * restrict func,
+                                            uint32_t ln) {
     void * newp = srealloc_c(p, sz_old, sz_new);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, errno, NULL);
@@ -121,15 +121,16 @@ I_safe_sfree(void * addr, uint64_t sz) {
 }
 
 
-MALLOC_FUNC NONNULL(7, 8) void * I_safe_mmap(void * restrict addr,
-                                             uint64_t sz,
-                                             int32_t  prot_flags,
-                                             int32_t  mmap_flags,
-                                             int32_t  fd,
-                                             int32_t  offset,
-                                             char const * restrict fn,
-                                             char const * restrict func,
-                                             uint32_t ln);
+MALLOC_FUNC(2)
+NONNULL(7, 8) void * I_safe_mmap(void * restrict addr,
+                                 uint64_t sz,
+                                 int32_t  prot_flags,
+                                 int32_t  mmap_flags,
+                                 int32_t  fd,
+                                 int32_t  offset,
+                                 char const * restrict fn,
+                                 char const * restrict func,
+                                 uint32_t ln);
 
 NONNULL(1, 3, 4)
 void I_safe_munmap(void * restrict addr,

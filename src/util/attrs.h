@@ -8,10 +8,10 @@
 #define NEVER_INLINE  __attribute__((noinline))
 
 
-#define MAYBE_UNUSED __attribute__((unused))
-#define MALLOC_FUNC  __attribute__((malloc))
-#define CONST_FUNC   __attribute__((const)) constexpr
-#define PURE_FUNC    __attribute__((pure))
+#define MAYBE_UNUSED          __attribute__((unused))
+#define MALLOC_FUNC(...) __attribute__((malloc, alloc_size(__VA_ARGS__)))
+#define CONST_FUNC            __attribute__((const)) constexpr
+#define PURE_FUNC             __attribute__((pure))
 
 #define BENCH_FUNC __attribute__((noclone, noinline, aligned(4096)))
 #define EXIT_FUNC  __attribute__((noclone, noinline, cold, noreturn))

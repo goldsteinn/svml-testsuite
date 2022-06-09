@@ -7,7 +7,7 @@
 #include "util/print.h"
 #include "util/types.h"
 
-MALLOC_FUNC uint8_t * make_buf(uint64_t sz);
+MALLOC_FUNC(1) uint8_t * make_buf(uint64_t sz);
 NONNULL(1) void free_buf(uint8_t * buf, uint64_t sz);
 NONNULL(1) void randomize_buf(uint8_t * buf, uint64_t sz);
 NONNULL(1) void seq_buf(uint8_t * buf, uint64_t sz);
