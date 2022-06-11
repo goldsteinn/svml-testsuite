@@ -575,7 +575,7 @@
 
 #define APPLY0(macro, OP, ...) CAT_BASE(APPLY_, PP_NARG(__VA_ARGS__))(macro, OP, __VA_ARGS__)
 
-#define APPLY_TOO(macro, OP, ...) CAT_BASE(APPLY, IS_EMPTY(__VA_ARGS__))(macro, FWD_TOKEN(OP), __VA_ARGS__)
+#define APPLY_TOO(macro, OP, ...) CAT_BASE(APPLY_TOO, IS_EMPTY(__VA_ARGS__))(macro, FWD_TOKEN(OP), __VA_ARGS__)
 
 #define APPLY_TOO1(macro, OP, ...)
 

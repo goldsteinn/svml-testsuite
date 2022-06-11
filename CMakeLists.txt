@@ -47,6 +47,8 @@ elseif(${c_lang} GREATER -1)
   set(LANG "C")
   set(STD "c11")
   set(LANG_FLAGS "")
+  # Pedantic C11, c++11 has too any unfortunate features
+  set(LAND_FLAGS "-Wpedantic")
 else()
   message(FATAL_ERROR "Invalid language selection: ${LANG}")
 endif()

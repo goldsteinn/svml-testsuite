@@ -21,7 +21,7 @@ typedef void (*run_decl_f)(const func_decl_t *);
 typedef struct decl_list {
     const uint64_t ndecls;
     const char *   decl_desc;
-#ifdef __cplusplus
+#if (defined __cplusplus) && (defined __clang__)
     const func_decl_t decls[30];
 #else
     const func_decl_t decls[];
