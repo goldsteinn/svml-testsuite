@@ -41,8 +41,6 @@ typedef unsigned_long_long * unsigned_long_longp;
 
 typedef long_long * long_longp;
 
-typedef uint64_t ptr_int_t;
-
 
 #define SIGNED_INT_TYPES                                                       \
     char, signed_char, signed_short, signed_int, signed_long, signed_long_long

@@ -26,6 +26,12 @@
 // clang-format on
 
 
+#if defined(_GNU_SOURCE) && defined(__GLIBC_PREREQ)
+#define GLIBC_VERSION_GE(major, minor) __GLIBC_PREREQ(major, minor)
+#else
+#define GLIBC_VERSION_GE(major, minor) 0
+#endif
+
 #if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER)
 #ifdef __has_include
 #define I_has_include __has_include
@@ -43,10 +49,18 @@
 #ifdef __has_include
 #define I_has_include __has_include
 #endif
-#define noclone
+#define I_attr_noclone
+#define I_attr_optimize(...)
 #else
-#define noclone
+#define I_attr_noclone
 #warning "Untested and likely unsupported compiler"
+#endif
+
+#ifndef I_attr_noclone
+#define I_attr_noclone __attribute__((noclone))
+#endif
+#ifndef I_attr_optimize
+#define I_attr_optimize(...) __attribute__((optimize(__VA_ARGS__)))
 #endif
 
 #ifndef I_has_include
@@ -81,6 +95,12 @@
 #endif
 
 
+#ifdef __has_builtin
+#define I_has_builtin(...) __has_builtin(__VA_ARGS__)
+#else
+#define I_has_builtin(...) 0
+#endif
+
 #ifndef fall_through
 #define fall_through /* fall through */
 #endif
@@ -89,4 +109,9 @@
 #define I_attribute_copy(...)
 #endif
 
+#if I_has_builtin(__builtin_constant_p)
+#define I_is_const(...) __builtin_constant_p(__VA_ARGS__)
+#else
+#define I_is_const(...) 0
+#endif
 #endif

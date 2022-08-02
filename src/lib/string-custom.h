@@ -1,7 +1,11 @@
 #ifndef _SRC__LIB__STRING_CUSTOM_H_
 #define _SRC__LIB__STRING_CUSTOM_H_
 
+#include <stdint.h>
 #include <string.h>
+
+#include "util/attrs.h"
+#include "util/common.h"
 
 #define bcopy_c      bcopy
 #define bzero_c      bzero
@@ -67,5 +71,18 @@
 #define wmemmove_c   wmemmove
 #define wmempcpy_c   wmempcpy
 #define wmemset_c    wmemset
+
+static ALWAYS_INLINE int32_t
+memcmpeq_c(uint8_t const * s1, uint8_t const * s2, size_t n) {
+#if GLIBC_VERSION_GE(2, 35)
+    if (const_condition(n <= 64)) {
+        return !!memcmp(s1, s2, n);
+    }
+    return __memcmpeq(s1, s2, n);
+#else
+    return !!memcmp(s1, s2, n);
+#endif
+}
+
 
 #endif

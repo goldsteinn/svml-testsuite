@@ -1,5 +1,7 @@
 #include "test/test-common.h"
 #include "util/macro.h"
+
+#include "lib/commonlib.h"
 #define I_ONE  1
 #define I_MANY 2
 static int64_t count;

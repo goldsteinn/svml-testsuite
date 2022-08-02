@@ -1,11 +1,11 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef _SRC__UTIL__COMMON_H_
+#define _SRC__UTIL__COMMON_H_
+
 
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "lib/commonlib.h"
 #include "util/attrs.h"
 #include "util/macro.h"
 #include "util/portability.h"
@@ -43,5 +43,7 @@
     {                                                                          \
         enum { CAT(CHECKING_CONSTANT_EVAL, __CURRENT__) = (expr) };            \
     }
+
+#define const_condition(...) (I_is_const(__VA_ARGS__) && (__VA_ARGS__))
 
 #endif

@@ -57,6 +57,22 @@ def gen_NOT_ONE_NARG():
     return macros
 
 
+def gen_NOT_TWO_NARG():
+    macros = []
+    TO_N = N + 2
+    macros.append(
+        "NOT_TWO_NARG(...) I_PP_NARG_(__VA_ARGS__,I_NOT_TWO_RSEQ_N())")
+
+    text = []
+    text.append("I_NOT_TWO_RSEQ_N()")
+    text.append(",".join(["{}".format("MANY") for x in range(0, TO_N - 3)]))
+    text.append(",TWO,TWO,TWO")
+
+    macros.append(text)
+
+    return macros
+
+
 def gen_IS_EMPTY():
     macros = []
     TO_N = N + 2
@@ -159,11 +175,16 @@ def gen_APPLY_RECURSE():
     return macros
 
 
+def gen_arg_list(base_name, i):
+    return ",".join([base_name + "{}".format(x) for x in range(0, i)])
+
+
 def gen_applier(base_name, base_args, sep, gen_todo):
     macros = []
 
     for i in range(1, N + 1):
-        xargs = ",".join(["x{}".format(x) for x in range(0, i)])
+        xargs = gen_arg_list("x", i)
+
         todo = " {} ".format(sep).join([gen_todo(x) for x in range(0, i)])
 
         macros.append("{}_{}({}, {}) {}".format(base_name, i, base_args, xargs,
@@ -174,8 +195,8 @@ def gen_applier(base_name, base_args, sep, gen_todo):
 def gen_apply_preamble(name):
     macros = []
     macros.append(
-        "{}(macro, OP, ...) CAT_BASE(APPLY, IS_EMPTY(__VA_ARGS__))(macro, FWD_TOKEN(OP), __VA_ARGS__)"
-        .format(name))
+        "{}(macro, OP, ...) CAT_BASE({}, IS_EMPTY(__VA_ARGS__))(macro, FWD_TOKEN(OP), __VA_ARGS__)"
+        .format(name, name))
     macros.append("{}1(macro, OP, ...)".format(name))
     macros.append(
         "{}0(macro, OP, ...) CAT_BASE(APPLY_, PP_NARG(__VA_ARGS__))(macro, OP, __VA_ARGS__)"
@@ -231,6 +252,33 @@ def gen_ARGP_APPLY():
     return macros
 
 
+def gen_APPLY_COMBINE():
+    macros = []
+    macros.append(
+        "APPLY_COMBINE(...) CAT_BASE(APPLY_COMBINE, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__)"
+    )
+    macros.append("APPLY_COMBINE1(...)")
+    macros.append(
+        "APPLY_COMBINE0(...) CAT_BASE(APPLY_COMBINE_, NOT_TWO_NARG(__VA_ARGS__))(__VA_ARGS__)"
+    )
+    macros.append(
+        "APPLY_COMBINE_TWO(x, y) APPLY_COMBINE_MANY_(DEPAREN(x), DEPAREN(y))")
+    macros.append("APPLY_COMBINE_MANY_(...) APPLY_COMBINE_MANY(__VA_ARGS__)")
+    macros.append(
+        "APPLY_COMBINE_MANY(...) CAT_BASE(APPLY_COMBINE_, PP_NARG(__VA_ARGS__))(__VA_ARGS__)"
+    )
+
+    for i in range(1, int(N / 2) + 1):
+        xargs = gen_arg_list("x", i)
+        yargs = gen_arg_list("y", i)
+        args = xargs + "," + yargs
+
+        todo = ",".join(["(x{}, y{})".format(x, x) for x in range(0, i)])
+        macros.append("APPLY_COMBINE_{}({}) {}".format(i * 2, args, todo))
+
+    return macros
+
+
 def gen_PACKR():
     return gen_packer(True)
 
@@ -249,12 +297,20 @@ def tests():
     print("#include \"util/macro.h\"")
     print("#include \"test/test-common.h\"")
     print("#define I_ONE 1")
-    print("#define I_MANY 2")
+    print("#define I_TWO 2")
+    print("#define I_MANY 3")
 
-    print("static int64_t count; void foo(int64_t i) { count += i; }")
+    print("static int64_t count; static void foo(int64_t i) { count += i; }")
 
-    print("void foo2(int64_t i0, int64_t i1) { count += (i0 - i1); }")
+    print("static void foo2(int64_t i0, int64_t i1) { count += (i0 - i1); }")
     print("#define dfoo2(...) foo2(DEPAREN(__VA_ARGS__))")
+
+    print("static void foo22(int64_t i0, int64_t i1) { count += (i0 + i1); }")
+    print("#define dfoo22(...) foo22(DEPAREN(__VA_ARGS__))")
+
+    print(
+        "static uint64_t foo23(int64_t i0, int64_t i1) { return (i0 * i1); }")
+    print("#define dfoo23(...) foo23(DEPAREN(__VA_ARGS__))")
 
     print(
         "#define I_TEST_MIN(x, y) ({ long _x = (x); long _y = (y); ((_x) < (_y) ? (_x) : (_y)); })"
@@ -285,15 +341,37 @@ def tests():
 
     for i in todo:
         li = ",".join([str(x) for x in range(0, i)])
+        li2 = ",".join([str(x + 1)
+                        for x in range(0, i)] + [str(x) for x in range(0, i)])
         si = sum(x for x in range(0, i))
+
+        mul_sum = 0
+        for x in range(0, i):
+            mul_sum += (x + (x + 1))
+
+        xor_sum = 0
+        for x in range(0, i):
+            xor_sum ^= (x * (x + 1))
+
+        xor_sum2 = 0
+        for x in range(0, i):
+            xor_sum2 ^= (x * x)
+
         if i > 0:
             print("test_assert(PP_NARG({}) == {});".format(li, i))
 
         NON_res = "I_MANY"
+        NOT_res = "I_MANY"
         if i < 2:
             NON_res = "I_ONE"
+        if i < 3:
+            NOT_res = "I_TWO"
+
         print("test_assert(CAT(I_, NOT_ONE_NARG({})) == {});".format(
             li, NON_res))
+        print(
+            "test_assert(CAT(I_, NOT_TWO_NARG({})) == {}, \"Fail({}: !=%d)\", {});"
+            .format(li, NOT_res, i, NOT_res))
 
         IE_res = "0"
         if i == 0:
@@ -309,6 +387,38 @@ def tests():
                 li, 0))
             print("test_assert(APPLY_RECURSE(I_PLUS, {}) == {});".format(
                 li, si))
+
+        if i <= int(N / 2):
+            print(
+                "count = 0; APPLY(dfoo22, ;, APPLY_COMBINE({})); test_assert(count == {}, \"Fail({}) Combine 1: %lu != %lu\", count, {}UL);"
+                .format(li2, mul_sum, i, mul_sum))
+            print(
+                "count = 0; APPLY(dfoo2, ;, APPLY_COMBINE({})); test_assert(count == {},\"Fail({}) Combine 2\");"
+                .format(li2, i, i))
+
+            if i != 0:
+
+                print(
+                    "test_assert((APPLY(dfoo23, ^, APPLY_COMBINE({}))) == {}, \"Fail({}) Combine 0: %lu != %lu\", count, {}UL);"
+                    .format(li2, xor_sum, i, xor_sum))
+
+                print(
+                    "count = 0; APPLY(dfoo22, ;, APPLY_COMBINE(({}), ({}))); test_assert(count == {}, \"Fail({}) Combine 4: %lu != %lu\", count, {}UL);"
+                    .format(li, li, si * 2, i, si * 2))
+                print(
+                    "count = 0; APPLY(dfoo2, ;, APPLY_COMBINE(({}), ({}))); test_assert(count == {},\"Fail({}) Combine 2\");"
+                    .format(li, li, 0, i))
+                print(
+                    "test_assert((APPLY(dfoo23, ^, APPLY_COMBINE(({}), ({})))) == {}, \"Fail({}) Combine 0: %lu != %lu\", count, {}UL);"
+                    .format(li, li, xor_sum2, i, xor_sum2))
+
+            if False:
+                print(
+                    "count = 0; APPLY(dfoo22, ;, APPLY_COMBINE(({}))); test_assert(count == {},\"Fail({}) Combine 3\");"
+                    .format(li2, mul_sum, i))
+                print(
+                    "count = 0; APPLY(dfoo2, ;, APPLY_COMBINE(({}))); test_assert(count == {}, \"Fail({}) Combine 4\");"
+                    .format(li2, i, i))
 
         if i == 0:
             print("APPLY(a, b);")
@@ -369,14 +479,17 @@ def tests():
 
 def gen():
     out = []
+
     out.append(gen_PP_NARG())
     out.append(gen_NOT_ONE_NARG())
+    out.append(gen_NOT_TWO_NARG())
     out.append(gen_IS_EMPTY())
     out.append(gen_APPLY_RECURSE())
     out.append(gen_APPLY())
     out.append(gen_ARGP_APPLY())
     out.append(gen_PACKR())
     out.append(gen_PACKL())
+    out.append(gen_APPLY_COMBINE())
 
     print("#ifndef _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_")
     print("#define _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_")

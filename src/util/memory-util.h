@@ -10,6 +10,8 @@
 #include "util/error-util.h"
 #include "util/macro.h"
 
+#include "lib/commonlib.h"
+
 #define PAGE_SIZE 4096
 
 #define safe_calloc(n, sz) I_safe_calloc(n, sz, ERR_ARGS)
@@ -122,15 +124,16 @@ I_safe_sfree(void * addr, uint64_t sz) {
 
 
 MALLOC_FUNC(2)
-NONNULL(7, 8) void * I_safe_mmap(void * restrict addr,
-                                 uint64_t sz,
-                                 int32_t  prot_flags,
-                                 int32_t  mmap_flags,
-                                 int32_t  fd,
-                                 int32_t  offset,
-                                 char const * restrict fn,
-                                 char const * restrict func,
-                                 uint32_t ln);
+NONNULL(7, 8)
+void * I_safe_mmap(void * restrict addr,
+                   uint64_t sz,
+                   int32_t  prot_flags,
+                   int32_t  mmap_flags,
+                   int32_t  fd,
+                   int32_t  offset,
+                   char const * restrict fn,
+                   char const * restrict func,
+                   uint32_t ln);
 
 NONNULL(1, 3, 4)
 void I_safe_munmap(void * restrict addr,

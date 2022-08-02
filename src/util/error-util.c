@@ -3,16 +3,17 @@
 #include "util/error-util.h"
 #include "util/print.h"
 
+#include "lib/commonlib.h"
+
 enum { I_STRERROR_BUFLEN = 512 };
 
-#define I_strerror(err)                                                        \
+#define I_strerror(err, errbuf)                                                \
     ({                                                                         \
-        char I_tmp_err_buf_[I_STRERROR_BUFLEN];                                \
-        if (strerror_r(err, I_tmp_err_buf_, I_STRERROR_BUFLEN)) {              \
-            memcpy_c(I_tmp_err_buf_, "Error generating strerror msg!",         \
+        if (strerror_r(err, errbuf, I_STRERROR_BUFLEN)) {                      \
+            memcpy_c(errbuf, "Error generating strerror msg!",                 \
                      strlen("Error generating strerror msg!"));                \
         }                                                                      \
-        I_tmp_err_buf_;                                                        \
+        errbuf;                                                                \
     })
 
 void
@@ -22,8 +23,9 @@ I_va_errdie(char const * restrict file_name,
             int32_t  error_number,
             char const * restrict msg,
             va_list ap) {
+    char tmpbuf[I_STRERROR_BUFLEN];
     fprintf_stderr("%s:%s:%d: [%d] -> %s\n", file_name, func_name, line_number,
-                   error_number, I_strerror(error_number));
+                   error_number, I_strerror(error_number, tmpbuf));
     if (msg) {
         /* va_list warning is a clang-tidy bug */
         (void)vfprintf(stderr, /* NOLINT */
@@ -40,9 +42,11 @@ I_errdie(char const * restrict file_name,
          int32_t  error_number,
          char const * restrict msg,
          ...) {
-    fprintf_stderr("%s:%s:%d: [%d] -> %s\n", file_name, func_name, line_number,
-                   error_number, I_strerror(error_number));
+    char tmpbuf[I_STRERROR_BUFLEN];
     va_list ap;
+    fprintf_stderr("%s:%s:%d: [%d] -> %s\n", file_name, func_name, line_number,
+                   error_number, I_strerror(error_number, tmpbuf));
+
     if (msg) {
         va_start(ap, msg);
         /* va_list warning is a clang-tidy bug */
