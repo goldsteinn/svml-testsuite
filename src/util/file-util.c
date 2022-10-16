@@ -15,7 +15,7 @@ I_safe_open2(char const * restrict path,
              uint32_t ln) {
     int32_t ret = open(path, flags);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno,
+        I_errdie(fn, func, ln, NULL, errno,
                  "Unable to open \"%s\" with [flags=0x%03x]\n", path, flags);
     }
     return ret;
@@ -29,7 +29,7 @@ I_safe_open3(char const * restrict path,
              uint32_t ln) {
     int32_t ret = open(path, mode);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno,
+        I_errdie(fn, func, ln, NULL, errno,
                  "Unable to open \"%s\" with [flags=0x%03x][mode=0x%03x])\n",
                  path, flags, mode);
     }
@@ -84,7 +84,7 @@ I_safe_read(int32_t fd,
             uint32_t ln) {
     int64_t ret = read(fd, buf, count);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }
@@ -97,7 +97,7 @@ I_safe_write(int32_t fd,
              uint32_t ln) {
     int64_t ret = write(fd, buf, count);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }
@@ -163,7 +163,7 @@ I_safe_stat(char const * restrict path,
             uint32_t ln) {
     int32_t ret = stat(path, buf);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, "Unable to stat \"%s\"\n", path);
+        I_errdie(fn, func, ln, NULL, errno, "Unable to stat \"%s\"\n", path);
     }
     return ret;
 }
@@ -176,7 +176,7 @@ I_safe_fstat(int32_t fd,
              uint32_t ln) {
     int32_t ret = fstat(fd, buf);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }
@@ -189,7 +189,7 @@ I_safe_access(char const * restrict path,
               uint32_t ln) {
     int32_t ret = access(path, mode);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno,
+        I_errdie(fn, func, ln, NULL, errno,
                  "Unable to access \"%s\" with [mode=0x%03x]\n", path, mode);
     }
     return ret;
@@ -202,7 +202,7 @@ I_safe_close(int32_t fd,
              uint32_t ln) {
     int32_t ret = close(fd);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }
@@ -270,7 +270,7 @@ I_safe_fopen(char const * restrict path,
              uint32_t ln) {
     FILE * fp = fopen(path, mode);
     if (UNLIKELY(fp == NULL && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno,
+        I_errdie(fn, func, ln, NULL, errno,
                  "Unable to open \"%s\" with [mode=%-8s]\n", path, mode);
     }
     return fp;
@@ -285,7 +285,7 @@ I_safe_fdopen(int32_t fd,
               uint32_t ln) {
     FILE * fp = fdopen(fd, mode);
     if (UNLIKELY(fp == NULL && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return fp;
 }
@@ -300,7 +300,7 @@ I_safe_fread(void * restrict ptr,
              uint32_t ln) {
     size_t ret = fread(ptr, size, nmemb, stream);
     if (UNLIKELY(ret != nmemb && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }
@@ -315,7 +315,7 @@ I_safe_fwrite(const void * restrict ptr,
               uint32_t ln) {
     size_t ret = fwrite(ptr, size, nmemb, stream);
     if (UNLIKELY(ret != nmemb && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }
@@ -345,7 +345,7 @@ I_safe_fclose(FILE * restrict stream,
               uint32_t ln) {
     int32_t ret = fclose(stream);
     if (UNLIKELY(ret != 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
 }

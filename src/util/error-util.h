@@ -11,8 +11,10 @@
 #include "util/macro.h"
 #include "util/verbosity.h"
 
-#define err_assert(...) CAT(err_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
-#define die_assert(...) CAT(die_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
+#define err_assert(...)                                                        \
+    CAT(I_err_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
+#define die_assert(...)                                                        \
+    CAT(I_die_assert_, NOT_ONE_NARG(__VA_ARGS__))(__VA_ARGS__)
 
 
 #define warn(msg, ...) fprint(stderr, "warning: " msg, ##__VA_ARGS__)
@@ -25,43 +27,39 @@
         }                                                                      \
     })
 
-#define warn_once_assert(X, msg, ...)                                          \
-    if (UNLIKELY(!(X))) {                                                      \
-        warn_once(msg, ##__VA_ARGS__);                                         \
-    }
+#define I_assert_macro_base(cond, todo, ...)                                   \
+    ({                                                                         \
+        __typeof__(cond) I_cond_eval_tmp_ = (cond);                            \
+        if (UNLIKELY(!I_cond_eval_tmp_)) {                                     \
+            todo(__VA_ARGS__);                                                 \
+        }                                                                      \
+        I_cond_eval_tmp_;                                                      \
+    })
 
-#define msg_assert(X, msg, args...)                                            \
-    if (UNLIKELY(!(X))) {                                                      \
-        _msg_die(msg, ##args);                                                 \
-    }
+#define warn_once_assert(cond, msg, ...)                                       \
+    I_assert_macro_base(cond, warn_once, msg, ##__VA_ARGS__)
 
-#define warn_assert(X, ...)                                                    \
-    if (UNLIKELY(!(X))) {                                                      \
-        warn(__VA_ARGS__);                                                     \
-    }
+#define msg_assert(cond, msg, args...)                                         \
+    I_assert_macro_base(cond, I_msg_die, msg, ##args)
 
-#define err_assert_MANY(X, msg, args...)                                       \
-    if (UNLIKELY(!(X))) {                                                      \
-        errdie(msg, ##args);                                                   \
-    }
+#define warn_assert(cond, ...) I_assert_macro_base(cond, warn, __VA_ARGS__)
 
-#define err_assert_ONE(X)                                                      \
-    if (UNLIKELY(!(X))) {                                                      \
-        errdie(NULL);                                                          \
-    }
+#define I_err_assert_MANY(cond, msg, args...)                                  \
+    I_assert_macro_base(cond, I_errdie, ERR_ARGS, V_TO_STR(cond), errno, msg,  \
+                        ##args)
 
-#define die_assert_MANY(X, msg, args...)                                       \
-    if (UNLIKELY(!(X))) {                                                      \
-        die(msg, ##args);                                                      \
-    }
+#define I_err_assert_ONE(cond)                                                 \
+    I_assert_macro_base(cond, I_errdie, ERR_ARGS, V_TO_STR(cond), errno, NULL)
 
-#define die_assert_ONE(X)                                                      \
-    if (UNLIKELY(!(X))) {                                                      \
-        die(NULL);                                                             \
-    }
+#define I_die_assert_MANY(cond, msg, args...)                                  \
+    I_assert_macro_base(cond, I_die, ERR_ARGS, V_TO_STR(cond), msg, ##args)
 
-#define die(msg, args...)    I_die(ERR_ARGS, msg, ##args);
-#define errdie(msg, args...) I_errdie(ERR_ARGS, errno, msg, ##args);
+#define I_die_assert_ONE(cond)                                                 \
+    I_assert_macro_base(cond, I_die, ERR_ARGS, V_TO_STR(cond), NULL)
+
+#define die(msg, args...)    I_die(ERR_ARGS, NULL, msg, ##args);
+#define errdie(msg, args...) I_errdie(ERR_ARGS, NULL, errno, msg, ##args);
+
 
 //#define WITH_DBG_PRINT
 #ifdef WITH_DBG_PRINT
@@ -82,17 +80,19 @@ EXIT_FUNC NONNULL(1, 2) void I_va_errdie(char const * restrict file_name,
                                          va_list ap);
 
 EXIT_FUNC NONNULL(1, 2)
-    FORMATF(5, 6) void I_errdie(char const * restrict file_name,
+    FORMATF(6, 7) void I_errdie(char const * restrict file_name,
                                 char const * restrict func_name,
                                 uint32_t line_number,
-                                int32_t  error_number,
+                                char const * restrict expr_str,
+                                int32_t error_number,
                                 char const * restrict msg,
                                 ...);
 
 EXIT_FUNC NONNULL(1, 2)
-    FORMATF(4, 5) void I_die(char const * restrict file_name,
+    FORMATF(5, 6) void I_die(char const * restrict file_name,
                              char const * restrict func_name,
                              uint32_t line_number,
+                             char const * restrict expr_str,
                              char const * restrict msg,
                              ...);
 

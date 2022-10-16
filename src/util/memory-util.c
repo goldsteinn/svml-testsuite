@@ -14,7 +14,7 @@ I_safe_mmap(void * restrict addr,
             uint32_t ln) {
     void * p = mmap(addr, sz, prot_flags, mmap_flags, fd, offset);
     if (UNLIKELY(!is_valid_addr(p))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return p;
 }
@@ -26,7 +26,7 @@ I_safe_munmap(void * restrict addr,
               char const * restrict func,
               uint32_t ln) {
     if (UNLIKELY(munmap(addr, sz))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -38,6 +38,6 @@ I_safe_mprotect(void * restrict addr,
                 char const * restrict func,
                 uint32_t ln) {
     if (UNLIKELY(mprotect(addr, sz, prot_flags))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }

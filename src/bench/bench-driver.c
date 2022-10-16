@@ -59,7 +59,12 @@ main(int argc, char ** argv) {
         list_decls(&benchmarks);
     }
     else {
-        proc_setcpu_and_wait(cpu);
+        if (cpu != -1) {
+            die_assert((uint32_t)cpu < get_num_cpus(),
+                       "Cpu out of range %u not in [0, %u)\n", cpu,
+                       get_num_cpus());
+            proc_setcpu_and_wait(cpu);
+        }
         run_decls(&benchmarks, run_all ? NULL : benchmark_names.ptrs,
                   benchmark_names.n, &run_benchmark);
     }

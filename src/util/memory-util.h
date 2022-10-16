@@ -49,7 +49,7 @@ static MALLOC_FUNC(1, 2)
                                        uint32_t ln) {
     void * p = calloc_c(n, sz);
     if (UNLIKELY(p == NULL)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return p;
 }
@@ -62,7 +62,7 @@ static MALLOC_FUNC(2)
                                               uint32_t ln) {
     void * p = aligned_alloc_c(alignment, sz);
     if (UNLIKELY(p == NULL)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return p;
 }
@@ -74,7 +74,7 @@ static MALLOC_FUNC(1)
                                        uint32_t ln) {
     void * p = malloc_c(sz);
     if (UNLIKELY(p == NULL)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return p;
 }
@@ -87,7 +87,7 @@ static MALLOC_FUNC(2)
                                            uint32_t ln) {
     void * newp = realloc_c(p, sz);
     if (UNLIKELY(p == NULL)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return newp;
 }
@@ -102,7 +102,7 @@ static MALLOC_FUNC(3)
                                             uint32_t ln) {
     void * newp = srealloc_c(p, sz_old, sz_new);
     if (UNLIKELY(p == NULL)) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return newp;
 }

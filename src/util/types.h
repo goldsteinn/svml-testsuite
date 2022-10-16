@@ -9,6 +9,7 @@
 #include "util/attrs.h"
 #include "util/macro.h"
 #include "util/portability.h"
+#include "util/builtin-portability.h"
 
 typedef signed char      signed_char;
 typedef signed short     signed_short;
@@ -81,9 +82,9 @@ APPLY(I_make_ptr, ;, ALL_TYPE_NAMES);
 #define FUNC_T(func)          __typeof__(&(func))
 
 #define CAST(x, y)          ((x)(y))
-#define AGU(base, offset)   (CAST(ptr_int_t, base) + CAST(ptr_int_t, offset))
+#define AGU(base, offset)   (CAST(uintptr_t, base) + CAST(uintptr_t, offset))
 #define AGU_T(base, offset) CAST(get_type(base), AGU(base, offset))
-#define PTRDIF(end, begin)  (CAST(ptr_int_t, end) - CAST(ptr_int_t, begin))
+#define PTRDIF(end, begin)  (CAST(uintptr_t, end) - CAST(uintptr_t, begin))
 
 
 #define get_type(x)        __typeof__(x)
@@ -229,13 +230,13 @@ static const bool true  = !false;
 
 
 /* Use to make derefencing never a compiler error/warning.  */
-#define I_AS_PTR(x) (I_choose_const_expr(IS_PTR(x), (x), ((void **)(NULL))))
+#define I_AS_PTR(x) (choose_const_expr(IS_PTR(x), (x), ((void **)(NULL))))
 
 
 /* GCC does not const evaluate `__builtin_classify_type` if `x` is void.
  */
 #define I_AS_NOT_VOID(x)                                                       \
-    (I_choose_const_expr(I_is_same_type(get_type(x), void), 0, (x)))
+    (choose_const_expr(I_is_same_type(get_type(x), void), 0, (x)))
 
 /* GCC / LLVM only.  */
 #define IS_PTR(x)                                                              \
@@ -243,27 +244,27 @@ static const bool true  = !false;
 
 
 #define DEFAULT_VALUE(T)                                                       \
-    (I_choose_const_expr(I_is_same_type(T, void), 0, CAST(T, 0)))
+    (choose_const_expr(I_is_same_type(T, void), 0, CAST(T, 0)))
 
 #define sizeof_deref(x)        sizeof(*(x))
 #define I_is_same_type(T0, T1) __builtin_types_compatible_p(T0, T1)
 
 
-#if STDC_VERSION >= 2011
+#if I_STDC_VERSION >= 2011
 
 #define INT_OF_SIZE_T(x)                                                       \
-    get_type(I_choose_const_expr(                                              \
+    get_type(choose_const_expr(                                                \
         x == 1, (uint8_t)0,                                                    \
-        I_choose_const_expr(                                                   \
+        choose_const_expr(                                                     \
             x == 2, (uint16_t)0,                                               \
-            I_choose_const_expr(x == 4, (uint32_t)0, (uint64_t)0))))
+            choose_const_expr(x == 4, (uint32_t)0, (uint64_t)0))))
 
 #define INT_HAS_CAPACITY_FOR_T(x)                                              \
-    get_type(I_choose_const_expr(                                              \
+    get_type(choose_const_expr(                                                \
         CAST(uint64_t, x) <= UCHAR_MAX, (uint8_t)0,                            \
-        I_choose_const_expr(CAST(uint64_t, x) <= USHRT_MAX, (uint16_t)0,       \
-                            I_choose_const_expr(CAST(uint64_t, x) <= UINT_MAX, \
-                                                (uint32_t)0, (uint64_t)0))))
+        choose_const_expr(CAST(uint64_t, x) <= USHRT_MAX, (uint16_t)0,         \
+                          choose_const_expr(CAST(uint64_t, x) <= UINT_MAX,     \
+                                            (uint32_t)0, (uint64_t)0))))
 
 
 // clang-format off
@@ -456,5 +457,15 @@ static const bool true  = !false;
 
 #define typedef_func(new_name, existing_name)                                  \
     I_typedef_func(new_name, existing_name)
+
+#define cpass_T(T)                                                             \
+    get_type(choose_const_expr(sizeof(T) <= 16,                                \
+                               ({ const T I_UNIQUE_TMP_VAR; }),                \
+                               ({ const T * I_UNIQUE_TMP_VAR; })))
+
+#define pass_T(T)                                                              \
+    get_type(choose_const_expr(sizeof(T) <= 16, ({ T I_UNIQUE_TMP_VAR; }),     \
+                               ({ T * I_UNIQUE_TMP_VAR; })))
+
 
 #endif

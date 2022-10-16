@@ -74,7 +74,7 @@
 
 static ALWAYS_INLINE int32_t
 memcmpeq_c(uint8_t const * s1, uint8_t const * s2, size_t n) {
-#if GLIBC_VERSION_GE(2, 35)
+#if I_glibc_version_ge(2, 35)
     if (const_condition(n <= 64)) {
         return !!memcmp(s1, s2, n);
     }

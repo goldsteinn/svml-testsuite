@@ -13,7 +13,7 @@ enum { I_STRERROR_BUFLEN = 512 };
             memcpy_c(errbuf, "Error generating strerror msg!",                 \
                      strlen("Error generating strerror msg!"));                \
         }                                                                      \
-        errbuf;                                                                \
+        (errbuf);                                                       \
     })
 
 void
@@ -39,13 +39,22 @@ void
 I_errdie(char const * restrict file_name,
          char const * restrict func_name,
          uint32_t line_number,
-         int32_t  error_number,
+         char const * restrict expr_str,
+         int32_t error_number,
          char const * restrict msg,
          ...) {
-    char tmpbuf[I_STRERROR_BUFLEN];
+    char    tmpbuf[I_STRERROR_BUFLEN];
     va_list ap;
-    fprintf_stderr("%s:%s:%d: [%d] -> %s\n", file_name, func_name, line_number,
-                   error_number, I_strerror(error_number, tmpbuf));
+    if (expr_str != NULL) {
+        fprintf_stderr("%s:%s:%d: Assertion '%s' failed. [%d] -> %s\n",
+                       file_name, func_name, line_number, expr_str,
+                       error_number, I_strerror(error_number, tmpbuf));
+    }
+    else {
+        fprintf_stderr("%s:%s:%d: [%d] -> %s\n", file_name, func_name,
+                       line_number, error_number,
+                       I_strerror(error_number, tmpbuf));
+    }
 
     if (msg) {
         va_start(ap, msg);
@@ -62,9 +71,16 @@ void
 I_die(char const * restrict file_name,
       char const * restrict func_name,
       uint32_t line_number,
+      char const * restrict expr_str,
       char const * restrict msg,
       ...) {
-    fprintf_stderr("%s:%s:%d\n", file_name, func_name, line_number);
+    if (expr_str != NULL) {
+        fprintf_stderr("%s:%s:%d: Assertion '%s' failed.\n", file_name,
+                       func_name, line_number, expr_str);
+    }
+    else {
+        fprintf_stderr("%s:%s:%d\n", file_name, func_name, line_number);
+    }
     va_list ap;
     if (msg) {
         va_start(ap, msg);

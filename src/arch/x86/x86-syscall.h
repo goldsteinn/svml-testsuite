@@ -8,10 +8,10 @@
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
         __asm__ volatile("syscall"                                             \
-                         : "+r"(_rax)                                          \
+                         : "+r"(I_rax)                                         \
                          : reg_decls                                           \
                          : "memory", "r11", "rcx");                            \
-        _rax;                                                                  \
+        I_rax;                                                                 \
     })
 
 #define I_x86_internal_syscall_cc(reg_setup, reg_decls, rw_clobbers,           \
@@ -19,15 +19,15 @@
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
         __asm__ volatile("syscall"                                             \
-                         : "+r"(_rax)DEPAREN(rw_clobbers) DEPAREN(w_clobbers)  \
+                         : "+r"(I_rax)DEPAREN(rw_clobbers) DEPAREN(w_clobbers)  \
                          : DEPAREN(reg_decls) DEPAREN(rd_clobbers)             \
                          : "r11", "rcx");                                      \
-        _rax;                                                                  \
+        I_rax;                                                                 \
     })
 
 
 #define I_x86_internal_pin_reg(reg, val)                                       \
-    register get_type(val) CAT(_, reg) __asm__(V_TO_STR(reg)) = (val)
+    register get_type(val) CAT(I_, reg) __asm__(V_TO_STR(reg)) = (val)
 #define I_x86_internal_pin_reg1(SYS_num) I_x86_internal_pin_reg(rax, SYS_num)
 #define I_x86_internal_pin_reg2(SYS_num, arg0)                                 \
     I_x86_internal_pin_reg1(SYS_num);                                          \
@@ -52,12 +52,12 @@
     CAT(I_x86_internal_pin_reg, N)(__VA_ARGS__)
 
 #define I_x86_internal_reg1
-#define I_x86_internal_reg2 "r"(_rdi)
-#define I_x86_internal_reg3 I_x86_internal_reg2, "r"(_rsi)
-#define I_x86_internal_reg4 I_x86_internal_reg3, "r"(_rdx)
-#define I_x86_internal_reg5 I_x86_internal_reg4, "r"(_r10)
-#define I_x86_internal_reg6 I_x86_internal_reg5, "r"(_r8)
-#define I_x86_internal_reg7 I_x86_internal_reg6, "r"(_r9)
+#define I_x86_internal_reg2 "r"(I_rdi)
+#define I_x86_internal_reg3 I_x86_internal_reg2, "r"(I_rsi)
+#define I_x86_internal_reg4 I_x86_internal_reg3, "r"(I_rdx)
+#define I_x86_internal_reg5 I_x86_internal_reg4, "r"(I_r10)
+#define I_x86_internal_reg6 I_x86_internal_reg5, "r"(I_r8)
+#define I_x86_internal_reg7 I_x86_internal_reg6, "r"(I_r9)
 
 
 #define I_x86_add_rw_clobber(mem) , "+m"(*(mem))

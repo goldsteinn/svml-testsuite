@@ -29,7 +29,7 @@ static int32_t
 re_exec(regex_t const * restrict re,
         char const * restrict str,
         uint64_t   nmatch,
-        regmatch_t pmatch[restrict],
+        regmatch_t pmatch[I_arr_restrict],
         int32_t    eflags) {
     return regexec(re, str, nmatch, pmatch, eflags);
 }
@@ -57,7 +57,7 @@ NONNULL(1, 2, 6, 7)
 int32_t I_safe_re_exec(regex_t const * restrict re,
                        char const * restrict str,
                        uint64_t   nmatch,
-                       regmatch_t pmatch[restrict],
+                       regmatch_t pmatch[I_arr_restrict],
                        int        eflags,
                        char const * restrict file_name,
                        char const * restrict func_name,

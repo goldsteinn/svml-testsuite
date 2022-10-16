@@ -7,93 +7,44 @@
 #if defined(__STDC__)
 # if defined(__STDC_VERSION__)
 #  if (__STDC_VERSION__ >= 201710L)
-#   define STDC_VERSION 2017
+#   define I_STDC_VERSION 2017
 #  elif (__STDC_VERSION__ >= 201112L)
-#   define STDC_VERSION 2011
+#   define I_STDC_VERSION 2011
 #  elif (__STDC_VERSION__ >= 199901L)
-#   define STDC_VERSION 1999
+#   define I_STDC_VERSION 1999
 #  elif (__STDC_VERSION__ >= 199409L)
-#   define STDC_VERSION 1994
+#   define I_STDC_VERSION 1994
 #  else
-#  define STDC_VERSION 1990
+#  define I_STDC_VERSION 1990
 #  endif
 # else
-# define STDC_VERSION 1989
+# define I_STDC_VERSION 1989
 # endif
 #else
 # error "NO __STDC__"
 #endif
+#ifndef I_STDC_VERSION
+# define I_STDC_VERSION 0
+#endif
+
+#if __cplusplus
+# if (__cplusplus >= 202002L)
+#  define I_STDCPP_VERSION 2020
+# elif (__cplusplus >= 201703L)
+#  define I_STDCPP_VERSION 2017
+# elif (__cplusplus >= 201402L)
+#  define I_STDCPP_VERSION 2014
+# elif (__cplusplus >= 201103L)
+#  define I_STDCPP_VERSION 2011
+# else
+# define I_STDCPP_VERSION 1997
+# endif
+#endif
+#ifndef I_STDCPP_VERSION
+# define I_STDCPP_VERSION 0
+#endif
+
 // clang-format on
-
-
-#if defined(_GNU_SOURCE) && defined(__GLIBC_PREREQ)
-#define GLIBC_VERSION_GE(major, minor) __GLIBC_PREREQ(major, minor)
-#else
-#define GLIBC_VERSION_GE(major, minor) 0
-#endif
-
-#if defined(__GNUC__) && !defined(__llvm__) && !defined(__INTEL_COMPILER)
-#ifdef __has_include
-#define I_has_include __has_include
-#endif
-
-/* Keep noclone */
-#if __GNUC__ >= 7
-#define fall_through __attribute__((fallthrough))
-#endif
-#if __GNUC__ >= 9
-#define I_attribute_copy(...) __copy__(__VA_ARGS__)
-#endif
-
-#elif defined __clang__
-#ifdef __has_include
-#define I_has_include __has_include
-#endif
-#define I_attr_noclone
-#define I_attr_optimize(...)
-#else
-#define I_attr_noclone
-#warning "Untested and likely unsupported compiler"
-#endif
-
-#ifndef I_attr_noclone
-#define I_attr_noclone __attribute__((noclone))
-#endif
-#ifndef I_attr_optimize
-#define I_attr_optimize(...) __attribute__((optimize(__VA_ARGS__)))
-#endif
-
-#ifndef I_has_include
-#define I_has_include(...) 0
-#endif
-
-#ifdef __cplusplus
-#define extern_C_start() extern "C" {
-#define extern_C_end()   }
-#if (!defined fall_through) && (__cplusplus >= 201703L)
-#define fall_through [[fallthrough]]
-#endif
-
-#define restrict
-#define I_static_assert_base              static_assert
-#define I_choose_const_expr(cond, e0, e1) ((cond) ? (e0) : (e1))
-#else
-#define extern_C_start()
-#define extern_C_end()
-
-#define constexpr
-#define I_static_assert_base _Static_assert
-
-#define I_choose_const_expr(cond, e0, e1) __builtin_choose_expr(cond, e0, e1)
-
-#if STDC_VERSION >= 2011
-#define Generic(...) _Generic(__VA_ARGS__)
-#else
-#error "Older standard unsupported"
-#endif
-
-#endif
-
 
 #ifdef __has_builtin
 #define I_has_builtin(...) __has_builtin(__VA_ARGS__)
@@ -101,17 +52,99 @@
 #define I_has_builtin(...) 0
 #endif
 
-#ifndef fall_through
-#define fall_through /* fall through */
-#endif
-
-#ifndef I_attribute_copy
-#define I_attribute_copy(...)
-#endif
-
-#if I_has_builtin(__builtin_constant_p)
-#define I_is_const(...) __builtin_constant_p(__VA_ARGS__)
+#ifdef __has_attribute
+#define I_has_attr(...) __has_attribute(__VA_ARGS__)
 #else
-#define I_is_const(...) 0
+#define I_has_attr(...) 0
 #endif
+
+#ifdef __has_include
+#define I_has_include(...) __has_include(__VA_ARGS__)
+#else
+#define I_has_include(...) 0
+#endif
+
+
+#if defined(_GNU_SOURCE) && defined(__GLIBC_PREREQ)
+#define I_glibc_version_ge(major, minor) __GLIBC_PREREQ(major, minor)
+#else
+#define I_glibc_version_ge(major, minor) 0
+#endif
+
+
+/* Fall through check.  */
+#if I_has_attr(fallthrough)
+#define fall_through __attribute__((fallthrough))
+#elif I_STDCPP_VERSION >= 2017
+#define fall_through [[fallthrough]];
+#else
+#define fall_through /* fall through.  */
+#endif
+
+/* Restrict check.  */
+#if I_STDC_VERSION >= 1999
+/* Nothing.  */
+#define I_restrict restrict
+#elif defined(__GNUC__)
+#if ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
+#define restrict __restrict
+#endif
+#else
+#ifndef restrict
+#define restrict
+#endif
+#endif
+#ifndef __cplusplus
+#define I_arr_restrict restrict
+#else
+#define I_arr_restrict
+#endif
+
+/* Inline check.  */
+#if I_STDC_VERSION >= 1999
+/* Nothing. */
+#elif defined(__GNUC__)
+#if ((__GNUC__ > 3) || (__GNUC__ == 3 && __GNUC_MINOR__ >= 1))
+#define inline __inline
+#endif
+#else
+#ifndef inline
+#define inline
+#endif
+#endif
+
+#ifdef __COUNTER__
+#define I_COUNTER __COUNTER
+#else
+#define I_COUNTER 0
+#endif
+
+#if I_STDCPP_VERSION >= 2011
+#define I_static_assert(...) static_assert(__VA_ARGS__)
+#elif I_STDC_VERSION >= 2011
+#define I_static_assert(...) _Static_assert(__VA_ARGS__)
+#else
+#define I_arr_list_static_assert(cond, msg)                                    \
+    typedef struct {                                                           \
+        int I_arr_list_static_assertion_failed : !!(cond);                     \
+    } I_arr_list_CAT(I_arr_list_static_assertion_failed_, I_arr_list_COUNTER);
+#endif
+
+#ifdef __cplusplus
+#define extern_C_start() extern "C" {
+#define extern_C_end()   }
+
+#else
+#define extern_C_start()
+#define extern_C_end()
+
+#define constexpr
+#endif
+
+#if I_STDC_VERSION >= 2011
+#define Generic(...) _Generic(__VA_ARGS__)
+#elif I_STDCPP_VERSION < 2011
+#error "Older standard unsupported"
+#endif
+
 #endif

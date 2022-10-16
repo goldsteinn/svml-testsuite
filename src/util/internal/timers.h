@@ -14,4 +14,10 @@ NONNULL(2) void direct_clock_gettime(clockid_t clk, struct timespec * ts) {
                   ((struct timespec(*)[1])ts));
 }
 
+static ALWAYS_INLINE
+NONNULL(1) void direct_gettimeofday(struct timeval * tv) {
+    ll_syscall_cc(SYS_gettimeofday, (tv, 0), /* No +m */, /* No m */,
+                  ((struct timespec(*)[1])tv));
+}
+
 #endif

@@ -5,72 +5,80 @@
 
 #include "util/internal/timers.h"
 
+#ifdef WITH_VDSO
+NONNULL(2)
+void (*I_vdso_clock_gettime)(clockid_t clk, struct timespec * ts);
+NONNULL(1)
+int32_t (*I_vdso_gettimeofday)(struct timeval * restrict tv,
+                               void * restrict tz);
 
-I_vdso_placeholder_f vdso_funcs[] = {
-    CAST(I_vdso_placeholder_f, &direct_clock_gettime),
-    CAST(I_vdso_placeholder_f, &gettimeofday),
-    CAST(I_vdso_placeholder_f, &getcpu_p), CAST(I_vdso_placeholder_f, &time)
-};
+NONNULL(1)
+int32_t (*I_vdso_getcpu)(unsigned int * cpu, unsigned int * node);
+NONNULL(1) time_t (*I_vdso_time)(time_t * t);
+
+#endif
+
+#define get_vdso_fallback_func(x) CAT(I_FALLBACK_, x)
+#define get_vdso_sym(x)           CAT(__vdso_, x)
+#define get_vdso_hook(x)          CAT(I_vdso_, x)
+
+#define set_vdso_to_fallback_func(x)                                           \
+    get_vdso_hook(x) = &get_vdso_fallback_func(x)
+
+#define set_vdso_func(x)                                                       \
+    ({                                                                         \
+        void * fptr = dlsym(vdso_lib, V_TO_STR(get_vdso_sym(x)));              \
+        if (fptr != NULL) {                                                    \
+            if (!fake) {                                                       \
+                get_vdso_hook(x) =                                             \
+                    CAST(FUNC_T(get_vdso_fallback_func(x)), fptr);             \
+            }                                                                  \
+        }                                                                      \
+        else {                                                                 \
+            if (!fake) {                                                       \
+                set_vdso_to_fallback_func(x);                                  \
+            }                                                                  \
+            ++ret;                                                             \
+        }                                                                      \
+    });
+
+#define is_vdso_func_fallback(x)                                               \
+    (CAST(void *, get_vdso_hook(x)) == CAST(void *, get_vdso_fallback_func(x)))
+
+#define VDSO_FUNCTIONS clock_gettime, gettimeofday, getcpu, time
 
 
 static uint32_t
-set_vdso_func(I_vdso_placeholder_f fptr, size_t offset) {
-    if (fptr != NULL) {
-        vdso_funcs[offset] = fptr;
-        return 1U << offset;
-    }
-    return 0;
-}
-
-uint32_t
-safe_vdso_init() {
-#ifdef WITH_VDSO
-    uint32_t ret = vdso_init();
-    err_assert(!is_vdso_init_error(ret), "%s\n",
-               dlerror()); /* NOLINT(concurrency-mt-unsafe) */
-
-    if (ret != get_vdso_expec_mask()) {
-        return ret;
-    }
-#else
-    warn("VDSO is disabled!\n");
-#endif
-    return 0;
-}
-
-void
-safe_vdso_init_all() {
-    uint32_t ret = safe_vdso_init();
-    die_assert(ret == 0, "Only partially initialized\n");
-}
-
-uint32_t
-vdso_init() {
+I_vdso_init(uint32_t fake) {
     uint32_t ret = 0;
 #ifdef WITH_VDSO
     void * vdso_lib;
     vdso_lib = CAST(void *, dlopen("linux-vdso.so.1",
                                    RTLD_LAZY | RTLD_LOCAL | RTLD_NOLOAD));
     if (vdso_lib == NULL) {
-        return -1U;
+        if (!fake) {
+            APPLY(set_vdso_to_fallback_func, ;, VDSO_FUNCTIONS);
+        }
+        return PP_NARG(VDSO_FUNCTIONS);
     }
-
-    ret |= set_vdso_func(
-        CAST(I_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_clock_gettime")),
-        vdso_clock_gettime_offset);
-    ret |= set_vdso_func(
-        CAST(I_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_gettimeofday")),
-        vdso_gettimeofday_offset);
-    ret |= set_vdso_func(
-        CAST(I_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_getcpu")),
-        vdso_getcpu_offset);
-    ret |= set_vdso_func(
-        CAST(I_vdso_placeholder_f, dlsym(vdso_lib, "__vdso_time")),
-        vdso_time_offset);
-
+    APPLY(set_vdso_func, ;, VDSO_FUNCTIONS);
     dlclose(vdso_lib);
 #else
+    (void)(fake);
     warn("VDSO is disabled!\n");
 #endif
     return ret;
+}
+
+static uint32_t
+#if WITH_VDSO
+    __attribute__((constructor))
+#endif
+    vdso_init() {
+    return I_vdso_init(0);
+}
+
+uint32_t
+vdso_is_full_init() {
+    return I_vdso_init(1) == 0;
 }

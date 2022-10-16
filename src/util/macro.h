@@ -75,6 +75,18 @@
 #define ARR_ARG_T(type, ...)                                                   \
     CAT(I_ARR_ARG_, IS_EMPTY(__VA_ARGS__), _T)(type, __VA_ARGS__)
 
+#define SELECT_USR_ARG_EMPTY1(default_arg, ...)     default_arg
+#define SELECT_USR_ARG_EMPTY0(default_arg, usr_arg) usr_arg
+#define SELECT_USR_ARG_N2(default_arg, ...)                                    \
+    CAT(SELECT_USR_ARG_EMPTY, IS_EMPTY(__VA_ARGS__))(default_arg, __VA_ARGS__)
+#define SELECT_USR_ARG_N1(default_arg, ...) default_arg
+
+#define SELECT_USR_ARG0(...)                                                   \
+    CAT(SELECT_USR_ARG_N, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
+#define SELECT_USR_ARG(...) SELECT_USR_ARG0(DEPAREN(__VA_ARGS__))
+
+#define SELECT_USR_ARGS(...)                                                   \
+    APPLY(SELECT_USR_ARG, COMMA, APPLY_COMBINE(__VA_ARGS__))
 
 #include "internal/generated-macro.h"
 /* API:
@@ -95,10 +107,12 @@
  *       - Will apply all __VA_ARGS__ as macros on 'argp'
  *   - APPLY_PACKR(argp, ...)
  *       - Will transform __VA_ARG__ in list of (arg0, argp), (arg1, argp), ...
- * (argN, argp)
+ *         (argN, argp)
  *   - APPLY_PACKL(argp, ...)
  *       - Will transform __VA_ARG__ in list of (argp, arg0), (argp, arg1), ...
- * (argp, argN)
+ *         (argp, argN)
+ *   - APPLY_COMBINE((x...), (y...))
+ *		 - Will interleave x and y producing: x0, y0, x1, y1, ... xN, yN
  */
 
 #endif

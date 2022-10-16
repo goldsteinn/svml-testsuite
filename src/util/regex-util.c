@@ -22,8 +22,8 @@ I_re_errdie(int32_t errcode,
     enum { ERRBUF_LEN = 512 };
     char errbuf[ERRBUF_LEN];
     I_re_error(errcode, re, errbuf, ERRBUF_LEN);
-    I_die(file_name, func_name, line_num, "Regex Error (%u) -> %s\n", errcode,
-          errbuf);
+    I_die(file_name, func_name, line_num, NULL, "Regex Error (%u) -> %s\n",
+          errcode, errbuf);
 }
 
 
@@ -45,7 +45,7 @@ int32_t
 I_safe_re_exec(regex_t const * restrict re,
                char const * restrict pattern,
                uint64_t   nmatch,
-               regmatch_t pmatch[restrict],
+               regmatch_t pmatch[I_arr_restrict],
                int        eflags,
                char const * restrict file_name,
                char const * restrict func_name,
