@@ -279,6 +279,42 @@ def gen_APPLY_COMBINE():
     return macros
 
 
+def gen_REMOVE_FIRST_N():
+    macros = []
+    macros.append("REMOVE_FIRST_N(N, ...) CAT(REMOVE_FIRST_, N)(__VA_ARGS__)")
+    macros.append("REMOVE_FIRST_0(...) __VA_ARGS__")
+    for i in range(1, N + 1):
+        xargs = gen_arg_list("x", i)
+        macros.append("REMOVE_FIRST_{}({}, ...) __VA_ARGS__".format(i, xargs))
+
+    return macros
+
+
+def gen_EXTRACT_FIRST_N():
+    macros = []
+    macros.append(
+        "EXTRACT_FIRST_N(N, ...) CAT(EXTRACT_FIRST_, N)(__VA_ARGS__)")
+    macros.append("EXTRACT_FIRST_0(...)")
+    for i in range(1, N + 1):
+        xargs = gen_arg_list("x", i)
+        macros.append("EXTRACT_FIRST_{}({}, ...) {}".format(i, xargs, xargs))
+
+    return macros
+
+
+def gen_DUP_N():
+    macros = []
+    macros.append("DUP_N(N, ...) CAT(DUP_, N)(__VA_ARGS__)")
+    for i in range(0, N + 1):
+        xargs = ""
+        if i != 0:
+            xargs = "__VA_ARGS__, " * i
+            xargs = xargs[:-2]
+        macros.append("DUP_{}(...) {}".format(i, xargs))
+
+    return macros
+
+
 def gen_PACKR():
     return gen_packer(True)
 
@@ -296,6 +332,7 @@ def gen_info():
 def tests():
     print("#include \"util/macro.h\"")
     print("#include \"test/test-common.h\"")
+    print("#include <string.h>")
     print("#define I_ONE 1")
     print("#define I_TWO 2")
     print("#define I_MANY 3")
@@ -420,6 +457,7 @@ def tests():
                     "count = 0; APPLY(dfoo2, ;, APPLY_COMBINE(({}))); test_assert(count == {}, \"Fail({}) Combine 4\");"
                     .format(li2, i, i))
 
+        print("DUP_N(0, 1, 2, 3, 45233,3242,43123, invalid as fuck);")
         if i == 0:
             print("APPLY(a, b);")
             print("APPLY_TOO(a, b);")
@@ -428,6 +466,23 @@ def tests():
             print("APPLY_PACKR(a);")
             print("APPLY_PACKL(a);")
         else:
+            print("test_assert(APPLY(I_MUL2, +, DUP_N({}, 1)) == {});".format(
+                i, i * 2))
+            for j in range(0, i + 1):
+                sj = sum(x for x in range(0, j))
+                if j == 0:
+                    print("EXTRACT_FIRST_N({}, {});".format(j, li))
+                else:
+                    print(
+                        "test_assert(APPLY(I_MUL2, +, EXTRACT_FIRST_N({}, {})) == {});"
+                        .format(j, li, sj * 2))
+                if i == j:
+                    print("REMOVE_FIRST_N({}, {});".format(j, li))
+                else:
+                    print(
+                        "test_assert(APPLY(I_MUL2, +, REMOVE_FIRST_N({}, {})) == {});"
+                        .format(j, li, si * 2 - sj * 2))
+
             print("test_assert(APPLY(I_MUL2, +, {}) == {});".format(
                 li, si * 2))
             print("test_assert(APPLY_TOO(I_MUL2, +, {}) == {});".format(
@@ -490,7 +545,9 @@ def gen():
     out.append(gen_PACKR())
     out.append(gen_PACKL())
     out.append(gen_APPLY_COMBINE())
-
+    out.append(gen_REMOVE_FIRST_N())
+    out.append(gen_EXTRACT_FIRST_N())
+    out.append(gen_DUP_N())
     print("#ifndef _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_")
     print("#define _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_")
     print("")

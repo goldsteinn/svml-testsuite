@@ -96,9 +96,9 @@ extra_flags = ["-DWITH_MATH={}", "-DWITH_THREAD={}", "-DWITH_VDSO={}"]
 for i in range(0, (1 << len(extra_flags))):
     flags = []
     for j in range(0, len(extra_flags)):
-        v = 0
+        v = 1
         if (i & (1 << j)) != 0:
-            v = 1
+            v = 0
         flags.append(extra_flags[j].format(v))
     flags = " ".join(flags)
     for lang in [["C", "gcc"], ["CXX", "gcc"], ["C", "clang"],
@@ -107,7 +107,7 @@ for i in range(0, (1 << len(extra_flags))):
             test_cmd("cmake -DLANG={} -DCOMPILER={} {} ..".format(
                 lang[0], lang[1], flags)),
             test_cmd("make clean"),
-            test_cmd("make full"),
+            test_cmd("make -j5 full"),
             test_cmd("./bench --all"),
             test_cmd("./tests --all"),
             test_cmd("make static-analysis",
