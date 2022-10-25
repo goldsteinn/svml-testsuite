@@ -27,6 +27,11 @@ get_ll_dif(ll_time_t t0, ll_time_t t1) {
     return t0 - t1;
 }
 
+static ALWAYS_INLINE uint64_t
+ll_time_to_u64(ll_time_t t) {
+    return t;
+}
+
 #define serialize_ooe() __asm__ volatile("lfence" : : :)
 
 #endif

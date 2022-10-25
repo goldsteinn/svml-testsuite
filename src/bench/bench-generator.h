@@ -29,6 +29,8 @@
     ll_make_bench(name, ;, ntrials, call, __VA_ARGS__)
 #define ll_make_lat_bench(name, ntrials, call, ...)                            \
     ll_make_bench(name, serialize_ooe(), ntrials, call, __VA_ARGS__)
-
+#define ll_make_all_bench(name, ...)                                           \
+    ll_make_tput_bench(CAT(name, _tput), __VA_ARGS__);                         \
+    ll_make_lat_bench(CAT(name, _lat), __VA_ARGS__)
 
 #endif

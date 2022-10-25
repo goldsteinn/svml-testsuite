@@ -18,7 +18,7 @@
 #endif
 
 
-#define ALIGNED(x) I_attr_aligned((aligned(x)))
+#define ALIGNED(x) I_attr_aligned((x))
 
 #define UNUSED(x) ((void)(x))
 

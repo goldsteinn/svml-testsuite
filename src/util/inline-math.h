@@ -12,6 +12,7 @@
 #define ROUNDUP_P2(x, y)   (((x) + ((y)-1)) & (-(y)))
 #define ROUNDDOWN_P2(x, y) ((x) & (-(y)))
 
+#define lsb(x) ((x) & (-(x)))
 #define is_p2(x)     (!((x) & ((x)-1)))
 #define p2_factor(x) ((x) & (~((x)-1)))
 

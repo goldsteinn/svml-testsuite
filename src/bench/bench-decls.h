@@ -3,7 +3,8 @@
 
 
 /* Append all here. */
-#define BENCHMARKS bench_p2, bench_random, bench_timers
+#define BENCHMARKS                                                             \
+    bench_p2, bench_random, bench_timers, bench_get_cpu
 
 
 #endif

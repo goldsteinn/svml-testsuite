@@ -6,6 +6,8 @@
 
 #include "util/error-util.h"
 #include "util/file-util.h"
+#include "util/memory-util.h"
+#include "util/stack-util.h"
 
 int32_t
 I_safe_open2(char const * restrict path,
@@ -20,6 +22,7 @@ I_safe_open2(char const * restrict path,
     }
     return ret;
 }
+
 int32_t
 I_safe_open3(char const * restrict path,
              int32_t flags,
@@ -129,6 +132,7 @@ I_ensure_read(int32_t fd,
     return nread;
 }
 
+
 int64_t
 I_ensure_write(int32_t fd,
                uint8_t const * restrict buf,
@@ -157,11 +161,11 @@ I_ensure_write(int32_t fd,
 
 int32_t
 I_safe_stat(char const * restrict path,
-            struct stat * restrict buf,
+            struct stat * restrict stats,
             char const * restrict fn,
             char const * restrict func,
             uint32_t ln) {
-    int32_t ret = stat(path, buf);
+    int32_t ret = stat(path, stats);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
         I_errdie(fn, func, ln, NULL, errno, "Unable to stat \"%s\"\n", path);
     }
@@ -170,11 +174,11 @@ I_safe_stat(char const * restrict path,
 
 int32_t
 I_safe_fstat(int32_t fd,
-             struct stat * restrict buf,
+             struct stat * restrict stats,
              char const * restrict fn,
              char const * restrict func,
              uint32_t ln) {
-    int32_t ret = fstat(fd, buf);
+    int32_t ret = fstat(fd, stats);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
@@ -203,6 +207,22 @@ I_safe_close(int32_t fd,
     int32_t ret = close(fd);
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
+    }
+    return ret;
+}
+
+int32_t
+I_ensure_close(int32_t fd,
+               char const * restrict fn,
+               char const * restrict func,
+               uint32_t ln) {
+    int32_t ret;
+    for (;;) {
+        ret = I_safe_close(fd, fn, func, ln);
+        if (LIKELY(ret >= 0)) {
+            break;
+        }
+        err_assert(errno == EAGAIN);
     }
     return ret;
 }
@@ -348,4 +368,84 @@ I_safe_fclose(FILE * restrict stream,
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return ret;
+}
+
+
+static uint64_t
+I_safe_fp_size(FILE * restrict fp,
+               char const * restrict fn,
+               char const * restrict func,
+               uint32_t ln) {
+    int64_t ret, cur, sz;
+    ret = ftell(fp);
+    if (UNLIKELY(ret < 0)) {
+        goto err;
+    }
+    cur = ret;
+    ret = fseek(fp, 0L, SEEK_END);
+    if (UNLIKELY(ret)) {
+        goto err;
+    }
+    ret = ftell(fp);
+    if (UNLIKELY(ret < 0)) {
+        goto err;
+    }
+    sz  = ret;
+    ret = fseek(fp, cur, SEEK_SET);
+    if (UNLIKELY(ret)) {
+        goto err;
+    }
+
+    return sz;
+err:
+    I_errdie(fn, func, ln, NULL, errno, NULL);
+}
+
+
+static void *
+NONNULL(2, 3, 4, 5) I_alloc_file_buf(uint64_t fsize,
+                                     void * restrict * restrict buf,
+                                     uint64_t * buf_sz,
+                                     char const * restrict fn,
+                                     char const * restrict func,
+                                     uint32_t ln) {
+    uint64_t lbuf_sz = *buf_sz;
+    void *   lbuf    = *buf;
+    if (fsize > lbuf_sz) {
+        if (lbuf == NULL || stack_contains(lbuf)) {
+            lbuf = I_safe_calloc(fsize, 1, fn, func, ln);
+        }
+        else {
+            lbuf = I_safe_rezalloc(lbuf, lbuf_sz, fsize, fn, func, ln);
+        }
+
+        *buf    = lbuf;
+        *buf_sz = fsize;
+    }
+    die_assert(lbuf);
+    return lbuf;
+}
+
+uint64_t
+I_safe_fp_readfile(FILE * restrict fp,
+                   void * restrict * restrict buf,
+                   uint64_t * buf_sz,
+                   char const * restrict fn,
+                   char const * restrict func,
+                   uint32_t ln) {
+    uint64_t fsize = I_safe_fp_size(fp, fn, func, ln);
+    void *   lbuf  = I_alloc_file_buf(fsize, buf, buf_sz, fn, func, ln);
+    return I_safe_fread(lbuf, 1, fsize, fp, fn, func, ln);
+}
+
+uint64_t
+I_safe_fd_readfile(int fd,
+                   void * restrict * restrict buf,
+                   uint64_t * restrict buf_sz,
+                   char const * restrict fn,
+                   char const * restrict func,
+                   uint32_t ln) {
+    uint64_t fsize = I_safe_fd_size(fd, fn, func, ln);
+    void *   lbuf  = I_alloc_file_buf(fsize, buf, buf_sz, fn, func, ln);
+    return I_ensure_read(fd, (uint8_t *)lbuf, fsize, fn, func, ln);
 }

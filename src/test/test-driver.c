@@ -45,15 +45,20 @@ run_test(const func_decl_t * test) {
 
 int
 main(int argc, char ** argv) {
+    char * const * decls_to_run;
+    uint32_t       ndecls_to_run;
     die_assert(!doParse(&argp, argc, argv), "Error parsing arguments\n");
     set_verbosity(verbosity);
 
+
+    decls_to_run  = run_all ? NULL : test_names.ptrs;
+    ndecls_to_run = test_names.n;
+
     if (list_all || (!run_all && test_names.n == 0)) {
-        list_decls(&tests);
+        list_decls_filtered(&tests, decls_to_run, ndecls_to_run);
     }
     else {
-        run_decls(&tests, run_all ? NULL : test_names.ptrs, test_names.n,
-                  &run_test);
+        run_decls(&tests, decls_to_run, ndecls_to_run, &run_test);
     }
 
     return 0;

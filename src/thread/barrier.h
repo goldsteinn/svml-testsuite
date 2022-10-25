@@ -34,7 +34,7 @@ static NONNULL(1) void I_safe_thread_barrier_init(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_barrier_init(barrier, attr, nthreads))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -44,7 +44,7 @@ static NONNULL(1) void I_safe_thread_barrier_destroy(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_barrier_destroy(barrier))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -58,7 +58,7 @@ static NONNULL(1) void I_safe_thread_barrier_wait(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(thread_barrier_wait(barrier))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 

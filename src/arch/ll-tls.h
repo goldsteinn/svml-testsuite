@@ -4,9 +4,9 @@
 #include <features.h>
 
 #if __GNUC_PREREQ(11, 1)
-static void *
+static uintptr_t
 ll_tls_start() {
-    return __builtin_thread_pointer();
+    return (uintptr_t)__builtin_thread_pointer();
 }
 #elif defined(__x86_64__)
 #include "arch/x86/x86-tls.h"

@@ -2,10 +2,9 @@
 #define _SRC__UTIL__ATTR_PORTABILITY_H_
 
 #include "util/portability.h"
-
 /* Generated
- *	By: attr-checks.py
- *	On: 2022-09-02 09:37:40
+ *	By: scripts/attr-checks.py
+ *	On: 2022-10-20 19:45:39
  */
 
 #if I_has_attr(noclone)
@@ -26,10 +25,16 @@
 #define I_attr_noinline
 #endif
 
-#if I_has_attr(malloc) && I_has_attr(alloc_size)
-#define I_attr_malloc(...) __attribute__((malloc, alloc_size(__VA_ARGS__)))
+#if I_has_attr(malloc)
+#define I_attr_malloc __attribute__((malloc))
+#ifdef __clang__
+#define I_attr_c_malloc(...) I_attr_malloc
 #else
-#define I_attr_malloc(...)
+#define I_attr_c_malloc(...) __attribute__((malloc, returns_nonnull, malloc(__VA_ARGS__)))
+#endif
+#else
+#define I_attr_malloc
+#define I_attr_c_malloc(...)
 #endif
 
 #if I_has_attr(const)
@@ -92,10 +97,29 @@
 #define I_attr_optimize(...)
 #endif
 
-#if I_has_attr(copy)
-#define I_attr_copy(...) __attribute__((copy(__VA_ARGS__)))
+#if I_has_attr(alloc_size)
+#define I_attr_alloc_size(...) __attribute__((alloc_size(__VA_ARGS__)))
 #else
-#define I_attr_copy(...)
+#define I_attr_alloc_size(...)
+#endif
+
+#if I_has_attr(alloc_align)
+#define I_attr_alloc_align(...) __attribute__((alloc_align(__VA_ARGS__)))
+#else
+#define I_attr_alloc_align(...)
+#endif
+
+#if I_has_attr(assume_aligned)
+#define I_attr_assume_aligned(...) __attribute__((assume_aligned(__VA_ARGS__)))
+#else
+#define I_attr_assume_aligned(...)
+#endif
+
+
+#if I_has_attr(error)
+#define I_attr_error(...) __attribute__((error(__VA_ARGS__)))
+#else
+#define I_attr_error(...)
 #endif
 
 

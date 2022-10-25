@@ -114,7 +114,7 @@
 #endif
 
 #ifdef __COUNTER__
-#define I_COUNTER __COUNTER
+#define I_COUNTER __COUNTER__
 #else
 #define I_COUNTER 0
 #endif

@@ -4,9 +4,9 @@
 
 #include <stdint.h>
 
-static void *
+static uintptr_t
 ll_tls_start() {
-    void * p;
+    uintptr_t p;
     __asm__("mov %%fs:0, %[p]" : [p] "=r"(p) : :);
     return p;
 }

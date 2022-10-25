@@ -1,4 +1,4 @@
-/* Common config for SSE2 VECs
+/* Common config for AVX-RTM VECs
    All versions must be listed in ifunc-impl-list.c.
    Copyright (C) 2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
@@ -17,31 +17,19 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef _X86_SSE2_VECS_H
-#define _X86_SSE2_VECS_H			1
+#ifndef _X86_AVX_RTM_VECS_H
+#define _X86_AVX_RTM_VECS_H			1
 
-#ifdef VEC_SIZE
-# error "Multiple VEC configs included!"
-#endif
+#define COND_VZEROUPPER			COND_VZEROUPPER_XTEST
+#define ZERO_UPPER_VEC_REGISTERS_RETURN	\
+	ZERO_UPPER_VEC_REGISTERS_RETURN_XTEST
 
-#define VEC_SIZE			16
-#include "x86-vec-macros.h"
+#define VZEROUPPER_RETURN		jmp L(return_vzeroupper)
 
-#define USE_WITH_SSE2		1
-#define SECTION(p)			p
+#define USE_WITH_RTM			1
+#include "x86-avx-vecs.h"
 
-/* 3-byte mov instructions with SSE2.  */
-#define MOV_SIZE			3
-/* No vzeroupper needed.  */
-#define RET_SIZE			1
-#define VZEROUPPER
-
-#define VMOVU				movups
-#define VMOVA				movaps
-#define VMOVNT				movntdq
-
-#define VMM_128				VMM_any_xmm
-#define VMM					VMM_any_xmm
-
+#undef SECTION
+#define SECTION(p)				p##.avx.rtm
 
 #endif

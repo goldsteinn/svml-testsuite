@@ -13,6 +13,7 @@
 
 
 #include "thread/cpuset.h"
+#include "thread/rseq/rseq.h"
 
 #define setcpu(pid, cpu) I_setcpu(pid, cpu, ERR_ARGS)
 #define setcpu_aff(pid, mask)                                                  \
@@ -30,7 +31,31 @@
 
 static uint32_t
 get_cpu() {
-    return ll_get_cpu();
+#if HAS_RSEQ
+    return rseq_getcpu();
+#else
+    return ll_getcpu();
+#endif
+}
+
+static uint32_t
+get_node() {
+    return ll_getnode();
+}
+
+static CONST_FUNC uint32_t
+cpustate_get_cpu(uint32_t cpustate) {
+    return cpustate & CPUSTATE_CPU_MASK;
+}
+
+static CONST_FUNC uint32_t
+cpustate_get_node(uint32_t cpustate) {
+    return cpustate >> CPUSTATE_NODE_SHIFT;
+}
+
+static uint32_t
+get_cpustate() {
+    return ll_cpustate();
 }
 
 static int32_t

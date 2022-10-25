@@ -1,4 +1,4 @@
-/* Common config for SSE2 VECs
+/* Common config for EVEX256 and EVEX512 VECs
    All versions must be listed in ifunc-impl-list.c.
    Copyright (C) 2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
@@ -17,31 +17,23 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef _X86_SSE2_VECS_H
-#define _X86_SSE2_VECS_H			1
+#ifndef _X86_EVEX_VECS_COMMON_H
+#define _X86_EVEX_VECS_COMMON_H			1
 
-#ifdef VEC_SIZE
-# error "Multiple VEC configs included!"
-#endif
+#include "libc-vec-macros.h"
 
-#define VEC_SIZE			16
-#include "x86-vec-macros.h"
-
-#define USE_WITH_SSE2		1
-#define SECTION(p)			p
-
-/* 3-byte mov instructions with SSE2.  */
-#define MOV_SIZE			3
+/* 6-byte mov instructions with EVEX.  */
+#define MOV_SIZE			6
 /* No vzeroupper needed.  */
 #define RET_SIZE			1
 #define VZEROUPPER
 
-#define VMOVU				movups
-#define VMOVA				movaps
-#define VMOVNT				movntdq
+#define VMOVU				vmovdqu64
+#define VMOVA				vmovdqa64
+#define VMOVNT				vmovntdq
 
-#define VMM_128				VMM_any_xmm
-#define VMM					VMM_any_xmm
-
+#define VMM_128				VMM_hi_xmm
+#define VMM_256				VMM_hi_ymm
+#define VMM_512				VMM_hi_zmm
 
 #endif

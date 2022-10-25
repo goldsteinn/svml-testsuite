@@ -1,8 +1,8 @@
 #ifndef _SRC__ASM__ASM_COMMON_H_
 #define _SRC__ASM__ASM_COMMON_H_
 
-
-#define L(name)          L##name
+#define _L(name)         L##name
+#define L(name)          _L(name)
 #define NAME_LABEL(name) name##:
 
 #define ENTRY_DEF(name)                                                        \
@@ -11,16 +11,13 @@
     NAME_LABEL(name)                                                           \
     cfi_startproc;
 
-#ifndef _CET_ENDBR
-#define _CET_ENDBR NOP4;
-#endif
-#ifndef _CET_NOTRACK
-#define _CET_NOTRACK NOP1;
+#ifndef ENDBR4_NOPS
+#define ENDBR4_NOPS NOP0
 #endif
 
 #define ENTRY_END(name)                                                        \
     ENTRY_DEF(name)                                                            \
-    _CET_ENDBR
+    ENDBR4_NOPS
 
 #define END_DEF(name)                                                          \
     cfi_endproc;                                                               \
@@ -32,12 +29,13 @@
     ENTRY_END(name)
 
 #define PAGE_ALIGN_CODE .align 4096;
+#define ALIGN_ENTRY     0
 #ifndef ALIGN_ENTRY
 #define ALIGN_ENTRY 0
 #endif
 
 #if ALIGN_ENTRY == 0
-#define ENTRY(name) ENTRY_P2ALIGN(name, 4)
+#define ENTRY(name) ENTRY_P2ALIGN(name, 12)
 
 #elif ALIGN_ENTRY == 48
 #define ENTRY_P2ALIGN(name)                                                    \

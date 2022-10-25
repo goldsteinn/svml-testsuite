@@ -1,17 +1,19 @@
 #! /usr/bin/env python3
 import sys
 from datetime import datetime
+
 attrs = [
     "noclone", "always_inline", "noinline", "malloc", "const", "pure",
     "unused", ["tls_model", "..."], "cold", "noreturn", ["aligned", "..."],
     ["nonnull", "..."], ["format", "..."], ["optimize", "..."],
-    ["alloc_size", "..."]
+    ["alloc_size", "..."], ["alloc_align", "..."], ["assume_aligned", "..."],
+    ["error", "..."]
 ]
 
 
 def gen_hdr():
     hdr = "#ifndef _SRC__UTIL__ATTR_PORTABILITY_H_\n#define _SRC__UTIL__ATTR_PORTABILITY_H_\n\n"
-    hdr += "#include \"util/portability.h\""
+    hdr += "#include \"util/portability.h\"\n"
     hdr += "/* Generated\n *\tBy: {}\n *\tOn: {}\n */\n".format(
         sys.argv[0],
         datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
@@ -35,7 +37,7 @@ def gen_attr_check(attr):
     else:
         attr_name = attr
 
-    check = "#if I_has_attr({})\n#define I_attr_{}{} __attribute__({}{})\n#else\n#define I_attr_{}{}\n#endif\n"
+    check = "#if I_has_attr({})\n#define I_attr_{}{} __attribute__(({}{}))\n#else\n#define I_attr_{}{}\n#endif\n"
 
     return check.format(attr_name, attr_name, attr_args_in, attr_name,
                         attr_args_out, attr_name, attr_args_in)

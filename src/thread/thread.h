@@ -39,18 +39,18 @@ static NONNULL(1, 3) void I_safe_thread_create(thread_t * restrict tid,
                                                char const * restrict func,
                                                uint32_t ln) {
     if (UNLIKELY(pthread_create(tid, attr, thread_func, arg))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
 static void
 I_safe_thread_join(thread_t tid,
-                   void * restrict * restrict retval,
+                   void ** restrict retval,
                    char const * restrict fn,
                    char const * restrict func,
                    uint32_t ln) {
     if (UNLIKELY(pthread_join(tid, retval))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -59,7 +59,7 @@ static NONNULL(1) void I_safe_thread_attr_init(thread_attr_t * restrict attr,
                                                char const * restrict func,
                                                uint32_t ln) {
     if (UNLIKELY(pthread_attr_init(attr))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -68,7 +68,7 @@ static NONNULL(1) void I_safe_thread_attr_destroy(thread_attr_t * restrict attr,
                                                   char const * restrict func,
                                                   uint32_t ln) {
     if (UNLIKELY(pthread_attr_destroy(attr))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -80,7 +80,7 @@ static NONNULL(1) void I_safe_thread_attr_set_stacksize(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_attr_setstacksize(attr, stacksize))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -94,7 +94,7 @@ static NONNULL(1) void I_safe_thread_attr_set_affinity(
     cpu_set_t pass_cset;
     if (UNLIKELY(pthread_attr_setaffinity_np(
             attr, sizeof(cpu_set_t), cset_copy_to_std(cpu_set, &pass_cset)))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 

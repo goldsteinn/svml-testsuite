@@ -6,6 +6,7 @@
 #include "util/time-util.h"
 #include "util/types.h"
 
+
 #define compiler_barrier() __asm__ volatile("" : : : "memory")
 #define compiler_do_not_optimize_out(x)                                        \
     __asm__ volatile("" : : "r,m,v"(x) : "memory")

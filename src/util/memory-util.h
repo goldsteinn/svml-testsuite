@@ -6,16 +6,18 @@
 #include <sys/mman.h>
 #include <wchar.h>
 
+#include "lib/commonlib.h"
 #include "util/common.h"
 #include "util/error-util.h"
 #include "util/macro.h"
-
-#include "lib/commonlib.h"
+#include "util/stack-util.h"
 
 #define PAGE_SIZE 4096
 
 #define safe_calloc(n, sz) I_safe_calloc(n, sz, ERR_ARGS)
 #define safe_zalloc(sz)    I_safe_calloc(sz, 1, ERR_ARGS)
+#define safe_rezalloc(p, old_sz, new_sz)                                       \
+    I_safe_rezalloc(p, old_sz, new_sz, ERR_ARGS)
 
 #define safe_aligned_alloc(alignment, sz)                                      \
     I_safe_aligned_alloc(alignment, sz, ERR_ARGS)
@@ -41,7 +43,7 @@
     (CAST(uint64_t, addr) > CAST(uint64_t, 65536) &&                           \
      (!(CAST(uint64_t, addr) >> 48)))
 
-static MALLOC_FUNC(1, 2)
+static MALLOC_FUNC_COMMON(1, 2)
     NONNULL(3, 4) void * I_safe_calloc(uint64_t n,
                                        uint64_t sz,
                                        char const * restrict fn,
@@ -54,7 +56,7 @@ static MALLOC_FUNC(1, 2)
     return p;
 }
 
-static MALLOC_FUNC(2)
+static ALIGNED_ALLOC_FUNC(1, 2)
     NONNULL(3, 4) void * I_safe_aligned_alloc(uint64_t alignment,
                                               uint64_t sz,
                                               char const * restrict fn,
@@ -67,7 +69,7 @@ static MALLOC_FUNC(2)
     return p;
 }
 
-static MALLOC_FUNC(1)
+static MALLOC_FUNC_COMMON(1)
     NONNULL(2, 3) void * I_safe_malloc(uint64_t sz,
                                        char const * restrict fn,
                                        char const * restrict func,
@@ -79,13 +81,19 @@ static MALLOC_FUNC(1)
     return p;
 }
 
-static MALLOC_FUNC(2)
+static MALLOC_FUNC_COMMON(2)
     NONNULL(1, 3, 4) void * I_safe_realloc(void * restrict p,
                                            uint64_t sz,
                                            char const * restrict fn,
                                            char const * restrict func,
                                            uint32_t ln) {
-    void * newp = realloc_c(p, sz);
+
+    void * newp;
+    if (stack_contains(p)) {
+        I_die(fn, func, ln, NULL, "Reallocating a stack pointer");
+    }
+
+    newp = realloc_c(p, sz);
     if (UNLIKELY(p == NULL)) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
@@ -93,23 +101,53 @@ static MALLOC_FUNC(2)
 }
 
 
-static MALLOC_FUNC(3)
+static MALLOC_FUNC_COMMON(3)
     NONNULL(1, 4, 5) void * I_safe_srealloc(void * restrict p,
                                             uint64_t sz_old,
                                             uint64_t sz_new,
                                             char const * restrict fn,
                                             char const * restrict func,
                                             uint32_t ln) {
-    void * newp = srealloc_c(p, sz_old, sz_new);
-    if (UNLIKELY(p == NULL)) {
+    void * newp;
+    if (stack_contains(p)) {
+        I_die(fn, func, ln, NULL, "Reallocating a stack pointer");
+    }
+
+    newp = srealloc_c(p, sz_old, sz_new);
+    if (UNLIKELY(newp == NULL)) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
     return newp;
 }
 
+static MALLOC_FUNC_COMMON(3)
+    NONNULL(1, 4, 5) void * I_safe_rezalloc(void * restrict p,
+                                            uint64_t sz_old,
+                                            uint64_t sz_new,
+                                            char const * restrict fn,
+                                            char const * restrict func,
+                                            uint32_t ln) {
+    void * newp;
+    if (sz_old <= sz_new) {
+        return p;
+    }
+
+    if (stack_contains(p)) {
+        I_die(fn, func, ln, NULL, "Reallocating a stack pointer");
+    }
+
+    newp = srealloc_c(p, sz_old, sz_new);
+    if (UNLIKELY(newp == NULL)) {
+        I_errdie(fn, func, ln, NULL, errno, NULL);
+    }
+
+    memset_c(AGU_T(newp, sz_old), 0, sz_new - sz_old);
+    return newp;
+}
+
 static void
 I_safe_free(void * addr) {
-    if (LIKELY(addr != NULL)) {
+    if (LIKELY(addr != NULL) && !stack_contains(addr)) {
         free_c(addr);
     }
 }
@@ -117,13 +155,13 @@ I_safe_free(void * addr) {
 
 static void
 I_safe_sfree(void * addr, uint64_t sz) {
-    if (LIKELY(addr != NULL)) {
+    if (LIKELY(addr != NULL) && !stack_contains(addr)) {
         sfree_c(addr, sz);
     }
 }
 
 
-MALLOC_FUNC(2)
+SYS_MALLOC_FUNC(2)
 NONNULL(7, 8)
 void * I_safe_mmap(void * restrict addr,
                    uint64_t sz,
@@ -149,5 +187,6 @@ void I_safe_mprotect(void * restrict addr,
                      char const * restrict fn,
                      char const * restrict func,
                      uint32_t ln);
+
 
 #endif

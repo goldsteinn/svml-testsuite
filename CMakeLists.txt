@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1.3)
 project(Project_Template C CXX ASM)
 
+add_subdirectory("${CMAKE_CURRENT_SOURCE_DIR}/third-party")
+
 set(WITH_MATH 0 CACHE BOOL "Set to load math (enables some stats stuff)")
 set_property(CACHE WITH_MATH
   PROPERTY STRINGS "1" "0")
@@ -25,7 +27,6 @@ set_property(CACHE COMPILER
 
 set(cxx_lang "cxx" "c++" "cpp" "cxx")
 set(c_lang "c")
-
 
 
 set(llvm_compilers "llvm" "clang" "clang++")
@@ -116,7 +117,7 @@ foreach(attr ${attrs})
   list(APPEND wattrs "-Wsuggest-attribute=${attr}")
 endforeach()
 
-set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wno-error=deprecated" "-Wcast-qual" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-aliasing" "-Wstrict-overflow" "-Werror" "-Wall" "-Wextra" "-Wno-unused-function" "-Wno-variadic-macros" "-march=native" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${file_name_flag}")
+set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wno-error=deprecated" "-Wcast-qual" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-aliasing" "-Wstrict-overflow" "-Werror" "-fno-plt" "-Wall" "-Wextra" "-Wno-unused-function" "-Wno-variadic-macros" "-march=native" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${file_name_flag}")
 
 
 set(driver_compiler_flags ${default_compiler_flags})
@@ -165,6 +166,13 @@ file(GLOB_RECURSE BENCH_UTIL_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/bench/*.c")
 set(BENCH_C_SOURCES ${BENCH_SOURCES} ${BENCH_UTIL_SOURCES})
 list(REMOVE_ITEM BENCH_C_SOURCES ${BENCH_EXE_SRC})
 
+# Setup sysinfo executable
+set(SYS_C_SOURCES ${C_SOURCES})
+list(FILTER C_SOURCES EXCLUDE REGEX ".*/sysinfo/.*$")
+
+set(SYS_EXE_SRC "${SRC_DIR}/sysinfo/sysinfo-driver.c")
+list(REMOVE_ITEM SYS_C_SOURCES ${SYS_EXE_SRC})
+
 
 
 find_program(CLANG_TIDY_EXE clang-tidy NAMES clang-tidy-14 clang-tidy-13 clang-tidy-12 clang-tidy-10 clang-tidy-9 clang-tidy-8)
@@ -174,8 +182,9 @@ add_custom_target(
   COMMAND ${CLANG_TIDY_EXE}
   ${ALL_C_SOURCES}
   -p=${CMAKE_CURRENT_BINARY_DIR}
-  #  -checks=*,-*insecureAPI.strcpy,-*insecureAPI.DeprecatedOrUnsafeBufferHandling
 )
+
+
 
 add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})
 target_compile_options(driver PRIVATE ${driver_compiler_flags})
@@ -194,5 +203,16 @@ target_link_libraries(bench ${test_and_bench_libraries})
 set_target_properties(bench PROPERTIES EXCLUDE_FROM_ALL TRUE)
 set_target_properties(bench PROPERTIES LINKER_LANGUAGE ${LANG})
 
+add_executable(sysinfo_builder ${SYS_EXE_SRC} ${SYS_C_SOURCES})
+target_compile_options(sysinfo_builder PRIVATE ${driver_compiler_flags})
+target_link_libraries(sysinfo_builder ${link_libraries} "cpu_features")
+set_target_properties(sysinfo_builder PROPERTIES EXCLUDE_FROM_ALL TRUE)
+set_target_properties(sysinfo_builder PROPERTIES LINKER_LANGUAGE ${LANG})
+
+
+target_include_directories(sysinfo_builder PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
+add_custom_target(sysinfo sysinfo_builder cpu_features)
+
+  
 add_custom_target(full)
 add_dependencies(full driver tests bench)
