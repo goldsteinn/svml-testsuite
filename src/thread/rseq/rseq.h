@@ -1,5 +1,5 @@
-#ifndef _SRC__THREAD__RSEQ__RSEQ_H_
-#define _SRC__THREAD__RSEQ__RSEQ_H_
+#ifndef SRC_D_THREAD_D_RSEQ_D_RSEQ_H_
+#define SRC_D_THREAD_D_RSEQ_D_RSEQ_H_
 
 
 #include "thread/internal/thread-internal-common.h"
@@ -20,17 +20,17 @@
 
 
 static uint32_t
-rseq_is_init() {
+rseq_is_init(void) {
     return 1;
 }
 
 static int32_t
-rseq_init() {
+rseq_init(void) {
     return 0;
 }
 
 static struct rseq *
-rseq_get_area() {
+rseq_get_area(void) {
     return (struct rseq *)(ll_tls_start() + RSEQ_GLIBC_OFFSET);
 }
 
@@ -40,12 +40,12 @@ extern __thread uint32_t    I_rseq_is_init;
 
 
 static void
-I_rseq_set_is_init() {
+I_rseq_set_is_init(void) {
     I_rseq_is_init = 1;
 }
 
 static int32_t
-rseq_init_first() {
+rseq_init_first(void) {
     int32_t ret;
 
     rseq_glibc_prepare();
@@ -63,12 +63,12 @@ rseq_init_first() {
 }
 
 static uint32_t
-rseq_is_init() {
+rseq_is_init(void) {
     return I_rseq_is_init;
 }
 
 static int32_t
-rseq_init() {
+rseq_init(void) {
     if (LIKELY(rseq_is_init())) {
         return 0;
     }
@@ -77,14 +77,14 @@ rseq_init() {
 }
 
 static struct rseq *
-rseq_get_area() {
+rseq_get_area(void) {
     return &I_rseq_area;
 }
 #endif
 
 
 static uint32_t
-rseq_getcpu() {
+rseq_getcpu(void) {
     return READ_ONCE(rseq_get_area()->cpu_id);
 }
 

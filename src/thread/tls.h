@@ -1,5 +1,5 @@
-#ifndef _SRC__THREAD__TLS_H_
-#define _SRC__THREAD__TLS_H_
+#ifndef SRC_D_THREAD_D_TLS_H_
+#define SRC_D_THREAD_D_TLS_H_
 
 #include "util/types.h"
 

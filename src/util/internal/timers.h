@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__INTERNAL__TIMERS_H_
-#define _SRC__UTIL__INTERNAL__TIMERS_H_
+#ifndef SRC_UTIL_INTERNAL_TIMERS_H_
+#define SRC_UTIL_INTERNAL_TIMERS_H_
 
 #include <time.h>
 
@@ -17,7 +17,7 @@ NONNULL(2) void direct_clock_gettime(clockid_t clk, struct timespec * ts) {
 static ALWAYS_INLINE
 NONNULL(1) void direct_gettimeofday(struct timeval * tv) {
     ll_syscall_cc(SYS_gettimeofday, (tv, 0), /* No +m */, /* No m */,
-                  ((struct timespec(*)[1])tv));
+                  ((struct timeval(*)[1])tv));
 }
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__MACRO_H_
-#define _SRC__UTIL__MACRO_H_
+#ifndef SRC_UTIL_MACRO_H_
+#define SRC_UTIL_MACRO_H_
 
 
 /* This file contains helper macros for using __VA_ARGS__. Currently
@@ -12,25 +12,28 @@
 /******************************************************************************/
 
 #ifndef __FILENAME__
-#define __FILENAME__                                                           \
-    (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1   \
-                                      : __FILE__)
+# define I_FILENAME_                                                           \
+        (__builtin_strrchr(__FILE__, '/')                                      \
+             ? __builtin_strrchr(__FILE__, '/') + 1                            \
+             : __FILE__)
+#else
+# define I_FILENAME_ __FILENAME__
 #endif
-#define ERR_ARGS __FILENAME__, __func__, __LINE__
+#define I_ERR_ARGS I_FILENAME_, __func__, __LINE__
 /******************************************************************************/
-#define I__CAT_BASE(x, y) x##y
-#define CAT_BASE(x, y)    I__CAT_BASE(x, y)
+#define I_CAT_BASE_(x, y) x##y
+#define CAT_BASE(x, y)    I_CAT_BASE_(x, y)
 #define CAT(...)          APPLY_RECURSE(CAT_BASE, __VA_ARGS__)
 
-#define I__V_TO_STR(X) #X
-#define V_TO_STR(X)    I__V_TO_STR(X)
+#define I_V_TO_STR_(X) #X
+#define V_TO_STR(X)    I_V_TO_STR_(X)
 /******************************************************************************/
 
 /* For comma chaing of elements. Useful for initialization.  */
 #define EMPTY()
 #define DEFER(id)  id EMPTY()
-#define I__COMMA() ,
-#define COMMA      DEFER(I__COMMA)()
+#define I_COMMA_() ,
+#define COMMA      DEFER(I_COMMA_)()
 
 /* Take advatage of fact that macro(,) has two arguments but
    macro(OP_THATS_NOT_COMMA) only has one. */
@@ -46,10 +49,10 @@
 #define DEPAREN(...)                                                           \
     DEPAREN_EVALUATING_PASTE(DEPAREN_NOTHING_, DEPAREN_EXTRACT __VA_ARGS__)
 
-#define I__ADD_ARG0(...)    __VA_ARGS__
-#define I__ADD_ARG1(x, ...) x
+#define I_ADD_ARG_0(...)    __VA_ARGS__
+#define I_ADD_ARG_1(x, ...) x
 #define ADD_ARG_FRONT(x, ...)                                                  \
-    CAT_BASE(I__ADD_ARG, IS_EMPTY(__VA_ARGS__))(x, __VA_ARGS__)
+    CAT_BASE(I_ADD_ARG_, IS_EMPTY(__VA_ARGS__))(x, __VA_ARGS__)
 
 #define I_REMOVE_FIRST(first, ...) __VA_ARGS__
 #define REMOVE_FIRST(...)          I_REMOVE_FIRST(__VA_ARGS__)
@@ -58,9 +61,9 @@
 #define EAT(...)
 
 #ifdef __clang_analyzer__
-#define NOANALYZE(expr, backup) backup
+# define NOANALYZE(expr, backup) backup
 #else
-#define NOANALYZE(expr, ...) expr
+# define NOANALYZE(expr, ...) expr
 #endif
 
 #define I_ARR_ARG_1(...)   NULL, 0

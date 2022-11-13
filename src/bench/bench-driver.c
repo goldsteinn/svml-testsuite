@@ -14,14 +14,15 @@ static int32_t  run_all   = 0;
 static uint32_t trials    = 0;
 static int32_t  cpu       = -1;
 
-static char const * type         = NULL;
-uint32_t            ht_type_size = 0;
-uint32_t            ht_test_size = 0;
+static char const * type = NULL;
+
+uint32_t ht_type_size = 0;
+uint32_t ht_test_size = 0;
 
 static arg_rest_t benchmark_names = INIT_ARG_REST_T;
 
 
-static ArgOption args[] = {
+static arg_option_t args[] = {
     /* ADD_ARG(Kind, Method, name, reqd, variable, help) */
     ADD_ARG(KindOption, Integer, "-v", 0, &verbosity, "Turn on verbosity"),
     ADD_ARG(KindOption, Set, "--list", 0, &list_all, "List all benchmarks"),
@@ -67,7 +68,7 @@ static ArgOption args[] = {
 };
 
 
-static ArgDefs argp = { args, "Benchmark Driver", NULL, NULL };
+static arg_defs_t argp = { args, "Benchmark Driver", NULL, NULL };
 
 
 static void
@@ -84,11 +85,13 @@ static uint32_t
 typename_to_size(char const * T) {
     typedef struct type_size_info {
         const uint8_t  name[16];
-        const uint32_t name_len;
+        const uint64_t name_len;
         const uint32_t bytes;
     } type_size_info_t;
 
-    uint32_t                slen;
+    uint64_t                slen;
+    type_size_info_t const *start, *end;
+    /* NOLINTBEGIN(google-runtime-int) */
     static type_size_info_t type_size_info[] = {
         { "u8", strlen("u8"), 1 },
         { "s8", strlen("s8"), 1 },
@@ -130,13 +133,14 @@ typename_to_size(char const * T) {
         { "long_long", strlen("long_long"), sizeof(long long) },
         { "ulong_long", strlen("ulong_long"), sizeof(unsigned long long) },
         { "ull", strlen("ull"), sizeof(unsigned long long) },
-        { "ll", strlen("ll"), sizeof(long long) }
+        { "ll", strlen("ll"), sizeof(long long) },
+        { "u128", strlen("u128"), 16 },
     };
-
+    /* NOLINTEND(google-runtime-int) */
     if (T == NULL) {
         return 0;
     }
-    type_size_info_t const *start, *end;
+
     slen  = strlen(T);
     start = type_size_info;
     end   = &type_size_info[sizeof(type_size_info) / sizeof(type_size_info[0])];
@@ -152,7 +156,7 @@ typename_to_size(char const * T) {
 int
 main(int argc, char ** argv) {
     char * const * decls_to_run;
-    uint32_t       ndecls_to_run;
+    uint64_t       ndecls_to_run;
 
     die_assert(!doParse(&argp, argc, argv), "Error parsing arguments\n");
     set_verbosity(verbosity);
@@ -173,7 +177,7 @@ main(int argc, char ** argv) {
             die_assert((uint32_t)cpu < get_num_cpus(),
                        "Cpu out of range %u not in [0, %u)\n", cpu,
                        get_num_cpus());
-            proc_setcpu_and_wait(cpu);
+            proc_setcpu_and_wait(CAST(uint32_t, cpu));
         }
         run_decls(&benchmarks, decls_to_run, ndecls_to_run, &run_benchmark);
     }

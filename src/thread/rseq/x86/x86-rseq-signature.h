@@ -1,5 +1,5 @@
-#ifndef _SRC__THREAD__RSEQ__X86__X86_RSEQ_SIGNATURE_H_
-#define _SRC__THREAD__RSEQ__X86__X86_RSEQ_SIGNATURE_H_
+#ifndef SRC_D_THREAD_D_RSEQ_D_X86_D_X86_RSEQ_SIGNATURE_H_
+#define SRC_D_THREAD_D_RSEQ_D_X86_D_X86_RSEQ_SIGNATURE_H_
 
 /* RSEQ_SIG is a signature required before each abort handler code.
 

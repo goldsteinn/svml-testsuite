@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__FILE_UTIL_H_
-#define _SRC__UTIL__FILE_UTIL_H_
+#ifndef SRC_D_UTIL_D_FILE_UTIL_H_
+#define SRC_D_UTIL_D_FILE_UTIL_H_
 
 
 #include <fcntl.h>
@@ -16,56 +16,56 @@
 #define safe_open(...)   CAT(safe_open, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define ensure_open(...) CAT(ensure_open, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
 
-#define safe_read(fd, buf, count)  I_safe_read(fd, buf, count, ERR_ARGS)
-#define safe_write(fd, buf, count) I_safe_write(fd, buf, count, ERR_ARGS)
+#define safe_read(fd, buf, count)  I_safe_read(fd, buf, count, I_ERR_ARGS)
+#define safe_write(fd, buf, count) I_safe_write(fd, buf, count, I_ERR_ARGS)
 
-#define ensure_read(fd, buf, count)  I_ensure_read(fd, buf, count, ERR_ARGS)
-#define ensure_write(fd, buf, count) I_ensure_write(fd, buf, count, ERR_ARGS)
+#define ensure_read(fd, buf, count)  I_ensure_read(fd, buf, count, I_ERR_ARGS)
+#define ensure_write(fd, buf, count) I_ensure_write(fd, buf, count, I_ERR_ARGS)
 
-#define safe_stat(path, buf) I_safe_stat(path, buf, ERR_ARGS)
-#define safe_fstat(fd, buf)  I_safe_fstat(fd, buf, ERR_ARGS)
+#define safe_stat(path, buf) I_safe_stat(path, buf, I_ERR_ARGS)
+#define safe_fstat(fd, buf)  I_safe_fstat(fd, buf, I_ERR_ARGS)
 #define check_access(path, mode, ...)                                          \
-    _check_access(path, mode, ERR_ARGS, __VA_ARGS__)
-#define safe_access(path, mode) I_safe_access(path, mode, ERR_ARGS)
-#define safe_close(fd)          I_safe_close(fd, ERR_ARGS)
-#define ensure_close(fd)        I_ensure_close(fd, ERR_ARGS)
+    _check_access(path, mode, I_ERR_ARGS, __VA_ARGS__)
+#define safe_access(path, mode) I_safe_access(path, mode, I_ERR_ARGS)
+#define safe_close(fd)          I_safe_close(fd, I_ERR_ARGS)
+#define ensure_close(fd)        I_ensure_close(fd, I_ERR_ARGS)
 
 #define check_open2(path, flags, ...)                                          \
-    I_check_open2(path, flags, ERR_ARGS, __VA_ARGS__)
+    I_check_open2(path, flags, I_ERR_ARGS, __VA_ARGS__)
 
 #define check_open3(path, flags, mode, ...)                                    \
-    I_check_open3(path, flags, mode, ERR_ARGS, __VA_ARGS__)
+    I_check_open3(path, flags, mode, I_ERR_ARGS, __VA_ARGS__)
 
-#define safe_open2(path, flags)       I_safe_open2(path, flags, ERR_ARGS)
-#define safe_open3(path, flags, mode) I_safe_open3(path, flags, mode, ERR_ARGS)
+#define safe_open2(path, flags)       I_safe_open2(path, flags, I_ERR_ARGS)
+#define safe_open3(path, flags, mode) I_safe_open3(path, flags, mode, I_ERR_ARGS)
 
-#define ensure_open2(path, flags) I_ensure_open2(path, flags, ERR_ARGS)
+#define ensure_open2(path, flags) I_ensure_open2(path, flags, I_ERR_ARGS)
 #define ensure_open3(path, flags, mode)                                        \
-    I_ensure_open3(path, flags, mode, ERR_ARGS)
+    I_ensure_open3(path, flags, mode, I_ERR_ARGS)
 
 /* FILE * operations. */
-#define safe_fopen(path, mode) I_safe_fopen(path, mode, ERR_ARGS)
-#define safe_fdopen(fd, mode)  I_safe_fdopen(fd, mode, ERR_ARGS)
+#define safe_fopen(path, mode) I_safe_fopen(path, mode, I_ERR_ARGS)
+#define safe_fdopen(fd, mode)  I_safe_fdopen(fd, mode, I_ERR_ARGS)
 #define safe_fread(ptr, size, nmemb, stream)                                   \
-    I_safe_fread(ptr, size, nmemb, stream, ERR_ARGS)
+    I_safe_fread(ptr, size, nmemb, stream, I_ERR_ARGS)
 #define safe_fwrite(ptr, size, nmemb, stream)                                  \
-    I_safe_fwrite(ptr, size, nmemb, stream, ERR_ARGS)
-#define safe_fclose(stream) I_safe_fclose(stream, ERR_ARGS)
+    I_safe_fwrite(ptr, size, nmemb, stream, I_ERR_ARGS)
+#define safe_fclose(stream) I_safe_fclose(stream, I_ERR_ARGS)
 
 #define check_fopen(path, mode, ...)                                           \
-    I_check_fopen(path, mode, ERR_ARGS, __VA_ARGS__)
+    I_check_fopen(path, mode, I_ERR_ARGS, __VA_ARGS__)
 
 
 #define safe_fd_readfile(fd, buf, buf_sz)                                      \
-    I_safe_fd_readfile(fd, buf, buf_sz, ERR_ARGS)
+    I_safe_fd_readfile(fd, buf, buf_sz, I_ERR_ARGS)
 #define safe_fp_readfile(fp, buf, buf_sz)                                      \
-    I_safe_fp_readfile(fp, buf, buf_sz, ERR_ARGS)
+    I_safe_fp_readfile(fp, buf, buf_sz, I_ERR_ARGS)
 #define safe_readfile(path, buf, buf_sz)                                       \
-    I_safe_readfile(path, buf, buf_sz, ERR_ARGS)
+    I_safe_readfile(path, buf, buf_sz, I_ERR_ARGS)
 
-#define safe_fd_size(fd)   I_safe_fd_size(fd, ERR_ARGS)
-#define safe_file_size(fd) I_safe_file_size(path, ERR_ARGS)
-#define safe_fp_size(fp)   I_safe_fp_size(fp, ERR_ARGS)
+#define safe_fd_size(fd)   I_safe_fd_size(fd, I_ERR_ARGS)
+#define safe_file_size(fd) I_safe_file_size(path, I_ERR_ARGS)
+#define safe_fp_size(fp)   I_safe_fp_size(fp, I_ERR_ARGS)
 
 /* Declarataions. */
 
@@ -207,13 +207,23 @@ FILE * NONNULL(1, 2, 3, 4, 6) I_attr_c_malloc(fclose, 1) FORMATF(6, 7)
                   ...);
 
 
+static NONNULL(1, 2, 3) uint64_t
+    I_safe_fstat_size(struct stat const * restrict file_stats,
+                      char const * restrict fn,
+                      char const * restrict func,
+                      uint32_t ln) {
+    if (file_stats->st_size < 0) {
+        I_die(fn, func, ln, NULL, "Invalid File Size: %ld", file_stats->st_size);
+    }
+    return CAST(uint64_t, file_stats->st_size);
+}
 static NONNULL(2, 3) uint64_t I_safe_fd_size(int fd,
                                              char const * restrict fn,
                                              char const * restrict func,
                                              uint32_t ln) {
     struct stat file_stats;
     I_safe_fstat(fd, &file_stats, fn, func, ln);
-    return file_stats.st_size;
+    return I_safe_fstat_size(&file_stats, fn, func, ln);
 }
 
 static NONNULL(1, 2, 3) uint64_t I_safe_file_size(char const * restrict path,
@@ -222,7 +232,7 @@ static NONNULL(1, 2, 3) uint64_t I_safe_file_size(char const * restrict path,
                                                   uint32_t ln) {
     struct stat file_stats;
     I_safe_stat(path, &file_stats, fn, func, ln);
-    return file_stats.st_size;
+    return I_safe_fstat_size(&file_stats, fn, func, ln);
 }
 
 static NONNULL(1, 2, 3) uint64_t I_safe_fp_size(FILE * restrict fp,

@@ -1,5 +1,5 @@
-#ifndef _SRC__ARCH__LL_PREFETCH_H_
-#define _SRC__ARCH__LL_PREFETCH_H_
+#ifndef SRC_D_ARCH_D_LL_PREFETCH_H_
+#define SRC_D_ARCH_D_LL_PREFETCH_H_
 
 #ifdef __x86_64__
 #include "arch/x86/x86-prefetch.h"

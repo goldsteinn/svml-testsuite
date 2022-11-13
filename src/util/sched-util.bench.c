@@ -15,7 +15,7 @@ ll_make_all_bench(bench_ll_getcpu, trials, ll_getcpu(), uint32_t trials);
     (res_name) = V_TO_STR(func);                                               \
     (res_time) = CAT(bench_, func)(trials);
 
-
+void * bench_get_cpu(void * bench_args);
 void *
 bench_get_cpu(void * bench_args) {
     uint32_t     trials = CAST(uint32_t, CAST(uint64_t, bench_args));

@@ -6,7 +6,7 @@
 #include "util/file-util.h"
 #include "util/inline-math.h"
 #include "util/memory-util.h"
-
+#include "util/string-util.h"
 
 #define I_cvt_to_dbl(T, mem)                                                   \
     ({                                                                         \
@@ -19,11 +19,15 @@ static PURE_FUNC double
 cvt_to_dbl(uint8_t const * mem,
            uint32_t        elem_sz,
            uint32_t        is_unsigned,
+           uint32_t        is_bool,
            uint32_t        is_fp_based) {
     switch (elem_sz) {
         case 1: {
             die_assert(!is_fp_based);
-            if (is_unsigned) {
+            if (is_bool) {
+                return I_cvt_to_dbl(bool, mem);
+            }
+            else if (is_unsigned) {
                 return I_cvt_to_dbl(uint8_t, mem);
             }
             else {
@@ -31,6 +35,7 @@ cvt_to_dbl(uint8_t const * mem,
             }
         }
         case 2: {
+            die_assert(!is_bool);
             die_assert(!is_fp_based);
             if (is_unsigned) {
                 return I_cvt_to_dbl(uint16_t, mem);
@@ -40,6 +45,7 @@ cvt_to_dbl(uint8_t const * mem,
             }
         }
         case 4: {
+            die_assert(!is_bool);
             if (is_unsigned) {
                 die_assert(!is_fp_based);
                 return I_cvt_to_dbl(uint32_t, mem);
@@ -54,6 +60,7 @@ cvt_to_dbl(uint8_t const * mem,
             }
         }
         case 8: {
+            die_assert(!is_bool);
             if (is_unsigned) {
                 die_assert(!is_fp_based);
                 return I_cvt_to_dbl(uint64_t, mem);
@@ -199,6 +206,7 @@ I_gen_stats(stats_result_t * restrict stats,
             uint64_t nelem,
             uint32_t elem_sz,
             uint32_t is_unsigned,
+            uint32_t is_bool,
             uint32_t is_fp_based) {
     double * dbl_data;
     uint64_t i;
@@ -219,7 +227,8 @@ I_gen_stats(stats_result_t * restrict stats,
 
 
     for (i = 0; i < nelem; ++i) {
-        dbl_data[i] = cvt_to_dbl(mem, elem_sz, is_unsigned, is_fp_based);
+        dbl_data[i] =
+            cvt_to_dbl(mem, elem_sz, is_unsigned, is_bool, is_fp_based);
         mem += elem_sz;
     }
 
@@ -248,7 +257,7 @@ stats_print_check(char const *           buf,
     }
 
     /* Default zero to STATS_P_all. */
-    *to_print = *to_print ? *to_print : STATS_P_all;
+    *to_print = *to_print ? *to_print : (uint32_t)STATS_P_all;
     return 0;
 }
 
@@ -268,7 +277,7 @@ stats_prints_cmp_arr(char *                 buf,
 
 
 #define STATS_DO_PRINT(field, fmt)                                             \
-    nbytes_req += snprintf(                                                    \
+    nbytes_req += safe_snprintf(                                               \
         buf + nbytes_req, buflen - nbytes_req, fmt, V_TO_STR(field),           \
         CAT(stats_get_, field)(statsA), CAT(stats_get_, field)(statsB),        \
         CAT(stats_get_, field)(statsA) / CAT(stats_get_, field)(statsB));      \
@@ -285,9 +294,9 @@ stats_prints_cmp_arr(char *                 buf,
     }
 
     if (STATS_P_desc & to_print) {
-        nbytes_req += snprintf(buf + nbytes_req, buflen - nbytes_req,
-                               STATS_DESC_FMT_STR, "Comparing",
-                               stats_get_desc(statsA), stats_get_desc(statsB));
+        nbytes_req += safe_snprintf(
+            buf + nbytes_req, buflen - nbytes_req, STATS_DESC_FMT_STR,
+            "Comparing", stats_get_desc(statsA), stats_get_desc(statsB));
         die_assert(nbytes_req < buflen, "Buffer to small to format stats!\n");
     }
 
@@ -303,13 +312,13 @@ stats_prints_cmp_arr(char *                 buf,
         uint32_t i, percentile;
         for (i = 0; i < npercentiles; ++i) {
             percentile = percentiles[i];
-            nbytes_req +=
-                snprintf(buf + nbytes_req, buflen - nbytes_req,
-                         STATS_PERCENTILE_FMT_STR, "percentile", percentile,
-                         stats_get_percentile(statsA, percentile),
-                         stats_get_percentile(statsB, percentile),
-                         stats_get_percentile(statsA, percentile) /
-                             stats_get_percentile(statsB, percentile));
+            nbytes_req += safe_snprintf(
+                buf + nbytes_req, buflen - nbytes_req, STATS_PERCENTILE_FMT_STR,
+                "percentile", percentile,
+                stats_get_percentile(statsA, percentile),
+                stats_get_percentile(statsB, percentile),
+                stats_get_percentile(statsA, percentile) /
+                    stats_get_percentile(statsB, percentile));
 
             die_assert(nbytes_req < buflen,
                        "Buffer to small to format stats!\n");
@@ -339,8 +348,9 @@ stats_prints_arr(char *                 buf,
 #define STATS_PERCENTILE_FMT_STR "%-11s(%3d): %10.3lf\n"
 
 #define STATS_DO_PRINT(field, fmt)                                             \
-    nbytes_req += snprintf(buf + nbytes_req, buflen - nbytes_req, fmt,         \
-                           V_TO_STR(field), CAT(stats_get_, field)(stats));    \
+    nbytes_req +=                                                              \
+        safe_snprintf(buf + nbytes_req, buflen - nbytes_req, fmt,              \
+                      V_TO_STR(field), CAT(stats_get_, field)(stats));         \
     die_assert(nbytes_req < buflen, "Buffer to small to format stats!\n");
 
 #define STATS_CHECK_PRINT(field)                                               \
@@ -370,10 +380,10 @@ stats_prints_arr(char *                 buf,
         uint32_t i, percentile;
         for (i = 0; i < npercentiles; ++i) {
             percentile = percentiles[i];
-            nbytes_req +=
-                snprintf(buf + nbytes_req, buflen - nbytes_req,
-                         STATS_PERCENTILE_FMT_STR, "percentile", percentile,
-                         stats_get_percentile(stats, percentile));
+            nbytes_req += safe_snprintf(
+                buf + nbytes_req, buflen - nbytes_req, STATS_PERCENTILE_FMT_STR,
+                "percentile", percentile,
+                stats_get_percentile(stats, percentile));
 
             die_assert(nbytes_req < buflen,
                        "Buffer to small to format stats!\n");
@@ -399,10 +409,10 @@ stats_prints_csv_arr(char *                 buf,
                      uint32_t               npercentiles) {
 
 #define STATS_DO_PRINT(fmt, ...)                                               \
-    nbytes_req +=                                                              \
-        snprintf(buf + nbytes_req, buflen - nbytes_req, "%s" fmt,              \
-                 (nbytes_req && (buf[nbytes_req - 1] != '\n')) ? "," : "",     \
-                 __VA_ARGS__);                                                 \
+    nbytes_req += safe_snprintf(                                               \
+        buf + nbytes_req, buflen - nbytes_req, "%s" fmt,                       \
+        (nbytes_req && (buf[nbytes_req - 1] != '\n')) ? "," : "",              \
+        __VA_ARGS__);                                                          \
     die_assert(nbytes_req < buflen, "Buffer to small to format stats!\n");
 
 #define STATS_CHECK_PRINT(field)                                               \

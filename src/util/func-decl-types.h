@@ -1,9 +1,9 @@
-#ifndef _SRC__UTIL__FUNC_DECL_TYPES_H_
-#define _SRC__UTIL__FUNC_DECL_TYPES_H_
+#ifndef SRC_UTIL_FUNC_DECL_TYPES_H_
+#define SRC_UTIL_FUNC_DECL_TYPES_H_
 
 #include "util/common.h"
 
-typedef int32_t (*test_f)();
+typedef int32_t (*test_f)(void);
 typedef void * (*bench_f)(void *);
 
 

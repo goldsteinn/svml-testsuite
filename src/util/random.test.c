@@ -1,21 +1,30 @@
 #include "util/random.h"
 #include "util/common.h"
-
+#include "util/portability.h"
 #include "test/test-common.h"
 
+int32_t test_random(void);
 
 int32_t
-test_random() {
+test_random(void) {
     volatile uint64_t sink;
     uint64_t          seed, lseed;
-
+/* Allow enum exceeding int capacity.  */
+#if USING_LLVM
+# pragma clang diagnostic push
+# pragma clang diagnostic ignored "-Wpedantic"
+#endif
+    enum { SEED_MAX = (1UL << 63), SEED_INCR = 0x0123456789abcdef };
+#if USING_LLVM
+# pragma clang diagnostic pop
+#endif
     sink = rand32();
     test_assert(sink != rand32(), "Seed not reset!");
 
     sink = rand64();
     test_assert(sink != rand64());
 
-    enum { SEED_MAX = (1UL << 63), SEED_INCR = 0x0123456789abcdef };
+
     for (seed = 0; seed < SEED_MAX; seed += SEED_INCR) {
         seed_rand(seed);
         lseed = seed;

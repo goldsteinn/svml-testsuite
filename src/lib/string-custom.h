@@ -1,5 +1,5 @@
-#ifndef _SRC__LIB__STRING_CUSTOM_H_
-#define _SRC__LIB__STRING_CUSTOM_H_
+#ifndef SRC_LIB_STRING_CUSTOM_H_
+#define SRC_LIB_STRING_CUSTOM_H_
 
 #include <stdint.h>
 #include <string.h>

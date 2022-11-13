@@ -1,5 +1,5 @@
-#ifndef _SRC__BENCH__BENCH_DECLS_H_
-#define _SRC__BENCH__BENCH_DECLS_H_
+#ifndef SRC_D_BENCH_D_BENCH_DECLS_H_
+#define SRC_D_BENCH_D_BENCH_DECLS_H_
 
 
 /* Append all here. */

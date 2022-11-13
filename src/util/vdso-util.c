@@ -42,6 +42,7 @@ NONNULL(1) time_t (*I_vdso_time)(time_t * t);
         }                                                                      \
     });
 
+
 #define is_vdso_func_fallback(x)                                               \
     (CAST(void *, get_vdso_hook(x)) == CAST(void *, get_vdso_fallback_func(x)))
 
@@ -71,10 +72,10 @@ I_vdso_init(uint32_t fake) {
 }
 
 static uint32_t
-#if WITH_VDSO
+#ifdef WITH_VDSO
     __attribute__((constructor))
 #endif
-    vdso_init() {
+    vdso_init(void) {
     return I_vdso_init(0);
 }
 

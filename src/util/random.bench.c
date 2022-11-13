@@ -12,7 +12,7 @@
     (res_name) = V_TO_STR(func);                                               \
     (res_time) = get_ll_dif(end, start);
 
-
+void * bench_random(void * bench_args);
 void *
 bench_random(void * bench_args) {
     uint32_t  trials = CAST(uint32_t, CAST(uint64_t, bench_args));

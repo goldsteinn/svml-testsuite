@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__TIME_UTIL_H_
-#define _SRC__UTIL__TIME_UTIL_H_
+#ifndef SRC_UTIL_TIME_UTIL_H_
+#define SRC_UTIL_TIME_UTIL_H_
 
 
 #include <time.h>
@@ -12,34 +12,35 @@
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t ts_to_ns(struct timespec const * ts) {
-    return 1000UL * 1000UL * 1000UL * ts->tv_sec + ts->tv_nsec;
+    return CAST(uint64_t, 1000L * 1000L * 1000L * ts->tv_sec + ts->tv_nsec);
 }
 
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t ts_to_us(struct timespec const * ts) {
-    return 1000UL * 1000UL * ts->tv_sec + ts->tv_nsec / 1000UL;
+    return CAST(uint64_t, 1000L * 1000L * ts->tv_sec + ts->tv_nsec / 1000L);
 }
 
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t ts_to_ms(struct timespec const * ts) {
-    return 1000UL * ts->tv_sec + ts->tv_nsec / (1000UL * 1000UL);
+    return CAST(uint64_t, 1000L * ts->tv_sec + ts->tv_nsec / (1000L * 1000L));
 }
 
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t tv_to_ns(struct timeval const * tv) {
-    return 1000UL * 1000UL * 1000UL * tv->tv_sec + 1000UL * tv->tv_usec;
+    return CAST(uint64_t,
+                1000L * 1000L * 1000L * tv->tv_sec + 1000L * tv->tv_usec);
 }
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t tv_to_us(struct timeval const * tv) {
-    return 1000UL * 1000UL * tv->tv_sec + tv->tv_usec;
+    return CAST(uint64_t, 1000L * 1000L * tv->tv_sec + tv->tv_usec);
 }
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) uint64_t tv_to_ms(struct timeval const * tv) {
-    return 1000UL * tv->tv_sec + tv->tv_usec / 1000UL;
+    return CAST(uint64_t, 1000L * tv->tv_sec + tv->tv_usec / 1000L);
 }
 
 
@@ -88,14 +89,14 @@ NONNULL(1) double ts_to_ns_dbl(struct timespec const * ts) {
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) double ts_to_us_dbl(struct timespec const * ts) {
-    return CAST(double, 1000UL * 1000UL * ts->tv_sec) +
-           CAST(double, ts->tv_nsec) / CAST(double, 1000UL);
+    return CAST(double, 1000L * 1000L * ts->tv_sec) +
+           CAST(double, ts->tv_nsec) / CAST(double, 1000L);
 }
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) double ts_to_ms_dbl(struct timespec const * ts) {
-    return CAST(double, 1000UL * ts->tv_sec) +
-           CAST(double, ts->tv_nsec) / CAST(double, 1000UL * 1000UL);
+    return CAST(double, 1000L * ts->tv_sec) +
+           CAST(double, ts->tv_nsec) / CAST(double, 1000L * 1000L);
 }
 
 
@@ -111,8 +112,8 @@ NONNULL(1) double tv_to_us_dbl(struct timeval const * tv) {
 
 static ALWAYS_INLINE PURE_FUNC
 NONNULL(1) double tv_to_ms_dbl(struct timeval const * tv) {
-    return CAST(double, 1000UL * tv->tv_sec) +
-           CAST(double, tv->tv_usec) / CAST(double, 1000UL);
+    return CAST(double, 1000L * tv->tv_sec) +
+           CAST(double, tv->tv_usec) / CAST(double, 1000L);
 }
 
 
@@ -173,66 +174,66 @@ NONNULL(1, 2) double tv_dif_ms_dbl(struct timeval const * tv0,
 
 
 static ALWAYS_INLINE uint64_t
-direct_get_ns() {
+direct_get_ns(void) {
     struct timespec ts;
     direct_gettime(CLOCK_MONOTONIC, &ts);
     return ts_to_ns(&ts);
 }
 
 static ALWAYS_INLINE uint64_t
-get_ns() {
+get_ns(void) {
     struct timespec ts;
     gettime(&ts);
     return ts_to_ns(&ts);
 }
 
 static ALWAYS_INLINE uint64_t
-vdso_get_ns() {
+vdso_get_ns(void) {
     struct timespec ts;
     vdso_gettime(&ts);
     return ts_to_ns(&ts);
 }
 
 static ALWAYS_INLINE uint64_t
-direct_gtod_ns() {
+direct_gtod_ns(void) {
     struct timeval tv;
     direct_gtod(&tv);
     return tv_to_ns(&tv);
 }
 
 static ALWAYS_INLINE uint64_t
-gtod_ns() {
+gtod_ns(void) {
     struct timeval tv;
     gtod(&tv);
     return tv_to_ns(&tv);
 }
 
 static ALWAYS_INLINE uint64_t
-vdso_gtod_ns() {
+vdso_gtod_ns(void) {
     struct timeval tv;
     vdso_gtod(&tv);
     return tv_to_ns(&tv);
 }
 
-static ALWAYS_INLINE void 
+static ALWAYS_INLINE void
 get_thread_ts(struct timespec * ts) {
     direct_gettime(CLOCK_THREAD_CPUTIME_ID, ts);
 }
 
-static ALWAYS_INLINE void 
+static ALWAYS_INLINE void
 get_proc_ts(struct timespec * ts) {
     direct_gettime(CLOCK_PROCESS_CPUTIME_ID, ts);
 }
 
 static ALWAYS_INLINE uint64_t
-get_thread_ns() {
+get_thread_ns(void) {
     struct timespec ts;
     get_thread_ts(&ts);
     return ts_to_ns(&ts);
 }
 
 static ALWAYS_INLINE uint64_t
-get_proc_ns() {
+get_proc_ns(void) {
     struct timespec ts;
     get_proc_ts(&ts);
     return ts_to_ns(&ts);

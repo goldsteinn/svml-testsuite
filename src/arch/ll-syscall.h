@@ -1,5 +1,5 @@
-#ifndef _SRC__ARCH__LL_SYSCALL_H_
-#define _SRC__ARCH__LL_SYSCALL_H_
+#ifndef SRC_ARCH_LL_SYSCALL_H_
+#define SRC_ARCH_LL_SYSCALL_H_
 
 #include <sys/syscall.h>
 

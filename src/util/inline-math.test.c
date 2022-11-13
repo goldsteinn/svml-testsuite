@@ -60,8 +60,8 @@ const_assert(CMIN(1, 2, 3, 4, -1U) == 1);
 
 
 #define testeq(impl, ref, val)                                                 \
-    res   = impl(val);                                                         \
-    expec = ref(val);                                                          \
+    res   = CAST(get_type(res), impl(val));                                    \
+    expec = CAST(get_type(expec), ref(CAST(uint64_t, val)));                   \
     test_assert(res == expec && is_p2(res) && p2_factor(res) == res,           \
                 "%-20s(%lu): %lu != %lu\n", V_TO_STR(ref),                     \
                 CAST(uint64_t, (val)), res, expec);
@@ -114,9 +114,12 @@ simple_prev_p2_32(uint64_t v) {
     return CAST(uint32_t, simple_prev_p2_64(v));
 }
 
+int32_t test_log2(void);
+int32_t test_max_min(void);
+int32_t test_p2(void);
 
 int32_t
-test_log2() {
+test_log2(void) {
     uint64_t j, expec;
     for (expec = 0, j = 1; j; ++expec, j <<= 1) {
         test_assert(expec == log2_ru(j), "%lu (%lu != %lu)\n", j, expec,
@@ -136,7 +139,7 @@ test_log2() {
 }
 
 int32_t
-test_max_min() {
+test_max_min(void) {
     uint64_t ui64;
     uint32_t ui32;
     for (ui64 = 1; ui64; ui64 <<= 1) {
@@ -178,15 +181,16 @@ test_max_min() {
 }
 
 int32_t
-test_p2() {
+test_p2(void) {
     uint64_t res, expec, i, j;
 
     enum { SMALL_BOUND = 128, NUM_LARGE_TESTS = 256 };
 
+
     for (i = 0; i < UINT32_MAX;) {
         for (j = 1; j; j <<= 1) {
             testall(i);
-            testall(UINT32_MAX - i);
+            testall(CAST(uint64_t, UINT32_MAX - i));
             testall(CAST(uint32_t, ~0) - i);
             testall(~CAST(uint64_t, 0) - i);
             testall(CAST(uint32_t, ~0) + i);

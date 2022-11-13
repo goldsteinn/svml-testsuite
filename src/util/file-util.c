@@ -113,9 +113,10 @@ I_ensure_read(int32_t fd,
               char const * restrict fn,
               char const * restrict func,
               uint32_t ln) {
-    int64_t ret, nread = 0;
+    int64_t ret;
+    size_t  nread = 0;
     for (;;) {
-        if (CAST(size_t, nread) == count) {
+        if (nread == count) {
             break;
         }
         ret = I_safe_read(fd, buf + nread, count - nread, fn, func, ln);
@@ -127,9 +128,9 @@ I_ensure_read(int32_t fd,
             err_assert(errno == EAGAIN);
             continue;
         }
-        nread += ret;
+        nread += CAST(size_t, ret);
     }
-    return nread;
+    return CAST(int64_t, nread);
 }
 
 
@@ -140,9 +141,10 @@ I_ensure_write(int32_t fd,
                char const * restrict fn,
                char const * restrict func,
                uint32_t ln) {
-    int64_t ret, nwrote = 0;
+    int64_t ret;
+    size_t  nwrote = 0;
     for (;;) {
-        if (CAST(size_t, nwrote) == count) {
+        if (nwrote == count) {
             break;
         }
         ret = I_safe_write(fd, buf + nwrote, count - nwrote, fn, func, ln);
@@ -154,9 +156,9 @@ I_ensure_write(int32_t fd,
             err_assert(errno == EAGAIN);
             continue;
         }
-        nwrote += ret;
+        nwrote += CAST(size_t, ret);
     }
-    return nwrote;
+    return CAST(int64_t, nwrote);
 }
 
 int32_t
@@ -376,7 +378,8 @@ I_safe_fp_size(FILE * restrict fp,
                char const * restrict fn,
                char const * restrict func,
                uint32_t ln) {
-    int64_t ret, cur, sz;
+    int64_t  ret, cur;
+    uint64_t sz;
     ret = ftell(fp);
     if (UNLIKELY(ret < 0)) {
         goto err;
@@ -390,7 +393,7 @@ I_safe_fp_size(FILE * restrict fp,
     if (UNLIKELY(ret < 0)) {
         goto err;
     }
-    sz  = ret;
+    sz  = CAST(uint64_t, ret);
     ret = fseek(fp, cur, SEEK_SET);
     if (UNLIKELY(ret)) {
         goto err;
@@ -447,5 +450,6 @@ I_safe_fd_readfile(int fd,
                    uint32_t ln) {
     uint64_t fsize = I_safe_fd_size(fd, fn, func, ln);
     void *   lbuf  = I_alloc_file_buf(fsize, buf, buf_sz, fn, func, ln);
-    return I_ensure_read(fd, (uint8_t *)lbuf, fsize, fn, func, ln);
+    return CAST(uint64_t,
+                I_ensure_read(fd, (uint8_t *)lbuf, fsize, fn, func, ln));
 }

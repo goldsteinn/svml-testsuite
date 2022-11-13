@@ -1,5 +1,5 @@
-#ifndef _SRC__THREAD__BARRIER_H_
-#define _SRC__THREAD__BARRIER_H_
+#ifndef SRC_D_THREAD_D_BARRIER_H_
+#define SRC_D_THREAD_D_BARRIER_H_
 
 #ifndef WITH_THREAD
 #error "Using thread library with threading disabled!"
@@ -18,12 +18,12 @@ typedef pthread_barrierattr_t              thread_barrier_attr_t;
 enum { THREAD_BARRIER_IS_UNIQUE = PTHREAD_BARRIER_SERIAL_THREAD };
 
 #define safe_thread_barrier_init(barrier, attr, N)                             \
-    I_safe_thread_barrier_init(barrier, attr, N, ERR_ARGS)
+    I_safe_thread_barrier_init(barrier, attr, N, I_ERR_ARGS)
 #define safe_thread_barrier_destroy(barrier)                                   \
-    I_safe_thread_barrier_destroy(barrier, ERR_ARGS)
+    I_safe_thread_barrier_destroy(barrier, I_ERR_ARGS)
 
 #define safe_thread_barrier_wait(barrier)                                      \
-    I_safe_thread_barrier_wait(barrier, ERR_ARGS)
+    I_safe_thread_barrier_wait(barrier, I_ERR_ARGS)
 
 
 static NONNULL(1) void I_safe_thread_barrier_init(

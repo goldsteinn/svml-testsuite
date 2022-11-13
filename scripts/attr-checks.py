@@ -3,11 +3,11 @@ import sys
 from datetime import datetime
 
 attrs = [
-    "noclone", "always_inline", "noinline", "malloc", "const", "pure",
-    "unused", ["tls_model", "..."], "cold", "noreturn", ["aligned", "..."],
-    ["nonnull", "..."], ["format", "..."], ["optimize", "..."],
-    ["alloc_size", "..."], ["alloc_align", "..."], ["assume_aligned", "..."],
-    ["error", "..."]
+    "noclone", "always_inline", "noinline", "may_alias", "malloc", "const",
+    "pure", "unused", ["tls_model", "..."], "cold", "noreturn",
+    ["aligned", "..."], ["nonnull", "..."], ["format", "..."],
+    ["optimize", "..."], ["alloc_size", "..."], ["alloc_align", "..."],
+    ["assume_aligned", "..."], ["error", "..."]
 ]
 
 

@@ -3,6 +3,7 @@
 # addressed at some point. Second have no plan to fix.
 Checks: "*,\
     -altera-id-dependent-backward-branch,\
+    -altera-struct-pack-align,\
     -altera-unroll-loops,\
     -cppcoreguidelines-avoid-magic-numbers,\
     -cppcoreguidelines-pro-bounds-constant-array-index,\
@@ -20,6 +21,7 @@ Checks: "*,\
     -clang-analyzer-security.insecureAPI.strcpy,\
     -clang-diagnostic-deprecated,\
     -cppcoreguidelines-avoid-c-arrays,\
+    -cppcoreguidelines-avoid-goto,hicpp-avoid-goto,\
     -cppcoreguidelines-avoid-non-const-global-variables,\
     -cppcoreguidelines-init-variables,\
     -cppcoreguidelines-macro-usage,\
@@ -32,6 +34,7 @@ Checks: "*,\
     -cppcoreguidelines-pro-type-vararg,
     -cppcoreguidelines-pro-type-vararg,\
     -hicpp-avoid-c-arrays,\
+    -hicpp-avoid-goto,\
     -hicpp-deprecated-headers,\
     -hicpp-member-init,\
     -hicpp-no-array-decay,\
@@ -51,6 +54,7 @@ Checks: "*,\
     -modernize-use-auto,\
     -modernize-use-nullptr,\
     -modernize-use-trailing-return-type,\
+    -modernize-use-using,\
     -readability-else-after-return,\
     -readability-isolate-declaration,\
     \

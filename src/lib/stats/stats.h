@@ -1,5 +1,5 @@
-#ifndef _SRC__LIB__STATS__STATS_H_
-#define _SRC__LIB__STATS__STATS_H_
+#ifndef SRC_D_LIB_D_STATS_D_STATS_H_
+#define SRC_D_LIB_D_STATS_D_STATS_H_
 
 #include "util/common.h"
 #include "util/error-util.h"
@@ -25,7 +25,7 @@ enum {
     STATS_P_percentiles  = (1 << 8),
     STATS_P_csv_hdr      = (1 << 9),
     STATS_P_csv_hdr_only = (1 << 10),
-    STATS_P_all          = (-1U) ^ (STATS_P_csv_hdr | STATS_P_csv_hdr_only)
+    STATS_P_all = ((1 << 10) - 1) ^ (STATS_P_csv_hdr | STATS_P_csv_hdr_only)
 };
 
 typedef struct stats_result {
@@ -43,7 +43,7 @@ typedef struct stats_result {
 } stats_result_t;
 
 static uint32_t
-num_percentiles() {
+num_percentiles(void) {
     return sizeof(I_percentiles);
 }
 static uint32_t
@@ -125,11 +125,13 @@ void I_gen_stats(stats_result_t * restrict stats,
                  /* Take is_unsigned and is_fp_based so void * data can just be
                     intepretted as uint64_t. */
                  uint32_t is_unsigned,
+                 uint32_t is_bool,
                  uint32_t is_fp_based);
 
 #define gen_stats(stats, arr, arrsize)                                         \
     I_gen_stats(stats, CAST(uint8_t const *, arr), arrsize, sizeof(arr[0]),    \
-                IS_UNSIGNED(arr[0]), IS_FLOAT_BASE(arr[0]))
+                IS_UNSIGNED(arr[0]), IS_BOOL_BASE(arr[0]),                     \
+                IS_FLOAT_BASE(arr[0]))
 
 
 NONNULL(1, 3)

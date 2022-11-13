@@ -1,15 +1,15 @@
-#ifndef _SRC__UTIL__ATTRS_H_
-#define _SRC__UTIL__ATTRS_H_
+#ifndef SRC_UTIL_ATTRS_H_
+#define SRC_UTIL_ATTRS_H_
 
 #include "util/attr-portability.h"
 #include "util/macro.h"
 
 #if I_has_attr(fallthrough)
-#define fall_through __attribute__((fallthrough))
+# define fall_through __attribute__((fallthrough))
 #elif STDCPP_VERSION >= 2017
-#define fall_through [[fallthrough]]
+# define fall_through [[fallthrough]]
 #else
-#define fall_through /* fall through.  */
+# define fall_through /* fall through.  */
 #endif
 
 

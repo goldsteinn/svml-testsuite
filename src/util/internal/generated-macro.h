@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_
-#define _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_
+#ifndef SRC_UTIL_INTERNAL_GENERATED_MACRO_H_
+#define SRC_UTIL_INTERNAL_GENERATED_MACRO_H_
 
 /* Generated
  *	By: ../scripts/gen-apply-macro.py

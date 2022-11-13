@@ -1,5 +1,6 @@
 #include <string.h>
 #include "test/test-common.h"
+#include "util/common.h"
 #include "util/macro.h"
 #define I_ONE  1
 #define I_TWO  2
@@ -19,17 +20,19 @@ foo22(int64_t i0, int64_t i1) {
     count += (i0 + i1);
 }
 #define dfoo22(...) foo22(DEPAREN(__VA_ARGS__))
-static uint64_t
+static int64_t
 foo23(int64_t i0, int64_t i1) {
     return (i0 * i1);
 }
 #define dfoo23(...) foo23(DEPAREN(__VA_ARGS__))
+#define I_TEST_MIN_IMPL(x, y, tmpx, tmpy)                                      \
+ ({                                                                            \
+long tmpx = (x); /* NOLINT(bugprone-macro-parentheses) */                       \
+long tmpy = (y); /* NOLINT(bugprone-macro-parentheses) */                       \
+((tmpx) < (tmpy) ? (tmpx) : (tmpy));                                            \
+ })
 #define I_TEST_MIN(x, y)                                                       \
-    ({                                                                         \
-        long _x = (x);                                                         \
-        long _y = (y);                                                         \
-        ((_x) < (_y) ? (_x) : (_y));                                           \
-    })
+ I_TEST_MIN_IMPL(x, y, I_UNIQUE_TMP_VAR, I_UNIQUE_TMP_VAR)
 #define I_MUL0(x)   ((x)*0L)
 #define I_MUL1(x)   ((x)*1L)
 #define I_MUL2(x)   ((x)*2L)
@@ -287,8 +290,9 @@ foo23(int64_t i0, int64_t i1) {
 #define I_MUL254(x) ((x)*254L)
 #define I_MUL255(x) ((x)*255L)
 #define I_MMUL(x)   CAT(I_MUL, x)
+int32_t test_generated_macros(void);
 int32_t
-test_generated_macros() {
+test_generated_macros(void) {
 #define INDIRECT_APPLY(m, op, ...) APPLY(m, op, __VA_ARGS__)
 #define I_PLUS(x, y)               ((x) + (y))
     test_assert(CAT(I_, NOT_ONE_NARG()) == I_ONE);

@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__ARG_H_
-#define _SRC__UTIL__ARG_H_
+#ifndef SRC_UTIL_ARG_H_
+#define SRC_UTIL_ARG_H_
 
 /* simple argument parsing with documentation
 
@@ -50,15 +50,15 @@ typedef struct arg_rest {
 #define INIT_ARG_REST_T                                                        \
     { NULL, 0 }
 
-typedef struct argoption_ ArgOption;
-struct argoption_ {
+typedef struct arg_option arg_option_t;
+struct arg_option {
     ArgKind            kind;          /* option, positionl, rest, end, help */
     ArgType            type;          /* type of the argument/option */
     char const * const args_begin[4]; /* also name of positional arg */
     int32_t            required;
     void *             dest;
-    uint64_t           dest_sz;     /* hidden to used. */
-    int32_t            is_unsigned; /* hidden to used. */
+    uint64_t           dest_sz;     /* hidden to user. */
+    int32_t            is_unsigned; /* hidden to user. */
     char const *       desc;
 };
 
@@ -70,45 +70,47 @@ struct argoption_ {
     }
 
 
-typedef struct argdef_ ArgDefs;
+typedef struct arg_def arg_defs_t;
 
-struct argdef_ {
+struct arg_def {
     /* public members.  */
-    ArgOption *  args;
-    char const * progdoc;
-    char const * version;
+    arg_option_t * args;
+    char const *   progdoc;
+    char const *   version;
     void (*doneParsing)(void);
 };
 
 int32_t parseArgs(int32_t        argc,
                   char * const * argv,
-                  ArgDefs const * restrict def);
+                  arg_defs_t const * restrict def);
 
 /* for more complicated arg parsing, i.e., including parsers of submodules, make
- * an ArgParser, then call parse on it.  */
+ * an arg_parser_t, then call parse on it.  */
 
-typedef struct _argparserlist ArgParserNode;
-struct _argparserlist {
-    int32_t         main;
-    ArgDefs const * parser;
-    ArgParserNode * next;
+typedef struct arg_parser_node arg_parser_node_t;
+struct arg_parser_node {
+    int32_t             main;
+    arg_defs_t const *  parser;
+    arg_parser_node_t * next;
 };
 
-typedef struct _argParser ArgParser;
-struct _argParser {
-    ArgParserNode * parsers;
-    ArgDefs const * mainProg;
+typedef struct arg_parser arg_parser_t;
+struct arg_parser {
+    arg_parser_node_t * parsers;
+    arg_defs_t const *  mainProg;
 };
 
-ArgParser * createArgumentParser(ArgDefs const * def);
-void        freeArgumentParser(ArgParser * ap);
-void        addArgumentParser(ArgParser * restrict ap,
-                              ArgDefs const * restrict def,
-                              int32_t order);
-int32_t     parseArguments(ArgParser * restrict ap,
-                           int32_t        argc,
-                           char * const * argv);
-void        freeCommandLine(void);
-int32_t doParse(ArgDefs const * restrict argp, int argc, char * const * argv);
+arg_parser_t * createArgumentParser(arg_defs_t const * def);
+void           freeArgumentParser(arg_parser_t const * ap);
+void           addArgumentParser(arg_parser_t * restrict ap,
+                                 arg_defs_t const * restrict def,
+                                 int32_t order);
+int32_t        parseArguments(arg_parser_t * restrict ap,
+                              int32_t        argc,
+                              char * const * argv);
+void           freeCommandLine(void);
+int32_t        doParse(arg_defs_t const * restrict argp,
+                       int            argc,
+                       char * const * argv);
 
 #endif

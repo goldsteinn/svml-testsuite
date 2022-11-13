@@ -1,5 +1,5 @@
-#ifndef _SRC__BENCH__BENCHMARKS_H_
-#define _SRC__BENCH__BENCHMARKS_H_
+#ifndef SRC_BENCH_BENCHMARKS_H_
+#define SRC_BENCH_BENCHMARKS_H_
 
 #include <stdlib.h>
 

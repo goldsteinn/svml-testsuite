@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__COMMON_H_
-#define _SRC__UTIL__COMMON_H_
+#ifndef SRC_UTIL_COMMON_H_
+#define SRC_UTIL_COMMON_H_
 
 
 #include <assert.h>
@@ -49,6 +49,6 @@
 
 #define const_condition(...) (is_const(__VA_ARGS__) && (__VA_ARGS__))
 
-#define I_UNIQUE_TMP_VAR CAT(I_unique_tmp_var, I_COUNTER)
+#define I_UNIQUE_TMP_VAR CAT_BASE(I_unique_tmp_var_, I_COUNTER)
 
 #endif

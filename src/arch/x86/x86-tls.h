@@ -1,5 +1,5 @@
-#ifndef _SRC__ARCH__X86__X86_TLS_H_
-#define _SRC__ARCH__X86__X86_TLS_H_
+#ifndef SRC_D_ARCH_D_X86_D_X86_TLS_H_
+#define SRC_D_ARCH_D_X86_D_X86_TLS_H_
 
 
 #include <stdint.h>

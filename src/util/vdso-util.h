@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__VDSO_UTIL_H_
-#define _SRC__UTIL__VDSO_UTIL_H_
+#ifndef SRC_UTIL_VDSO_UTIL_H_
+#define SRC_UTIL_VDSO_UTIL_H_
 
 #include <sched.h>
 #include <sys/time.h>
@@ -13,10 +13,10 @@
 #include "util/vdso-defs.h"
 
 
-uint32_t vdso_is_full_init();
+uint32_t vdso_is_full_init(void);
 
 static CONST_FUNC uint32_t
-with_vdso() {
+with_vdso(void) {
 #ifdef WITH_VDSO
     return 1;
 #else

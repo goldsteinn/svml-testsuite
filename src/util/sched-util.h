@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__SCHED_UTIL_H_
-#define _SRC__UTIL__SCHED_UTIL_H_
+#ifndef SRC_UTIL_SCHED_UTIL_H_
+#define SRC_UTIL_SCHED_UTIL_H_
 
 #include <linux/futex.h>
 #include <sched.h>
@@ -15,22 +15,22 @@
 #include "thread/cpuset.h"
 #include "thread/rseq/rseq.h"
 
-#define setcpu(pid, cpu) I_setcpu(pid, cpu, ERR_ARGS)
+#define setcpu(pid, cpu) I_setcpu(pid, cpu, I_ERR_ARGS)
 #define setcpu_aff(pid, mask)                                                  \
-    I_setcpu_aff(pid, sizeof(cpuset_t), mask, ERR_ARGS)
+    I_setcpu_aff(pid, sizeof(cpuset_t), mask, I_ERR_ARGS)
 #define getcpu_aff(pid, mask)                                                  \
-    I_setcpu_aff(pid, sizeof(cpuset_t), mask, ERR_ARGS)
+    I_setcpu_aff(pid, sizeof(cpuset_t), mask, I_ERR_ARGS)
 
 #define proc_setcpu(cpu)      setcpu(0, cpu)
 #define proc_setcpu_aff(mask) setcpu_aff(0, mask)
 #define proc_getcpu_aff(mask) getcpu_aff(0, mask)
 
-#define safe_get_cpu() I_safe_get_cpu(ERR_ARGS)
-#define safe_yield()   I_safe_yield(ERR_ARGS)
+#define safe_get_cpu() I_safe_get_cpu(I_ERR_ARGS)
+#define safe_yield()   I_safe_yield(I_ERR_ARGS)
 
 
 static uint32_t
-get_cpu() {
+get_cpu(void) {
 #if HAS_RSEQ
     return rseq_getcpu();
 #else
@@ -39,22 +39,22 @@ get_cpu() {
 }
 
 static uint32_t
-get_node() {
+get_node(void) {
     return ll_getnode();
 }
 
 static CONST_FUNC uint32_t
-cpustate_get_cpu(uint32_t cpustate) {
+cpustate_get_cpu(cpu_state_t cpustate) {
     return cpustate & CPUSTATE_CPU_MASK;
 }
 
 static CONST_FUNC uint32_t
-cpustate_get_node(uint32_t cpustate) {
+cpustate_get_node(cpu_state_t cpustate) {
     return cpustate >> CPUSTATE_NODE_SHIFT;
 }
 
-static uint32_t
-get_cpustate() {
+static cpu_state_t
+get_cpustate(void) {
     return ll_cpustate();
 }
 
@@ -73,7 +73,7 @@ futex_wake(uint32_t * addr, uint32_t n) {
 
 
 static void
-yield() {
+yield(void) {
     ll_syscall_cc(SYS_sched_yield, /* None */, /* None */, /* None */,
                   /* None */);
 }

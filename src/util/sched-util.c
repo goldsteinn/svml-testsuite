@@ -44,10 +44,11 @@ I_getcpu_aff(pid_t        pid,
 void
 setcpu_and_wait(pid_t pid, uint32_t cpu) {
     int32_t nattempts;
+    enum { IMM8_MAX_MINUS_ONE = 127 };
     if (cpu >= get_num_cpus()) {
         return;
     }
-    enum { IMM8_MAX_MINUS_ONE = 127 };
+
     setcpu(pid, cpu);
     nattempts = IMM8_MAX_MINUS_ONE;
     while (safe_get_cpu() != cpu) {
@@ -62,7 +63,7 @@ I_safe_get_cpu(const char * fn, const char * func, uint32_t ln) {
     if (UNLIKELY(cpu < 0)) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
-    return cpu;
+    return CAST(uint32_t, cpu);
 }
 
 void

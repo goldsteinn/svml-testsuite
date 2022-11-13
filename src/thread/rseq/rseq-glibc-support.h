@@ -1,5 +1,5 @@
-#ifndef _SRC__THREAD__RSEQ__RSEQ_GLIBC_SUPPORT_H_
-#define _SRC__THREAD__RSEQ__RSEQ_GLIBC_SUPPORT_H_
+#ifndef SRC_D_THREAD_D_RSEQ_D_RSEQ_GLIBC_SUPPORT_H_
+#define SRC_D_THREAD_D_RSEQ_D_RSEQ_GLIBC_SUPPORT_H_
 
 
 #include "thread/rseq/rseq-linux-support.h"
@@ -36,21 +36,23 @@ extern const unsigned int __rseq_size;
 #error "Unknown rseq offset"
 #endif
 
+const_assert(RSEQ_GLIBC_OFFSET <= UINT_MAX);
+
 static uint32_t
-I_get_glibc_rseq_size() {
+I_get_glibc_rseq_size(void) {
     return __rseq_size;
 }
 static uint32_t
-I_get_glibc_rseq_offset() {
-    return __rseq_offset;
+I_get_glibc_rseq_offset(void) {
+    return CAST(uint32_t, __rseq_offset);
 }
 static struct rseq *
-I_get_glibc_rseq_area() {
+I_get_glibc_rseq_area(void) {
     return CAST(struct rseq *, get_tls_start() + I_get_glibc_rseq_offset());
 }
 
 static uint32_t
-rseq_glibc_prepare() {
+rseq_glibc_prepare(void) {
     return (I_get_glibc_rseq_size() == sizeof(struct rseq) &&
             I_get_glibc_rseq_offset() == RSEQ_GLIBC_OFFSET)
                ? 0
@@ -58,7 +60,7 @@ rseq_glibc_prepare() {
 }
 #else
 static uint32_t
-rseq_glibc_prepare() {
+rseq_glibc_prepare(void) {
     return 0;
 }
 #endif

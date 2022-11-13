@@ -331,6 +331,7 @@ def gen_info():
 
 def tests():
     print("#include \"util/macro.h\"")
+    print("#include \"util/common.h\"")
     print("#include \"test/test-common.h\"")
     print("#include <string.h>")
     print("#define I_ONE 1")
@@ -345,19 +346,22 @@ def tests():
     print("static void foo22(int64_t i0, int64_t i1) { count += (i0 + i1); }")
     print("#define dfoo22(...) foo22(DEPAREN(__VA_ARGS__))")
 
-    print(
-        "static uint64_t foo23(int64_t i0, int64_t i1) { return (i0 * i1); }")
+    print("static int64_t foo23(int64_t i0, int64_t i1) { return (i0 * i1); }")
     print("#define dfoo23(...) foo23(DEPAREN(__VA_ARGS__))")
 
     print(
-        "#define I_TEST_MIN(x, y) ({ long _x = (x); long _y = (y); ((_x) < (_y) ? (_x) : (_y)); })"
+        "#define I_TEST_MIN_IMPL(x, y, tmpx, tmpy) ({ long tmpx = (x); /* NOLINT(bugprone-macro-parentheses) */ \\\nlong tmpy = (y); /* NOLINT(bugprone-macro-parentheses) */\\\n((tmpx) < (tmpy) ? (tmpx) : (tmpy)); })"
+    )
+    print(
+        "#define I_TEST_MIN(x, y) I_TEST_MIN_IMPL(x, y, I_UNIQUE_TMP_VAR, I_UNIQUE_TMP_VAR)"
     )
     for i in range(0, N):
         print("#define I_MUL{}(x) ((x) * {}L)".format(i, i))
 
     print("#define I_MMUL(x) CAT(I_MUL, x)")
 
-    print("int32_t test_generated_macros() {")
+    print("int32_t test_generated_macros(void);")
+    print("int32_t test_generated_macros(void) {")
 
     print("#define INDIRECT_APPLY(m, op, ...) APPLY(m, op, __VA_ARGS__)")
     print("#define I_PLUS(x, y) ((x) + (y))")
@@ -548,8 +552,8 @@ def gen():
     out.append(gen_REMOVE_FIRST_N())
     out.append(gen_EXTRACT_FIRST_N())
     out.append(gen_DUP_N())
-    print("#ifndef _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_")
-    print("#define _SRC__UTIL__INTERNAL__GENERATED_MACRO_H_")
+    print("#ifndef SRC_D_UTIL_D_INTERNAL_D_GENERATED_MACRO_H_")
+    print("#define SRC_D_UTIL_D_INTERNAL_D_GENERATED_MACRO_H_")
     print("")
     gen_info()
     print("/* clang-format off */")

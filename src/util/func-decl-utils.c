@@ -9,8 +9,8 @@
 #include <stdint.h>
 
 /* TODO: replace regex logic in fnmatch. */
-enum { decl_do_nothing = 0, decl_re_built = 2, decl_ran = 4 };
-enum { decl_did_one = 1, decl_did_any = 0 };
+enum { k_decl_do_nothing = 0, k_decl_re_built = 2, k_decl_ran = 4 };
+enum { k_decl_did_one = 1, k_decl_did_any = 0 };
 
 
 static uint32_t
@@ -29,11 +29,11 @@ build_re_wildcard_matcher(regex_t * restrict re,
     pattern_buf_pos = pattern_buf + 1;
 
 
-    match_any = decl_did_one;
+    match_any = k_decl_did_one;
     for (;;) {
         decl_to_run_next = strchrnul_c(decl_to_run, '*');
         die_assert(decl_to_run_next >= decl_to_run);
-        copy_len = (decl_to_run_next - decl_to_run);
+        copy_len = CAST(uint64_t, decl_to_run_next - decl_to_run);
         if (!(*decl_to_run_next)) {
             memcpy_c(pattern_buf_pos, decl_to_run, copy_len);
             pattern_buf_pos[copy_len]     = '$';
@@ -41,7 +41,7 @@ build_re_wildcard_matcher(regex_t * restrict re,
             break;
         }
 
-        match_any = decl_did_any;
+        match_any = k_decl_did_any;
         memcpy_c(pattern_buf_pos, decl_to_run, copy_len);
         pattern_buf_pos[copy_len]     = '.';
         pattern_buf_pos[copy_len + 1] = '*';
@@ -78,18 +78,19 @@ should_run_decl(char const * restrict decl_name,
         die_assert(decls_to_run[i] != NULL);
         decl_state = decl_states[i];
 
-        if ((decl_state & decl_ran) && (decl_state & decl_did_one)) {
+        if ((decl_state & k_decl_ran) && (decl_state & k_decl_did_one)) {
             continue;
         }
-        if (!(decl_state & decl_re_built)) {
-            decl_state |=
-                (decl_re_built |
-                 build_re_wildcard_matcher(re_matchers + i, decls_to_run[i]));
+        if (!(decl_state & k_decl_re_built)) {
+            uint32_t re_match_res =
+                build_re_wildcard_matcher(re_matchers + i, decls_to_run[i]);
+            die_assert(re_match_res <= UCHAR_MAX);
+            decl_state |= (k_decl_re_built | CAST(uint8_t, re_match_res));
         }
         if (is_match(re_matchers + i, decl_name)) {
-            dbg_assert(decl_states[i] != decl_do_nothing);
+            dbg_assert(decl_states[i] != k_decl_do_nothing);
 
-            decl_state |= decl_ran;
+            decl_state |= k_decl_ran;
             has_hit = 1;
         }
         decl_states[i] = decl_state;
@@ -147,12 +148,12 @@ static NONNULL(1, 4) void I_run_decls(
     for (i = 0; i < ndecls_to_run; ++i) {
         die_assert(decls_to_run[i]);
         decl_state = decl_states[i];
-        if (decl_state != decl_do_nothing) {
+        if (decl_state != k_decl_do_nothing) {
 
-            die_assert(decl_state & decl_re_built);
+            die_assert(decl_state & k_decl_re_built);
             re_free(re_matchers + i);
 
-            if (decl_state & decl_ran) {
+            if (decl_state & k_decl_ran) {
                 continue;
             }
         }

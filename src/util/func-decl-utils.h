@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__FUNC_DECL_UTILS_H_
-#define _SRC__UTIL__FUNC_DECL_UTILS_H_
+#ifndef SRC_UTIL_FUNC_DECL_UTILS_H_
+#define SRC_UTIL_FUNC_DECL_UTILS_H_
 
 #include "util/func-decl-types.h"
 

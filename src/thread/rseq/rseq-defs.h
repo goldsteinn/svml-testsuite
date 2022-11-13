@@ -1,5 +1,5 @@
-#ifndef _SRC__THREAD__RSEQ__RSEQ_DEFS_H_
-#define _SRC__THREAD__RSEQ__RSEQ_DEFS_H_
+#ifndef SRC_D_THREAD_D_RSEQ_D_RSEQ_DEFS_H_
+#define SRC_D_THREAD_D_RSEQ_D_RSEQ_DEFS_H_
 
 #include "util/common.h"
 

@@ -3,9 +3,9 @@
 #include "util/sched-util.h"
 #include "util/vdso-util.h"
 
-
+int32_t test_vdso(void);
 int32_t
-test_vdso() {
+test_vdso(void) {
     struct timespec ts;
     struct timeval  tv;
     struct timezone tz;

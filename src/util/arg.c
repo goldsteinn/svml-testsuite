@@ -15,6 +15,7 @@
 #include "util/error-util.h"
 #include "util/memory-util.h"
 #include "util/print.h"
+#include "util/string-util.h"
 #include "util/verbosity.h"
 
 #include "lib/commonlib.h"
@@ -39,11 +40,11 @@ enum {
 
 static PURE_FUNC const char * kind2str(ArgKind k);
 
-static void usage(char const * restrict pname, ArgParser const * restrict ap);
+static void usage(arg_parser_t const * restrict ap);
 
-static void
+static void EXIT_FUNC
 FORMATF(2, 3)
-    argdie(ArgParser const * restrict def, char const * restrict fmt, ...) {
+    argdie(arg_parser_t const * restrict def, char const * restrict fmt, ...) {
     va_list ap;
 
     va_start(ap, fmt);
@@ -51,7 +52,7 @@ FORMATF(2, 3)
     vprintf(fmt, ap); /* NOLINT */
     va_end(ap);
     fprintf_stdout("\n");
-    usage(pname, def);
+    usage(def);
     _exit(-1);
 }
 
@@ -69,8 +70,8 @@ concat_args(char const * const * args_begin) {
                    "Overflow trying to concat user args.\n");
 
         next = stpncpy_c(buf + offset, *args_begin, OUTBUF_LEN - offset);
-
-        incr = next - (buf + offset);
+        die_assert(next >= (buf + offset));
+        incr = CAST(uint64_t, next - (buf + offset));
         offset += incr;
 
         die_assert(offset < OUTBUF_LEN,
@@ -89,7 +90,7 @@ concat_args(char const * const * args_begin) {
 
 
 static const char *
-arg2str(ArgOption const * restrict desc) {
+arg2str(arg_option_t const * restrict desc) {
     enum { OUTBUF_LEN = 512 };
     static char buffer[OUTBUF_LEN];
     ssize_t     n;
@@ -105,10 +106,12 @@ arg2str(ArgOption const * restrict desc) {
     if ((desc->kind == KindPositional) && (desc->required)) {
         *p++ = '<';
         --avail_length;
+        die_assert(avail_length >= 0);
     }
     else if (!desc->required) {
         *p++ = '[';
         --avail_length;
+        die_assert(avail_length >= 0);
     }
 
     switch (desc->type) {
@@ -117,9 +120,13 @@ arg2str(ArgOption const * restrict desc) {
         case String:
         case Boolean:
         case Float:
-            n = snprintf(
-                p, avail_length, "%s%c%s", concat_args(desc->args_begin), sep,
-                type2fmt[desc->type] /* NOLINT(*-constant-array-index) */);
+            die_assert(avail_length >= 0);
+            n = CAST(
+                int64_t,
+                safe_snprintf(
+                    p, CAST(uint64_t, avail_length), "%s%c%s",
+                    concat_args(desc->args_begin), sep,
+                    type2fmt[desc->type] /* NOLINT(*-constant-array-index) */));
             die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
@@ -127,9 +134,12 @@ arg2str(ArgOption const * restrict desc) {
             break;
         case Rest:
             die_assert(desc->kind == KindRest);
-            n = snprintf(
-                p, avail_length, "...%c%s ", sep,
-                type2fmt[desc->type] /* NOLINT(*-constant-array-index) */);
+            die_assert(avail_length >= 0);
+            n = CAST(
+                int64_t,
+                safe_snprintf(
+                    p, CAST(uint64_t, avail_length), "...%c%s ", sep,
+                    type2fmt[desc->type] /* NOLINT(*-constant-array-index) */));
             die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
@@ -139,13 +149,18 @@ arg2str(ArgOption const * restrict desc) {
         case Toggle:
         case Set:
         case Increment:
-            n = snprintf(p, avail_length, "%s", concat_args(desc->args_begin));
+            die_assert(avail_length >= 0);
+            n = CAST(int64_t,
+                     safe_snprintf(p, CAST(uint64_t, avail_length), "%s",
+                                   concat_args(desc->args_begin)));
             die_assert(n >= 0 && n < avail_length,
                        "Buffer overflow creating help message\n");
             avail_length -= n;
             p += strlen_c(p);
             break;
 
+        case EndOptions:
+            fall_through;
         default:
             /* new type that we didn't implement yet?  */
             die("Unknown type: %d\n", desc->type);
@@ -153,7 +168,7 @@ arg2str(ArgOption const * restrict desc) {
     if (desc->kind == KindRest) {
         n = strlen_c("...") + 1;
         die_assert(n < avail_length, "Buffer overflow creating help message\n");
-        memcpy_c(p, "...", n);
+        memcpy_c(p, "...", CAST(uint64_t, n));
         p += n;
         avail_length -= n;
     }
@@ -174,13 +189,13 @@ arg2str(ArgOption const * restrict desc) {
 }
 
 static void
-usage(char const * restrict pname, ArgParser const * restrict ap) {
-    ArgParserNode const * apn;
+usage(arg_parser_t const * restrict ap) {
+    arg_parser_node_t const * apn;
     fprintf_stdout("%s: ", pname);
     /* print out shorthand for arguments.  */
     for (apn = ap->parsers; apn; apn = apn->next) {
-        ArgOption const * args = apn->parser->args;
-        int32_t           i    = 0;
+        arg_option_t const * args = apn->parser->args;
+        int32_t              i    = 0;
         while (args[i].kind != KindEnd) {
             fprintf_stdout(" %s", arg2str(args + i));
             i++;
@@ -190,8 +205,8 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
 
     /* Now print individual descriptions.  */
     for (apn = ap->parsers; apn; apn = apn->next) {
-        ArgOption const * args = apn->parser->args;
-        int32_t           i    = 0;
+        arg_option_t const * args = apn->parser->args;
+        int32_t              i    = 0;
         while (args[i].kind != KindEnd) {
             fprintf_stdout(
                 "   %20s\t%s\t", arg2str(args + i),
@@ -207,7 +222,9 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
                         fprintf_stdout("(default: %lu)", default_v);
                     }
                     else {
-                        uint32_t dst_bitwidth = 8 * args[i].dest_sz;
+                        uint32_t dst_bitwidth;
+                        die_assert(args[i].dest_sz <= (UINT_MAX / 8));
+                        dst_bitwidth = CAST(uint32_t, 8 * args[i].dest_sz);
                         die_assert(dst_bitwidth <= sizeof_bits(uint64_t));
                         if (dst_bitwidth != sizeof_bits(uint64_t) &&
                             (default_v & (1UL << (dst_bitwidth - 1)))) {
@@ -245,7 +262,8 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
                             break;
 
                         case 4:
-                            default_d = *(safe_float *)(args[i].dest);
+                            default_d =
+                                CAST(double, *(safe_float *)(args[i].dest));
                             break;
 
                         default:
@@ -257,9 +275,11 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
                 } break;
                 case Rest:
                     fprintf_stdout("(default: N/A)");
+                    fall_through;
                 case Help:
                     break;
-
+                case EndOptions:
+                    fall_through;
                 default:
                     die("Unkown Type: %d\n", args[i].type);
             }
@@ -267,6 +287,7 @@ usage(char const * restrict pname, ArgParser const * restrict ap) {
             i++;
         }
     }
+    freeArgumentParser(ap);
 }
 
 static void
@@ -312,9 +333,9 @@ makeCommandline(int32_t argc, char * const * argv) {
  * start of data) offset is 0 for positional args (argv[0] points at
  * actual argument). */
 static int32_t
-assignArg(ArgOption * restrict desc,
+assignArg(arg_option_t * restrict desc,
           char * const * argv,
-          ArgParser * restrict ap,
+          arg_parser_t * restrict ap,
           int32_t        offset,
           char * const * argv_end) {
 
@@ -356,10 +377,13 @@ assignArg(ArgOption * restrict desc,
             die_assert(desc->kind == KindRest);
             vprint("Saving %s to Rest\n", argv[offset]);
             {
-                arg_rest_t * p = (arg_rest_t *)desc->dest;
-                size_t       n = ((argv_end) - (argv + offset));
-                p->ptrs        = argv + offset;
-                p->n           = n;
+                arg_rest_t * p;
+                uint64_t     n;
+                die_assert(argv_end >= (argv + offset));
+                p       = (arg_rest_t *)desc->dest;
+                n       = CAST(uint64_t, (argv_end) - (argv + offset));
+                p->ptrs = argv + offset;
+                p->n    = n;
                 return 1;
             }
         } break;
@@ -383,12 +407,13 @@ assignArg(ArgOption * restrict desc,
         } break;
 
         case Float: {
+            char * end;
+            double user_v;
             if (!argv[offset]) {
                 return BAD_FLOAT;
             }
 
-            char * end;
-            double user_v = strtod(argv[offset], &end);
+            user_v = strtod(argv[offset], &end);
             warn_assert(argv[offset] != end, "Float -> [%s] unparseable (%s)\n",
                         concat_args(desc->args_begin), argv[offset]);
             if (argv[offset] != end) {
@@ -417,8 +442,8 @@ assignArg(ArgOption * restrict desc,
             uint64_t     user_v       = 0;
             int32_t      err          = 0;
             char const * storage_type = NULL;
-            uint32_t     base         = 10;
-            uint32_t     is_negative  = 0;
+            int32_t      base         = 10;
+            int32_t      is_negative  = 0;
             if (!argv[offset]) {
                 return BAD_INT;
             }
@@ -466,9 +491,12 @@ assignArg(ArgOption * restrict desc,
         } break;
 
         case Help: {
-            usage(pname, ap);
+            usage(ap);
             _exit(-1);
         }
+        case Character:
+        case Boolean:
+        case EndOptions:
         default:
             die("NIY: type\n");
     }
@@ -496,14 +524,14 @@ kind2str(ArgKind k) {
 
 /* return true if has help.  */
 static PURE_FUNC bool
-checkArgDef(ArgParser const * restrict ap,
-            ArgDefs const * restrict def,
+checkArgDef(arg_parser_t const * restrict ap,
+            arg_defs_t const * restrict def,
             bool main) {
     /* optional/help come before postional before rest.  */
-    uint32_t          state   = KindOption;
-    ArgOption const * desc    = def->args;
-    int32_t           hashelp = false;
-    int32_t           i;
+    uint32_t             state   = KindOption;
+    arg_option_t const * desc    = def->args;
+    int32_t              hashelp = false;
+    int32_t              i;
     for (i = 0; desc[i].kind != KindEnd; i++) {
         if (desc[i].kind > KindEnd) {
             argdie(ap, "Bad kind - no KindEnd?");
@@ -529,9 +557,9 @@ checkArgDef(ArgParser const * restrict ap,
 }
 
 static void
-checkArgParser(ArgParser const * ap) {
-    bool                  hashelp = false;
-    ArgParserNode const * apn;
+checkarg_parser_t(arg_parser_t const * ap) {
+    bool                      hashelp = false;
+    arg_parser_node_t const * apn;
     for (apn = ap->parsers; apn; apn = apn->next) {
         hashelp |= checkArgDef(ap, apn->parser, apn->main);
     }
@@ -541,19 +569,20 @@ checkArgParser(ArgParser const * ap) {
 }
 
 int32_t
-parseArgs(int32_t argc, char * const * argv, ArgDefs const * restrict def) {
-    ArgParserNode n  = { 1, def, NULL };
-    ArgParser     ap = { &n, def };
+parseArgs(int32_t argc, char * const * argv, arg_defs_t const * restrict def) {
+    arg_parser_node_t n  = { 1, def, NULL };
+    arg_parser_t      ap = { &n, def };
     return parseArguments(&ap, argc, argv);
 }
 
 /**************************************************************************/
 /* multiple argument parsers. */
 
-ArgParser *
-createArgumentParser(ArgDefs const * restrict def) {
-    ArgParser * ap = (ArgParser *)safe_calloc(1, sizeof(ArgParser));
-    ap->parsers    = (ArgParserNode *)safe_calloc(1, sizeof(ArgParserNode));
+arg_parser_t *
+createArgumentParser(arg_defs_t const * restrict def) {
+    arg_parser_t * ap = (arg_parser_t *)safe_calloc(1, sizeof(arg_parser_t));
+    ap->parsers =
+        (arg_parser_node_t *)safe_calloc(1, sizeof(arg_parser_node_t));
     ap->parsers->parser = def;
     ap->parsers->main   = 1;
     ap->mainProg        = def;
@@ -566,28 +595,30 @@ freeCommandLine(void) {
 }
 
 void
-freeArgumentParser(ArgParser * ap) {
-    ArgParserNode * next;
-    ArgParserNode * p;
+freeArgumentParser(arg_parser_t const * ap) {
+    arg_parser_node_t * next;
+    arg_parser_node_t * p;
     for (p = ap->parsers; p; p = next) {
         next = p->next;
         safe_free(p);
     }
-    safe_free(ap);
+    safe_free((void *)(uintptr_t)ap); /* NOLINT(performance-no-int-to-ptr) */
     freeCommandLine();
 }
 
+
 void
-addArgumentParser(ArgParser * restrict ap,
-                  ArgDefs const * restrict def,
+addArgumentParser(arg_parser_t * restrict ap,
+                  arg_defs_t const * restrict def,
                   int32_t order) {
-    ArgParserNode * p = (ArgParserNode *)safe_calloc(1, sizeof(ArgParserNode));
-    p->parser         = def;
-    p->next           = NULL;
-    p->main           = 0;
+    arg_parser_node_t * p =
+        (arg_parser_node_t *)safe_calloc(1, sizeof(arg_parser_node_t));
+    p->parser = def;
+    p->next   = NULL;
+    p->main   = 0;
 
     if (order > 0) {
-        ArgParserNode * nextp;
+        arg_parser_node_t * nextp;
         for (nextp = ap->parsers; nextp->next; nextp = nextp->next) {
             ;
         }
@@ -610,23 +641,25 @@ user_args_match(char const * const * args_begin, char const * arg) {
 }
 
 int32_t
-parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
-    char * const *        argv_end = argv + argc;
-    ArgParserNode const * apn;
-    int32_t               i, j;
+parseArguments(arg_parser_t * restrict ap, int32_t argc, char * const * argv) {
+    char * const *            argv_end = argv + argc;
+    arg_parser_node_t const * apn;
+    int32_t                   i, j, base_arg, base_dest_offset;
+    bool                      opts_possible;
+    arg_option_t *            desc;
     /* get program name and commandline as a string.  */
     pname = argv[0];
     makeCommandline(argc, argv);
     argv++;
     argc--;
 
-    checkArgParser(ap);
+    checkarg_parser_t(ap);
 
     /* process args.  */
     vprint("Processing args for %s: %d\n", pname, argc);
 
     for (apn = ap->parsers; apn; apn = apn->next) {
-        ArgOption * desc = apn->parser->args;
+        desc = apn->parser->args;
 
 
         for (i = 0; (desc[i].kind != KindEnd); ++i) {
@@ -637,8 +670,8 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
     }
 
 
-    bool optionsPossible = true;
-    for (i = 0; (i < argc) && optionsPossible; i++) {
+    opts_possible = true;
+    for (i = 0; (i < argc) && opts_possible; i++) {
         char const * arg = argv[i];
         vprint("%d -> [%s]\n", i, arg);
         if (arg[0] == '-') {
@@ -646,18 +679,19 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
             bool ok       = false;
             bool notfound = true;
             for (apn = ap->parsers; notfound && apn; apn = apn->next) {
-                ArgOption * desc = apn->parser->args;
+                desc = apn->parser->args;
                 for (j = 0; notfound && (desc[j].kind != KindEnd); j++) {
                     if (user_args_match(desc[j].args_begin, arg)) {
+                        int32_t consumed;
                         ok       = true;
                         notfound = false;
                         /* see if it is special.  */
                         if (desc[j].type == EndOptions) {
-                            optionsPossible = false;
+                            opts_possible = false;
                             break;
                         }
                         /* process it.  */
-                        int32_t consumed =
+                        consumed =
                             assignArg(desc + j, argv + i, ap, 1, argv_end);
                         if (consumed < 0) {
                             argdie(ap,
@@ -683,7 +717,7 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
     /* ok, now we handle positional args, we handle them in the order
      * they are declared only the main parser can define positional
      * args.  */
-    ArgOption * desc = NULL;
+    desc = NULL;
     for (apn = ap->parsers; apn; apn = apn->next) {
         if (apn->main) {
             desc = apn->parser->args;
@@ -691,47 +725,48 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
         }
     }
     die_assert(desc != NULL);
-    int32_t baseArg = i;
-    int32_t baseDestOffset;
-    for (baseDestOffset = 0; desc[baseDestOffset].kind != KindEnd;
-         baseDestOffset++) {
-        if ((desc[baseDestOffset].kind == KindPositional) ||
-            (desc[baseDestOffset].kind == KindRest)) {
+    base_arg = i;
+
+    for (base_dest_offset = 0; desc[base_dest_offset].kind != KindEnd;
+         base_dest_offset++) {
+        if ((desc[base_dest_offset].kind == KindPositional) ||
+            (desc[base_dest_offset].kind == KindRest)) {
             break;
         }
     }
     /* base is first positional arg we are passed, j is first descriptor
      * for positional arg.  */
-    vprint("start pos: j=%d %s kind=%d basearg=%d\n", baseDestOffset,
-           concat_args(desc[baseDestOffset].args_begin),
-           desc[baseDestOffset].type, baseArg);
+    vprint("start pos: j=%d %s kind=%d basearg=%d\n", base_dest_offset,
+           concat_args(desc[base_dest_offset].args_begin),
+           desc[base_dest_offset].type, base_arg);
 
     j = 0;
-    while ((desc[baseDestOffset + j].kind == KindPositional) &&
-           ((baseArg + j) < argc)) {
+    while ((desc[base_dest_offset + j].kind == KindPositional) &&
+           ((base_arg + j) < argc)) {
+        int32_t consumed = assignArg(desc + base_dest_offset + j,
+                                     argv + base_arg + j, ap, 0, argv_end);
         vprint("%d: %s\n", j,
-               baseArg + concat_args(desc[baseDestOffset + j].args_begin));
-        int32_t consumed = assignArg(desc + baseDestOffset + j,
-                                     argv + baseArg + j, ap, 0, argv_end);
+               base_arg + concat_args(desc[base_dest_offset + j].args_begin));
+
         j += consumed;
-        desc[baseDestOffset + j].required |=
-            (desc[baseDestOffset + j].required << 1);
+        desc[base_dest_offset + j].required |=
+            (desc[base_dest_offset + j].required << 1);
     }
     /* check that we used all the arguments and don't have any extra. */
-    if (desc[baseDestOffset + j].type == (ArgType)KindPositional) {
+    if (desc[base_dest_offset + j].type == (ArgType)KindPositional) {
         argdie(ap, "Expected more arguments, only given %d", j);
     }
-    else if ((desc[baseDestOffset + j].type == (ArgType)KindEnd) &&
-             ((baseArg + j) < argc)) {
+    else if ((desc[base_dest_offset + j].type == (ArgType)KindEnd) &&
+             ((base_arg + j) < argc)) {
         argdie(ap, "Too many arguments, given %d", j);
     }
     /* see if we have a variable number of args at end.  */
-    if (desc[baseDestOffset + j].type == Rest && ((baseArg + j) < argc)) {
-        int32_t consumed = assignArg(desc + baseDestOffset + j,
-                                     argv + baseArg + j, ap, 0, argv_end);
+    if (desc[base_dest_offset + j].type == Rest && ((base_arg + j) < argc)) {
+        int32_t consumed = assignArg(desc + base_dest_offset + j,
+                                     argv + base_arg + j, ap, 0, argv_end);
         j += consumed;
-        desc[baseDestOffset + j].required |=
-            (desc[baseDestOffset + j].required << 1);
+        desc[base_dest_offset + j].required |=
+            (desc[base_dest_offset + j].required << 1);
     }
 
     /* if user defined a post parsing function, call it - main prog
@@ -747,7 +782,7 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
     }
 
     for (apn = ap->parsers; apn; apn = apn->next) {
-        ArgOption * desc = apn->parser->args;
+        desc = apn->parser->args;
         for (j = 0; (desc[j].kind != KindEnd); ++j) {
             if (desc[j].required == 1) {
                 argdie(ap, "Missing required argument\n\t%s\n",
@@ -759,9 +794,9 @@ parseArguments(ArgParser * restrict ap, int32_t argc, char * const * argv) {
 }
 
 int32_t
-doParse(ArgDefs const * restrict argp, int argc, char * const * argv) {
-    ArgParser * ap;
-    int32_t     ret, orig_verbosity;
+doParse(arg_defs_t const * restrict argp, int argc, char * const * argv) {
+    arg_parser_t * ap;
+    int32_t        ret, orig_verbosity;
 
     orig_verbosity = get_verbosity();
     set_verbosity(argp_verbosity);
@@ -773,6 +808,6 @@ doParse(ArgDefs const * restrict argp, int argc, char * const * argv) {
     }
     freeArgumentParser(ap);
 
-    set_verbosity(orig_verbosity);
+    set_verbosity(orig_verbosity); /* NOLINT(clang-analyzer-unix.Malloc) */
     return ret;
 }

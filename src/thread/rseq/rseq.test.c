@@ -9,8 +9,10 @@
 
 #include "test/test-common.h"
 
-static void
-incr_counter_rseq(uint32_t * counters) {
+static void NEVER_INLINE
+incr_counter_rseq(
+    uint32_t * counters /* NOLINT(readability-non-const-parameter) */
+) {
     uint64_t cpu = 0;
     __asm__ volatile(RSEQ_AREA_DEF()
                  RSEQ_CS_ARR_DEF()
@@ -24,18 +26,23 @@ incr_counter_rseq(uint32_t * counters) {
                  "sall  $6, %k[cpu]\n\t"
                  "incl  (%[counters], %[cpu])\n\t"
                  "2:\n\t"
-                 : [cpu]"=&r"(cpu), "+m" (* (uint32_t (*)[]) counters)
+                     : [cpu]"=&r"(cpu), //"+m" (* (uint32_t (*)[]) counters)
+                       "+m" (* counters)
                  : [counters] "r" (counters)
                  : "cc");
 }
 
-static void
-incr_counter_norm(uint32_t * volatile counters) {
-    ++(*AGU_T(counters, 64 * get_cpu()));
+static void NEVER_INLINE
+incr_counter_norm(
+    uint32_t * volatile counters /* NOLINT(readability-non-const-parameter) */
+) {
+    counters[(64 / sizeof(*counters)) * get_cpu()] += 1;
 }
 
-static uint32_t *       global_counters;
-static thread_barrier_t barrier;
+static uint32_t * global_counters;
+
+static thread_barrier_t /* NOLINT(fuchsia-statically-constructed-objects) */
+    barrier /* NOLINT(fuchsia-statically-constructed-objects) */;
 
 enum { NITER = 100 * 1000 * 1000, DO_RSEQ_INCR = 0 };
 
@@ -45,8 +52,6 @@ incr_loop(void * arg) {
     todo = CAST(uint32_t, CAST(uint64_t, arg));
     die_assert(rseq_init() == 0);
     thread_barrier_wait(&barrier);
-    printf("Todo: %u (%u == %u) -> %u\n", todo, todo, DO_RSEQ_INCR,
-           todo == DO_RSEQ_INCR);
     if (todo == DO_RSEQ_INCR) {
         for (i = NITER; i; --i) {
             incr_counter_rseq(global_counters);
@@ -64,8 +69,8 @@ incr_loop(void * arg) {
 }
 
 static int32_t
-test_rseq_corr() {
-    enum { THREAD_SCALE = 16 };
+test_rseq_corr(void) {
+    enum { THREAD_SCALE = 8 };
     uint32_t      i, j, k;
     uint32_t      nprocs = get_num_cpus();
     thread_t      tids[nprocs * THREAD_SCALE];
@@ -89,13 +94,14 @@ test_rseq_corr() {
     for (i = 1; i < nprocs * THREAD_SCALE; i *= 2) {
         for (k = 0; k < 2; ++k) {
             uint32_t sum;
-            memset_c(global_counters, 0, nprocs * 64);
+            void *   targ;
+
+            memset_c(global_counters, 0, CAST(size_t, nprocs * 64));
             safe_thread_barrier_init(&barrier, NULL, i);
 
-
+            targ = (void *)(uint64_t)k; /* NOLINT(performance-no-int-to-ptr) */
             for (j = 0; j < i; ++j) {
-                safe_thread_create(tids + j, &attr, &incr_loop,
-                                   CAST(void *, CAST(uint64_t, k)));
+                safe_thread_create(tids + j, &attr, &incr_loop, targ);
             }
             for (j = 0; j < i; ++j) {
                 pthread_join(tids[j], NULL);
@@ -104,7 +110,7 @@ test_rseq_corr() {
 
             sum = 0;
             for (j = 0; j < nprocs; ++j) {
-                sum += *AGU_T(global_counters, j * 64);
+                sum += global_counters[j * (64 / sizeof(*global_counters))];
             }
 
             if (k == DO_RSEQ_INCR) {
@@ -127,7 +133,7 @@ test_rseq_corr() {
 }
 
 static int32_t
-test_rseq_init() {
+test_rseq_init(void) {
     test_assert(rseq_init() == 0);
 
     test_assert(rseq_is_init());
@@ -136,9 +142,9 @@ test_rseq_init() {
     return 0;
 }
 
-
+int32_t test_rseq(void);
 int32_t
-test_rseq() {
+test_rseq(void) {
     test_assert(test_rseq_init() == 0);
     test_assert(test_rseq_corr() == 0);
     return 0;

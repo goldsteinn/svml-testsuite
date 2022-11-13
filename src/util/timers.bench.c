@@ -12,7 +12,7 @@
     res_name = V_TO_STR(func);                                                 \
     res_time = get_ll_dif(end, start);
 
-
+void * bench_timers(void * bench_args);
 void *
 bench_timers(void * bench_args) {
     uint32_t  trials = CAST(uint32_t, CAST(uint64_t, bench_args));
@@ -37,7 +37,7 @@ bench_timers(void * bench_args) {
     run_bench(names[4], times[4], gtod_ns);
     run_bench(names[5], times[5], vdso_gtod_ns);
     run_bench(names[6], times[6], get_thread_ns);
-    run_bench(names[7], times[7], get_proc_ns);    
+    run_bench(names[7], times[7], get_proc_ns);
 
     for (i = 0; i < NUM_TIMERS; ++i) {
         print_res(names[i], times[i], trials, get_ll_units());

@@ -1,5 +1,5 @@
-#ifndef _SRC__TEST__TESTS_H_
-#define _SRC__TEST__TESTS_H_
+#ifndef SRC_D_TEST_D_TESTS_H_
+#define SRC_D_TEST_D_TESTS_H_
 
 #include <stdlib.h>
 

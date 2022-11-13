@@ -5,488 +5,881 @@
 #include "util/random.h"
 #include "util/types.h"
 
-#include "lib/hash/city-hash.h"
-
-typedef uint32_t k_t;
-typedef uint32_t v_t;
-
-#define hl_key_t   k_t
-#define hl_val_t   v_t
-#define hl_hash(x) hash64(x)
-#define hl_name    uu
-
-#include "rh-hashtable.h"
-
-#define hl_key_t   k_t
-#define hl_val_t   v_t
-#define hl_hash(x) hash64(x)
-#define hl_name    u
-
-#include "rh-hashtable.h"
-
-
-enum { TEST_SIZE = (1 << 24) };
-
-static int32_t
-test_init() {
-    vprint("Running: test_init\n");
-    u_table_t tbl;
-    uint32_t  i;
-
-    test_assert(u_init(&tbl) == NULL);
-    u_deinit(&tbl);
-    for (i = 0; i <= (1 << 12); ++i) {
-        test_assert(u_init_sz(&tbl, i) == NULL);
-        test_assert(u_capacity(&tbl) >= i);
-        u_deinit(&tbl);
-    }
-    for (; i < (1 << 24); i += i) {
-        test_assert(u_init_sz(&tbl, i) == NULL);
-        test_assert(u_capacity(&tbl) >= i);
-        u_deinit(&tbl);
-    }
-    return 0;
-}
-
-
-static void
-init_kvps(k_t * keys, v_t * vals) {
-    uint32_t * rindexes = make_true_rand32_buffer(TEST_SIZE);
-    uint32_t   i;
-    for (i = 0; i < TEST_SIZE; ++i) {
-        keys[i] = i;
-        vals[i] = TEST_SIZE + i;
-    }
-    for (i = 0; i < TEST_SIZE * 2; ++i) {
-        uint32_t from_idx   = rindexes[i % TEST_SIZE] % TEST_SIZE;
-        k_t      from_k     = keys[from_idx];
-        keys[from_idx]      = keys[i % TEST_SIZE];
-        keys[i % TEST_SIZE] = from_k;
-    }
-    safe_sfree(rindexes, TEST_SIZE * sizeof(uint32_t));
-}
-
-static int32_t
-test_i() {
-    vprint("Running: test_i\n");
-    uint32_t i, t;
-    k_t *    keys = (k_t *)safe_malloc(TEST_SIZE * sizeof(k_t));
-    v_t *    vals = (v_t *)safe_malloc(TEST_SIZE * sizeof(v_t));
-    init_kvps(keys, vals);
-
-    for (i = 1; i <= TEST_SIZE; i += ((i * 3) / 2)) {
-        vprint("\tTest Size: %u\n", i);
-        uint32_t       j;
-        u_table_t      tbl;
-        u_insert_ret_t ret0, ret1;
-        u_init(&tbl);
-        for (t = 0; t < 10; ++t) {
-            for (j = 0; j < i; ++j) {
-                ret0 = u_insert(&tbl, keys[j]);
-                test_assert(ret0.already_exists_ == 0);
-                test_assert(ret0.kvp_->key_ == keys[j]);
-                ret0.kvp_->val_ = vals[j];
-
-                ret1 = u_insert(&tbl, keys[j]);
-                test_assert(ret1.already_exists_ != 0);
-                test_assert(ret1.kvp_->key_ == keys[j]);
-                test_assert(ret1.kvp_->val_ == vals[j]);
-
-                test_assert(ret0.kvp_ == ret1.kvp_);
-            }
-
-            for (j = 0; j < i; ++j) {
-                ret0 = u_insert(&tbl, keys[j]);
-                test_assert(ret0.already_exists_ != 0);
-                test_assert(ret0.kvp_->key_ == keys[j]);
-                test_assert(ret0.kvp_->val_ == vals[j]);
-            }
-
-            u_shrink(&tbl, true_rand32() % (TEST_SIZE * 2));
-        }
-
-
-        u_deinit(&tbl);
-    }
-    safe_sfree(keys, TEST_SIZE * sizeof(k_t));
-    safe_sfree(vals, TEST_SIZE * sizeof(v_t));
-    return 0;
-}
-
-static int32_t
-test_if() {
-    vprint("Running: test_if\n");
-    uint32_t i;
-    k_t *    keys = (k_t *)safe_malloc(TEST_SIZE * sizeof(k_t));
-    v_t *    vals = (v_t *)safe_malloc(TEST_SIZE * sizeof(v_t));
-    init_kvps(keys, vals);
-
-    for (i = 1; i <= TEST_SIZE; i += ((i * 3) / 2)) {
-        vprint("\tTest Size: %u\n", i);
-        uint32_t       j;
-        u_table_t      tbl;
-        u_insert_ret_t iret;
-        u_kvp_t *      fkvp;
-        u_init(&tbl);
-
-        for (j = 0; j < i; ++j) {
-            fkvp = u_find(&tbl, keys[j]);
-            test_assert(fkvp == rh_find_failed);
-
-            iret = u_insert(&tbl, keys[j]);
-            test_assert(iret.already_exists_ == 0);
-            test_assert(iret.kvp_->key_ == keys[j]);
-            iret.kvp_->val_ = vals[j];
-
-            fkvp = u_find(&tbl, keys[j]);
-            test_assert(fkvp == iret.kvp_);
-            test_assert(fkvp->key_ == keys[j]);
-            test_assert(fkvp->val_ == vals[j]);
-
-            iret = u_insert(&tbl, keys[j]);
-            test_assert(iret.already_exists_ == 1);
-            test_assert(fkvp == iret.kvp_);
-        }
-
-        for (j = 0; j < i; ++j) {
-            fkvp = u_find(&tbl, keys[j]);
-            test_assert(fkvp != rh_find_failed);
-            test_assert(fkvp->key_ == keys[j]);
-            test_assert(fkvp->val_ == vals[j]);
-
-            iret = u_insert(&tbl, keys[j]);
-            test_assert(iret.already_exists_ != 0);
-            test_assert(iret.kvp_->key_ == keys[j]);
-            test_assert(iret.kvp_->val_ == vals[j]);
-
-            test_assert(fkvp == iret.kvp_);
-        }
-
-        u_clear(&tbl);
-        for (j = 0; j < i; ++j) {
-            fkvp = u_find(&tbl, keys[j]);
-            test_assert(fkvp == rh_find_failed);
-
-            iret = u_insert(&tbl, keys[j]);
-            test_assert(iret.already_exists_ == 0);
-            test_assert(iret.kvp_->key_ == keys[j]);
-            iret.kvp_->val_ = vals[j];
-
-            fkvp = u_find(&tbl, keys[j]);
-            test_assert(fkvp == iret.kvp_);
-            test_assert(fkvp->key_ == keys[j]);
-            test_assert(fkvp->val_ == vals[j]);
-
-            iret = u_insert(&tbl, keys[j]);
-            test_assert(iret.already_exists_ == 1);
-            test_assert(fkvp == iret.kvp_);
-        }
-
-
-        u_deinit(&tbl);
-    }
-    safe_sfree(keys, TEST_SIZE * sizeof(k_t));
-    safe_sfree(vals, TEST_SIZE * sizeof(v_t));
-    return 0;
-}
-
-
-static int32_t
-test_ie() {
-    vprint("Running: test_ie\n");
-    uint32_t i;
-    k_t *    keys = (k_t *)safe_malloc(TEST_SIZE * sizeof(k_t));
-    v_t *    vals = (v_t *)safe_malloc(TEST_SIZE * sizeof(v_t));
-    init_kvps(keys, vals);
-
-    for (i = 1; i <= TEST_SIZE; i += ((i * 3) / 2)) {
-        vprint("\tTest Size: %u\n", i);
-        uint32_t       j, r;
-        u_table_t      tbl;
-        u_insert_ret_t ret0, ret1;
-        u_init(&tbl);
-
-        for (r = 0; r < 2; ++r) {
-            for (j = 0; j < i; ++j) {
-                test_assert(u_erase(&tbl, keys[j]));
-
-                ret0 = u_insert(&tbl, keys[j]);
-                test_assert(ret0.already_exists_ == 0);
-                test_assert(ret0.kvp_->key_ == keys[j]);
-                ret0.kvp_->val_ = vals[j];
-
-                ret1 = u_insert(&tbl, keys[j]);
-                test_assert(ret1.already_exists_ != 0);
-                test_assert(ret1.kvp_->key_ == keys[j]);
-                test_assert(ret1.kvp_->val_ == vals[j]);
-
-                test_assert(ret0.kvp_ == ret1.kvp_);
-
-                test_assert(u_erase(&tbl, keys[j]) == 0);
-
-                ret0 = u_insert(&tbl, keys[j]);
-                test_assert(ret0.already_exists_ == 0);
-                test_assert(ret0.kvp_->key_ == keys[j]);
-                ret0.kvp_->val_ = vals[j];
-
-                ret1 = u_insert(&tbl, keys[j]);
-                test_assert(ret1.already_exists_ != 0);
-                test_assert(ret1.kvp_->key_ == keys[j]);
-                test_assert(ret1.kvp_->val_ == vals[j]);
-
-                test_assert(ret0.kvp_ == ret1.kvp_);
-            }
-
-            for (j = 0; j < i; ++j) {
-                ret0 = u_insert(&tbl, keys[j]);
-                test_assert(ret0.already_exists_ != 0);
-                test_assert(ret0.kvp_->key_ == keys[j]);
-                test_assert(ret0.kvp_->val_ == vals[j]);
-
-                test_assert(u_erase(&tbl, keys[j]) == 0);
-                test_assert(u_erase(&tbl, keys[j]));
-            }
-        }
-
-        u_clear(&tbl);
-        for (j = 0; j < i; ++j) {
-            test_assert(u_erase(&tbl, keys[j]));
-
-            ret0 = u_insert(&tbl, keys[j]);
-            test_assert(ret0.already_exists_ == 0);
-            test_assert(ret0.kvp_->key_ == keys[j]);
-            ret0.kvp_->val_ = vals[j];
-
-            ret1 = u_insert(&tbl, keys[j]);
-            test_assert(ret1.already_exists_ != 0);
-            test_assert(ret1.kvp_->key_ == keys[j]);
-            test_assert(ret1.kvp_->val_ == vals[j]);
-
-            test_assert(ret0.kvp_ == ret1.kvp_);
-
-            test_assert(u_erase(&tbl, keys[j]) == 0);
-
-            ret0 = u_insert(&tbl, keys[j]);
-            test_assert(ret0.already_exists_ == 0);
-            test_assert(ret0.kvp_->key_ == keys[j]);
-            ret0.kvp_->val_ = vals[j];
-
-            ret1 = u_insert(&tbl, keys[j]);
-            test_assert(ret1.already_exists_ != 0);
-            test_assert(ret1.kvp_->key_ == keys[j]);
-            test_assert(ret1.kvp_->val_ == vals[j]);
-
-            test_assert(ret0.kvp_ == ret1.kvp_);
-        }
-
-        u_deinit(&tbl);
-    }
-    safe_sfree(keys, TEST_SIZE * sizeof(k_t));
-    safe_sfree(vals, TEST_SIZE * sizeof(v_t));
-    return 0;
-}
-
-
-static int32_t
-test_ief() {
-    vprint("Running: test_ief\n");
-    uint32_t i;
-    k_t *    keys = (k_t *)safe_malloc(TEST_SIZE * sizeof(k_t));
-    v_t *    vals = (v_t *)safe_malloc(TEST_SIZE * sizeof(v_t));
-    init_kvps(keys, vals);
-
-    for (i = 1; i <= TEST_SIZE; i += ((i * 3) / 2)) {
-        vprint("\tTest Size: %u\n", i);
-        uint32_t       j, r;
-        u_table_t      tbl;
-        u_insert_ret_t iret;
-        u_kvp_t *      fkvp;
-        u_init(&tbl);
-
-        for (r = 0; r < 2; ++r) {
-            for (j = 0; j < i; ++j) {
-                fkvp = u_find(&tbl, keys[j]);
-                test_assert(fkvp == rh_find_failed);
-                test_assert(u_erase(&tbl, keys[j]));
-
-                iret = u_insert(&tbl, keys[j]);
-                test_assert(iret.already_exists_ == 0);
-                test_assert(iret.kvp_->key_ == keys[j]);
-                iret.kvp_->val_ = vals[j];
-
-                fkvp = u_find(&tbl, keys[j]);
-                test_assert(fkvp == iret.kvp_);
-                test_assert(fkvp->key_ == keys[j]);
-                test_assert(fkvp->val_ == vals[j]);
-
-                test_assert(u_erase(&tbl, keys[j]) == 0);
-                fkvp = u_find(&tbl, keys[j]);
-                test_assert(fkvp == rh_find_failed);
-
-                iret = u_insert(&tbl, keys[j]);
-                test_assert(iret.already_exists_ == 0);
-                test_assert(iret.kvp_->key_ == keys[j]);
-                iret.kvp_->val_ = vals[j];
-
-                fkvp = u_find(&tbl, keys[j]);
-                test_assert(fkvp == iret.kvp_);
-                test_assert(fkvp->key_ == keys[j]);
-                test_assert(fkvp->val_ == vals[j]);
-
-                iret = u_insert(&tbl, keys[j]);
-                test_assert(iret.already_exists_ == 1);
-                test_assert(fkvp == iret.kvp_);
-            }
-
-            for (j = 0; j < i; ++j) {
-                fkvp = u_find(&tbl, keys[j]);
-                test_assert(fkvp != rh_find_failed);
-                test_assert(fkvp->key_ == keys[j]);
-                test_assert(fkvp->val_ == vals[j]);
-
-                iret = u_insert(&tbl, keys[j]);
-                test_assert(iret.already_exists_ != 0);
-                test_assert(iret.kvp_->key_ == keys[j]);
-                test_assert(iret.kvp_->val_ == vals[j]);
-
-                test_assert(fkvp == iret.kvp_);
-
-                test_assert(u_erase(&tbl, keys[j]) == 0);
-                fkvp = u_find(&tbl, keys[j]);
-                test_assert(fkvp == rh_find_failed);
-
-                test_assert(u_erase(&tbl, keys[j]));
-            }
-        }
-
-        u_deinit(&tbl);
-    }
-    safe_sfree(keys, TEST_SIZE * sizeof(k_t));
-    safe_sfree(vals, TEST_SIZE * sizeof(v_t));
-    return 0;
-}
-
-
-static int32_t
-test_ief_rand(uint32_t keep_small) {
-    vprint("Running: test_ief_rand\n");
-    uint32_t i;
-    k_t *    keys  = (k_t *)safe_malloc(TEST_SIZE * sizeof(k_t));
-    v_t *    vals  = (v_t *)safe_malloc(TEST_SIZE * sizeof(v_t));
-    _Bool *  state = (_Bool *)safe_zalloc(TEST_SIZE);
-    init_kvps(keys, vals);
-
-
-    for (i = 1; i <= TEST_SIZE; i += i) {
-        vprint("\tTest Size: %u\n", i);
-        uint32_t  j, r;
-        u_table_t tbl;
-        u_init(&tbl);
-        for (r = 0; r < 2; ++r) {
-            for (j = 0; j < i; ++j) {
-
-                uint32_t idx  = rand() & (i - 1);
-                uint32_t todo = rand() % 4;
-                if (keep_small && todo == 0) {
-                    todo = rand() % 4;
-                }
-                switch (todo) {
-                    case 0:
-                        if (r) {
-                            goto rerase;
-                        }
-                        fall_through;
-                    case 1:
-                        u_insert_ret_t ir = u_insert(&tbl, keys[idx]);
-                        test_assert(state[idx] == ir.already_exists_,
-                                    "(r=%d, idx=%u): %d != %d\n", r, idx,
-                                    state[idx], ir.already_exists_);
-                        if (!state[idx]) {
-                            state[idx]    = 1;
-                            ir.kvp_->val_ = vals[idx];
-                        }
-                        test_assert(ir.kvp_->key_ == keys[idx]);
-                        test_assert(ir.kvp_->val_ == vals[idx]);
-                        break;
-                    case 2:
-                        u_kvp_t * fr = u_find(&tbl, keys[idx]);
-                        if (state[idx]) {
-                            test_assert(fr != rh_find_failed,
-                                        "(r=%d, idx=%u)\n", r, idx);
-                            test_assert(fr->key_ == keys[idx]);
-                            test_assert(fr->val_ == vals[idx]);
-                        }
-                        else {
-                            test_assert(fr == rh_find_failed);
-                        }
-                        break;
-                    case 3:
-                    rerase:
-                        test_assert(u_erase(&tbl, keys[idx]) == !state[idx]);
-                        state[idx] = 0;
-                        break;
-                }
-            }
-
-            if (!r) {
-                for (j = 0; j < i; ++j) {
-                    u_kvp_t *      fr = u_find(&tbl, keys[j]);
-                    u_insert_ret_t ir = u_insert(&tbl, keys[j]);
-
-                    if (state[j]) {
-                        test_assert(fr != rh_find_failed);
-                        test_assert(fr->key_ == keys[j]);
-                        test_assert(fr->val_ == vals[j]);
-                        test_assert(ir.already_exists_);
-                        test_assert(fr == ir.kvp_);
-                    }
-                    else {
-                        test_assert(fr == rh_find_failed);
-                        ir.kvp_->val_ = vals[j];
-                        test_assert(ir.kvp_->key_ == keys[j]);
-                        test_assert(ir.kvp_->val_ == vals[j]);
-                    }
-                    state[j] = 1;
-                    ir       = u_insert(&tbl, keys[j]);
-                    test_assert(ir.already_exists_);
-                    test_assert(u_find(&tbl, keys[j]) != rh_find_failed);
-                }
-            }
-            else {
-                for (j = 0; j < i; ++j) {
-                    u_kvp_t * fr = u_find(&tbl, keys[j]);
-
-
-                    if (state[j]) {
-                        test_assert(fr != rh_find_failed);
-                        test_assert(fr->key_ == keys[j]);
-                        test_assert(fr->val_ == vals[j]);
-                    }
-                    else {
-                        test_assert(fr == rh_find_failed);
-                    }
-                    test_assert(u_erase(&tbl, keys[j]) != state[j]);
-                }
-            }
-        }
-        memset_c(state, 0, i);
-        u_deinit(&tbl);
-    }
-
-    safe_sfree(keys, TEST_SIZE * sizeof(k_t));
-    safe_sfree(vals, TEST_SIZE * sizeof(v_t));
-    safe_sfree(state, TEST_SIZE);
-    return 0;
-}
-
+#include "lib/hash/hash.h"
+#define equals_val(rhs, lhs)                                                   \
+    ({                                                                         \
+        get_type(lhs) I_tmp_lhs_ = (lhs);                                      \
+        get_type(rhs) I_tmp_rhs_ = (rhs);                                      \
+        (!memcmpeq_c((uint8_t const *)(&I_tmp_lhs_),                           \
+                     (uint8_t const *)(&I_tmp_rhs_), sizeof(rhs)));            \
+    })
+#define equals_ptr(rhs, lhs)                                                   \
+    ({                                                                         \
+        get_type(lhs) I_tmp_lhs_ = (lhs);                                      \
+        get_type(rhs) I_tmp_rhs_ = (rhs);                                      \
+        (!memcmpeq_c((uint8_t const *)(I_tmp_lhs_),                            \
+                     (uint8_t const *)(I_tmp_rhs_), sizeof(rhs)));             \
+    })
+
+enum { TEST_SIZE = 1 << 18 };
+
+typedef struct b16 {
+    uint8_t bytes_[16];
+} b16_t; /* NOLINT(altera-struct-pack-align) */
+
+#define test_key_t   uint32_t
+#define test_hash(x) xxhashT(x)
+#define test_name    k4
+#define HASHTABLE_H  "rh-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t   uint32_t
+#define test_hash(x) xxhashT(x)
+#define test_name    k4i
+#define HASHTABLE_H  "rh-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t                    uint32_t
+#define test_hash(x)                  xxhashT(x)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4_nt
+#define HASHTABLE_H                   "rh-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_hash(x)                  xxhashT(x)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4i_nt
+#define HASHTABLE_H                   "rh-hashtable.h"
+#include "hashtable.test.h"
+
+
+#define test_key_t   uint32_t
+#define test_val_t   uint32_t
+#define test_hash(x) (x)
+#define test_name    k4v4
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t   uint32_t
+#define test_val_t   uint32_t
+#define test_hash(x) (x)
+#define test_name    k4v4_nt
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t   uint32_t
+#define test_val_t   uint32_t
+#define test_hash(x) (x)
+#define test_name    k4v4e
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t   uint32_t
+#define test_val_t   uint32_t
+#define test_hash(x) (x)
+#define test_name    k4v4e_nt
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_key_t   uint16_t
+#define test_hash(x) (x)
+#define test_name    k2
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_key_t   uint16_t
+#define test_val_t   uint8_t
+#define test_hash(x) (x)
+#define test_name    k2v1
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_key_t   uint8_t
+#define test_hash(x) (x)
+#define test_name    k1
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_key_t   uint8_t
+#define test_val_t   uint8_t
+#define test_hash(x) (x)
+#define test_name    k1v1
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_key_t   uint8_t
+#define test_val_t   uint32_t
+#define test_hash(x) (x)
+#define test_name    k1v4
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_key_t   uint8_t
+#define test_val_t   b16_t
+#define test_hash(x) (x)
+#define test_name    k1v16
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t   uint8_t
+#define test_val_t   b16_t
+#define test_hash(x) (x)
+#define test_name    k1v16e
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_key_t   b16_t
+#define test_val_t   uint64_t
+#define test_hash(x) xxhashT(x)
+#define test_name    k16v8
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t   b16_t
+#define test_val_t   uint64_t
+#define test_hash(x) xxhashT(x)
+#define test_name    k16e
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t   b16_t
+#define test_val_t   uint64_t
+#define test_hash(x) xxhashT(x)
+#define test_name    k16v8_nt
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_val_t uint64_t
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8pv8
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_val_t uint64_t
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8pv8e
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8p
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8pe
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8p_nt
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_erase_copy
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8pe_nt
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_pass_val(vp) &(vp)
+#define test_val_t        uint64_t *
+#define test_val_base_t   uint64_t
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8pv8p
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_pass_val(vp) &(vp)
+#define test_val_t        uint64_t *
+#define test_val_base_t   uint64_t
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k8pv8pe
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_pass_key(kp) &(kp)
+#define test_key_t        uint32_t const *
+#define test_key_base_t   uint32_t
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(rkey, tkey, sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint32_t));                                              \
+    })
+#define test_hash(x) ((*(x)) * 31)
+#define test_name    k4p
+#define HASHTABLE_H  "rh-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_key_t      uint32_t
+#define test_spare_bits 4
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s4
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint64_t
+#define test_spare_bits 10
+#define test_hash(x)    ((x)*31)
+#define test_name       k8s10
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t      uint64_t
+#define test_spare_bits 10
+#define test_hash(x)    ((x)*31)
+#define test_name       k8s10e
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint64_t
+#define test_spare_bits 4
+#define test_hash(x)    ((x)*31)
+#define test_name       k8s4
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint16_t
+#define test_spare_bits 4
+#define test_hash(x)    ((x)*31)
+#define test_name       k2s4
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+
+#define test_pass_key(kp) ((uintptr_t)(&(kp)))
+#define test_key_t        uintptr_t
+#define test_spare_bits   16
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                  \
+    })
+#define test_name   k8ps16_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_erase_copy
+#define test_pass_key(kp) ((uintptr_t)(&(kp)))
+#define test_key_t        uintptr_t
+#define test_spare_bits   16
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps16_nt_e
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_null_invalid 1
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   16
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps16_2_nt_e
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   16
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps16_2_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   8
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps8_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_null_invalid 1
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   8
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps8_2_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   4
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps4_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   4
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps4_2_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   5
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps5_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_pass_key(kp) (&(kp))
+#define test_key_t        uint64_t const *
+#define test_key_base_t   uint64_t
+#define test_spare_bits   5
+#define test_key_equals(rkey, tkey)                                            \
+    (!memcmp(CAST(const uint8_t *, rkey), CAST(const uint8_t *, tkey),         \
+             sizeof(test_key_base_t)))
+#define test_key_eq(tbl_key, pk, ...)                                          \
+    ({                                                                         \
+        memcmp(CAST(const uint8_t *, tbl_key), CAST(const uint8_t *, pk),      \
+               sizeof(uint64_t));                                              \
+    })
+#define test_hash(x)                                                           \
+    ({                                                                         \
+        uint64_t I_tmp_hv_;                                                    \
+        __builtin_memcpy(&I_tmp_hv_, (const uint8_t *)(x), sizeof(uint64_t));  \
+        xxhashT(I_tmp_hv_);                                                     \
+    })
+#define test_name   k8ps5_2_nt
+#define HASHTABLE_H "rhi-hashtable.h"
+
+#include "hashtable.test.h"
+
+
+#define test_key_t                    uint32_t
+#define test_spare_bits               10
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s10_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t                    uint32_t
+#define test_spare_bits               10
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s10_nt_e
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t                    uint32_t
+#define test_spare_bits               5
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s5_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t                    uint32_t
+#define test_spare_bits               4
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s4_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t                    uint32_t
+#define test_spare_bits               8
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s8_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t                    uint32_t
+#define test_val_t                    uint32_t
+#define test_spare_bits               8
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s8v4_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t                    uint32_t
+#define test_val_t                    uint32_t
+#define test_spare_bits               8
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s8v4_nt_e
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+
+#define test_key_t      uint32_t
+#define test_val_t      uint32_t
+#define test_spare_bits 8
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s8v4
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint16_t
+#define test_val_t      uint16_t
+#define test_spare_bits 5
+#define test_hash(x)    ((x)*31)
+#define test_name       k2s5v2
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_key_t      uint16_t
+#define test_val_t      uint16_t
+#define test_spare_bits 5
+#define test_hash(x)    ((x)*31)
+#define test_name       k2s5v2e
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint16_t
+#define test_val_t      uint32_t
+#define test_spare_bits 5
+#define test_hash(x)    ((x)*31)
+#define test_name       k2s5v4
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint16_t
+#define test_val_t      uint32_t
+#define test_spare_bits 4
+#define test_hash(x)    ((x)*31)
+#define test_name       k2s4v4
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_spare_bits               10
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s10_2_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_spare_bits               5
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s5_2_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_spare_bits               4
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s4_2_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_spare_bits               4
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s4_2_nt_e
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_spare_bits               8
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s8_2_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_val_t                    uint32_t
+#define test_spare_bits               8
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s8v4_2_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_val_t                    uint32_t
+#define test_spare_bits               4
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s4v4_2_nt
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t      uint32_t
+#define test_val_t      uint32_t
+#define test_spare_bits 8
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s8v4_2
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t                    uint32_t
+#define test_val_t                    uint32_t
+#define test_spare_bits               4
+#define test_hash(x)                  ((x)*31)
+#define test_key_eq(tbl_key, pk, ...) ((tbl_key) != (pk))
+#define test_name                     k4s4v4_2_nt_e
+#define HASHTABLE_H                   "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_erase_copy
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t      uint32_t
+#define test_val_t      uint32_t
+#define test_spare_bits 8
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s8v4_2_e
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t      uint32_t
+#define test_spare_bits 10
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s10_2
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_null_invalid 1
+#define test_skip_zero_key
+#define test_key_t      uint32_t
+#define test_spare_bits 4
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s4_2
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint32_t
+#define test_spare_bits 10
+#define test_hash(x)    ((x)*31)
+#define test_name       k4s10
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+#define test_key_t      uint16_t
+#define test_spare_bits 6
+#define test_hash(x)    ((x)*31)
+#define test_name       k2s10
+#define HASHTABLE_H     "rhi-hashtable.h"
+#include "hashtable.test.h"
+
+
+#define RH_NAMES                                                               \
+    k4i, k4i_nt, k8pe_nt, k8p_nt, k4_nt, k4v4_nt, k4v4e_nt, k16v8_nt, k8p,     \
+        k8pe, k4v4e, k1v16e, k16e, k8pv8e, k8pv8pe, k1v1, k4, k4v4, k2, k1,    \
+        k16v8, k8pv8, k8pv8p, k4p, k1v16, k1v4, k2v1
+#define RHI_NAMES                                                              \
+    k4s8v4_2_e, k4s4v4_2_nt_e, k8ps16_nt_e, k8ps16_2_nt_e, k4s10_nt_e,         \
+        k4s8v4_nt_e, k2s5v2e, k4s4_2_nt_e, k8s10e, k4s10, k4s4, k8s10, k8s4,   \
+        k2s10, k2s4, k8ps16_nt, k8ps16_2_nt, k8ps8_nt, k8ps8_2_nt, k8ps4_nt,   \
+        k8ps4_2_nt, k8ps5_nt, k8ps5_2_nt, k4s10_nt, k4s5_nt, k4s4_nt, k4s8_nt, \
+        k4s8v4_nt, k4s8v4, k2s5v2, k2s5v4, k2s4v4, k4s10_2_nt, k4s5_2_nt,      \
+        k4s4_2_nt, k4s8_2_nt, k4s8v4_2_nt, k4s4v4_2_nt, k4s8v4_2, k4s10_2,     \
+        k4s4_2
+
+int32_t test_hashtable(void);
+
+#define run_test(name) test_assert(CAT(name, _runall)() == 0);
 int32_t
-test_rh_hashtable() {
-    test_assert(test_init() == 0);
-    test_assert(test_i() == 0);
-    test_assert(test_if() == 0);
-    test_assert(test_ie() == 0);
-    test_assert(test_ief() == 0);
-    test_assert(test_ief_rand(0) == 0);
-    test_assert(test_ief_rand(1) == 0);
+test_hashtable(void) {
+    APPLY(run_test, ;, RHI_NAMES);
+    APPLY(run_test, ;, RH_NAMES);
     return 0;
 }

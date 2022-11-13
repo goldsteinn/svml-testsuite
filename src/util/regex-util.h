@@ -1,19 +1,17 @@
-#ifndef _SRC__UTIL__REGEX_UTIL_H_
-#define _SRC__UTIL__REGEX_UTIL_H_
+#ifndef SRC_D_UTIL_D_REGEX_UTIL_H_
+#define SRC_D_UTIL_D_REGEX_UTIL_H_
 
 #include <regex.h>
 
 #include "util/common.h"
 
 #define safe_re_compile(re, pattern, cflags)                                   \
-    I_safe_re_compile(re, pattern, cflags, __FILENAME__, __func__, __LINE__)
+    I_safe_re_compile(re, pattern, cflags, I_ERR_ARGS)
 
 #define safe_re_exec(re, str, nmatch, pmatch, eflags)                          \
-    I_safe_re_exec(re, str, nmatch, pmatch, eflags, __FILENAME__, __func__,    \
-                   __LINE__)
+    I_safe_re_exec(re, str, nmatch, pmatch, eflags, I_ERR_ARGS)
 
-#define re_errdie(ret, re)                                                     \
-    I_re_errdie(ret, re, __FILENAME__, __func__, __LINE__)
+#define re_errdie(ret, re) I_re_errdie(ret, re, I_ERR_ARGS)
 
 
 NONNULL(1, 2)

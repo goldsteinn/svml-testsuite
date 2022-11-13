@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__ERROR_UTIL_H_
-#define _SRC__UTIL__ERROR_UTIL_H_
+#ifndef SRC_UTIL_ERROR_UTIL_H_
+#define SRC_UTIL_ERROR_UTIL_H_
 
 
 #include <errno.h>
@@ -39,37 +39,38 @@
 #define warn_once_assert(cond, msg, ...)                                       \
     I_assert_macro_base(cond, warn_once, msg, ##__VA_ARGS__)
 
-#define msg_assert(cond, msg, args...)                                         \
-    I_assert_macro_base(cond, I_msg_die, msg, ##args)
+#define msg_assert(cond, msg, ...)                                             \
+    I_assert_macro_base(cond, I_msg_die, msg, ##__VA_ARGS__)
 
 #define warn_assert(cond, ...) I_assert_macro_base(cond, warn, __VA_ARGS__)
 
-#define I_err_assert_MANY(cond, msg, args...)                                  \
-    I_assert_macro_base(cond, I_errdie, ERR_ARGS, V_TO_STR(cond), errno, msg,  \
-                        ##args)
+#define I_err_assert_MANY(cond, msg, ...)                                      \
+    I_assert_macro_base(cond, I_errdie, I_ERR_ARGS, V_TO_STR(cond), errno,     \
+                        msg, ##__VA_ARGS__)
 
 #define I_err_assert_ONE(cond)                                                 \
-    I_assert_macro_base(cond, I_errdie, ERR_ARGS, V_TO_STR(cond), errno, NULL)
+    I_assert_macro_base(cond, I_errdie, I_ERR_ARGS, V_TO_STR(cond), errno, NULL)
 
-#define I_die_assert_MANY(cond, msg, args...)                                  \
-    I_assert_macro_base(cond, I_die, ERR_ARGS, V_TO_STR(cond), msg, ##args)
+#define I_die_assert_MANY(cond, msg, ...)                                      \
+    I_assert_macro_base(cond, I_die, I_ERR_ARGS, V_TO_STR(cond), msg,          \
+                        ##__VA_ARGS__)
 
 #define I_die_assert_ONE(cond)                                                 \
-    I_assert_macro_base(cond, I_die, ERR_ARGS, V_TO_STR(cond), NULL)
+    I_assert_macro_base(cond, I_die, I_ERR_ARGS, V_TO_STR(cond), NULL)
 
-#define die(msg, args...)    I_die(ERR_ARGS, NULL, msg, ##args);
-#define errdie(msg, args...) I_errdie(ERR_ARGS, NULL, errno, msg, ##args);
+#define die(msg, ...)    I_die(I_ERR_ARGS, NULL, msg, ##__VA_ARGS__);
+#define errdie(msg, ...) I_errdie(I_ERR_ARGS, NULL, errno, msg, ##__VA_ARGS__);
+#define msg_die(...)     I_msg_die(__VA_ARGS__)
 
-
-//#define WITH_DBG_PRINT
+// #define WITH_DBG_PRINT
 #ifdef WITH_DBG_PRINT
-#define dbg_assert(...) die_assert(__VA_ARGS__)
-#define dbg_print(...)  fprintf(stderr, __VA_ARGS__)
-#define PRINTFFL        fprintf(stderr, "%-20s:%-20s:%-4d\n", ERR_ARGS)
+# define dbg_assert(...) die_assert(__VA_ARGS__)
+# define dbg_print(...)  fprintf(stderr, __VA_ARGS__)
+# define PRINTFFL        fprintf(stderr, "%-20s:%-20s:%-4d\n", I_ERR_ARGS)
 #else
-#define dbg_print(...)
-#define dbg_assert(...)
-#define PRINTFFL
+# define dbg_print(...)
+# define dbg_assert(...)
+# define PRINTFFL
 #endif
 
 EXIT_FUNC NONNULL(1, 2) void I_va_errdie(char const * restrict file_name,

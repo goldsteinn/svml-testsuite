@@ -24,16 +24,7 @@ free_buf(uint8_t * buf, uint64_t sz) {
 
 void
 randomize_buf(uint8_t * buf, uint64_t sz) {
-    uint64_t i;
-    uint64_t aligned_sz = sz & (-sizeof(uint64_t));
-    for (i = 0; i < aligned_sz; i += sizeof(uint64_t)) {
-        uint64_t v = rand64();
-        __builtin_memcpy(buf + i, &v, sizeof(uint64_t));
-    }
-    for (; i < sz; ++i) {
-        uint8_t v = CAST(uint8_t, rand32());
-        buf[i]    = v;
-    }
+    true_randomize_buffer(CAST(void *, buf), sz);
 }
 
 void
@@ -66,6 +57,8 @@ set_max_ulp(int32_t value) {
     static int32_t flt_compare(T)(T a, T b) {                                  \
         typedef FLOAT_TO_INT_T(T) fint_t;                                      \
         fint_t a_int, b_int;                                                   \
+        const_assert(sizeof(a_int) == sizeof(a));                              \
+        const_assert(IS_SIGNED(a_int));                                        \
         if ((a < 0) != (b < 0)) {                                              \
             return 0;                                                          \
         }                                                                      \
@@ -86,8 +79,6 @@ set_max_ulp(int32_t value) {
             return a < CAST(T, .00001);                                        \
         }                                                                      \
         /* Do ulp check for final equality check. */                           \
-        const_assert(sizeof(a_int) == sizeof(a));                              \
-        const_assert(IS_SIGNED(a_int));                                        \
         __builtin_memcpy(&a_int, &a, sizeof(a));                               \
         __builtin_memcpy(&b_int, &b, sizeof(b));                               \
                                                                                \

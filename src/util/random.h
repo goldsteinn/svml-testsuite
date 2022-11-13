@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__RANDOM_H_
-#define _SRC__UTIL__RANDOM_H_
+#ifndef SRC_D_UTIL_D_RANDOM_H_
+#define SRC_D_UTIL_D_RANDOM_H_
 
 #include <stdint.h>
 
@@ -8,8 +8,8 @@
 
 extern __thread uint64_t I_rseed_;
 
-uint64_t   true_rand64();
-uint32_t   true_rand32();
+uint64_t   true_rand64(void);
+uint32_t   true_rand32(void);
 void       true_randomize_buffer(void * buf, uint64_t buf_sz);
 uint32_t * make_true_rand32_buffer(uint64_t nitems);
 uint64_t * make_true_rand64_buffer(uint64_t nitems);
@@ -40,7 +40,7 @@ NONNULL(1) static uint64_t rand64s(uint64_t * seedp) {
 }
 
 static uint64_t
-rand64() {
+rand64(void) {
     return rand64s(&I_rseed_);
 }
 
@@ -56,7 +56,7 @@ NONNULL(1) static uint32_t rand32s(uint64_t * seed) {
 }
 
 static uint32_t
-rand32() {
+rand32(void) {
     return CAST(uint32_t, rand64());
 }
 
@@ -66,7 +66,7 @@ seed_rand(uint64_t seed) {
 }
 
 static uint64_t
-get_rand_seed() {
+get_rand_seed(void) {
     return I_rseed_;
 }
 

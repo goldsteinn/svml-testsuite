@@ -43,13 +43,13 @@ list(FIND c_lang ${LANG_LOWER} c_lang)
 if(${cxx_lang} GREATER -1)
   set(LANG "CXX")
   set(STD "c++11")
-  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type" "-fno-rtti" "-Wno-ignored-attributes")
+  set(LANG_FLAGS "-fno-exceptions" "-Wno-noexcept-type" "-fno-rtti" "-Wno-ignored-attributes" "-Wstrict-aliasing=2" "-Wno-ignored-qualifiers")
 elseif(${c_lang} GREATER -1)
   set(LANG "C")
   set(STD "c11")
   set(LANG_FLAGS "")
   # Pedantic C11, c++11 has too any unfortunate features
-  set(LAND_FLAGS "-Wpedantic")
+  set(LANG_FLAGS "-Wstrict-prototypes" "-Wmissing-prototypes" "-Wdeclaration-after-statement" "-Wstrict-aliasing=1")
 else()
   message(FATAL_ERROR "Invalid language selection: ${LANG}")
 endif()
@@ -78,11 +78,14 @@ list(FIND gnu_compilers ${COMPILER_LOWER} gnu_compilers)
 if(${llvm_compilers} GREATER -1)
   set(CMAKE_C_COMPILER "/usr/bin/clang")
   set(CMAKE_CXX_COMPILER "/usr/bin/clang++")
-  list(APPEND compiler_flags_extra "-fbracket-depth=1024" "-Wimplicit")
+  list(APPEND compiler_flags_extra "-fbracket-depth=1024" "-fmacro-backtrace-limit=0" "-Wimplicit" "-Weverything" "-Wno-gnu-flexible-array-initializer" "-Wno-gnu-statement-expression" "-Wno-disabled-macro-expansion" "-Wno-gnu-zero-variadic-macro-arguments" "-Wno-extra-semi-stmt" "-Wno-cast-align" "-Wno-missing-variable-declarations" "-Wno-extra-semi" "-Wno-padded" "-Wno-float-equal" "-Wno-covered-switch-default"  "-Wno-format-nonliteral" "-Wno-vla" "-Wno-unused-macros" "-Wno-duplicate-decl-specifier" "-Wno-double-promotion" "-Wno-unreachable-code-break" "-Wno-gnu-empty-initializer")
   if(${cxx_lang} GREATER -1)
     # Clang warns on each file which is a bit annoying. This may hide
     # real issues.
-    list(APPEND compiler_flags_extra "-Wno-deprecated")
+    list(APPEND compiler_flags_extra "-Wno-c++98-compat-pedantic" "-Wno-anon-enum-enum-conversion" "-Wno-c99-extensions" "-Wno-variadic-macros" "-Wno-deprecated" "-Wno-old-style-cast" "-Wno-zero-as-null-pointer-constant")
+    #  else()
+    #    list(APPEND compiler_flags_extra "-Wpedantic")
+
   endif()
 elseif(${gnu_compilers} GREATER -1)
   set(CMAKE_C_COMPILER "/usr/bin/gcc")
@@ -117,61 +120,53 @@ foreach(attr ${attrs})
   list(APPEND wattrs "-Wsuggest-attribute=${attr}")
 endforeach()
 
-set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wno-error=deprecated" "-Wcast-qual" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-aliasing" "-Wstrict-overflow" "-Werror" "-fno-plt" "-Wall" "-Wextra" "-Wno-unused-function" "-Wno-variadic-macros" "-march=native" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${file_name_flag}")
-
+set(default_compiler_flags "-D_GNU_SOURCE" "-O2" "-Wwrite-strings" "-Wshadow" "-Wno-error=deprecated" "-Wcast-qual" "-Wcast-align" "-Winit-self"  "-Wredundant-decls" "-Wundef" "-Wswitch-enum" "-Wformat=2" "-Wconversion" "-Wdangling-else" "-Woverlength-strings" "-Wdisabled-optimization" "-Wstrict-overflow" "-Werror" "-fno-plt" "-Wall" "-Wextra" "-Wno-unused-function" "-march=native" "-Wpointer-arith" "-mtune=native" "-std=${STD}" "${LANG_FLAGS}" "${compiler_flags_extra}" "${file_name_flag}")
+#"-Wc++-compat"
+#"-Werror=float-equal"
+set(libutil_compiler_flags ${default_compiler_flags})
 
 set(driver_compiler_flags ${default_compiler_flags})
-list(APPEND driver_compiler_flags ${compiler_flags_extra})
-
-set(test_and_bench_compiler_flags ${default_compiler_flags} ${compiler_flags_extra})
+set(test_and_bench_compiler_flags ${default_compiler_flags})
 set(test_and_bench_libraries ${link_libraries})
 
 list(APPEND test_and_bench_compiler_flags "-DWITH_THREAD" "-DWITH_MATH" "-DWITH_VDSO")
 list(APPEND test_and_bench_libraries "-lpthread" "-lm" "-ldl")
 
-set(EXE_SRC ${SRC_DIR}/driver.c)
-set(EXE "driver")
 
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/${SRC_DIR}")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/third-party")
 file(GLOB_RECURSE C_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.c")
 set_source_files_properties(${C_SOURCES} PROPERTIES LANGUAGE ${LANG})
 
 set(ALL_C_SOURCES ${C_SOURCES})
-list(REMOVE_ITEM C_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/${EXE_SRC}")
 
 file(GLOB_RECURSE ASM_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.S")
 list(FILTER ASM_SOURCES EXCLUDE REGEX ".*/core/.*\.S$")
 
-
-# Setup test executable
+# Filter test sources
 list(FILTER C_SOURCES EXCLUDE REGEX ".*/test/.*$")
 list(FILTER C_SOURCES EXCLUDE REGEX ".*\.test\.c$")
 
-set(TEST_EXE_SRC "${SRC_DIR}/test/test-driver.c")
-set(TEST_EXE "test-driver")
-file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.test.c")
-file(GLOB_RECURSE TEST_UTIL_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/test/*.c")
-set(TEST_C_SOURCES ${TEST_SOURCES} ${TEST_UTIL_SOURCES})
-list(REMOVE_ITEM TEST_C_SOURCES ${TEST_EXE_SRC})
-
-
-# Setup bench executable
+# Filter bench sources
 list(FILTER C_SOURCES EXCLUDE REGEX ".*/bench/.*$")
 list(FILTER C_SOURCES EXCLUDE REGEX ".*\.bench\.c$")
 
-set(BENCH_EXE_SRC "${SRC_DIR}/bench/bench-driver.c")
-set(BENCH_EXE "bench-driver")
+
+# Setup driver executable
+set(DRIVER_SRC ${SRC_DIR}/driver.c)
+list(REMOVE_ITEM C_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/${DRIVER_SRC}")
+
+# Setup test executable
+file(GLOB_RECURSE TEST_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.test.c")
+file(GLOB_RECURSE TEST_UTIL_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/test/*.c")
+set(TEST_C_SOURCES ${TEST_SOURCES} ${TEST_UTIL_SOURCES})
+
+
+# Setup bench executable
 file(GLOB_RECURSE BENCH_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.bench.c")
 file(GLOB_RECURSE BENCH_UTIL_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/bench/*.c")
 set(BENCH_C_SOURCES ${BENCH_SOURCES} ${BENCH_UTIL_SOURCES})
-list(REMOVE_ITEM BENCH_C_SOURCES ${BENCH_EXE_SRC})
 
-# Setup sysinfo executable
-set(SYS_C_SOURCES ${C_SOURCES})
-list(FILTER C_SOURCES EXCLUDE REGEX ".*/sysinfo/.*$")
-
-set(SYS_EXE_SRC "${SRC_DIR}/sysinfo/sysinfo-driver.c")
-list(REMOVE_ITEM SYS_C_SOURCES ${SYS_EXE_SRC})
 
 
 
@@ -184,35 +179,40 @@ add_custom_target(
   -p=${CMAKE_CURRENT_BINARY_DIR}
 )
 
+add_library(util STATIC ${C_SOURCES} ${ASM_SOURCES})
+target_compile_options(util PRIVATE ${libutil_compiler_flags})
+set_target_properties(util PROPERTIES LINKER_LANGUAGE ${LANG})
 
-
-add_executable(driver ${EXE_SRC} ${C_SOURCES} ${ASM_SOURCES})
+add_executable(driver ${DRIVER_SRC})
 target_compile_options(driver PRIVATE ${driver_compiler_flags})
-target_link_libraries(driver ${link_libraries})
+target_link_libraries(driver util ${link_libraries})
 set_target_properties(driver PROPERTIES LINKER_LANGUAGE ${LANG})
 
-add_executable(tests ${TEST_EXE_SRC} ${TEST_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
+add_executable(tests ${TEST_C_SOURCES})
 target_compile_options(tests PRIVATE ${test_and_bench_compiler_flags})
-target_link_libraries(tests ${test_and_bench_libraries})
+target_link_libraries(tests util ${test_and_bench_libraries})
 set_target_properties(tests PROPERTIES EXCLUDE_FROM_ALL TRUE)
 set_target_properties(tests PROPERTIES LINKER_LANGUAGE ${LANG})
 
-add_executable(bench ${BENCH_EXE_SRC} ${BENCH_C_SOURCES} ${C_SOURCES} ${ASM_SOURCES})
+add_executable(bench ${BENCH_C_SOURCES})
 target_compile_options(bench PRIVATE ${test_and_bench_compiler_flags})
-target_link_libraries(bench ${test_and_bench_libraries})
+target_link_libraries(bench util ${test_and_bench_libraries})
 set_target_properties(bench PROPERTIES EXCLUDE_FROM_ALL TRUE)
 set_target_properties(bench PROPERTIES LINKER_LANGUAGE ${LANG})
 
-add_executable(sysinfo_builder ${SYS_EXE_SRC} ${SYS_C_SOURCES})
-target_compile_options(sysinfo_builder PRIVATE ${driver_compiler_flags})
-target_link_libraries(sysinfo_builder ${link_libraries} "cpu_features")
-set_target_properties(sysinfo_builder PROPERTIES EXCLUDE_FROM_ALL TRUE)
-set_target_properties(sysinfo_builder PROPERTIES LINKER_LANGUAGE ${LANG})
-
-
-target_include_directories(sysinfo_builder PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
-add_custom_target(sysinfo sysinfo_builder cpu_features)
-
-  
 add_custom_target(full)
-add_dependencies(full driver tests bench)
+add_dependencies(full util driver tests bench)
+
+
+#Setup sysinfo executable
+#set(SYS_C_SOURCES ${C_SOURCES})
+#list(FILTER C_SOURCES EXCLUDE REGEX ".*/sysinfo/.*$")
+#set(SYS_EXE_SRC "${SRC_DIR}/sysinfo/sysinfo-driver.c")
+#list(REMOVE_ITEM SYS_C_SOURCES ${SYS_EXE_SRC})
+#add_executable(sysinfo_builder ${SYS_EXE_SRC} ${SYS_C_SOURCES})
+#target_compile_options(sysinfo_builder PRIVATE ${driver_compiler_flags})
+#target_link_libraries(sysinfo_builder ${link_libraries} "cpu_features")
+#set_target_properties(sysinfo_builder PROPERTIES EXCLUDE_FROM_ALL TRUE)
+#set_target_properties(sysinfo_builder PROPERTIES LINKER_LANGUAGE ${LANG})
+#target_include_directories(sysinfo_builder PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/third-party")
+#add_custom_target(sysinfo sysinfo_builder cpu_features)

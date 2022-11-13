@@ -1,5 +1,5 @@
-#ifndef _SRC__LIB__ALGO__SORT_H_
-#define _SRC__LIB__ALGO__SORT_H_
+#ifndef SRC_D_LIB_D_ALGO_D_SORT_H_
+#define SRC_D_LIB_D_ALGO_D_SORT_H_
 
 
 #include "util/error-util.h"

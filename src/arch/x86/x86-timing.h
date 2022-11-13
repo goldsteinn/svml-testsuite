@@ -1,5 +1,5 @@
-#ifndef _SRC__ARCH__X86__X86_TIMING_H_
-#define _SRC__ARCH__X86__X86_TIMING_H_
+#ifndef SRC_ARCH_X86_X86_TIMING_H_
+#define SRC_ARCH_X86_X86_TIMING_H_
 
 #include <x86intrin.h>
 
@@ -12,12 +12,12 @@
 typedef uint64_t ll_time_t;
 
 static ALWAYS_INLINE ll_time_t
-get_ll_time() {
+get_ll_time(void) {
     return _rdtsc();
 }
 
 static ALWAYS_INLINE const char *
-get_ll_units() {
+get_ll_units(void) {
     return "cycles";
 }
 

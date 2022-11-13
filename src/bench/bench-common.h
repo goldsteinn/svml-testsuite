@@ -1,5 +1,6 @@
-#ifndef _SRC__BENCH__BENCH_COMMON_H_
-#define _SRC__BENCH__BENCH_COMMON_H_
+#ifndef SRC_BENCH_BENCH_COMMON_H_
+#define SRC_BENCH_BENCH_COMMON_H_
+
 
 #include "util/attrs.h"
 #include "util/common.h"

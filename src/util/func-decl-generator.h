@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__FUNC_DECL_GENERATOR_H_
-#define _SRC__UTIL__FUNC_DECL_GENERATOR_H_
+#ifndef SRC_D_UTIL_D_FUNC_DECL_GENERATOR_H_
+#define SRC_D_UTIL_D_FUNC_DECL_GENERATOR_H_
 
 #include "util/func-decl-types.h"
 

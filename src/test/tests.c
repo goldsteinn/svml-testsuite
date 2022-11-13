@@ -5,6 +5,6 @@
 
 #include "test/test-decls.h"
 
-#define decl_test(name) extern int32_t name();
+#define decl_test(name) extern int32_t name(void);
 
 make_decls(tests, decl_test, TESTS);

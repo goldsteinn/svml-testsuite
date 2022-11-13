@@ -9,12 +9,12 @@
 #define sort_test_name(T) CAT(test_sort_, T)
 #define run_test(T)       test_assert(sort_test_name(T)() == 0)
 #define make_sort_test(T)                                                      \
-    static int32_t sort_test_name(T)() {                                       \
+    static int32_t sort_test_name(T)(void) {                                   \
         enum { MAX_ITEMS = 1000, NTESTS = 100 };                               \
         T        arr[MAX_ITEMS];                                               \
         uint32_t i, j, k;                                                      \
         for (i = 0; i < MAX_ITEMS; ++i) {                                      \
-            arr[i] = i;                                                        \
+            arr[i] = CAST(T, i);                                               \
         }                                                                      \
                                                                                \
         generic_sort(arr, 0);                                                  \
@@ -50,8 +50,9 @@
 
 APPLY(make_sort_test, ;, ALL_TYPE_NAMES); /* NOLINT(cert-err33-c) */
 
+int32_t test_sort(void);
 int32_t
-test_sort() {
+test_sort(void) {
     APPLY(run_test, ;, ALL_TYPE_NAMES); /* NOLINT(cert-err33-c) */
     return 0;
 }

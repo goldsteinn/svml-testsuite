@@ -1,15 +1,15 @@
-#ifndef _SRC__ARCH__X86__LL_SYSCALL_H_
-#define _SRC__ARCH__X86__LL_SYSCALL_H_
+#ifndef SRC_ARCH_X86_LL_SYSCALL_H_
+#define SRC_ARCH_X86_LL_SYSCALL_H_
 
 #include "../../util/macro.h"
 #include "../../util/types.h"
 
-#define I_x86_internal_syscall(reg_setup, reg_decls...)                        \
+#define I_x86_internal_syscall(reg_setup, ...)                                 \
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
         __asm__ volatile("syscall"                                             \
                          : "+r"(I_rax)                                         \
-                         : reg_decls                                           \
+                         : __VA_ARGS__                                         \
                          : "memory", "r11", "rcx");                            \
         I_rax;                                                                 \
     })
@@ -19,7 +19,7 @@
     ({                                                                         \
         DEPAREN(reg_setup);                                                    \
         __asm__ volatile("syscall"                                             \
-                         : "+r"(I_rax)DEPAREN(rw_clobbers) DEPAREN(w_clobbers)  \
+                         : "+r"(I_rax)DEPAREN(rw_clobbers) DEPAREN(w_clobbers) \
                          : DEPAREN(reg_decls) DEPAREN(rd_clobbers)             \
                          : "r11", "rcx");                                      \
         I_rax;                                                                 \

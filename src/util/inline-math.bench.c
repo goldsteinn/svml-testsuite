@@ -21,6 +21,7 @@ ll_make_tput_bench(bench_prev_p2,
     (res_time) = CAT(bench_, func)(trials, i);
 
 
+void * bench_p2(void * bench_args);
 void *
 bench_p2(void * bench_args) {
     uint32_t trials = CAST(uint32_t, CAST(uint64_t, bench_args));

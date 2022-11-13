@@ -13,7 +13,7 @@ static int32_t    list_all   = 0;
 static int32_t    run_all    = 0;
 static arg_rest_t test_names = INIT_ARG_REST_T;
 
-static ArgOption args[] = {
+static arg_option_t args[] = {
     /* ADD_ARG(Kind, Method, name, reqd, variable, help) */
     ADD_ARG(KindOption, Integer, "-v", 0, &verbosity, "Turn on verbosity"),
     ADD_ARG(KindOption, Set, "--list", 0, &list_all, "List all tests"),
@@ -29,7 +29,7 @@ static ArgOption args[] = {
 };
 
 
-static ArgDefs argp = { args, "Test Driver", NULL, NULL };
+static arg_defs_t argp = { args, "Test Driver", NULL, NULL };
 
 
 static void
@@ -46,7 +46,7 @@ run_test(const func_decl_t * test) {
 int
 main(int argc, char ** argv) {
     char * const * decls_to_run;
-    uint32_t       ndecls_to_run;
+    uint64_t       ndecls_to_run;
     die_assert(!doParse(&argp, argc, argv), "Error parsing arguments\n");
     set_verbosity(verbosity);
 

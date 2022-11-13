@@ -1,5 +1,5 @@
-#ifndef _SRC__BENCH__BENCH_GENERATOR_H_
-#define _SRC__BENCH__BENCH_GENERATOR_H_
+#ifndef SRC_D_BENCH_D_BENCH_GENERATOR_H_
+#define SRC_D_BENCH_D_BENCH_GENERATOR_H_
 
 #include "bench/bench-common.h"
 
@@ -20,8 +20,8 @@
     }
 
 #define ll_make_bench(name, serializer, ntrials, call, ...)                    \
-    custom_make_bench(name, ll_time_t I_tmp_start = get_ll_time(),             \
-                      ll_time_t I_tmp_end = get_ll_time(),                     \
+    custom_make_bench(name, ll_time_t I_tmp_start; ll_time_t I_tmp_end;        \
+                      I_tmp_start = get_ll_time(), I_tmp_end = get_ll_time(),  \
                       get_ll_dif(I_tmp_end, I_tmp_start), serializer, ntrials, \
                       call, __VA_ARGS__)
 

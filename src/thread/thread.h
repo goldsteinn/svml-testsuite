@@ -1,9 +1,9 @@
-#ifndef _SRC__THREAD__THREAD_H_
-#define _SRC__THREAD__THREAD_H_
+#ifndef SRC_D_THREAD_D_THREAD_H_
+#define SRC_D_THREAD_D_THREAD_H_
 
 
 #ifndef WITH_THREAD
-#error "Using thread library with threading disabled!"
+# error "Using thread library with threading disabled!"
 #endif
 
 #include <pthread.h>
@@ -20,16 +20,19 @@ typedef pthread_attr_t thread_attr_t;
 typedef void * (*I_thread_func)(void *);
 
 #define safe_thread_create(tid, attr, func, arg)                               \
-    I_safe_thread_create(tid, attr, func, arg, ERR_ARGS)
-#define safe_thread_join(tid, attr) I_safe_thread_join(tid, attr, ERR_ARGS)
+    I_safe_thread_create(tid, attr, func, arg, I_ERR_ARGS)
+#define safe_thread_join(tid, attr) I_safe_thread_join(tid, attr, I_ERR_ARGS)
 
-#define safe_thread_attr_init(attr) I_safe_thread_attr_init(attr, ERR_ARGS)
+#define safe_thread_attr_init(attr) I_safe_thread_attr_init(attr, I_ERR_ARGS)
 #define safe_thread_attr_destroy(attr)                                         \
-    I_safe_thread_attr_destroy(attr, ERR_ARGS)
+    I_safe_thread_attr_destroy(attr, I_ERR_ARGS)
 #define safe_thread_attr_set_stacksize(attr, stacksize)                        \
-    I_safe_thread_attr_set_stacksize(attr, stacksize, ERR_ARGS)
+    I_safe_thread_attr_set_stacksize(attr, stacksize, I_ERR_ARGS)
 #define safe_thread_attr_set_affinity(attr, cpuset)                            \
-    I_safe_thread_attr_set_affinity(attr, cpuset, ERR_ARGS)
+    I_safe_thread_attr_set_affinity(attr, cpuset, I_ERR_ARGS)
+#define safe_thread_attr_set_cpu(attr, cpu)                                    \
+    I_safe_thread_attr_set_cpu(attr, cpu, I_ERR_ARGS)
+
 
 static NONNULL(1, 3) void I_safe_thread_create(thread_t * restrict tid,
                                                thread_attr_t * restrict attr,
@@ -96,6 +99,17 @@ static NONNULL(1) void I_safe_thread_attr_set_affinity(
             attr, sizeof(cpu_set_t), cset_copy_to_std(cpu_set, &pass_cset)))) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
+}
+
+static NONNULL(1) void I_safe_thread_attr_set_cpu(thread_attr_t * restrict attr,
+                                                  uint32_t cpu,
+                                                  char const * restrict fn,
+                                                  char const * restrict func,
+                                                  uint32_t ln) {
+    cpuset_t cset;
+    cset_zero(&cset);
+    cset_set(cpu, &cset);
+    I_safe_thread_attr_set_affinity(attr, &cset, fn, func, ln);
 }
 
 

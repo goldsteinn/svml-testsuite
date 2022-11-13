@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__GETCPU_PORTABLE_H_
-#define _SRC__UTIL__GETCPU_PORTABLE_H_
+#ifndef SRC_UTIL_GETCPU_PORTABLE_H_
+#define SRC_UTIL_GETCPU_PORTABLE_H_
 
 #include <sched.h>
 

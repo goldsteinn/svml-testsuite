@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__VDSO_DEFS_H_
-#define _SRC__UTIL__VDSO_DEFS_H_
+#ifndef SRC_UTIL_VDSO_DEFS_H_
+#define SRC_UTIL_VDSO_DEFS_H_
 
 #include <sched.h>
 #include <sys/time.h>

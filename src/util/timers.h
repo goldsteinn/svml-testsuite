@@ -1,5 +1,5 @@
-#ifndef _SRC__UTIL__TIMERS_H_
-#define _SRC__UTIL__TIMERS_H_
+#ifndef SRC_UTIL_TIMERS_H_
+#define SRC_UTIL_TIMERS_H_
 
 #include <time.h>
 
