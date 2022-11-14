@@ -18,6 +18,9 @@ enum { I_xxseed = 0 };
 #else
 # pragma GCC diagnostic ignored "-Wsign-conversion"
 #endif
+
+#define XXH_VECTOR    XXH_SSE2
+#define XXH_ACC_ALIGN 64
 #include "xxHash/xxhash.h"
 static I_attr_pure uint64_t
 xxhash_wseed(void const * input, uint64_t len, uint64_t seed) {
