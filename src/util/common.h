@@ -14,7 +14,7 @@
 
 
 #ifdef __cplusplus
-#include <type_traits>
+# include <type_traits>
 #endif
 
 
@@ -25,6 +25,7 @@
 #define LIKELY(x)   I_builtin_expect(!!(x), 1)
 #define UNLIKELY(x) I_builtin_expect((x), 0)
 
+#define UNREACHABLE() I_builtin_unreachable();
 #define IMPOSSIBLE(x)                                                          \
     if (x) {                                                                   \
         I_builtin_unreachable();                                               \

@@ -35,7 +35,7 @@ static NONNULL(1) void I_safe_thread_spinlock_init(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_spin_init(spinlock, pshared))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -45,7 +45,7 @@ static NONNULL(1) void I_safe_thread_spinlock_destroy(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_spin_destroy(spinlock))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -69,7 +69,7 @@ static NONNULL(1) void I_safe_thread_spinlock_lock(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(thread_spinlock_lock(spinlock))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -79,7 +79,7 @@ static NONNULL(1) void I_safe_thread_spinlock_unlock(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(thread_spinlock_unlock(spinlock))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -90,7 +90,7 @@ static NONNULL(1) int32_t
                                    uint32_t ln) {
     int32_t ret = thread_spinlock_unlock(spinlock);
     if (UNLIKELY(ret && (ret != EBUSY))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 
     return ret;

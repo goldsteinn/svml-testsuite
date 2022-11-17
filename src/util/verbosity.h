@@ -31,15 +31,38 @@
 #define print_varx(...)                                                        \
     CAT(I_print_var_, PP_NARG(__VA_ARGS__))(DEFAULT_HEX_FMT, __VA_ARGS__)
 
-#define trace_print(msg, ...)                                                  \
-    fprint(stderr, "%-20s:%-6u: " msg, I__FILENAME__, __LINE__, ##__VA_ARGS__)
-#define trace_vprint(msg, ...)                                                 \
-    vfprint(stderr, "%-20s:%-6u: " msg, I__FILENAME__, __LINE__, ##__VA_ARGS__)
-#define trace_vvprint(msg, ...)                                                \
-    vvfprint(stderr, "%-20s:%-6u: " msg, I__FILENAME__, __LINE__, ##__VA_ARGS__)
-#define trace_vvvprint(msg, ...)                                               \
-    vvvfprint(stderr, "%-20s:%-6u: " msg, I__FILENAME__, __LINE__,             \
-              ##__VA_ARGS__)
+#define I_trace_print_kernel_MANY(printer, fp, msg, ...)                       \
+    printer(stderr, "%-20s:%-6u: " msg "%s", I_FILENAME_, __LINE__,            \
+            ##__VA_ARGS__,                                                     \
+            strlen(msg) ? ((msg)[strlen(msg) - 1] == '\n' ? "" : "\n") : "\n")
+
+
+#define I_trace_print_kernel_ONE(printer, fp)                                  \
+    printer(stderr, "%-20s:%-6u:\n", I_FILENAME_, __LINE__)
+
+
+#define I_trace_print_0(...)                                                   \
+    I_trace_print_kernel_MANY(fprint, stderr, __VA_ARGS__)
+#define I_trace_vprint_0(...)                                                  \
+    I_trace_print_kernel_MANY(vfprint, stderr, __VA_ARGS__)
+#define I_trace_vvprint_0(...)                                                 \
+    I_trace_print_kernel_MANY(vvfprint, stderr, __VA_ARGS__)
+#define I_trace_vvvprint_0(...)                                                \
+    I_trace_print_kernel_MANY(vvvfprint, stderr, __VA_ARGS__)
+
+#define I_trace_print_1(...)    I_trace_print_kernel_ONE(fprint, stderr)
+#define I_trace_vprint_1(...)   I_trace_print_kernel_ONE(vfprint, stderr)
+#define I_trace_vvprint_1(...)  I_trace_print_kernel_ONE(vvfprint, stderr)
+#define I_trace_vvvprint_1(...) I_trace_print_kernel_ONE(vvvfprint, stderr)
+
+
+#define trace_print(...) CAT(I_trace_print_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__)
+#define trace_vprint(...)                                                      \
+    CAT(I_trace_vprint_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__)
+#define trace_vvprint(...)                                                     \
+    CAT(I_trace_vvprint_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__)
+#define trace_vvvprint(...)                                                    \
+    CAT(I_trace_vvvprint_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__)
 
 #define fprint(fp, ...)    vnfprint(0, fp, __VA_ARGS__)
 #define vfprint(fp, ...)   vnfprint(1, fp, __VA_ARGS__)

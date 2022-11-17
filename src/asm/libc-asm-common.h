@@ -1,18 +1,7 @@
 #ifndef _SRC__ASM__LIBC_ASM_COMMON_H_
 #define _SRC__ASM__LIBC_ASM_COMMON_H_
 
-#ifdef USE_AS_SSE2
-#include "libc-defs/libc-sse2-vecs.h"
-#elif defined USE_AS_AVX
-#include "libc-defs/libc-avx-vecs.h"
-#elif defined USE_AS_AVX2
-#include "libc-defs/libc-avx2-vecs.h"
-#elif defined USE_AS_EVEX
-#include "libc-defs/libc-evex-vecs.h"
-#elif defined USE_AS_AVX512
-#include "libc-defs/libc-avx512-vecs.h"
-#endif
-
+#define RCSID(id)
 #define USE_MULTIARCH
 #define IS_IN(x) 1
 
@@ -37,6 +26,32 @@
 
 #define _CET_ENDBR   endbr4
 #define _CET_NOTRACK notrack
+
+#define weak_alias(...)
+#define hidden_def(...)
+#define strong_alias(...)
+#define libmvec_hidden_def(...)
+#define libm_alias_float(...)
+#define libm_alias_double(...)
+
+#ifdef JUMPTARGET
+# error "QQQ"
+#endif
+#ifdef HIDDEN_JUMPTARGET
+# error "QQQ@"
+#endif
+
+#define HIDDEN_JUMPTARGET(f) f
+#define JUMPTARGET(f)        f
+
+#define DEV_OR_GLIBC_dlog_data   I_svml_dlog_data
+#define DEV_OR_GLIBC_dexp_data   I_svml_dexp_data
+#define DEV_OR_GLIBC_slog_data   I_svml_slog_data
+#define DEV_OR_GLIBC_dpow_data   I_svml_dpow_data
+#define DEV_OR_GLIBC_s_trig_data I_svml_s_trig_data
+#define DEV_OR_GLIBC_spow_data   I_svml_spow_data
+#define DEV_OR_GLIBC_d_trig_data I_svml_d_trig_data
+#define DEV_OR_GLIBC_sexp_data   I_svml_sexp_data
 
 #include "asm-common.h"
 

@@ -1,7 +1,6 @@
 #ifndef SRC_D_THREAD_D_THREAD_H_
 #define SRC_D_THREAD_D_THREAD_H_
 
-
 #ifndef WITH_THREAD
 # error "Using thread library with threading disabled!"
 #endif
@@ -17,17 +16,23 @@
 typedef pthread_t      thread_t;
 typedef pthread_attr_t thread_attr_t;
 
+enum { k_thread_default_stack_size = 32768 };
+
 typedef void * (*I_thread_func)(void *);
 
 #define safe_thread_create(tid, attr, func, arg)                               \
     I_safe_thread_create(tid, attr, func, arg, I_ERR_ARGS)
 #define safe_thread_join(tid, attr) I_safe_thread_join(tid, attr, I_ERR_ARGS)
-
-#define safe_thread_attr_init(attr) I_safe_thread_attr_init(attr, I_ERR_ARGS)
+#define safe_thread_detach(tid)     I_safe_thread_detach(tid, I_ERR_ARGS)
+#define safe_thread_detach_self()   I_safe_thread_detach_self(I_ERR_ARGS)
+#define safe_thread_attr_init(attr)                                            \
+    I_safe_thread_attr_init(attr, I_ERR_ARGS);                                 \
+    safe_thread_attr_set_stacksize(attr, k_thread_default_stack_size);
 #define safe_thread_attr_destroy(attr)                                         \
     I_safe_thread_attr_destroy(attr, I_ERR_ARGS)
 #define safe_thread_attr_set_stacksize(attr, stacksize)                        \
     I_safe_thread_attr_set_stacksize(attr, stacksize, I_ERR_ARGS)
+
 #define safe_thread_attr_set_affinity(attr, cpuset)                            \
     I_safe_thread_attr_set_affinity(attr, cpuset, I_ERR_ARGS)
 #define safe_thread_attr_set_cpu(attr, cpu)                                    \
@@ -53,6 +58,30 @@ I_safe_thread_join(thread_t tid,
                    char const * restrict func,
                    uint32_t ln) {
     if (UNLIKELY(pthread_join(tid, retval))) {
+        I_errdie(fn, func, ln, NULL, errno, NULL);
+    }
+}
+
+static thread_t
+thread_self(void) {
+    return pthread_self();
+}
+
+static void
+I_safe_thread_detach_self(char const * restrict fn,
+                          char const * restrict func,
+                          uint32_t ln) {
+    if (UNLIKELY(pthread_detach(thread_self()))) {
+        I_errdie(fn, func, ln, NULL, errno, NULL);
+    }
+}
+
+static void
+I_safe_thread_detach(thread_t tid,
+                     char const * restrict fn,
+                     char const * restrict func,
+                     uint32_t ln) {
+    if (UNLIKELY(pthread_detach(tid))) {
         I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }

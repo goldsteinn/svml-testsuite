@@ -1,0 +1,593 @@
+acos,double|double,scalar,1
+acos,double|double,downward,1
+acos,double|double,towardzero,1
+acos,double|double,upward,1
+acos,double|double,vlen2,1
+acos,double|double,vlen4,1
+acos,double|double,vlen4_avx2,1
+acos,double|double,vlen8,1
+acosf,float|float,scalar,1
+acosf,float|float,downward,1
+acosf,float|float,towardzero,1
+acosf,float|float,upward,1
+acosf,float|float,vlen16,1
+acosf,float|float,vlen4,2
+acosf,float|float,vlen8,2
+acosf,float|float,vlen8_avx2,1
+acosh,double|double,scalar,2
+acosh,double|double,downward,2
+acosh,double|double,towardzero,2
+acosh,double|double,upward,2
+acosh,double|double,vlen2,2
+acosh,double|double,vlen4,2
+acosh,double|double,vlen4_avx2,2
+acosh,double|double,vlen8,1
+acoshf,float|float,scalar,2
+acoshf,float|float,downward,2
+acoshf,float|float,towardzero,2
+acoshf,float|float,upward,2
+acoshf,float|float,vlen16,1
+acoshf,float|float,vlen4,1
+acoshf,float|float,vlen8,1
+acoshf,float|float,vlen8_avx2,2
+asin,double|double,scalar,1
+asin,double|double,downward,1
+asin,double|double,towardzero,1
+asin,double|double,upward,2
+asin,double|double,vlen2,1
+asin,double|double,vlen4,1
+asin,double|double,vlen4_avx2,1
+asin,double|double,vlen8,1
+asinf,float|float,scalar,1
+asinf,float|float,downward,1
+asinf,float|float,towardzero,1
+asinf,float|float,upward,1
+asinf,float|float,vlen16,1
+asinf,float|float,vlen4,1
+asinf,float|float,vlen8,1
+asinf,float|float,vlen8_avx2,1
+asinh,double|double,scalar,2
+asinh,double|double,downward,3
+asinh,double|double,towardzero,2
+asinh,double|double,upward,3
+asinh,double|double,vlen2,1
+asinh,double|double,vlen4,1
+asinh,double|double,vlen4_avx2,1
+asinh,double|double,vlen8,1
+asinhf,float|float,scalar,2
+asinhf,float|float,downward,3
+asinhf,float|float,towardzero,2
+asinhf,float|float,upward,3
+asinhf,float|float,vlen4,1
+asinhf,float|float,vlen8,1
+asinhf,float|float,vlen8_avx2,1
+atan,double|double,scalar,1
+atan,double|double,downward,1
+atan,double|double,towardzero,1
+atan,double|double,upward,1
+atan,double|double,vlen2,1
+atan,double|double,vlen4,1
+atan,double|double,vlen4_avx2,1
+atan,double|double,vlen8,1
+atan2,double|double|double,downward,1
+atan2,double|double|double,towardzero,1
+atan2,double|double|double,upward,1
+atan2,double|double|double,vlen2,2
+atan2,double|double|double,vlen4,2
+atan2,double|double|double,vlen4_avx2,3
+atan2,double|double|double,vlen8,3
+atan2f,float|float|float,scalar,2
+atan2f,float|float|float,downward,2
+atan2f,float|float|float,towardzero,2
+atan2f,float|float|float,upward,2
+atan2f,float|float|float,vlen16,2
+atan2f,float|float|float,vlen4,2
+atan2f,float|float|float,vlen8,2
+atan2f,float|float|float,vlen8_avx2,2
+atanf,float|float,scalar,1
+atanf,float|float,downward,2
+atanf,float|float,towardzero,1
+atanf,float|float,upward,2
+atanf,float|float,vlen16,1
+atanf,float|float,vlen4,1
+atanf,float|float,vlen8,1
+atanf,float|float,vlen8_avx2,1
+atanh,double|double,scalar,2
+atanh,double|double,downward,3
+atanh,double|double,towardzero,2
+atanh,double|double,upward,3
+atanh,double|double,vlen2,1
+atanh,double|double,vlen4,1
+atanh,double|double,vlen4_avx2,1
+atanh,double|double,vlen8,1
+atanhf,float|float,scalar,2
+atanhf,float|float,downward,3
+atanhf,float|float,towardzero,2
+atanhf,float|float,upward,3
+atanhf,float|float,vlen16,1
+atanhf,float|float,vlen4,1
+atanhf,float|float,vlen8,1
+atanhf,float|float,vlen8_avx2,1
+cbrt,double|double,scalar,4
+cbrt,double|double,downward,4
+cbrt,double|double,towardzero,3
+cbrt,double|double,upward,5
+cbrt,double|double,vlen2,1
+cbrt,double|double,vlen4,1
+cbrt,double|double,vlen4_avx2,1
+cbrt,double|double,vlen8,1
+cbrtf,float|float,scalar,1
+cbrtf,float|float,downward,1
+cbrtf,float|float,towardzero,1
+cbrtf,float|float,upward,1
+cbrtf,float|float,vlen16,1
+cbrtf,float|float,vlen4,2
+cbrtf,float|float,vlen8,2
+cbrtf,float|float,vlen8_avx2,2
+ceil,double|double,ANY,none
+ceilf,float|float,ANY,none
+copysign,double|double|double,ANY,none
+copysignf,float|float|float,ANY,none
+cos,double|double,scalar,1
+cos,double|double,downward,1
+cos,double|double,towardzero,1
+cos,double|double,upward,1
+cos,double|double,vlen2,2
+cos,double|double,vlen4,2
+cos,double|double,vlen4_avx2,2
+cos,double|double,vlen8,2
+cosf,float|float,scalar,1
+cosf,float|float,downward,1
+cosf,float|float,towardzero,1
+cosf,float|float,upward,1
+cosf,float|float,vlen16,1
+cosf,float|float,vlen4,1
+cosf,float|float,vlen8,1
+cosf,float|float,vlen8_avx2,1
+cosh,double|double,scalar,2
+cosh,double|double,downward,3
+cosh,double|double,towardzero,3
+cosh,double|double,upward,2
+cosh,double|double,vlen2,2
+cosh,double|double,vlen4,2
+cosh,double|double,vlen4_avx2,2
+cosh,double|double,vlen8,2
+coshf,float|float,scalar,2
+coshf,float|float,downward,1
+coshf,float|float,towardzero,1
+coshf,float|float,upward,2
+coshf,float|float,vlen16,2
+coshf,float|float,vlen4,2
+coshf,float|float,vlen8,2
+coshf,float|float,vlen8_avx2,2
+erf,double|double,scalar,1
+erf,double|double,downward,1
+erf,double|double,towardzero,1
+erf,double|double,upward,1
+erf,double|double,vlen2,1
+erf,double|double,vlen4,1
+erf,double|double,vlen4_avx2,1
+erf,double|double,vlen8,1
+erfc,double|double,scalar,5
+erfc,double|double,downward,5
+erfc,double|double,towardzero,3
+erfc,double|double,upward,5
+erfc,double|double,vlen2,1
+erfc,double|double,vlen4,1
+erfc,double|double,vlen4_avx2,1
+erfc,double|double,vlen8,1
+erfcf,float|float,scalar,3
+erfcf,float|float,downward,6
+erfcf,float|float,towardzero,4
+erfcf,float|float,upward,6
+erfcf,float|float,vlen16,1
+erfcf,float|float,vlen4,1
+erfcf,float|float,vlen8,1
+erfcf,float|float,vlen8_avx2,1
+erff,float|float,scalar,1
+erff,float|float,downward,1
+erff,float|float,towardzero,1
+erff,float|float,upward,1
+erff,float|float,vlen16,1
+erff,float|float,vlen4,2
+erff,float|float,vlen8,2
+erff,float|float,vlen8_avx2,2
+exp,double|double,scalar,1
+exp,double|double,downward,1
+exp,double|double,towardzero,1
+exp,double|double,upward,1
+exp,double|double,vlen2,1
+exp,double|double,vlen4,1
+exp,double|double,vlen4_avx2,1
+exp,double|double,vlen8,1
+exp2,double|double,scalar,1
+exp2,double|double,downward,1
+exp2,double|double,towardzero,1
+exp2,double|double,upward,1
+exp2,double|double,vlen2,1
+exp2,double|double,vlen4,1
+exp2,double|double,vlen4_avx2,1
+exp2,double|double,vlen8,1
+exp2f,float|float,scalar,1
+exp2f,float|float,downward,1
+exp2f,float|float,towardzero,1
+exp2f,float|float,upward,1
+exp2f,float|float,vlen16,1
+exp2f,float|float,vlen4,1
+exp2f,float|float,vlen8,1
+exp2f,float|float,vlen8_avx2,1
+expf,float|float,scalar,1
+expf,float|float,downward,1
+expf,float|float,towardzero,1
+expf,float|float,upward,1
+expf,float|float,vlen16,1
+expf,float|float,vlen4,1
+expf,float|float,vlen8,1
+expf,float|float,vlen8_avx2,1
+expm1,double|double,scalar,1
+expm1,double|double,downward,1
+expm1,double|double,towardzero,1
+expm1,double|double,upward,1
+expm1,double|double,vlen2,1
+expm1,double|double,vlen4,1
+expm1,double|double,vlen4_avx2,1
+expm1,double|double,vlen8,1
+expm1f,float|float,scalar,1
+expm1f,float|float,downward,1
+expm1f,float|float,towardzero,2
+expm1f,float|float,upward,1
+expm1f,float|float,vlen16,1
+expm1f,float|float,vlen4,1
+expm1f,float|float,vlen8,1
+expm1f,float|float,vlen8_avx2,1
+fabs,double|double,ANY,none
+fabsf,float|float,ANY,none
+fdim,double|double|double,ANY,none
+fdimf,float|float|float,ANY,none
+floor,double|double,ANY,none
+floorf,float|float,ANY,none
+fma,double|double|double|double,ANY,none
+fmaf,float|float|float|float,ANY,none
+fmax,double|double|double,ANY,none
+fmaxf,float|float|float,ANY,none
+fmin,double|double|double,ANY,none
+fminf,float|float|float,ANY,none
+fmod,double|double|double,ANY,none
+fmodf,float|float|float,ANY,none
+frexp,double|double|int *,ANY,none
+frexpf,float|float|int *,ANY,none
+gamma,double|double,scalar,4
+gamma,double|double,downward,5
+gamma,double|double,towardzero,5
+gamma,double|double,upward,5
+gammaf,float|float,scalar,7
+gammaf,float|float,downward,7
+gammaf,float|float,towardzero,6
+gammaf,float|float,upward,6
+hypot,double|double|double,scalar,1
+hypot,double|double|double,downward,1
+hypot,double|double|double,towardzero,1
+hypot,double|double|double,upward,1
+hypot,double|double|double,vlen2,1
+hypot,double|double|double,vlen4,1
+hypot,double|double|double,vlen4_avx2,1
+hypot,double|double|double,vlen8,1
+hypotf,float|float|float,vlen16,1
+hypotf,float|float|float,vlen4,1
+hypotf,float|float|float,vlen8,1
+hypotf,float|float|float,vlen8_avx2,1
+ilogb,int|double,ANY,none
+ilogbf,int|float,ANY,none
+j0,double|double,scalar,3
+j0,double|double,downward,6
+j0,double|double,towardzero,7
+j0,double|double,upward,9
+j0f,float|float,scalar,9
+j0f,float|float,downward,9
+j0f,float|float,towardzero,9
+j0f,float|float,upward,9
+j1,double|double,scalar,4
+j1,double|double,downward,6
+j1,double|double,towardzero,4
+j1,double|double,upward,9
+j1f,float|float,scalar,9
+j1f,float|float,downward,8
+j1f,float|float,towardzero,9
+j1f,float|float,upward,9
+jn,double|int|double,scalar,4
+jn,double|int|double,downward,5
+jn,double|int|double,towardzero,5
+jn,double|int|double,upward,5
+jnf,float|int|float,scalar,4
+jnf,float|int|float,downward,5
+jnf,float|int|float,towardzero,5
+jnf,float|int|float,upward,5
+ldexp,double|double|int,ANY,none
+ldexpf,float|float|int,ANY,none
+lgamma,double|double,scalar,4
+lgamma,double|double,downward,5
+lgamma,double|double,towardzero,5
+lgamma,double|double,upward,5
+lgamma_r,double|double|int *,ANY,none
+lgammaf,float|float,scalar,7
+lgammaf,float|float,downward,7
+lgammaf,float|float,towardzero,6
+lgammaf,float|float,upward,6
+lgammaf_r,float|float|int *,ANY,none
+llrint,long long int|double,ANY,none
+llrintf,long long int|float,ANY,none
+llround,long long int|double,ANY,none
+llroundf,long long int|float,ANY,none
+log,double|double,scalar,1
+log,double|double,upward,1
+log,double|double,vlen2,1
+log,double|double,vlen4,1
+log,double|double,vlen4_avx2,1
+log,double|double,vlen8,1
+log10,double|double,scalar,2
+log10,double|double,downward,2
+log10,double|double,towardzero,2
+log10,double|double,upward,2
+log10,double|double,vlen2,1
+log10,double|double,vlen4,1
+log10,double|double,vlen4_avx2,1
+log10,double|double,vlen8,1
+log10f,float|float,scalar,2
+log10f,float|float,downward,3
+log10f,float|float,towardzero,2
+log10f,float|float,upward,2
+log10f,float|float,vlen16,1
+log10f,float|float,vlen4,1
+log10f,float|float,vlen8,1
+log10f,float|float,vlen8_avx2,1
+log1p,double|double,scalar,1
+log1p,double|double,downward,2
+log1p,double|double,towardzero,2
+log1p,double|double,upward,2
+log1p,double|double,vlen2,1
+log1p,double|double,vlen4,1
+log1p,double|double,vlen4_avx2,1
+log1p,double|double,vlen8,1
+log1pf,float|float,scalar,1
+log1pf,float|float,downward,2
+log1pf,float|float,towardzero,2
+log1pf,float|float,upward,2
+log1pf,float|float,vlen16,2
+log1pf,float|float,vlen4,2
+log1pf,float|float,vlen8,2
+log1pf,float|float,vlen8_avx2,2
+log2,double|double,scalar,2
+log2,double|double,downward,3
+log2,double|double,towardzero,2
+log2,double|double,upward,3
+log2,double|double,vlen2,1
+log2,double|double,vlen4,1
+log2,double|double,vlen4_avx2,1
+log2,double|double,vlen8,1
+log2f,float|float,scalar,1
+log2f,float|float,downward,3
+log2f,float|float,towardzero,2
+log2f,float|float,upward,3
+log2f,float|float,vlen16,1
+log2f,float|float,vlen4,1
+log2f,float|float,vlen8,1
+log2f,float|float,vlen8_avx2,1
+logb,double|double,ANY,none
+logbf,float|float,ANY,none
+logf,float|float,scalar,1
+logf,float|float,downward,2
+logf,float|float,towardzero,2
+logf,float|float,upward,2
+logf,float|float,vlen16,3
+logf,float|float,vlen4,3
+logf,float|float,vlen8,3
+logf,float|float,vlen8_avx2,3
+lrint,long int|double,ANY,none
+lrintf,long int|float,ANY,none
+lround,long int|double,ANY,none
+lroundf,long int|float,ANY,none
+modf,double|double|double *,ANY,none
+modff,float|float|float *,ANY,none
+nan,double|const char *,ANY,none
+nanf,float|const char *,ANY,none
+nearbyint,double|double,ANY,none
+nearbyintf,float|float,ANY,none
+nextafter,double|double|double,ANY,none
+nextafterf,float|float|float,ANY,none
+nexttoward,double|double|long double,ANY,none
+nexttowardf,float|float|long double,ANY,none
+pow,double|double|double,scalar,1
+pow,double|double|double,downward,1
+pow,double|double|double,towardzero,1
+pow,double|double|double,upward,1
+pow,double|double|double,vlen2,1
+pow,double|double|double,vlen4,1
+pow,double|double|double,vlen4_avx2,1
+pow,double|double|double,vlen8,1
+powf,float|float|float,scalar,1
+powf,float|float|float,downward,1
+powf,float|float|float,towardzero,1
+powf,float|float|float,upward,1
+powf,float|float|float,vlen16,3
+powf,float|float|float,vlen4,3
+powf,float|float|float,vlen8,3
+powf,float|float|float,vlen8_avx2,3
+remainder,double|double|double,ANY,none
+remainderf,float|float|float,ANY,none
+remquo,double|double|double|int *,ANY,none
+remquof,float|float|float|int *,ANY,none
+rint,double|double,ANY,none
+rintf,float|float,ANY,none
+round,double|double,ANY,none
+roundf,float|float,ANY,none
+scalb,double|double|double,ANY,none
+scalbf,float|float|double,ANY,none
+scalbln,double|double|long int,ANY,none
+scalblnf,float|float|long int,ANY,none
+scalbn,double|double|int,ANY,none
+scalbnf,float|float|int,ANY,none
+significand,double|double,ANY,none
+significandf,float|float,ANY,none
+sin,double|double,scalar,1
+sin,double|double,downward,1
+sin,double|double,towardzero,1
+sin,double|double,upward,1
+sin,double|double,vlen2,2
+sin,double|double,vlen4,2
+sin,double|double,vlen4_avx2,2
+sin,double|double,vlen8,2
+sincos,void|double|double *|double *,scalar,1
+sincos,void|double|double *|double *,downward,1
+sincos,void|double|double *|double *,towardzero,1
+sincos,void|double|double *|double *,upward,1
+sincos,void|double|double *|double *,vlen2,2
+sincos,void|double|double *|double *,vlen4,2
+sincos,void|double|double *|double *,vlen4_avx2,2
+sincos,void|double|double *|double *,vlen8,2
+sincosf,void|float|float *|float *,downward,1
+sincosf,void|float|float *|float *,towardzero,1
+sincosf,void|float|float *|float *,upward,1
+sincosf,void|float|float *|float *,vlen16,1
+sincosf,void|float|float *|float *,vlen4,1
+sincosf,void|float|float *|float *,vlen8,1
+sincosf,void|float|float *|float *,vlen8_avx2,1
+sinf,float|float,scalar,1
+sinf,float|float,downward,1
+sinf,float|float,towardzero,1
+sinf,float|float,upward,1
+sinf,float|float,vlen16,1
+sinf,float|float,vlen4,1
+sinf,float|float,vlen8,1
+sinf,float|float,vlen8_avx2,1
+sinh,double|double,scalar,2
+sinh,double|double,downward,3
+sinh,double|double,towardzero,3
+sinh,double|double,upward,3
+sinh,double|double,vlen2,2
+sinh,double|double,vlen4,2
+sinh,double|double,vlen4_avx2,2
+sinh,double|double,vlen8,2
+sinhf,float|float,scalar,2
+sinhf,float|float,downward,3
+sinhf,float|float,towardzero,2
+sinhf,float|float,upward,3
+sinhf,float|float,vlen16,1
+sinhf,float|float,vlen4,1
+sinhf,float|float,vlen8,1
+sinhf,float|float,vlen8_avx2,1
+sqrt,double|double,ANY,none
+sqrtf,float|float,ANY,none
+tan,double|double,downward,1
+tan,double|double,towardzero,1
+tan,double|double,upward,1
+tan,double|double,vlen2,2
+tan,double|double,vlen4,2
+tan,double|double,vlen4_avx2,1
+tan,double|double,vlen8,2
+tanf,float|float,scalar,1
+tanf,float|float,downward,2
+tanf,float|float,towardzero,1
+tanf,float|float,upward,1
+tanf,float|float,vlen16,1
+tanf,float|float,vlen4,2
+tanf,float|float,vlen8,2
+tanf,float|float,vlen8_avx2,2
+tanh,double|double,scalar,2
+tanh,double|double,downward,3
+tanh,double|double,towardzero,2
+tanh,double|double,upward,3
+tanh,double|double,vlen2,1
+tanh,double|double,vlen4,1
+tanh,double|double,vlen4_avx2,1
+tanh,double|double,vlen8,1
+tanhf,float|float,scalar,2
+tanhf,float|float,downward,3
+tanhf,float|float,towardzero,2
+tanhf,float|float,upward,3
+tanhf,float|float,vlen16,1
+tgamma,double|double,scalar,9
+tgamma,double|double,downward,9
+tgamma,double|double,towardzero,9
+tgamma,double|double,upward,9
+tgammaf,float|float,scalar,8
+tgammaf,float|float,downward,7
+tgammaf,float|float,towardzero,7
+tgammaf,float|float,upward,8
+trunc,double|double,ANY,none
+truncf,float|float,ANY,none
+y0,double|double,scalar,3
+y0,double|double,downward,4
+y0,double|double,towardzero,4
+y0,double|double,upward,3
+y0f,float|float,scalar,9
+y0f,float|float,downward,9
+y0f,float|float,towardzero,9
+y0f,float|float,upward,9
+y1,double|double,scalar,6
+y1,double|double,downward,6
+y1,double|double,towardzero,4
+y1,double|double,upward,7
+y1f,float|float,scalar,9
+y1f,float|float,downward,9
+y1f,float|float,towardzero,9
+y1f,float|float,upward,9
+yn,double|int|double,scalar,3
+yn,double|int|double,downward,3
+yn,double|int|double,towardzero,3
+yn,double|int|double,upward,4
+ynf,float|int|float,scalar,3
+ynf,float|int|float,downward,4
+ynf,float|int|float,towardzero,3
+ynf,float|int|float,upward,5
+cabs,double|double complex,scalar,1
+cabs,double|double complex,downward,1
+cabs,double|double complex,towardzero,1
+cabs,double|double complex,upward,1
+cabsf,float|float complex,ANY,none
+cacos,double complex|double complex,ANY,none
+cacosf,float complex|float complex,ANY,none
+cacosh,double complex|double complex,ANY,none
+cacoshf,float complex|float complex,ANY,none
+carg,double|double complex,downward,1
+carg,double|double complex,towardzero,1
+carg,double|double complex,upward,1
+cargf,float|float complex,scalar,1
+cargf,float|float complex,downward,2
+cargf,float|float complex,towardzero,2
+cargf,float|float complex,upward,2
+casin,double complex|double complex,ANY,none
+casinf,float complex|float complex,ANY,none
+casinh,double complex|double complex,ANY,none
+casinhf,float complex|float complex,ANY,none
+catan,double complex|double complex,ANY,none
+catanf,float complex|float complex,ANY,none
+catanh,double complex|double complex,ANY,none
+catanhf,float complex|float complex,ANY,none
+ccos,double complex|double complex,ANY,none
+ccosf,float complex|float complex,ANY,none
+ccosh,double complex|double complex,ANY,none
+ccoshf,float complex|float complex,ANY,none
+cexp,double complex|double complex,ANY,none
+cexpf,float complex|float complex,ANY,none
+cimag,double|double complex,ANY,none
+cimagf,float|float complex,ANY,none
+clog,double complex|double complex,ANY,none
+clogf,float complex|float complex,ANY,none
+conj,double complex|double complex,ANY,none
+conjf,float complex|float complex,ANY,none
+cpow,double complex|double complex|complex,ANY,none
+cpowf,float complex|float complex|complex,ANY,none
+cproj,double complex|double complex,ANY,none
+cprojf,float complex|float complex,ANY,none
+creal,double|double complex,ANY,none
+crealf,float|float complex,ANY,none
+csin,double complex|double complex,ANY,none
+csinf,float complex|float complex,ANY,none
+csinh,double complex|double complex,ANY,none
+csinhf,float complex|float complex,ANY,none
+csqrt,double complex|double complex,ANY,none
+csqrtf,float complex|float complex,ANY,none
+ctan,double complex|double complex,ANY,none
+ctanf,float complex|float complex,ANY,none
+ctanh,double complex|double complex,ANY,none
+ctanhf,float complex|float complex,ANY,none

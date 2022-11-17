@@ -1,0 +1,8 @@
+./double/core/stubs/glibc-exp-data.h
+./double/core/stubs/glibc-log-data.h
+./double/core/stubs/glibc-trig-data.h
+./double/core/stubs/glibc-pow-data.h
+./float/core/stubs/glibc-expf-data.h
+./float/core/stubs/glibc-logf-data.h
+./float/core/stubs/glibc-powf-data.h
+./float/core/stubs/glibc-trig-data.h

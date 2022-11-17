@@ -34,7 +34,7 @@ static NONNULL(1) void I_safe_thread_mutex_init(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_mutex_init(mutex, attr))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -44,7 +44,7 @@ static NONNULL(1) void I_safe_thread_mutex_destroy(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(pthread_mutex_destroy(mutex))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -66,7 +66,7 @@ static NONNULL(1) void I_safe_thread_mutex_lock(thread_mutex_t * restrict mutex,
                                                 char const * restrict func,
                                                 uint32_t ln) {
     if (UNLIKELY(thread_mutex_lock(mutex))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -76,7 +76,7 @@ static NONNULL(1) void I_safe_thread_mutex_unlock(
     char const * restrict func,
     uint32_t ln) {
     if (UNLIKELY(thread_mutex_unlock(mutex))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 }
 
@@ -87,7 +87,7 @@ static NONNULL(1) int32_t
                                 uint32_t ln) {
     int32_t ret = thread_mutex_unlock(mutex);
     if (UNLIKELY(ret && (ret != EBUSY))) {
-        I_errdie(fn, func, ln, errno, NULL);
+        I_errdie(fn, func, ln, NULL, errno, NULL);
     }
 
     return ret;

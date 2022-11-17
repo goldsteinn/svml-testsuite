@@ -12,7 +12,7 @@
     cfi_startproc;
 
 #ifndef ENDBR4_NOPS
-#define ENDBR4_NOPS NOP0
+# define ENDBR4_NOPS NOP0
 #endif
 
 #define ENTRY_END(name)                                                        \
@@ -31,37 +31,39 @@
 #define PAGE_ALIGN_CODE .align 4096;
 #define ALIGN_ENTRY     0
 #ifndef ALIGN_ENTRY
-#define ALIGN_ENTRY 0
+# define ALIGN_ENTRY 0
 #endif
 
 #if ALIGN_ENTRY == 0
-#define ENTRY(name) ENTRY_P2ALIGN(name, 12)
+# define ENTRY(name) ENTRY_P2ALIGN(name, 12)
 
 #elif ALIGN_ENTRY == 48
-#define ENTRY_P2ALIGN(name)                                                    \
-    PAGE_ALIGN_CODE;                                                           \
-    nop;                                                                       \
-    .align 32;                                                                 \
-    nop;                                                                       \
-    .align 16;                                                                 \
-    ENTRY_END(name)
+# define ENTRY_P2ALIGN(name)                                                   \
+        PAGE_ALIGN_CODE;                                                       \
+        nop;                                                                   \
+        .align 32;                                                             \
+        nop;                                                                   \
+        .align 16;                                                             \
+        ENTRY_END(name)
 
 #else
-#define ENTRY(name)                                                            \
-    PAGE_ALIGN_CODE;                                                           \
-    nop;                                                                       \
-    .align ALIGN_ENTRY;                                                        \
-    ENTRY_END(name)
+# define ENTRY(name)                                                           \
+        PAGE_ALIGN_CODE;                                                       \
+        nop;                                                                   \
+        .align ALIGN_ENTRY;                                                    \
+        ENTRY_END(name)
 #endif
 
 #if ALIGN_ENTRY == 0
-#define END(name) END_DEF(name)
+# define END(name) END_DEF(name)
 #else
-#define END(name)                                                              \
-    END_DEF(name)                                                              \
-    PAGE_ALIGN_CODE;
+# define END(name)                                                             \
+        END_DEF(name)                                                          \
+        PAGE_ALIGN_CODE;
 #endif
 
+#define cfi_offset_rel_rsp(regn, off)	.cfi_escape 0x10, regn, 0x4, 0x13, \
+					0x77, off & 0x7F | 0x80, off >> 7
 #define cfi_startproc              .cfi_startproc
 #define cfi_endproc                .cfi_endproc
 #define cfi_def_cfa(reg, off)      .cfi_def_cfa reg, off

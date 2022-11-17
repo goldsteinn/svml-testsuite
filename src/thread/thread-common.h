@@ -4,10 +4,12 @@
 #include "thread/cpuset.h"
 
 #ifdef WITH_THREAD
-#include "thread/barrier.h"
-#include "thread/mutex.h"
-#include "thread/spinlock.h"
-#include "thread/thread.h"
+# include "thread/barrier.h"
+# include "thread/mutex.h"
+# include "thread/sema.h"
+# include "thread/spinlock.h"
+# include "thread/thread.h"
+
 #endif
 
 #endif

@@ -1,0 +1,993 @@
+<!DOCTYPE HTML>
+<html  lang="en">
+<head>
+
+  <style>
+      .neo-man-link{
+      display:inline-block !important;  
+      padding:5px 0px !important;
+     }
+     </style>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="5f1aeabb159799b91ec1b673fa0fe91617956a39" content="db9cdbf87544f907caf6aa849678225743313a98" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="apple-mobile-web-app-title" content="The UNIX and Linux Forums"/>
+<meta name="application-name" content="The UNIX and Linux Forums"/>
+<meta name="msapplication-TileColor" content="#da532c"/>
+<meta name="msapplication-TileImage" content="/mstile-144x144.png?v=3e88xkpGyw"/>
+<meta name="theme-color" content="#ffffff"/>
+<meta name="google-site-verification" content="IRSOCxclhQ3ynQHh5zO2js5hftZ4UYTrk_iImCo5sIg" />
+<meta name="msvalidate.01" content="EDE741949CADA915B3ED220E62A57152" />
+<meta name="alexaVerifyID" content="62rdpUkEhJIA-A9UWZGy3zhmEwY" />
+<meta name="verify-v1" content="d7KL/EoqLaqXsOmNGKAC9m73MuzJYton6RNp7Wecu14=" />
+<meta name="verify-v1" content="l8CHnoxZ0N4dXZLnZIz9DCY8WaZdgh5O0EwSUZKPpsM=" />
+<meta name="msvalidate.01" content="FEF742F1D7A4EBB42E768EC90A76AE28" />
+<meta name="p:domain_verify" content="ff6103cb828d784a92626bfcce271562"/>
+<meta name="y_key" content="347c78bea09a90d1" /> 
+<meta property="og:type" content="article" />
+<meta property="og:image:height" content="194"/>
+<meta property="og:image:width" content="371"/>
+<meta property="og:url" content="/man-page/linux/3/fabsf/" />
+<meta property="og:image" content="https://www.unix.com/images/og-image.jpg"/>
+<meta property="article:publisher" content="https://www.unix.com/" />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@unixlinux" />
+<meta name="twitter:domain" content="www.unix.com"/>
+<meta content="@unixlinux" name="twitter:creator" />
+<link rel="preload" href="/scripts/fa/550/css/all.min.css" as="style" />
+<link rel="preload" href="/css/bootstrap-4.3.1-dist/css/bootstrap.min.css" as="style" />
+
+<link rel="preload" href="/scripts/css/neo_mem_panel.min.css"  as="style" />
+
+
+<link rel="publisher" href="https://plus.google.com/+UnixLinuxForums"/>
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3e88xkpGyw"/>
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=3e88xkpGyw"/>
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=3e88xkpGyw"/>
+<link rel="manifest" href="/site.webmanifest?v=3e88xkpGyw"/>
+<link rel="shortcut icon" href="/favicon.ico?v=3e88xkpGyw"/>
+
+<link rel="stylesheet" href="https://www.unix.com/scripts/fa/550/css/all.min.css"/>
+<link rel="stylesheet" href="https://www.unix.com/scripts/css/neo_mem_panel.min.css" />
+<link rel="stylesheet" href="https://www.unix.com/scripts/swiper/435/swiper.min.css" />
+<link rel="stylesheet" href="/scripts/css/navbar.min.css?v=3" />
+<link rel="stylesheet" href="/scripts/css/tb.min.css?v=4" />
+<link rel="stylesheet" href="/scripts/css/npb.min.css?v=6" />
+<link href="/styles/static-neo-2019-sept.min.css?v=10" as="style"/>
+
+
+<link href="https://fonts.googleapis.com/css?family=Anonymous+Pro:400,400i,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Montserrat:400,400i,500,700" rel="stylesheet">
+
+
+
+<link rel="stylesheet" type="text/css" href="https://www.unix.com//styles/static-neo-2019-sept.min.css?v=4" />
+
+
+
+<link rel="stylesheet" href="/css/bootstrap-4.3.1-dist/css/bootstrap.min.css">
+
+
+
+<link rel="stylesheet" href="/clientscript/neo_login.css?v=101">
+<link rel="stylesheet" href="/scripts/css/guest.css?v=101">
+
+
+
+
+
+
+
+<style>
+.do-not-display{
+ display:none;
+}
+.flex-navbar-ads {
+display: flex;
+flex-wrap: wrap;
+align-items: stretch;
+justify-content: space-around;
+margin-top: 20px;
+}
+
+.flex-posts-ads {
+display: flex;
+flex-wrap: wrap;
+align-items: stretch;
+justify-content: space-around;
+border-style: solid;
+border-width: 1px;
+padding: 10px 0px 10px 0px;
+border-color: rgba(126, 133, 192, 0.8);
+margin: 10px 0px 20px 0px;
+}
+</style>
+
+
+
+<style>
+form{margin:0px;}
+label{cursor:default;}
+.normal{font-weight:normal;}
+.inlineimg{vertical-align:middle;}
+.underline{text-decoration:underline;}
+.vbmenu_hilite *{cursor:pointer;}
+.floatcontainer:after, .block_row:after{content:".";display:block;height:0;clear:both;visibility:hidden;}
+.floatcontainer, .block_row{display:inline-block;}
+* html .floatcontainer, * html .block_row{height:1%;}
+.floatcontainer, .block_row{display:block;}
+</style>
+
+
+
+
+<link rel="stylesheet" href="/scripts/css/neo-important.css?v=7" />
+
+
+ 
+
+<link rel="preload" href="/css/bootstrap-4.3.1-dist/js/bootstrap.bundle.js"  as="script"  />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" ></script>
+<script src="https://www.unix.com/clientscript/yui/yahoo-dom-event/yahoo-dom-event.js?v=387" crossorigin="anonymous"></script>
+<script src="https://www.unix.com/clientscript/yui/connection/connection-min.js?v=387"></script>
+<script src="/scripts/neo_global.js?v=335"></script>
+
+<script async src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+  <script>
+    window.googletag = window.googletag || {cmd: []};
+    googletag.cmd.push(function() {
+      googletag.defineSlot('/3662747/UNIX_ZONE_1_300x250', [300, 250], 'div-gpt-ad-1646481977837-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_2_300x250', [300, 250], 'div-gpt-ad-1646482156556-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_3_300x250', [300, 250], 'div-gpt-ad-1646482391684-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_4_300x250', [300, 250], 'div-gpt-ad-1646482447681-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_5_300x250', [300, 250], 'div-gpt-ad-1646482578715-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_6_300x250', [300, 250], 'div-gpt-ad-1646482672781-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_7_300x250', [300, 250], 'div-gpt-ad-1646482883051-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_8_300x250', [300, 250], 'div-gpt-ad-1646482786537-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_9_300x250', [300, 250], 'div-gpt-ad-1646550308175-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/UNIX_ZONE_10_300x250', [300, 250], 'div-gpt-ad-1647137086419-0').addService(googletag.pubads());
+      googletag.defineSlot('/3662747/PRIMIS_VDU', [1, 1], 'div-gpt-ad-1647234971146-0').addService(googletag.pubads());
+      googletag.pubads().collapseEmptyDivs();
+      googletag.pubads().enableSingleRequest();
+      googletag.enableServices();
+    });
+  </script>
+ 
+
+
+
+<script src="/clientscript/neo_login_div.js"></script>
+
+
+
+<script>
+$(document).ready(function() {
+if(sessionStorage.showMember && sessionStorage.thisScript != 'showpost')
+ {
+  if ($('#myMemberPanel').length > 0) {
+  document.getElementById("myMemberPanel").style.width = "0px";
+ }
+}
+});
+
+</script>
+
+
+
+
+
+
+
+<style>
+@media only screen and (max-width: 500px) { 
+ .memberPanelAvatar { 
+    display: none; 
+  } 
+}
+</style>
+
+<style>
+@media only screen and (max-width: 500px) { 
+.nav-search, .nav-get-new { 
+    display: none; 
+  } 
+}
+</style>
+
+
+
+
+
+<script>sessionStorage.setItem("showMember","false");sessionStorage.setItem("SESSIONHASH","");sessionStorage.setItem("thisScript","manpages");sessionStorage.setItem("styleId","38");sessionStorage.setItem("userId","0");sessionStorage.setItem("username","Unregistered");sessionStorage.setItem("loh","");</script>
+
+
+<script>
+<!--
+var SESSIONURL = "s=9d9ab95f4ecd89cfb050e37b105318fa&";
+var SECURITYTOKEN = "guest";
+var SESSIONHASH = "";
+var IMGDIR_MISC = "/images/misc";
+var vb_disable_ajax = parseInt("0", 10);
+//-->
+</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108360624-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-108360624-1');
+</script>
+
+
+
+<style>
+body, div, span, a, legend, button,li,strong,input,textarea,.smallfont,label, fieldset, .bginput, .form-control,td,.thead,table,.table,.tcat,.vbmenu_control,.btn, .vbmenu_option_alink,.vbmenu_option, h1,h2,b{
+font-family: 'Montserrat', sans-serif;
+}
+</style>
+
+<META HTTP-EQUIV="Expires" CONTENT="max-age=11111111110" />
+<META HTTP-EQUIV="Cache-Control" CONTENT="public" /><script type="application/ld+json">
+{
+	"@context": "http://schema.org",
+	"@type": "WebSite",
+	"url": "https://www.unix.com/",
+	"potentialAction": {
+		"@type": "SearchAction",
+		"target": "https://www.unix.com/search.php?do=process&query={search_term_string}",
+		"query-input": "required name=search_term_string"
+	}
+}
+</script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" type="text/css" href="https://www.unix.com//styles/static-neo-2019-sept.min.css?v=4" />
+
+<link rel="stylesheet" type="text/css" href="/scripts/css/man-page.css?v=3" />
+<link rel="stylesheet" type="text/css" href="/styles/unix_important.css?v=384" />
+
+
+<script>
+<!--
+var SESSIONURL = "s=9d9ab95f4ecd89cfb050e37b105318fa&";
+var SECURITYTOKEN = "guest";
+var IMGDIR_MISC = "/images/misc";
+var vb_disable_ajax = parseInt("0", 10);
+//-->
+</script>
+
+
+<meta name="og:title" content="fabsf(3)  [linux man page]" />
+<meta name="twitter:title" content="fabsf(3)  [linux man page]" />
+<title>fabsf(3)  [linux man page]</title>
+
+
+
+<meta name="description" content="The fabs() functions return the absolute value of the floating-point number x. RETURN VALUE These functions return the absolute value of x. If x is a NaN, a NaN is returned. If x is -0, +0 is returned. If x is negative infinity or" />
+<meta name="og:description" content="The fabs() functions return the absolute value of the floating-point number x. RETURN VALUE These functions return the absolute value of x. If x is a NaN, a NaN is returned. If x is -0, +0 is returned. If x is negative infinity or" />
+<meta name="twitter:description" content="The fabs() functions return the absolute value of the floating-point number x. RETURN VALUE These functions return the absolute value of x. If x is a NaN, a NaN is returned. If x is -0, +0 is returned. If x is negative infinity or" />
+
+
+
+<meta name="keywords" content="fabs,centos,man,double,linux,fabsf,unix,absolute,man page,linux,unix,fabsf man page, fabsf command,linux man page,linux command" />
+
+
+
+<style>
+div.neo-man-table-output-wrapper, span.neo-man-table-output-wrapper, a.neo-man-link,b{
+font-family: 'Anonymous Pro', monospace;
+}
+
+.smallfont{
+font-family: 'Montserrat', sans-serif;
+}
+.manh2a,.manh2c{
+ margin-bottom:5px;
+}
+.manh2b{
+ margin-bottom:15px;
+}
+</style>
+
+
+<style>
+pre{
+font-family: 'Anonymous Pro', monospace;
+font-size:1.4em;
+width:100%;
+margin-left:auto;
+margin-right:auto;
+}
+.neo-man-caps, .neo-man-header{
+   color:midnightblue;
+}
+#neo-man-page-output > i{
+   color:navy;
+    width:100%;
+}
+</style>
+</head>
+<body style="background-color:white;">
+
+<!-- content table -->
+
+<div class="page neo-spacer-open" style="margin-bottom:10px;">
+
+
+
+
+
+
+<!-- end content table -->
+
+
+
+
+
+
+
+  <form action="https://www.unix.com/search.php?do=process" method="post">
+  <input type="hidden" name="do" value="process" />
+  <input type="hidden" name="quicksearch" value="1" />
+  <input type="hidden" name="childforums" value="1" />
+  <input type="hidden" name="exactname" value="1" />
+  <input type="hidden" name="s" value="9d9ab95f4ecd89cfb050e37b105318fa" />
+  <input type="hidden" name="securitytoken" value="guest" />
+  <input type="hidden" name="showposts" value="0" id="rb_nb_sp0_neo" tabindex="1002" />
+ <div id="bs-search-bar" class="nav-top-margin"  style="margin-bottom:20px;">
+ <div class="input-group">
+<span class="input-group-addon"><button class="btn btn-light" style="background-color:  #f0f0f7;border:1px solid silver;color:gray;"><i class="fas fa-search"></i></button></span>
+<input type="search" class="form-control"  style="background-color: lightyellow" name="query"  tabindex="1001" placeholder="Search The UNIX and Linux Forums (Quick Search)"/></div>
+  </div>                  
+</form>
+
+
+
+
+
+
+
+<div id="main-navbar" class="neo-table-border nav-top-margin">
+<table class="table nav-main" style="margin:0px;">
+    <tr class="nav-strip">
+        <td class="alt1 nav-basic">
+           <div class="d-flex justify-content-between flex-wrap" style="text-align:center;">
+                    <div class="nav-top-left-wrap">
+<div class="nav-top-left">
+<a class="nav-top-left-link" href="https://www.unix.com"><span>The UNIX and Linux Forums</span></a> <span style="color:#170078"></span>
+</div>
+</div>
+
+
+                    
+
+<div class="alt1 neo-toolbit nav-toolbit align-middle" title="Login or Register">
+<span class="alt1 nav-guest-panel"  onclick="window.open('https://community.unix.com/')" ><i style="color:steelblue;" class="fas fa-user nav-guestXX"></i></span>	
+</div>
+
+
+
+
+<script src="/clientscript/jquery/neo_navbar_divs_top_right.js?v=1"></script>
+
+           </div>
+        </td>
+    </tr>
+</table>
+</div>
+
+
+        
+<nav>
+    <div id="neo_navbar_divs_center_menu_bar" class="d-flex justify-content-center flex-wrap neo-table-divs-border">
+       
+   
+        <div style="margin:0px 5px 0px 0px;">
+            <span class="vbmenu_control" style="margin-left:10px;"><a class="neo-navbar-toolbit"
+                    title="Go to Forum Page" href="/">Forum Home</a></span>
+        </div>
+        <div style="margin:0px 5px 0px 5px;">
+            <span id="navbar_man" class="vbmenu_control"><a class="neo-navbar-toolbit"
+                    href="https://www.unix.com/man-page/opensolaris/1/man/" title="">Linux and Unix Man Pages</a>
+                <script> vbmenu_register("navbar_man"); </script></span>
+        </div>
+     
+        
+            <div style="margin:0px 5px 0px 5px;">
+                <span id="navbar_search" class="vbmenu_control neo-navbar-toolbitXXX" style="border:0;" title=""><a href="/search.php?s=9d9ab95f4ecd89cfb050e37b105318fa" accesskey="4">Search Forums</a>
+                    
+                        <script> vbmenu_register("navbar_search"); </script>
+                    
+                </span>
+            </div>
+            <div style="margin:0px 5px 0px 5px;">
+            <span id="navbar_search" class="vbmenu_control neo-navbar-toolbitXXX" style="border:0;" title=""><a href="https://community.unix.com/search?expanded=true" accesskey="4">Search Community Posts</a></span>
+            </div>
+
+
+
+        
+        
+
+            <div class="do-not-display" style="margin:0px 5px 0px 5px;">
+                <span class="vbmenu_control neo-navbar-toolbit"
+                    title=""><a href="https://www.unix.com/search.php?do=getdaily">Today's Posts</a></span>
+            </div>
+ 
+
+            <div class="do-not-display" style="margin:0px 5px 0px 5px;">
+                <span id="usercptools" class="vbmenu_control"><a
+                        class="neo-navbar-toolbit" href="#usercptools" accesskey="3" title="">Quick Links</a>
+                    <script> vbmenu_register("usercptools"); </script></span>
+            </div>
+
+        
+        
+        
+            
+        
+    </div>
+
+    <div class="vbmenu_popup" id="navbar_man_menu" style="display:none;text-align:left;margin:0px;padding:0px;border:1px solid silver;">
+            <table class="table table-sm table-hover" style="margin:0px;padding:0px;border:0;">
+                <tr>
+                    <td class="thead">Man Pages</td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/man-page-collection.php?os=redhat">RedHat Commands</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/man-page-collection.php?os=opensolaris">OpenSolaris Commands</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/man-page-collection.php?os=linux">Linux Commands</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/man-page-collection.php?os=sunos">SunOS Commands</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/man-page-collection.php?os=freebsd">FreeBSD Commands</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/unix-commands.php??s=9d9ab95f4ecd89cfb050e37b105318fa">All UNIX
+                            Man Pages</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/linux-commands.php??s=9d9ab95f4ecd89cfb050e37b105318fa">All
+                            Linux Man Pages</a></td>
+                </tr>
+                <tr>
+                    <td class="vbmenu_option"><a href="/man-page-repository.php">Full Man Repository</a></td>
+                </tr>
+            </table>
+        </div>
+    </nav>
+    
+
+
+
+<section class="neo-table-border d-flex justify-content-around" style="padding:20px 20px;margin-top:20px;margin-bottom:20px;">
+
+<div  class="d-flex justify-content-around" style="margin:20px 0px 20px 0px;">
+<div><a role="button" class="btn btn-primary" style="padding:15px 20px 15px 20px;" href="https://community.unix.com"><span style="color:white;">Login or Register to Ask a Question and Join Our Community</span></a></div>
+</div>
+</section>
+
+
+
+        
+
+
+
+
+
+<!-- / nav buttons bar -->
+
+
+
+
+<!-- NAVBAR POPUP MENUS -->
+  
+  <!-- header quick search form -->
+  <div class="vbmenu_popup" id="navbar_search_menu" style="display:none;text-align:left;margin-bottom:0px;padding:5px;background-color:#F0F0F7;border:1px solid silver;">
+  <table class="table table-sm" style="border:0;margin-bottom:0px;">
+  <tr>
+  <td class="thead">Search Forums</td>
+  </tr>
+  <tr>
+  <td class="vbmenu_option" title="nohilite">
+  <form action="https://www.unix.com/search.php?do=process" method="post">
+  <input type="hidden" name="do" value="process" />
+  <input type="hidden" name="quicksearch" value="1" />
+  <input type="hidden" name="childforums" value="1" />
+  <input type="hidden" name="exactname" value="1" />
+  <input type="hidden" name="s" value="9d9ab95f4ecd89cfb050e37b105318fa" />
+  <input type="hidden" name="securitytoken" value="guest" />
+  <div>
+  <input type="text" class="bginput form-control" name="query" size="25" tabindex="1001" />
+   </div>
+   <div style="margin:10px 0px 10px 0px;text-align:center;">
+  <input type="submit" class="button btn btn-primary btn-block" value="Search" tabindex="1004" />
+  </div>
+  <div style="margin-top:6px">
+  <label for="rb_nb_sp0"><input type="radio" name="showposts" value="0" id="rb_nb_sp0" tabindex="1002" checked="checked" />Show Threads . 
+  </label>
+  &nbsp;
+  <label for="rb_nb_sp1"><input type="radio" name="showposts" value="1" id="rb_nb_sp1" tabindex="1003" />Show Posts</label>
+  </div>
+  </form>
+  </td>
+  </tr>
+  
+  
+    <tr>
+    <td class="vbmenu_option"><a href="https://www.unix.com/tags.php?s=9d9ab95f4ecd89cfb050e37b105318fa">Tag Search</a></td>
+    </tr>
+  
+  <tr>
+  <td class="vbmenu_option"><a href="https://www.unix.com/search.php?s=9d9ab95f4ecd89cfb050e37b105318fa" accesskey="4" rel="nofollow">Advanced Search</a></td>
+  </tr>
+   
+  
+  </table>
+  </div>
+<!-- / header quick search form -->
+
+
+
+<!-- user cp tools menu quicklinks table-->
+<div class="vbmenu_popup" id="usercptools_menu" style="display:none; text-align:left;border:1px solid silver;">
+<table class="table table-sm" style="margin-bottom:0px;border-spacing:1px;border:0;">
+<tr><td class="thead">Quick Links</td></tr>
+
+
+
+<tr><td class="vbmenu_option"><a href="/forum-support-area-for-unregistered-users-and-account-problems/" accesskey="5">Contact Us</a></td></tr>
+
+<tr class="do-not-display"><td class="vbmenu_option"><a href="/misc.php?do=cfrules?s=9d9ab95f4ecd89cfb050e37b105318fa" accesskey="5">Forum Rules</a></td></tr>
+<tr class="do-not-display"><td class="vbmenu_option"><a href="https://www.unix.com/search.php?do=getdaily">Today's Posts</a></td></tr>
+
+
+
+   
+<tr><td class="vbmenu_option"><a href="/faq.php?s=9d9ab95f4ecd89cfb050e37b105318fa" accesskey="5">FAQ</a></td></tr>
+
+
+        <tr><td class="vbmenu_option"><a href="/album.php?s=9d9ab95f4ecd89cfb050e37b105318fa&amp;u=0">Pictures &amp; Albums </a></td></tr>
+<tr><td class="vbmenu_option"><a href="https://www.unix.com/all_albums.php?s=9d9ab95f4ecd89cfb050e37b105318fa">All Albums</a></td></tr>
+    
+
+
+ 
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+<tr><td class="thead"><span style="font-weight:bold;">Miscellaneous</span></td></tr>
+
+<tr class="do-not-display"><td class="vbmenu_option"><a href="/what-is-my-ip.php">What is My IP</a></td></tr>
+<tr class="do-not-display"><td class="vbmenu_option"><a href="/whois.php">Whois</a></td></tr>
+
+
+
+<tr><td class="vbmenu_option"><a href="/forumdisplay.php?s=9d9ab95f4ecd89cfb050e37b105318fa&amp;do=markread">Mark Forums Read</a></td></tr>
+
+
+
+</table>
+</div>
+<!-- / user cp tools menu quicklinks table -->
+
+<!-- / NAVBAR POPUP MENUS -->
+
+
+
+
+<p>
+    
+        <div id="neo-h1bits">
+            
+        </div>
+    
+    <P>
+        
+
+
+        
+
+
+
+
+
+
+
+<div class="man-h1-wrap">
+<div id="neo-man-h1-bits-head" class="tborder man-h1-head "><div id="neo-man-h1bits-head2"><h2 class="man-h2">Linux and UNIX Man Pages</h2></div></div>
+</div>
+
+
+
+<div id="zone-last" class="flex-posts-ads" style="width:100%;padding-top:15px;">
+    <div id="zone-left-1">
+        <div id='div-gpt-ad-1646481977837-0' style='min-width: 300px; min-height: 250px;'>
+          <script>
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1646481977837-0'); });
+          </script>
+        </div>
+    </div>
+    <div id="zone-right-2X">
+         <div id='div-gpt-ad-1646482156556-0' style='min-width: 300px; min-height: 250px;'>
+          <script>
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1646482156556-0'); });
+          </script>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<div style="overflow:auto;display:none">
+<div class="tcat man-search-form" id="neo-man-table-search-form-head">
+Linux & Unix Commands - Search Man Pages
+</div>
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+<article>
+<div class="man-h1-article">
+<div class="tborder man-h1-head ">
+<div><h1 class="man-h2" style="font-family:'Montserrat',sans-serif;">fabsf(3)  [linux man page]</h1></div>
+</div>
+</div>
+
+<div id="neo-man-table-output-wrapper" class="man-out-wrap" style="margin-left:auto;margin-right:auto;">
+<div id="neo-man-table-output" class="d-flex justify-content-around bgimg">
+
+
+
+<pre id="neo-man-page-output" style="margin-left:auto;margin-right:auto;"><a  class="neo-man-link man-links"  href="/man-page/linux/3/FABS/">FABS(3)</a> 						     Linux Programmer&#039;s Manual							   <a  class="neo-man-link man-links"  href="/man-page/linux/3/FABS/">FABS(3)</a>
+
+<span class="neo-man-caps"><b>NAME</b></span><br>
+       fabs, fabsf, fabsl - absolute value of floating-point number
+
+<span class="neo-man-caps"><b>SYNOPSIS</b></span><br>
+       #include &lt;math.h&gt;
+
+       double fabs(double x);
+       float fabsf(float x);
+       long double fabsl(long double x);
+
+       Link with <b><i>-lm.
+
+</i></b>   Feature Test Macro Requirements for glibc (see <a  class="neo-man-link man-links"  href="/man-page/linux/7/feature_test_macros/">feature_test_macros(7)</a>):
+
+       fabsf(), fabsl():
+	   _BSD_SOURCE || _SVID_SOURCE || _XOPEN_SOURCE &gt;= 600 || _ISOC99_SOURCE || _POSIX_C_SOURCE &gt;= 200112L;
+	   or cc <b><i>-std=c99
+</i></b>
+<span class="neo-man-caps"><b>DESCRIPTION</b></span><br>
+       The fabs() functions return the absolute value of the floating-point number x.
+
+<span class="neo-man-caps"><b>RETURN VALUE</b></span><br>
+       These functions return the absolute value of x.
+
+       If x is a NaN, a NaN is returned.
+
+       If x is <b><i>-0</i></b>, +0 is returned.
+
+       If x is negative infinity or positive infinity, positive infinity is returned.
+
+<span class="neo-man-caps"><b>ERRORS</b></span><br>
+       No errors occur.
+
+<span class="neo-man-caps"><b>CONFORMING TO</b></span><br>
+       C99, POSIX.1-2001.  The variant returning double also conforms to SVr4, 4.3BSD, C89.
+
+<span class="neo-man-caps"><b>SEE ALSO</b></span><br>
+       <a  class="neo-man-link man-links"  href="/man-page/linux/3/abs/">abs(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/linux/3/cabs/">cabs(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/linux/3/ceil/">ceil(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/linux/3/floor/">floor(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/linux/3/labs/">labs(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/linux/3/rint/">rint(3)</a>
+
+<span class="neo-man-caps"><b>COLOPHON</b></span><br>
+       This  page is part of release 3.27 of the Linux man-pages project.  A description of the project, and information about reporting bugs, can
+       be found at http://www.kernel.org/doc/man-pages/.
+
+								    2010-09-20								   <a  class="neo-man-link man-links"  href="/man-page/linux/3/FABS/">FABS(3)</a></pre>
+
+</div>
+</div>
+
+
+
+
+
+
+<div class="man-h1-wrap" style="margin-top:20px !important;">
+<div id="neo-man-h1-bits-head" class="tborder man-h1-head "><div id="neo-man-h1bits-head2"><h2 class="man-h2">Check Out this Related Man Page</h2></div></div>
+</div>
+<pre id="neo-man-page-output" style="margin-left:auto;margin-right:auto;"><a  class="neo-man-link man-links"  href="/man-page/centos/3/FABS/">FABS(3)</a> 						     Linux Programmer&#039;s Manual							   <a  class="neo-man-link man-links"  href="/man-page/centos/3/FABS/">FABS(3)</a>
+
+<span class="neo-man-caps"><b>NAME</b></span><br>
+       fabs, fabsf, fabsl - absolute value of floating-point number
+
+<span class="neo-man-caps"><b>SYNOPSIS</b></span><br>
+       #include &lt;math.h&gt;
+
+       double fabs(double x);
+       float fabsf(float x);
+       long double fabsl(long double x);
+
+       Link with <b><i>-lm.
+
+</i></b>   Feature Test Macro Requirements for glibc (see <a  class="neo-man-link man-links"  href="/man-page/centos/7/feature_test_macros/">feature_test_macros(7)</a>):
+
+       fabsf(), fabsl():
+	   _BSD_SOURCE || _SVID_SOURCE || _XOPEN_SOURCE &gt;= 600 || _ISOC99_SOURCE || _POSIX_C_SOURCE &gt;= 200112L;
+	   or cc <b><i>-std=c99
+</i></b>
+<span class="neo-man-caps"><b>DESCRIPTION</b></span><br>
+       These functions return the absolute value of the floating-point number x.
+
+<span class="neo-man-caps"><b>RETURN VALUE</b></span><br>
+       These functions return the absolute value of x.
+
+       If x is a NaN, a NaN is returned.
+
+       If x is <b><i>-0</i></b>, +0 is returned.
+
+       If x is negative infinity or positive infinity, positive infinity is returned.
+
+<span class="neo-man-caps"><b>ERRORS</b></span><br>
+       No errors occur.
+
+<span class="neo-man-caps"><b>ATTRIBUTES</b></span><br>
+   Multithreading (see <a  class="neo-man-link man-links"  href="/man-page/centos/7/pthreads/">pthreads(7)</a>)
+       The fabs(), fabsf(), and fabsl() functions are thread-safe.
+
+<span class="neo-man-caps"><b>CONFORMING TO</b></span><br>
+       C99, POSIX.1-2001.  The variant returning double also conforms to SVr4, 4.3BSD, C89.
+
+<span class="neo-man-caps"><b>SEE ALSO</b></span><br>
+       <a  class="neo-man-link man-links"  href="/man-page/centos/3/abs/">abs(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/centos/3/cabs/">cabs(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/centos/3/ceil/">ceil(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/centos/3/floor/">floor(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/centos/3/labs/">labs(3)</a>, <a  class="neo-man-link man-links"  href="/man-page/centos/3/rint/">rint(3)</a>
+
+<span class="neo-man-caps"><b>COLOPHON</b></span><br>
+       This  page is part of release 3.53 of the Linux man-pages project.  A description of the project, and information about reporting bugs, can
+       be found at http://www.kernel.org/doc/man-pages/.
+
+								    2013-07-10								   <a  class="neo-man-link man-links"  href="/man-page/centos/3/FABS/">FABS(3)</a></pre>
+
+
+
+
+
+
+
+</article>
+<div style="margin-top:10px;">Man Page</div>
+
+<div id="neo_zones_7_8_ads_template" class="d-flex justify-content-around" style="width:100%;padding-top:15px;">
+    <div id="zone-left-7">
+       <div id='div-gpt-ad-1646482883051-0' style='min-width: 300px; min-height: 250px;'>
+          <script>
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1646482883051-0'); });
+          </script>
+        </div>
+    </div>
+    <div id="zone-right-8">
+      <div id='div-gpt-ad-1646482786537-0' style='min-width: 300px; min-height: 250px;'>
+          <script>
+            googletag.cmd.push(function() { googletag.display('div-gpt-ad-1646482786537-0'); });
+          </script>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<!-- /Body Code -->
+<div style="margin-top:20px;">
+
+    <div id="primis-neo" style="text-align:center;">
+        <div class="neo-table-border alt1" style="padding:20px 0px;margin-left:auto;margin-right:auto;text-align:center;">
+            <h2 style="font-size:1.4em;margin-left:auto;margin-right:auto;text-align:center';"><strong>Featured Tech Videos</strong></h2>
+        </div>
+        
+        <div class="neo-table-border alt1 d-flex justify-content-around" style="padding:20px 0px 0px  0px;margin:20px 0px 0px 0px;overflow:auto;">  
+            
+                <div id="neo-no-gam">
+                <script src="https://live.primis.tech/live/liveView.php?s=99510&cbuster=2719493947&pubUrl=https://www.unix.com/man-page/linux/3/fabsf/&x=%%WIDTH%%&y=%%HEIGHT%%&vp_content=plembed180ctkjrgivx&subId=manpages"></script>
+               </div>
+            
+        </div>
+    </div>
+
+
+</div>
+<footer style="font-family: 'Montserrat', sans-serif;">
+<div style="background-color:white;margin-top:20px;">
+
+<div id="timegmt" class="smallfont" style="text-align:center;font-family:Montserrat, san-sarif;">All times are GMT -4. The time now is <span class="time">09:11 PM</span>.</div>
+
+<script  src="/clientscript/neo_member_panel.js?v=4"></script>
+
+
+<!-- /content area div was table -->
+
+<form action="https://www.unix.com" method="get">
+	
+<div style="padding:0px; margin:0px; border:0;width:100%;text-align:center;">
+</div>
+
+<div style="background-color:white;">
+<br />
+
+<div style="text-align:center; width:100%;background-color:white;">
+
+<div class="smallfont" style="width:100%;background-color:white;padding-left:20px;padding-right:20px;">
+<strong>
+<span class="neo-footer-contactus"><a href="/sendmessage.php?s=9d9ab95f4ecd89cfb050e37b105318fa" style="text-decoration:none;" rel="nofollow" accesskey="9">Contact Us</a></span>
+<span class="neo-footer"> - <a href="https://www.unix.com/" style="text-decoration:none;">The UNIX and Linux Forums - unix commands, linux commands, linux server, linux ubuntu, shell script, linux distros.</a> -</span> 
+
+<span class="neo-footer"><a style="text-decoration:none;" href="https://buysellads.com/buy/detail/215189" rel="nofollow" accesskey="9">Advertising</a> - </span>
+
+
+
+
+
+
+<a style="text-decoration:none;" href="#top" onclick="self.scrollTo(0, 0); return false;"><span class="neo-footer">Top</span></a>
+</strong>
+</div>
+</div>
+</div>
+</form>
+</div>
+
+
+
+
+
+
+
+<script>
+<!--
+	// Main Javascript Initialization
+	unix_init(); 
+//-->
+</script>
+
+<div  style="text-align:center; width:100%; padding-top:0px;padding-bottom:0px;">
+
+	
+	
+<div style="text-align:center;background-color:white;color:black;width:100%;padding:20px;font-size:0.8em;"><span>Unix & Linux Forums Content Copyright <i class="far fa-copyright" style="font-size:0.9em"></i> 1993-2022. All Rights Reserved.</span> </div>
+        
+
+
+<div style="text-align:center;background-color:white;color:black;width:100%;padding:0px;font-size:0.8em;"><span><a href="https://www.unix.com/faq.php?faq=gdpr#faq_privacy">Privacy Policy</a></span> </div>
+        
+</div>
+
+
+
+<script>var vbuserId=0;var vbgroupId=1;var vbthisScript="manpages";var vbAvatar=0;var vbRandom="867765306";var vbtheURL="";var noBillboards=true;var noBillboardsNav=true;</script>
+
+
+
+
+<div id="cybtopstats_lprel_area"></div>
+
+
+
+
+
+
+
+
+<div style="text-align:center;background-color:white;color:rgba(0,0,0,0.2);">
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.3.5/js/swiper.min.js"></script>
+
+
+
+<script src="https://www.unix.com/clientscript/credits_ajax_postadd.js"></script>
+
+<script src="https://www.unix.com/css/bootstrap-4.3.1-dist/js/bootstrap.bundle.js"></script>
+
+<script src="https://www.unix.com/clientscript/js.cookie.min.js"></script>
+
+
+
+<script>
+$(function(){
+ $('input[type="checkbox"]').css({"margin":"0px 5px 0px 0px"});
+ $('input[type="radio"]').css({"margin":"0px 5px 0px 0px"});
+ $('select').css({"margin":"7px 0px 0px 0px"});
+});
+</script>
+
+
+
+<script>
+$(document).ready(function(){
+if(sessionStorage.thisScript != 'member')
+{
+
+$(".neo-navbar-toolbit, .imagebutton").tooltip({
+            animation: true,
+            delay: {
+                show: 800,
+                hide: 100
+            },
+            offset: "0,10",
+            placement: "top"
+        })
+}
+
+
+});
+</script>
+
+
+
+
+<script src="/clientscript/jquery/neo_footer_min.js?v=12"></script>
+
+<script src="/clientscript/jquery/neo_footer2_min.js?v=9"></script>
+
+<script src="/clientscript/jquery/neo_footer_final.js?v=4"></script>
+
+
+
+
+
+
+
+<script>
+$(function(){
+$('td').addClass('align-middle');
+});
+</script>
+
+</footer>
+<?php phpinfo(); ?>
+</div>
+<script src="/scripts/vue/dist/vue.js"></script>
+<script src="/scripts/vue/neo/js/unixtime.js"></script>
+
+
+</body>
+</html>

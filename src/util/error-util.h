@@ -58,9 +58,16 @@
 #define I_die_assert_ONE(cond)                                                 \
     I_assert_macro_base(cond, I_die, I_ERR_ARGS, V_TO_STR(cond), NULL)
 
-#define die(msg, ...)    I_die(I_ERR_ARGS, NULL, msg, ##__VA_ARGS__);
-#define errdie(msg, ...) I_errdie(I_ERR_ARGS, NULL, errno, msg, ##__VA_ARGS__);
-#define msg_die(...)     I_msg_die(__VA_ARGS__)
+#define msg_die(...) I_msg_die(__VA_ARGS__)
+
+#define die(...)    CAT(I_die_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__);
+#define errdie(...) CAT(I_errdie_, IS_EMPTY(__VA_ARGS__))(__VA_ARGS__);
+
+#define I_die_1(...) I_die(I_ERR_ARGS, NULL, NULL)
+#define I_die_0(...) I_die(I_ERR_ARGS, NULL, __VA_ARGS__)
+
+#define I_errdie_1(...) I_errdie(I_ERR_ARGS, NULL, errno, NULL)
+#define I_errdie_0(...) I_errdie(I_ERR_ARGS, NULL, errno, __VA_ARGS__)
 
 // #define WITH_DBG_PRINT
 #ifdef WITH_DBG_PRINT
