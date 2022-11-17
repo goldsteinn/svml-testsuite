@@ -51,7 +51,7 @@ ENTRY(expf_8_avx2_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      dev_sexp_data(%rip), %rax
+        movq      GOTREF(dev_sexp_data)(%rip), %rax
         vmovaps   %ymm0, %ymm2
         vmovups __sInvLn2(%rax), %ymm7
         vmovups __sShifter(%rax), %ymm4

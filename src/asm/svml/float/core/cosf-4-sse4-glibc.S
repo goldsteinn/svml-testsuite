@@ -53,7 +53,7 @@ ENTRY (cosf_4_sse4_glibc)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm4
-        movq      glibc_s_trig_data(%rip), %rax
+        movq      GOTREF(glibc_s_trig_data)(%rip), %rax
         movups __sHalfPI(%rax), %xmm1
         movups __sRShifter(%rax), %xmm5
 

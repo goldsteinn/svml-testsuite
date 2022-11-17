@@ -42,7 +42,7 @@ ENTRY (log_4_avx2_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      glibc_dlog_data(%rip), %rax
+        movq      GOTREF(glibc_dlog_data)(%rip), %rax
         vmovdqa   %ymm0, %ymm5
 
 /* isolate exponent bits */

@@ -45,7 +45,7 @@ ENTRY (sin_8_avx512_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      glibc_d_trig_data(%rip), %rax
+        movq      GOTREF(glibc_d_trig_data)(%rip), %rax
         vpternlogd $0xff, %zmm1, %zmm1, %zmm14
         vmovups __dAbsMask(%rax), %zmm7
         vmovups __dInvPI(%rax), %zmm2

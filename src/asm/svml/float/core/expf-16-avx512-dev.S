@@ -53,7 +53,7 @@ ENTRY (expf_16_avx512_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      dev_sexp_data(%rip), %rax
+        movq      GOTREF(dev_sexp_data)(%rip), %rax
 
 /* r = x-n*ln2_hi/2^k */
         vmovaps   %zmm0, %zmm7

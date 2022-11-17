@@ -52,7 +52,7 @@ ENTRY (exp_8_avx512_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      glibc_dexp_data(%rip), %rax
+        movq      GOTREF(glibc_dexp_data)(%rip), %rax
 
 /* table lookup for dT[j] = 2^(j/2^k) */
         kxnorw    %k1, %k1, %k1

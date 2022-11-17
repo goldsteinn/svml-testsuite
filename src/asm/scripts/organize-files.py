@@ -592,6 +592,7 @@ def fixup_data_ref(line):
     assert pcrel in known_data_gotdefs
     pcrel = pcrel.replace("@GOTPCREL", "")
     pcrel = pcrel.replace("__svml", "[DEV-OR-GLIBC]")
+    pcrel = "GOTREF({})".format(pcrel)
     assert line.count(cur_pcrel) == 1
 
     return line.replace(cur_pcrel, pcrel)

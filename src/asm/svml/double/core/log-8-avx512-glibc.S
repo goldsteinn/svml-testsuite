@@ -44,7 +44,7 @@ ENTRY (log_8_avx512_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      glibc_dlog_data(%rip), %rax
+        movq      GOTREF(glibc_dlog_data)(%rip), %rax
         vmovaps   %zmm0, %zmm3
         kxnorw    %k3, %k3, %k3
         vmovups _Two10(%rax), %zmm2

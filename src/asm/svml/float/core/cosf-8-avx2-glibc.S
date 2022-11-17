@@ -53,7 +53,7 @@ ENTRY (cosf_8_avx2_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      glibc_s_trig_data(%rip), %rax
+        movq      GOTREF(glibc_s_trig_data)(%rip), %rax
         vmovaps   %ymm0, %ymm2
         vmovups __sRShifter(%rax), %ymm5
         vmovups __sPI1_FMA(%rax), %ymm7

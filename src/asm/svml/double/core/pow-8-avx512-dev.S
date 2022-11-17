@@ -97,7 +97,7 @@ ENTRY (pow_8_avx512_v_dev)
         kxnorw    %k2, %k2, %k2
         kxnorw    %k3, %k3, %k3
         vpmovqd   %zmm10, %ymm7
-        movq      dev_dpow_data(%rip), %rax
+        movq      GOTREF(dev_dpow_data)(%rip), %rax
         vmovaps   %zmm1, %zmm6
         vpsrlq    $32, %zmm6, %zmm13
 

@@ -45,10 +45,10 @@ is_seq(uint8_t const * buf, uint64_t sz) {
     return 1;
 }
 
-static __thread int32_t max_ulp = 0;
+static __thread int32_t I_max_ulp_ = 0;
 void
 set_max_ulp(int32_t value) {
-    max_ulp = value;
+    I_max_ulp_ = value;
 }
 
 
@@ -68,10 +68,10 @@ set_max_ulp(int32_t value) {
         if (isinf(a) && isinf(b)) {                                            \
             return 1;                                                          \
         }                                                                      \
-        if (max_ulp == 0) {                                                    \
+        if (I_max_ulp_ == 0) {                                                    \
             return a == b;                                                     \
         }                                                                      \
-        if (max_ulp < 0) {                                                     \
+        if (I_max_ulp_ < 0) {                                                     \
             a -= b;                                                            \
             if (a < 0) {                                                       \
                 a = -a;                                                        \
@@ -92,10 +92,10 @@ set_max_ulp(int32_t value) {
         if (a_int < 0) {                                                       \
             a_int = -a_int;                                                    \
         }                                                                      \
-        if (a_int > TYPEOF_MAX(max_ulp) || a_int < TYPEOF_MIN(max_ulp)) {      \
+        if (a_int > TYPEOF_MAX(I_max_ulp_) || a_int < TYPEOF_MIN(I_max_ulp_)) {      \
             return 0;                                                          \
         }                                                                      \
-        if (CAST(get_type(max_ulp), a_int) > max_ulp) {                        \
+        if (CAST(get_type(I_max_ulp_), a_int) > I_max_ulp_) {                        \
             return 0;                                                          \
         }                                                                      \
         return 1;                                                              \
@@ -113,3 +113,4 @@ int32_t
 I_dbl_eq(double a, double b) {
     return flt_compare(double)(a, b);
 }
+

@@ -43,7 +43,7 @@ ENTRY(logf_8_avx2_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      glibc_slog_data(%rip), %rax
+        movq      GOTREF(glibc_slog_data)(%rip), %rax
         vmovaps   %ymm0, %ymm2
         vmovups _iBrkValue(%rax), %ymm6
         vmovups _iLoRange(%rax), %ymm1

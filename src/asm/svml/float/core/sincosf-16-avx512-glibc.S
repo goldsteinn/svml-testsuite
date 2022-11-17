@@ -61,7 +61,7 @@ ENTRY (sincosf_16_avx512_l4l4_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1344, %rsp
-        movq      glibc_s_trig_data(%rip), %rax
+        movq      GOTREF(glibc_s_trig_data)(%rip), %rax
         vmovaps   %zmm0, %zmm4
         vmovups __sAbsMask(%rax), %zmm3
         vmovups __sInvPI(%rax), %zmm5

@@ -56,7 +56,7 @@ ENTRY (sinf_16_avx512_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      dev_s_trig_data(%rip), %rax
+        movq      GOTREF(dev_s_trig_data)(%rip), %rax
 
 /* Check for large and special values */
         vpternlogd $0xff, %zmm14, %zmm14, %zmm14

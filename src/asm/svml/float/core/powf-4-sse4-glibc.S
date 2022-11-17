@@ -100,7 +100,7 @@ ENTRY (powf_4_sse4_v_glibc)
         movups    %xmm9, 96(%rsp)
         movaps    %xmm0, %xmm4
         cvtps2pd  %xmm0, %xmm9
-        movq      glibc_spow_data(%rip), %rdx
+        movq      GOTREF(glibc_spow_data)(%rip), %rdx
         movups    %xmm10, 176(%rsp)
         movups    %xmm13, 48(%rsp)
         movups _ExpMask(%rdx), %xmm6

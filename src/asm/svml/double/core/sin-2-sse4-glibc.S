@@ -43,7 +43,7 @@ ENTRY (sin_2_sse4_glibc)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm5
-        movq      glibc_d_trig_data(%rip), %rax
+        movq      GOTREF(glibc_d_trig_data)(%rip), %rax
         movups __dAbsMask(%rax), %xmm3
 /*
    ARGUMENT RANGE REDUCTION:

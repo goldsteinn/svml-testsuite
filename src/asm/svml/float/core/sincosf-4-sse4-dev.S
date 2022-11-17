@@ -58,7 +58,7 @@ ENTRY (sincosf_4_sse4_l4l4_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $320, %rsp
-        movq      dev_s_trig_data(%rip), %rax
+        movq      GOTREF(dev_s_trig_data)(%rip), %rax
         movups    %xmm12, 176(%rsp)
         movups    %xmm9, 160(%rsp)
         movups __sAbsMask(%rax), %xmm12

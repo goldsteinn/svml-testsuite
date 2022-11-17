@@ -152,10 +152,9 @@ enum {
     k_test_lli_d,
     k_test_lli_f,
     k_test_i_d,
-   k_test_i_f,
+    k_test_i_f,
     k_test_end,
 };
-
 
 
 typedef struct svml_op {

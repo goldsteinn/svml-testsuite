@@ -53,7 +53,7 @@ ENTRY (cosf_4_sse4_dev)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm4
-        movq      dev_s_trig_data(%rip), %rax
+        movq      GOTREF(dev_s_trig_data)(%rip), %rax
         movups __sHalfPI(%rax), %xmm1
         movups __sRShifter(%rax), %xmm5
 

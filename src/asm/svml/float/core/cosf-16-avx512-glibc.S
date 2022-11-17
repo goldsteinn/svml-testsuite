@@ -54,7 +54,7 @@ ENTRY (cosf_16_avx512_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      glibc_s_trig_data(%rip), %rax
+        movq      GOTREF(glibc_s_trig_data)(%rip), %rax
 
 /*
   h) Subtract Y*PI from X argument, where PI divided to 4 parts:

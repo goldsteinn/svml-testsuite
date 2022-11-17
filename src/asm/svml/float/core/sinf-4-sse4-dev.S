@@ -55,8 +55,8 @@ ENTRY(sinf_4_sse4_dev)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm5
-        movq      dev_s_trig_data@GOTPCREL(%rip), %rax
-        movups    (%rax), %xmm2
+        movq      GOTREF(dev_s_trig_data)(%rip), %rax
+        movups    __sAbsMask(%rax), %xmm2
 
 /* b) Remove sign using AND operation */
         movaps    %xmm2, %xmm4

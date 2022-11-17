@@ -51,7 +51,7 @@ ENTRY (exp_2_sse4_glibc)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm3
-        movq      glibc_dexp_data(%rip), %r8
+        movq      GOTREF(glibc_dexp_data)(%rip), %r8
 
 /* iAbsX = (int)(lX>>32), lX = *(longlong*)&X */
         pshufd    $221, %xmm3, %xmm7
