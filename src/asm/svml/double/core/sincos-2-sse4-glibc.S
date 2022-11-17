@@ -45,7 +45,7 @@ ENTRY (sincos_2_sse4_l8l8_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $320, %rsp
-        movq      glibc_d_trig_data(%rip), %rax
+        movq      GOTREF(glibc_d_trig_data)(%rip), %rax
         movups    %xmm11, 160(%rsp)
         movups    %xmm12, 144(%rsp)
         movups __dSignMask(%rax), %xmm11

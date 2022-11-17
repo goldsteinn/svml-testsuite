@@ -50,7 +50,7 @@ ENTRY (exp_4_avx2_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      glibc_dexp_data(%rip), %rax
+        movq      GOTREF(glibc_dexp_data)(%rip), %rax
         vmovdqa   %ymm0, %ymm2
         vmovupd __dbInvLn2(%rax), %ymm3
         vmovupd __dbShifter(%rax), %ymm1

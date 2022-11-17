@@ -43,7 +43,7 @@ ENTRY (cos_2_sse4_dev)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm3
-        movq      dev_d_trig_data(%rip), %rax
+        movq      GOTREF(dev_d_trig_data)(%rip), %rax
         movups    __dHalfPI(%rax), %xmm2
 
 /* ARGUMENT RANGE REDUCTION:

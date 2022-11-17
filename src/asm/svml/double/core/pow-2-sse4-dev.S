@@ -91,7 +91,7 @@ ENTRY (pow_2_sse4_v_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $256, %rsp
-        movq      dev_dpow_data(%rip), %rdx
+        movq      GOTREF(dev_dpow_data)(%rip), %rdx
         movups    %xmm14, 80(%rsp)
         movups    %xmm9, 176(%rsp)
         movaps    %xmm1, %xmm9

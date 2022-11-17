@@ -92,7 +92,7 @@ ENTRY (powf_16_avx512_v_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1344, %rsp
-        movq      dev_spow_data(%rip), %rax
+        movq      GOTREF(dev_spow_data)(%rip), %rax
         vextractf32x8 $1, %zmm1, %ymm14
         vextractf32x8 $1, %zmm0, %ymm15
         vpsubd _NMINNORM(%rax), %zmm0, %zmm9

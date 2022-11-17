@@ -44,7 +44,7 @@ ENTRY (log_2_sse4_dev)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm6
-        movq      dev_dlog_data(%rip), %r8
+        movq      GOTREF(dev_dlog_data)(%rip), %r8
         movaps    %xmm6, %xmm3
         movaps    %xmm6, %xmm2
 

@@ -104,7 +104,7 @@ ENTRY(powf_8_avx2_v_dev)
         vmovups   (%rcx), %ymm10
         vmovups   %ymm8, 160(%rsp)
         vmovdqa   %ymm1, %ymm9
-        movq      dev_spow_data(%rip), %rdx
+        movq      GOTREF(dev_spow_data)(%rip), %rdx
         vextractf128 $1, %ymm0, %xmm7
         vcvtps2pd %xmm0, %ymm14
         vcvtps2pd %xmm7, %ymm12

@@ -44,7 +44,7 @@ ENTRY (log_8_avx512_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      dev_dlog_data(%rip), %rax
+        movq      GOTREF(dev_dlog_data)(%rip), %rax
         vmovaps   %zmm0, %zmm3
         kxnorw    %k3, %k3, %k3
         vmovups _Two10(%rax), %zmm2

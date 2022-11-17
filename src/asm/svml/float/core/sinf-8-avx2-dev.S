@@ -53,7 +53,7 @@ ENTRY(sinf_8_avx2_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      dev_s_trig_data(%rip), %rax
+        movq      GOTREF(dev_s_trig_data)(%rip), %rax
         vmovdqa   %ymm0, %ymm5
         vmovups __sAbsMask(%rax), %ymm3
         vmovups __sInvPI(%rax), %ymm7

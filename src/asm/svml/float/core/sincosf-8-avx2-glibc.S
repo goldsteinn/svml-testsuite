@@ -58,7 +58,7 @@ ENTRY (sincosf_8_avx2_l4l4_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      glibc_s_trig_data(%rip), %rax
+        movq      GOTREF(glibc_s_trig_data)(%rip), %rax
         vmovdqa   %ymm0, %ymm5
         vmovups   %ymm13, 352(%rsp)
         vmovups __sAbsMask(%rax), %ymm2

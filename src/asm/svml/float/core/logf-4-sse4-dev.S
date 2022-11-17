@@ -49,7 +49,7 @@ ENTRY (logf_4_sse4_dev)
 
 /* check for working range,
    set special argument mask (denormals/zero/Inf/NaN) */
-        movq      dev_slog_data(%rip), %rax
+        movq      GOTREF(dev_slog_data)(%rip), %rax
         movdqu _iHiDelta(%rax), %xmm1
         movdqu _iLoRange(%rax), %xmm4
         paddd     %xmm0, %xmm1

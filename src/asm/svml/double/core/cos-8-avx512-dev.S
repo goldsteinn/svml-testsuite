@@ -45,7 +45,7 @@ ENTRY (cos_8_avx512_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1280, %rsp
-        movq      dev_d_trig_data(%rip), %rax
+        movq      GOTREF(dev_d_trig_data)(%rip), %rax
 
 /* R = X - N*Pi1 */
         vmovaps   %zmm0, %zmm8

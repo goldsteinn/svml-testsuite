@@ -90,8 +90,9 @@ I_safe_sema_wait_till_n(sema_t * sema,
                         char const * restrict fn,
                         char const * restrict func,
                         uint32_t ln) {
+
     while (I_safe_sema_getvalue(sema, fn, func, ln) != n) {
-        usleep(500 * 1000);
+        usleep(1000 * 1000);
     }
 }
 

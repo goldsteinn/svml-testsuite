@@ -52,7 +52,7 @@ ENTRY (expf_4_sse4_glibc)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm5
-        movq      glibc_sexp_data(%rip), %rax
+        movq      GOTREF(glibc_sexp_data)(%rip), %rax
         movups __sInvLn2(%rax), %xmm0
 
 /* m = x*2^k/ln2 + shifter */

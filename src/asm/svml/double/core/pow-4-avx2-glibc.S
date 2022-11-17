@@ -91,7 +91,7 @@ ENTRY (pow_4_avx2_v_glibc)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      glibc_dpow_data(%rip), %rax
+        movq      GOTREF(glibc_dpow_data)(%rip), %rax
         vmovups   %ymm11, 160(%rsp)
         vmovups   %ymm8, 224(%rsp)
         vmovups   %ymm10, 352(%rsp)

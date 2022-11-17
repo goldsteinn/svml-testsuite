@@ -43,7 +43,7 @@ ENTRY (cos_4_avx2_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $448, %rsp
-        movq      dev_d_trig_data(%rip), %rax
+        movq      GOTREF(dev_d_trig_data)(%rip), %rax
         vmovapd   %ymm0, %ymm1
         vmovupd __dInvPI(%rax), %ymm4
         vmovupd __dRShifter(%rax), %ymm5

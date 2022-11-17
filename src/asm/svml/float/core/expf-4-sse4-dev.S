@@ -52,7 +52,7 @@ ENTRY (expf_4_sse4_dev)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm5
-        movq      dev_sexp_data(%rip), %rax
+        movq      GOTREF(dev_sexp_data)(%rip), %rax
         movups __sInvLn2(%rax), %xmm0
 
 /* m = x*2^k/ln2 + shifter */

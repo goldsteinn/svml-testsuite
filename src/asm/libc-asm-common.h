@@ -44,15 +44,8 @@
 #define HIDDEN_JUMPTARGET(f) f
 #define JUMPTARGET(f)        f
 
-#define DEV_OR_GLIBC_dlog_data   I_svml_dlog_data
-#define DEV_OR_GLIBC_dexp_data   I_svml_dexp_data
-#define DEV_OR_GLIBC_slog_data   I_svml_slog_data
-#define DEV_OR_GLIBC_dpow_data   I_svml_dpow_data
-#define DEV_OR_GLIBC_s_trig_data I_svml_s_trig_data
-#define DEV_OR_GLIBC_spow_data   I_svml_spow_data
-#define DEV_OR_GLIBC_d_trig_data I_svml_d_trig_data
-#define DEV_OR_GLIBC_sexp_data   I_svml_sexp_data
-
+#define PRIM_GOTREF(x) x##@GOTPCREL
+#define GOTREF(x)      PRIM_GOTREF(x)
 #include "asm-common.h"
 
 #endif

@@ -97,7 +97,7 @@ ENTRY (pow_8_avx512_v_glibc)
         kxnorw    %k2, %k2, %k2
         kxnorw    %k3, %k3, %k3
         vpmovqd   %zmm10, %ymm7
-        movq      glibc_dpow_data(%rip), %rax
+        movq      GOTREF(glibc_dpow_data)(%rip), %rax
         vmovaps   %zmm1, %zmm6
         vpsrlq    $32, %zmm6, %zmm13
 

@@ -46,7 +46,7 @@ ENTRY (sincos_8_avx512_l8l8_dev)
         cfi_def_cfa_register (%rbp)
         andq      $-64, %rsp
         subq      $1344, %rsp
-        movq      dev_d_trig_data(%rip), %rax
+        movq      GOTREF(dev_d_trig_data)(%rip), %rax
         vmovaps   %zmm0, %zmm8
         vmovups __dSignMask(%rax), %zmm4
         vmovups __dInvPI(%rax), %zmm9

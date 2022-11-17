@@ -44,7 +44,7 @@ ENTRY (log_2_sse4_glibc)
         andq      $-64, %rsp
         subq      $320, %rsp
         movaps    %xmm0, %xmm6
-        movq      glibc_dlog_data(%rip), %r8
+        movq      GOTREF(glibc_dlog_data)(%rip), %r8
         movaps    %xmm6, %xmm3
         movaps    %xmm6, %xmm2
 
