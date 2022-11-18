@@ -22,7 +22,7 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-exp-data.h"
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-dev.S"
 
-	Section: .section .text.evex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 
 ENTRY (exp_8_avx512_dev)
 /*

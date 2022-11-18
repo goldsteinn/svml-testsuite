@@ -142,6 +142,7 @@ set(ALL_C_SOURCES ${C_SOURCES})
 
 file(GLOB_RECURSE ASM_SOURCES "${CMAKE_SOURCE_DIR}/${SRC_DIR}/*.S")
 list(FILTER ASM_SOURCES EXCLUDE REGEX ".*/core/.*\.S$")
+list(FILTER ASM_SOURCES EXCLUDE REGEX ".*/glibc/.*\.S$")
 
 # Filter test sources
 list(FILTER C_SOURCES EXCLUDE REGEX ".*/test/.*$")

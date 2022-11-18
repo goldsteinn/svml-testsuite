@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/common-wrapper-dev.S"
 
-	Section: .section .text.evex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY (hypotf_16_wrapper_v_dev)
 WRAPPER_IMPL_AVX512_ff_dev hypotf_8_wrapper_v_dev
 END (hypotf_16_wrapper_v_dev)
