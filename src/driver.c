@@ -8,7 +8,7 @@
 
 #include "svml-def-helpers.h"
 #include "svml-defs.h"
-#include "svml-tests.h"
+#include "svml-tester.h"
 static int32_t      verbosity;
 static uint32_t     parallel   = 0;
 static int32_t      list_all   = 0;

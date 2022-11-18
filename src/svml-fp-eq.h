@@ -2,11 +2,11 @@
 #include <stdint.h>
 #include "util/macro.h"
 
-#ifndef make_float_equals
+#ifndef use_fp32
 # error "Need specifier"
 #endif
 
-#if make_float_equals
+#if use_fp32
 # define mm_int_op(op) CAT(_mm512_, op, _epi32)
 # define mm_fp_op(op)  CAT(_mm512_, op, _ps)
 # define mask_T        __mmask16
@@ -126,7 +126,7 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
     return true;
 }
 
-#undef make_float_equals
+
 #undef mm_int_op
 #undef mm_fp_op
 #undef mask_T

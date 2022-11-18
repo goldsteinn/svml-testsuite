@@ -34,7 +34,7 @@ next_rand_seed(uint64_t seed) {
 
 NONNULL(1) static uint64_t rand64s(uint64_t * seedp) {
     uint64_t seed;
-    seed  = *seedp;
+    seed   = *seedp;
     *seedp = next_rand_seed(seed);
     return rand64c(seed);
 }
@@ -58,6 +58,11 @@ NONNULL(1) static uint32_t rand32s(uint64_t * seed) {
 static uint32_t
 rand32(void) {
     return CAST(uint32_t, rand64());
+}
+
+static int32_t
+randi32(void) {
+    return (int32_t)rand32();
 }
 
 static void
