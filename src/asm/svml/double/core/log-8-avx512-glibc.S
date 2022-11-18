@@ -22,7 +22,7 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/glibc-log-data.h"
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-glibc.S"
 
-	Section: .section .text.evex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY (log_8_avx512_glibc)
 /*
    ALGORITHM DESCRIPTION:
