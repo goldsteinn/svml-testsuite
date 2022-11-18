@@ -1,15 +1,17 @@
-
 #include "svml-defs.h"
 #include "math-func-defs.h"
 #include "svml-func-defs.h"
 
-enum { k_default_ulp = 4 };
+    enum {
+        k_default_ulp = 4
+    };
 
 #define ADD_ONE_DEF(svml_func, ref_func, sz, unused_cnt, is_fp, ulp,           \
                     test_type)                                                 \
     {                                                                          \
         V_TO_STR(svml_func), V_TO_STR(ref_func) + 4, { svml_func },            \
-            { ref_func }, sz, is_fp, (ulp) == 0 ? k_default_ulp : (k_default_ulp),       \
+            { ref_func }, sz, is_fp,                                           \
+            (ulp) == 0 ? k_default_ulp : (k_default_ulp),                      \
             CAT(k_test_, test_type)                                            \
     }
 
@@ -379,13 +381,18 @@ const svml_op_t all_svml_defs[] = {
     ADD_DEF(pow_4_sse2_wrapped, run_pow, 32, 4, 0, 1, d_d_d),
     ADD_DEF(fmin_1_sse2, run_fmin, 8, 1, 0, 0, d_d_d),
     ADD_DEF(fmax_1_sse2, run_fmax, 8, 1, 0, 0, d_d_d),
+    /* Proto: v_d_vdp_vdp.  */
+    ADD_DEF(sincos_4_sse2_wrapped, run_sincos, 32, 4, 0, 2, v_d_vdp_vdp),
+    ADD_DEF(sincos_8_avx2_wrapped, run_sincos, 64, 8, 0, 2, v_d_vdp_vdp),
+    ADD_DEF(sincos_2_sse2_wrapped, run_sincos, 16, 2, 0, 1, v_d_vdp_vdp),
     /* Proto: v_d_dp_dp.  */
+    ADD_DEF(sincos_8_avx512_wrapped_l8l8, run_sincos, 64, 16, 1, 1, v_d_dp_dp),
+    ADD_DEF(sincos_4_avx2_wrapped_l8l8, run_sincos, 32, 16, 1, 1, v_d_dp_dp),
+    ADD_DEF(sincos_2_sse2_wrapped_l8l8, run_sincos, 16, 16, 1, 1, v_d_dp_dp),
+
     ADD_DEF(sincos_8_avx512_l8l8, run_sincos, 64, 8, 0, 2, v_d_dp_dp),
     /* ADD_DEF(sincos_8_avx512_vv_wrapper, run_sincos, 64, 8, 0, 2, v_d_dp_dp),
      */
-    ADD_DEF(sincos_4_sse2_wrapped, run_sincos, 32, 4, 0, 2, v_d_dp_dp),
-    ADD_DEF(sincos_8_avx2_wrapped, run_sincos, 64, 8, 0, 2, v_d_dp_dp),
-    ADD_DEF(sincos_2_sse2_wrapped, run_sincos, 16, 2, 0, 1, v_d_dp_dp),
     ADD_DEF(sincos_2_sse4_l8l8, run_sincos, 16, 2, 0, 2, v_d_dp_dp),
     /* ADD_DEF(sincos_2_sse4_vv_wrapper, run_sincos, 16, 2, 0, 2, v_d_dp_dp), */
     ADD_DEF(sincos_4_avx2_l8l8, run_sincos, 32, 4, 0, 2, v_d_dp_dp),
@@ -416,16 +423,20 @@ const svml_op_t all_svml_defs[] = {
     ADD_DEF(powf_16_avx512_v, run_powf, 64, 16, 1, 3, f_f_f),
     ADD_DEF(fminf_1_sse2, run_fminf, 4, 1, 1, 0, f_f_f),
     ADD_DEF(fmaxf_1_sse2, run_fmaxf, 4, 1, 1, 0, f_f_f),
+    /* Proto: v_f_vfp_vfp.  */
+    ADD_DEF(sincosf_16_avx2_wrapped, run_sincosf, 64, 16, 1, 1, v_f_vfp_vfp),
+    ADD_DEF(sincosf_8_sse2_wrapped, run_sincosf, 32, 8, 1, 1, v_f_vfp_vfp),
+    ADD_DEF(sincosf_4_sse2_wrapped, run_sincosf, 16, 4, 1, 0, v_f_vfp_vfp),
     /* Proto: v_f_fp_fp.  */
+    ADD_DEF(sincosf_16_avx512_wrapped_l4l4, run_sincosf, 64, 16, 1, 1, v_f_fp_fp),
+    ADD_DEF(sincosf_8_avx2_wrapped_l4l4, run_sincosf, 32, 16, 1, 1, v_f_fp_fp),
+    ADD_DEF(sincosf_4_sse2_wrapped_l4l4, run_sincosf, 16, 16, 1, 1, v_f_fp_fp),
     ADD_DEF(sincosf_16_avx512_l4l4, run_sincosf, 64, 16, 1, 1, v_f_fp_fp),
     /* ADD_DEF(sincosf_16_avx512_vv_wrapper, run_sincosf, 64, 16, 1, 1,
        v_f_fp_fp), */
     ADD_DEF(sincosf_4_sse4_l4l4, run_sincosf, 16, 4, 1, 1, v_f_fp_fp),
     /* ADD_DEF(sincosf_4_sse4_vv_wrapper, run_sincosf, 16, 4, 1, 1, v_f_fp_fp),
      */
-    ADD_DEF(sincosf_16_avx2_wrapped, run_sincosf, 64, 16, 1, 1, v_f_fp_fp),
-    ADD_DEF(sincosf_8_sse2_wrapped, run_sincosf, 32, 8, 1, 1, v_f_fp_fp),
-    ADD_DEF(sincosf_4_sse2_wrapped, run_sincosf, 16, 4, 1, 0, v_f_fp_fp),
     ADD_DEF(sincosf_8_avx_l4l4, run_sincosf, 32, 8, 1, 1, v_f_fp_fp),
     /* ADD_DEF(sincosf_8_avx_vv_wrapper, run_sincosf, 32, 8, 1, 1, v_f_fp_fp),
      */

@@ -10,8 +10,9 @@
 static uint32_t
 str_to_test_enum(char const * s, uint32_t slen) {
     static char const * const tt_strs[] = {
-        "f_f",   "d_d",   "d_d_d", "v_d_dp_dp", "v_f_fp_fp",
-        "f_f_f", "lli_d", "lli_f", "i_d",       "i_f",
+        "d_d",       "d_d_d",       "f_f",       "f_f_f",
+        "i_d",       "i_f",         "lli_d",     "lli_f",
+        "v_d_dp_dp", "v_d_vdp_vdp", "v_f_fp_fp", "v_f_vfp_vfp",
     };
     uint32_t     i;
     char const * og_s = s;

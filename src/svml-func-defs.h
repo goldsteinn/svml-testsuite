@@ -25,8 +25,10 @@ extern __m256i logf_8_sse2_wrapped_dev(__m256i);
 extern __m256i logf_8_sse2_wrapped_glibc(__m256i);
 extern void    sincos_8_avx512_l8l8_dev(__m512i, __m512i *, __m512i *);
 extern void    sincos_8_avx512_l8l8_glibc(__m512i, __m512i *, __m512i *);
-/* extern void    sincos_8_avx512_vv_wrapper_dev(__m512i, __m512i *, __m512i *); */
-/* extern void    sincos_8_avx512_vv_wrapper_glibc(__m512i, __m512i *, __m512i *); */
+/* extern void    sincos_8_avx512_vv_wrapper_dev(__m512i, __m512i *, __m512i *);
+ */
+/* extern void    sincos_8_avx512_vv_wrapper_glibc(__m512i, __m512i *, __m512i
+ * *); */
 extern __m512i sinf_16_avx512_dev(__m512i);
 extern __m512i sinf_16_avx512_glibc(__m512i);
 extern __m128i hypot_2_sse4_v_dev(__m128i, __m128i);
@@ -59,8 +61,10 @@ extern __m256i cosf_8_avx_dev(__m256i);
 extern __m256i cosf_8_avx_glibc(__m256i);
 extern void    sincosf_16_avx512_l4l4_dev(__m512i, __m512i *, __m512i *);
 extern void    sincosf_16_avx512_l4l4_glibc(__m512i, __m512i *, __m512i *);
-/* extern void    sincosf_16_avx512_vv_wrapper_dev(__m512i, __m512i *, __m512i *); */
-/* extern void sincosf_16_avx512_vv_wrapper_glibc(__m512i, __m512i *, __m512i *); */
+/* extern void    sincosf_16_avx512_vv_wrapper_dev(__m512i, __m512i *, __m512i
+ * *); */
+/* extern void sincosf_16_avx512_vv_wrapper_glibc(__m512i, __m512i *, __m512i
+ * *); */
 extern __m256i hypot_4_avx2_v_dev(__m256i, __m256i);
 extern __m256i hypot_4_avx2_v_glibc(__m256i, __m256i);
 extern __m512i log1pf_16_avx512_dev(__m512i);
@@ -173,8 +177,10 @@ extern __m128i cos_2_sse2_wrapped_dev(__m128i);
 extern __m128i cos_2_sse2_wrapped_glibc(__m128i);
 extern void    sincosf_4_sse4_l4l4_dev(__m128i, __m128i *, __m128i *);
 extern void    sincosf_4_sse4_l4l4_glibc(__m128i, __m128i *, __m128i *);
-/* extern void    sincosf_4_sse4_vv_wrapper_dev(__m128i, __m128i *, __m128i *); */
-/* extern void    sincosf_4_sse4_vv_wrapper_glibc(__m128i, __m128i *, __m128i *); */
+/* extern void    sincosf_4_sse4_vv_wrapper_dev(__m128i, __m128i *, __m128i *);
+ */
+/* extern void    sincosf_4_sse4_vv_wrapper_glibc(__m128i, __m128i *, __m128i
+ * *); */
 extern __m128i hypot_2_sse2_wrapped_dev(__m128i, __m128i);
 extern __m128i hypot_2_sse2_wrapped_glibc(__m128i, __m128i);
 extern __m256i powf_8_sse2_wrapped_dev(__m256i, __m256i);
@@ -521,8 +527,10 @@ extern __m128i acos_2_sse4_dev(__m128i);
 extern __m128i acos_2_sse4_glibc(__m128i);
 extern void    sincos_2_sse4_l8l8_dev(__m128i, __m128i *, __m128i *);
 extern void    sincos_2_sse4_l8l8_glibc(__m128i, __m128i *, __m128i *);
-/* extern void    sincos_2_sse4_vv_wrapper_dev(__m128i, __m128i *, __m128i *); */
-/* extern void    sincos_2_sse4_vv_wrapper_glibc(__m128i, __m128i *, __m128i *); */
+/* extern void    sincos_2_sse4_vv_wrapper_dev(__m128i, __m128i *, __m128i *);
+ */
+/* extern void    sincos_2_sse4_vv_wrapper_glibc(__m128i, __m128i *, __m128i *);
+ */
 extern __m512i hypot_8_avx2_wrapped_dev(__m512i, __m512i);
 extern __m512i hypot_8_avx2_wrapped_glibc(__m512i, __m512i);
 extern __m512i tanhf_16_avx512_dev(__m512i);
@@ -601,8 +609,10 @@ extern __m256i tan_4_sse2_wrapped_dev(__m256i);
 extern __m256i tan_4_sse2_wrapped_glibc(__m256i);
 extern void    sincosf_8_avx_l4l4_dev(__m256i, __m256i *, __m256i *);
 extern void    sincosf_8_avx_l4l4_glibc(__m256i, __m256i *, __m256i *);
-/* extern void    sincosf_8_avx_vv_wrapper_dev(__m256i, __m256i *, __m256i *); */
-/* extern void    sincosf_8_avx_vv_wrapper_glibc(__m256i, __m256i *, __m256i *); */
+/* extern void    sincosf_8_avx_vv_wrapper_dev(__m256i, __m256i *, __m256i *);
+ */
+/* extern void    sincosf_8_avx_vv_wrapper_glibc(__m256i, __m256i *, __m256i *);
+ */
 extern __m512i exp10_8_avx512_dev(__m512i);
 extern __m512i exp10_8_avx512_glibc(__m512i);
 extern __m128i asinh_2_sse2_wrapped_dev(__m128i);
@@ -623,8 +633,10 @@ extern __m512i expf_16_avx512_dev(__m512i);
 extern __m512i expf_16_avx512_glibc(__m512i);
 extern void    sincos_4_avx2_l8l8_dev(__m256i, __m256i *, __m256i *);
 extern void    sincos_4_avx2_l8l8_glibc(__m256i, __m256i *, __m256i *);
-/* extern void    sincos_4_avx2_vv_wrapper_dev(__m256i, __m256i *, __m256i *); */
-/* extern void    sincos_4_avx2_vv_wrapper_glibc(__m256i, __m256i *, __m256i *); */
+/* extern void    sincos_4_avx2_vv_wrapper_dev(__m256i, __m256i *, __m256i *);
+ */
+/* extern void    sincos_4_avx2_vv_wrapper_glibc(__m256i, __m256i *, __m256i *);
+ */
 extern __m512i tanh_8_avx2_wrapped_dev(__m512i);
 extern __m512i tanh_8_avx2_wrapped_glibc(__m512i);
 extern __m512i atan2f_16_avx512_v_dev(__m512i, __m512i);
@@ -682,7 +694,8 @@ extern __m128i erfcf_4_sse4_glibc(__m128i);
 extern void    sincos_4_avx_l8l8_dev(__m256i, __m256i *, __m256i *);
 extern void    sincos_4_avx_l8l8_glibc(__m256i, __m256i *, __m256i *);
 /* extern void    sincos_4_avx_vv_wrapper_dev(__m256i, __m256i *, __m256i *); */
-/* extern void    sincos_4_avx_vv_wrapper_glibc(__m256i, __m256i *, __m256i *); */
+/* extern void    sincos_4_avx_vv_wrapper_glibc(__m256i, __m256i *, __m256i *);
+ */
 extern __m256i log2f_8_avx2_dev(__m256i);
 extern __m256i log2f_8_avx2_glibc(__m256i);
 extern __m128i log_2_sse2_wrapped_dev(__m128i);
@@ -757,26 +770,40 @@ extern __m256i erfc_4_avx_dev(__m256i);
 extern __m256i erfc_4_avx_glibc(__m256i);
 extern void    sincosf_8_avx2_l4l4_dev(__m256i, __m256i *, __m256i *);
 extern void    sincosf_8_avx2_l4l4_glibc(__m256i, __m256i *, __m256i *);
-/* extern void    sincosf_8_avx2_vv_wrapper_dev(__m256i, __m256i *, __m256i *); */
-/* extern void    sincosf_8_avx2_vv_wrapper_glibc(__m256i, __m256i *, __m256i *); */
-extern __m256i exp_4_avx2_dev(__m256i);
-extern __m256i exp_4_avx2_glibc(__m256i);
-extern __m256i expm1f_8_sse2_wrapped_dev(__m256i);
-extern __m256i expm1f_8_sse2_wrapped_glibc(__m256i);
-extern __m128i log1p_2_sse4_dev(__m128i);
-extern __m128i log1p_2_sse4_glibc(__m128i);
-extern __m256i erfcf_8_sse2_wrapped_dev(__m256i);
-extern __m256i erfcf_8_sse2_wrapped_glibc(__m256i);
-extern __m256i tanhf_8_avx2_dev(__m256i);
-extern __m256i tanhf_8_avx2_glibc(__m256i);
-extern __m256i cosh_4_sse2_wrapped_dev(__m256i);
-extern __m256i cosh_4_sse2_wrapped_glibc(__m256i);
-extern __m128i cbrtf_4_sse4_dev(__m128i);
-extern __m128i cbrtf_4_sse4_glibc(__m128i);
-extern __m512i sinhf_16_avx2_wrapped_dev(__m512i);
-extern __m512i sinhf_16_avx2_wrapped_glibc(__m512i);
-extern double  floor_1_sse4_dev(double);
-extern double  floor_1_sse4_glibc(double);
+extern void    sincosf_4_sse2_wrapped_l4l4_dev(__m128i, __m128i *, __m128i *);
+extern void    sincosf_8_avx2_wrapped_l4l4_dev(__m256i, __m256i *, __m256i *);
+extern void sincosf_16_avx512_wrapped_l4l4_dev(__m512i, __m512i *, __m512i *);
+extern void sincosf_4_sse2_wrapped_l4l4_glibc(__m128i, __m128i *, __m128i *);
+extern void sincosf_8_avx2_wrapped_l4l4_glibc(__m256i, __m256i *, __m256i *);
+extern void sincosf_16_avx512_wrapped_l4l4_glibc(__m512i, __m512i *, __m512i *);
+extern void sincos_2_sse2_wrapped_l8l8_dev(__m128i, __m128i *, __m128i *);
+extern void sincos_4_avx2_wrapped_l8l8_dev(__m256i, __m256i *, __m256i *);
+extern void sincos_8_avx512_wrapped_l8l8_dev(__m512i, __m512i *, __m512i *);
+extern void sincos_2_sse2_wrapped_l8l8_glibc(__m128i, __m128i *, __m128i *);
+extern void sincos_4_avx2_wrapped_l8l8_glibc(__m256i, __m256i *, __m256i *);
+extern void sincos_8_avx512_wrapped_l8l8_glibc(__m512i, __m512i *, __m512i *);
+/* extern void    sincosf_8_avx2_vv_wrapper_dev(__m256i, __m256i *, __m256i *);
+ */
+/* extern void    sincosf_8_avx2_vv_wrapper_glibc(__m256i, __m256i *, __m256i
+ * *); */
+extern __m256i       exp_4_avx2_dev(__m256i);
+extern __m256i       exp_4_avx2_glibc(__m256i);
+extern __m256i       expm1f_8_sse2_wrapped_dev(__m256i);
+extern __m256i       expm1f_8_sse2_wrapped_glibc(__m256i);
+extern __m128i       log1p_2_sse4_dev(__m128i);
+extern __m128i       log1p_2_sse4_glibc(__m128i);
+extern __m256i       erfcf_8_sse2_wrapped_dev(__m256i);
+extern __m256i       erfcf_8_sse2_wrapped_glibc(__m256i);
+extern __m256i       tanhf_8_avx2_dev(__m256i);
+extern __m256i       tanhf_8_avx2_glibc(__m256i);
+extern __m256i       cosh_4_sse2_wrapped_dev(__m256i);
+extern __m256i       cosh_4_sse2_wrapped_glibc(__m256i);
+extern __m128i       cbrtf_4_sse4_dev(__m128i);
+extern __m128i       cbrtf_4_sse4_glibc(__m128i);
+extern __m512i       sinhf_16_avx2_wrapped_dev(__m512i);
+extern __m512i       sinhf_16_avx2_wrapped_glibc(__m512i);
+extern double        floor_1_sse4_dev(double);
+extern double        floor_1_sse4_glibc(double);
 extern long long int llrint_1_sse2_dev(double);
 extern long long int llrint_1_sse2_glibc(double);
 extern double        fmin_1_sse2_dev(double, double);

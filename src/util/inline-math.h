@@ -53,7 +53,7 @@
 #define ctz(x)                                                                 \
     choose_const_expr(sizeof(x) == sizeof(long long), ll_ctzll(x),             \
                       choose_const_expr(sizeof(x) >= sizeof(long), ll_ctzl(x), \
-                                        ll_ctz(cast(unsigned, x))))
+                                        ll_ctz(CAST(unsigned, x))))
 
 
 #define popcnt(x)                                                              \
