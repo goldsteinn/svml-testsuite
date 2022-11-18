@@ -82,7 +82,7 @@
         Res := ResHi + ResLo:
         Result := ex(Res) + N.  */
 
-	.text
+	Section: .section .text.evex512, "ax", @progbits
 
 ENTRY (powf_16_avx512_v_dev)
         pushq     %rbp

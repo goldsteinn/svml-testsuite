@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-log-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY (log_4_avx2_dev)
 /* ALGORITHM DESCRIPTION:
 

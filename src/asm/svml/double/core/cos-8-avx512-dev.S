@@ -22,7 +22,7 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-trig-data.h"
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-dev.S"
 
-	.text
+	Section: .section .text.evex512, "ax", @progbits
 
 ENTRY (cos_8_avx512_dev)
 /*
