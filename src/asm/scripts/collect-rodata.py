@@ -2,7 +2,7 @@ import os
 import glob
 from common_util import is_int, as_int
 
-S_files = glob.glob("**/*-glibc*.S", recursive=True)
+S_files = glob.glob("**/*-dev*.S", recursive=True)
 H_files = glob.glob("**/*-dev*.h", recursive=True)
 
 
@@ -179,7 +179,7 @@ for section in sections:
                 elif sz == 32:
                     line = "\t.section .text.avx2, \"ax\", @progbits\n"
                 elif sz == 64:
-                    line = "\tSection: .section .text.evex512, \"ax\", @progbits\n"
+                    line = "\t.section .text.evex512, \"ax\", @progbits\n"
             lines.append(line)
         assert has_section
         f_out = open(f, "w+")
@@ -187,6 +187,6 @@ for section in sections:
         f_out.close()
                     
 
-
+print("\n".join(sections))
 #print("---- With Data ----")
 #print("\n".join(S_d_files))
