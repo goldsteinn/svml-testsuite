@@ -50,7 +50,7 @@
 
 
 
-	.section .text.exex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY(log1pf_16_avx512_dev)
 	pushq	%rbp
 	cfi_def_cfa_offset(16)

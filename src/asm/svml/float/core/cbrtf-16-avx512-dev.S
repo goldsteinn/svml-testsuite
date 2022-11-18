@@ -48,7 +48,7 @@
 
 
 
-	.section .text.exex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY(cbrtf_16_avx512_dev)
 	vgetmantps $0, {sae}, %zmm0, %zmm8
 

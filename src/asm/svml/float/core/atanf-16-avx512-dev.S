@@ -47,7 +47,7 @@
 
 
 
-	.section .text.exex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY(atanf_16_avx512_dev)
 	vandps	__svml_satan_data_internal_avx512(%rip), %zmm0, %zmm7
 	vmovups	MaxThreshold+__svml_satan_data_internal_avx512(%rip), %zmm3

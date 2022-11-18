@@ -23,7 +23,7 @@
 
 	.text
 ENTRY (sincos_4_avx_l8l8_glibc)
-WRAPPER_IMPL_AVX_fFF_glibc sincos_2_wrapper_l8l8_glibc
+WRAPPER_IMPL_AVX_fFF_glibc sincos_2_sse2_wrapped_l8l8_glibc
 END (sincos_4_avx_l8l8_glibc)
 
 /* AVX ISA version as wrapper to SSE ISA version (for vector
@@ -141,5 +141,5 @@ END (sincos_4_avx_l8l8_glibc)
 .endm
 
 ENTRY (sincos_4_avx_vv_glibc)
-WRAPPER_IMPL_AVX_fFF_vvv_glibc sincos_2_wrapper_l8l8_glibc
+WRAPPER_IMPL_AVX_fFF_vvv_glibc sincos_2_sse2_wrapped_l8l8_glibc
 END (sincos_4_avx_vv_glibc)
