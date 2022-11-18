@@ -22,7 +22,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/glibc-trig-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY (cosf_8_avx2_glibc)
 /*
   ALGORITHM DESCRIPTION:

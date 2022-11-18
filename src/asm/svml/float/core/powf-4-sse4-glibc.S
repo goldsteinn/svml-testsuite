@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/glibc-powf-data.h"
 
-	.text
+	.section .text.sse4, "ax", @progbits
 ENTRY (powf_4_sse4_v_glibc)
 /*
    ALGORITHM DESCRIPTION:

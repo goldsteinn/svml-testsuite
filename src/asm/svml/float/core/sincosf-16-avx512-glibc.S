@@ -50,7 +50,7 @@
            R1 = XOR( RS, SS );
            R2 = XOR( RC, SC ).  */
 
-	.text
+	Section: .section .text.evex512, "ax", @progbits
 libmvec_hidden_def(sincosf_16_avx512_wrapped_l4l4_glibc_knl)
 
 ENTRY (sincosf_16_avx512_l4l4_glibc)
