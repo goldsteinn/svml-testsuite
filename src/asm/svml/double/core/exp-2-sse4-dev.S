@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-exp-data.h"
 
-	.text
+	.section .text.sse4, "ax", @progbits
 ENTRY (exp_2_sse4_dev)
 /*
    ALGORITHM DESCRIPTION:

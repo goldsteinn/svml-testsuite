@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/dev-logf-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY(logf_8_avx2_dev)
 /*
    ALGORITHM DESCRIPTION:

@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-dev.S"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY (log_4_avx_dev)
 WRAPPER_IMPL_AVX_dev log_2_wrapper_dev
 END (log_4_avx_dev)

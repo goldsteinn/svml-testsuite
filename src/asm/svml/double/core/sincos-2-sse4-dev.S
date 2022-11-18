@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-trig-data.h"
 
-	.text
+	.section .text.sse4, "ax", @progbits
 ENTRY (sincos_2_sse4_l8l8_dev)
 /*
    ALGORITHM DESCRIPTION:

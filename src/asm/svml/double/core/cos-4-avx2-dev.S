@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-trig-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY (cos_4_avx2_dev)
 
 /* ALGORITHM DESCRIPTION:

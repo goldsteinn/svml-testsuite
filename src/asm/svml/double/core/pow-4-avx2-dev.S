@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-pow-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY (pow_4_avx2_v_dev)
 /*
    ALGORITHM DESCRIPTION:

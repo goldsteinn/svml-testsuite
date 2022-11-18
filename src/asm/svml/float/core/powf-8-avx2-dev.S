@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/dev-powf-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY(powf_8_avx2_v_dev)
 
 
