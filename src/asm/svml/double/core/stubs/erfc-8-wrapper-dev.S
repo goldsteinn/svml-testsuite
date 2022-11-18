@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-dev.S"
 
-	Section: .section .text.evex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY (erfc_8_wrapper_dev)
 WRAPPER_IMPL_AVX512_dev erfc_4_wrapper_dev
 END (erfc_8_wrapper_dev)
