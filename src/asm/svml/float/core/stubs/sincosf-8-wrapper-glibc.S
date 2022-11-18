@@ -22,10 +22,10 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/common-wrapper-glibc.S"
 
 	.text
-ENTRY (sincosf_8_wrapper_l4l4_glibc)
-WRAPPER_IMPL_AVX_fFF_glibc sincosf_4_wrapper_l4l4_glibc
-END (sincosf_8_wrapper_l4l4_glibc)
-libmvec_hidden_def (sincosf_8_wrapper_l4l4_glibc)
+ENTRY (sincosf_8_avx2_wrapped_l4l4_glibc)
+WRAPPER_IMPL_AVX_fFF_glibc sincosf_4_sse2_wrapped_l4l4_glibc
+END (sincosf_8_avx2_wrapped_l4l4_glibc)
+libmvec_hidden_def (sincosf_8_avx2_wrapped_l4l4_glibc)
 
 /* AVX2 ISA version as wrapper to SSE ISA version (for vector
    function declared with #pragma omp declare simd notinbranch).  */
@@ -194,7 +194,7 @@ libmvec_hidden_def (sincosf_8_wrapper_l4l4_glibc)
 .endm
 
 ENTRY (sincosf_8_wrapper_vv_glibc)
-WRAPPER_IMPL_AVX2_fFF_vvv_glibc sincosf_4_wrapper_l4l4_glibc
+WRAPPER_IMPL_AVX2_fFF_vvv_glibc sincosf_4_sse2_wrapped_l4l4_glibc
 END (sincosf_8_wrapper_vv_glibc)
 
 #ifndef USE_MULTIARCH

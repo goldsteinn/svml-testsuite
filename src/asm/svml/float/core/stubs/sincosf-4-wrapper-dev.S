@@ -22,10 +22,10 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/common-wrapper-dev.S"
 
 	.text
-ENTRY (sincosf_4_wrapper_l4l4_dev)
+ENTRY (sincosf_4_sse2_wrapped_l4l4_dev)
 WRAPPER_IMPL_SCALAR_fFF_dev sincosf
-END (sincosf_4_wrapper_l4l4_dev)
-libmvec_hidden_def (sincosf_4_wrapper_l4l4_dev)
+END (sincosf_4_sse2_wrapped_l4l4_dev)
+libmvec_hidden_def (sincosf_4_sse2_wrapped_l4l4_dev)
 
 /* SSE2 ISA version as wrapper to scalar (for vector
    function declared with #pragma omp declare simd notinbranch).  */

@@ -58,7 +58,7 @@
 
 
 
-	.section .text.exex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY(erff_16_avx512_dev)
 	vmovaps	%zmm0, %zmm8
 	vmulps	{rn-sae}, %zmm8, %zmm8, %zmm11

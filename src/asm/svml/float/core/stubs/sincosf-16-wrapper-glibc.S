@@ -22,9 +22,9 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/common-wrapper-glibc.S"
 
 	.text
-ENTRY (sincosf_16_wrapper_l4l4_glibc)
-WRAPPER_IMPL_AVX512_fFF_glibc sincosf_8_wrapper_l4l4_glibc
-END (sincosf_16_wrapper_l4l4_glibc)
+ENTRY (sincosf_16_avx512_wrapped_l4l4_glibc)
+WRAPPER_IMPL_AVX512_fFF_glibc sincosf_8_avx2_wrapped_l4l4_glibc
+END (sincosf_16_avx512_wrapped_l4l4_glibc)
 
 /* AVX512 ISA version as wrapper to AVX2 ISA version (for vector
    function declared with #pragma omp declare simd notinbranch).  */
@@ -287,5 +287,5 @@ END (sincosf_16_wrapper_l4l4_glibc)
 .endm
 
 ENTRY (sincosf_16_wrapper_vv_glibc)
-WRAPPER_IMPL_AVX512_fFF_vvv_glibc sincosf_8_wrapper_l4l4_glibc
+WRAPPER_IMPL_AVX512_fFF_vvv_glibc sincosf_8_avx2_wrapped_l4l4_glibc
 END (sincosf_16_wrapper_vv_glibc)

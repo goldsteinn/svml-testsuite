@@ -58,7 +58,7 @@
 
 
 
-	.section .text.exex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY(asinhf_16_avx512_dev)
 	pushq	%rbp
 	cfi_def_cfa_offset(16)

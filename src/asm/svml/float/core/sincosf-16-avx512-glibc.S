@@ -51,7 +51,7 @@
            R2 = XOR( RC, SC ).  */
 
 	.text
-libmvec_hidden_def(sincosf_16_wrapper_l4l4_glibc_knl)
+libmvec_hidden_def(sincosf_16_avx512_wrapped_l4l4_glibc_knl)
 
 ENTRY (sincosf_16_avx512_l4l4_glibc)
         pushq     %rbp

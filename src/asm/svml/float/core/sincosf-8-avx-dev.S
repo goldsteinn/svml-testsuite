@@ -23,7 +23,7 @@
 
         .text
 ENTRY (sincosf_8_avx_l4l4_dev)
-WRAPPER_IMPL_AVX_fFF_dev sincosf_4_wrapper_l4l4_dev
+WRAPPER_IMPL_AVX_fFF_dev sincosf_4_sse2_wrapped_l4l4_dev
 END (sincosf_8_avx_l4l4_dev)
 
 /* AVX ISA version as wrapper to SSE ISA version (for vector
@@ -196,5 +196,5 @@ END (sincosf_8_avx_l4l4_dev)
 .endm
 
 ENTRY (sincosf_8_avx_vv_dev)
-WRAPPER_IMPL_AVX_fFF_vvv_dev sincosf_4_wrapper_l4l4_dev
+WRAPPER_IMPL_AVX_fFF_vvv_dev sincosf_4_sse2_wrapped_l4l4_dev
 END (sincosf_8_avx_vv_dev)

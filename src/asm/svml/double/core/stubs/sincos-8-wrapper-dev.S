@@ -22,9 +22,9 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-dev.S"
 
 	.text
-ENTRY (sincos_8_wrapper_l8l8_dev)
-WRAPPER_IMPL_AVX512_fFF_dev sincos_4_wrapper_l8l8_dev
-END (sincos_8_wrapper_l8l8_dev)
+ENTRY (sincos_8_avx512_wrapped_l8l8_dev)
+WRAPPER_IMPL_AVX512_fFF_dev sincos_4_avx2_wrapped_l8l8_dev
+END (sincos_8_avx512_wrapped_l8l8_dev)
 
 /* AVX512 ISA version as wrapper to AVX2 ISA version (for vector
    function declared with #pragma omp declare simd notinbranch).  */
@@ -189,5 +189,5 @@ END (sincos_8_wrapper_l8l8_dev)
 .endm
 
 ENTRY (sincos_8_wrapper_vv_dev)
-WRAPPER_IMPL_AVX512_fFF_vvv_dev sincos_4_wrapper_l8l8_dev
+WRAPPER_IMPL_AVX512_fFF_vvv_dev sincos_4_avx2_wrapped_l8l8_dev
 END (sincos_8_wrapper_vv_dev)

@@ -63,7 +63,7 @@
 
 #define ATANHF_DATA(x)			((x)+__svml_satanh_data_internal_avx512_al64)
 
-	.section .text.exex512, "ax", @progbits
+	.section .text.evex512, "ax", @progbits
 ENTRY(atanhf_16_avx512_dev)
 	vandps	AbsMask+__svml_satanh_data_internal_avx512(%rip){1to16}, %zmm0, %zmm6
 	vmovups	ATANHF_DATA(One)(%rip), %zmm4

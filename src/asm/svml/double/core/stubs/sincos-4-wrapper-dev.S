@@ -22,10 +22,10 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/common-wrapper-dev.S"
 
 	.text
-ENTRY (sincos_4_wrapper_l8l8_dev)
-WRAPPER_IMPL_AVX_fFF_dev sincos_2_wrapper_l8l8_dev
-END (sincos_4_wrapper_l8l8_dev)
-libmvec_hidden_def (sincos_4_wrapper_l8l8_dev)
+ENTRY (sincos_4_avx2_wrapped_l8l8_dev)
+WRAPPER_IMPL_AVX_fFF_dev sincos_2_sse2_wrapped_l8l8_dev
+END (sincos_4_avx2_wrapped_l8l8_dev)
+libmvec_hidden_def (sincos_4_avx2_wrapped_l8l8_dev)
 
 /* AVX2 ISA version as wrapper to SSE ISA version (for vector
    function declared with #pragma omp declare simd notinbranch).  */
@@ -146,7 +146,7 @@ libmvec_hidden_def (sincos_4_wrapper_l8l8_dev)
 .endm
 
 ENTRY (sincos_4_wrapper_vv_dev)
-WRAPPER_IMPL_AVX2_fFF_vvv_dev sincos_2_wrapper_l8l8_dev
+WRAPPER_IMPL_AVX2_fFF_vvv_dev sincos_2_sse2_wrapped_l8l8_dev
 END (sincos_4_wrapper_vv_dev)
 
 #ifndef USE_MULTIARCH

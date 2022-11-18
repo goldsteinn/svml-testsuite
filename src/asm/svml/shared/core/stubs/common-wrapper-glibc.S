@@ -1,3 +1,4 @@
+#if 0	
 /* Stub .*/
 // Ftype: 1
 /* Common float/double wrapper implementations of vector math
@@ -186,3 +187,4 @@
         cfi_restore (%rbp)
         ret
 .endm
+#endif
