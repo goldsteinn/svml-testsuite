@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/glibc-expf-data.h"
 
-	.text
+	.section .text.sse4, "ax", @progbits
 ENTRY (expf_4_sse4_glibc)
 /*
    ALGORITHM DESCRIPTION:

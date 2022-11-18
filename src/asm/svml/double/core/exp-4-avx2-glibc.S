@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/glibc-exp-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY (exp_4_avx2_glibc)
 /*
    ALGORITHM DESCRIPTION:

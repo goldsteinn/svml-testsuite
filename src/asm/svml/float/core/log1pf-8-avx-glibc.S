@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/common-wrapper-glibc.S"
 
-        .text
+	.section .text.avx2, "ax", @progbits
 ENTRY (log1pf_8_avx_glibc)
 WRAPPER_IMPL_AVX_glibc log1pf_4_wrapper_glibc
 END (log1pf_8_avx_glibc)

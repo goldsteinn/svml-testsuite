@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/glibc-trig-data.h"
 
-	.text
+	.section .text.sse4, "ax", @progbits
 ENTRY (sin_2_sse4_glibc)
 /* ALGORITHM DESCRIPTION:
 

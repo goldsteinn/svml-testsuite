@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/glibc-log-data.h"
 
-	.text
+	.section .text.sse4, "ax", @progbits
 ENTRY (log_2_sse4_glibc)
 /*
    ALGORITHM DESCRIPTION:

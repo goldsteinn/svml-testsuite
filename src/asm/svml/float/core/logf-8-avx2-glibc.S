@@ -21,7 +21,7 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/glibc-logf-data.h"
 
-	.text
+	.section .text.avx2, "ax", @progbits
 ENTRY(logf_8_avx2_glibc)
 /*
    ALGORITHM DESCRIPTION:

@@ -2,7 +2,7 @@ import os
 import glob
 from common_util import is_int, as_int
 
-S_files = glob.glob("**/*-dev*.S", recursive=True)
+S_files = glob.glob("**/*-glibc*.S", recursive=True)
 H_files = glob.glob("**/*-dev*.h", recursive=True)
 
 
