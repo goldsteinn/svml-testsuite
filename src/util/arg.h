@@ -54,7 +54,7 @@ typedef struct arg_option arg_option_t;
 struct arg_option {
     ArgKind            kind;          /* option, positionl, rest, end, help */
     ArgType            type;          /* type of the argument/option */
-    char const * const args_begin[4]; /* also name of positional arg */
+    char const * const args_begin[6]; /* also name of positional arg */
     int32_t            required;
     void *             dest;
     uint64_t           dest_sz;     /* hidden to user. */

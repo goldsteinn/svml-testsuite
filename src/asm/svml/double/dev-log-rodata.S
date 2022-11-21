@@ -1061,9 +1061,12 @@ dev_dlog_data:
 	.quad	0xbe1cf2074d5ba303
 	.quad	0xc08628b76e3a4180
 	.quad	0xbe1cf05cd5eed880
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
 /* Lookup table with 9-bit index for
    -log(mRcp), where mRcp is mantissa of 1/x 9-bit accurate reciprocal:
@@ -1584,9 +1587,13 @@ dev_dlog_data:
 	.quad	0x3f60040155d5889e
 	.quad	0x3f50020055655889
 	.quad	0x0000000000000000
-	.rept	56
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+    .quad	0x0000000000000000
 
 /* Polynomial coefficients: */
 double_vector _poly_coeff_1 0x3fc9999cacdb4d0a
@@ -1637,9 +1644,12 @@ double_vector _L2 0x3fe62e42fefa39ef
 .endif
 	.quad	0x7ff0000000000000
 	.quad	0xfff0000000000000
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
 /* DP 1.0, +/- */
 .if .-dev_dlog_data != _dOnes
@@ -1647,9 +1657,12 @@ double_vector _L2 0x3fe62e42fefa39ef
 .endif
 	.quad	0x3ff0000000000000
 	.quad	0xbff0000000000000
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
 /* DP 0.0, +/- */
 .if .-dev_dlog_data != _dZeros
@@ -1657,8 +1670,11 @@ double_vector _L2 0x3fe62e42fefa39ef
 .endif
 	.quad	0x0000000000000000
 	.quad	0x8000000000000000
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 	.type	dev_dlog_data,@object
 	.size dev_dlog_data,.-dev_dlog_data

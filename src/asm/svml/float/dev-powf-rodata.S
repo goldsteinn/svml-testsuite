@@ -1,5 +1,5 @@
 /* Stub .*/
-// Ftype: 2
+	// Ftype: 2
 /* Data for function powf.
    Copyright (C) 2014-2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
@@ -21,36 +21,36 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/dev-powf-data.h"
 
 	.section .rodata, "a"
-	.align 64
+	.align	64
 
-/* Data table for vector implementations of function powf.
-   The table may contain polynomial, reduction, lookup coefficients and
-   other coefficients obtained through different methods of research
-   and experimental work.  */
+	/* Data table for vector implementations of function powf. The
+	   table may contain polynomial, reduction, lookup coefficients
+	   and other coefficients obtained through different methods of
+	   research and experimental work.  */
 
-	.globl dev_spow_data
+	.globl	dev_spow_data
 dev_spow_data:
 
-/* General purpose constants for H+L multiplication:
- * NMINNORM */
-float_vector _NMINNORM 0x80800000
+	/* General purpose constants for H+L multiplication: * NMINNORM.
+	 */
+	float_vector _NMINNORM 0x80800000
 
-/* NMAXVAL */
-float_vector _NMAXVAL 0xfeffffff
+	/* NMAXVAL.  */
+	float_vector _NMAXVAL 0xfeffffff
 
-/* INF */
-float_vector _INF 0x7f800000
+	/* INF.  */
+	float_vector _INF 0x7f800000
 
-/* ABSMASK */
-float_vector _ABSMASK 0x7fffffff
+	/* ABSMASK.  */
+	float_vector _ABSMASK 0x7fffffff
 
-/* DOMAINRANGE */
-float_vector _DOMAINRANGE 0x42ae9a00
+	/* DOMAINRANGE.  */
+	float_vector _DOMAINRANGE 0x42ae9a00
 
-/* Log(2) lookup High+Low table for logarithmic part */
-.if .-dev_spow_data != _Log_HA_table
-.err
-.endif
+	/* Log(2) lookup High+Low table for logarithmic part.  */
+	.if	.-dev_spow_data != _Log_HA_table
+	.err
+	.endif
 	.quad	0xc086232bdd7a8300
 	.quad	0xbe1ce91eef3fb100
 	.quad	0xc086232fdc7ad828
@@ -1077,14 +1077,17 @@ float_vector _DOMAINRANGE 0x42ae9a00
 	.quad	0xbe1cf2074d5ba303
 	.quad	0xc08628b76e3a4180
 	.quad	0xbe1cf05cd5eed880
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-/* Log(2) lookup table for logarithmic part */
-.if .-dev_spow_data != _Log_LA_table
-.err
-.endif
+	/* Log(2) lookup table for logarithmic part.  */
+	.if	.-dev_spow_data != _Log_LA_table
+	.err
+	.endif
 	.quad	0x8000000000000000
 	.quad	0xbf5ff802a9ab10e6
 	.quad	0xbf6ff00aa2b10bc0
@@ -1598,91 +1601,106 @@ float_vector _DOMAINRANGE 0x42ae9a00
 	.quad	0x3f60040155d5889e
 	.quad	0x3f50020055655889
 	.quad	0x0000000000000000
-	.rept	56
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-/* Polynomial coefficients for log part:
- * coeff4 */
-double_vector _poly_coeff_1 0x3fc9999cacdb4d0a
 
-/* coeff3 */
-double_vector _poly_coeff_2 0xbfd0000148058ee1
+	/* Polynomial coefficients for log part: * coeff4.  */
+	double_vector _poly_coeff_1 0x3fc9999cacdb4d0a
 
-/* coeff2 */
-double_vector _poly_coeff_3 0x3fd55555555543c5
+	/* coeff3.  */
+	double_vector _poly_coeff_2 0xbfd0000148058ee1
 
-/* coeff1 */
-double_vector _poly_coeff_4 0xbfdffffffffff81f
+	/* coeff2.  */
+	double_vector _poly_coeff_3 0x3fd55555555543c5
 
-/* General purpose constants for log part: ExpMask */
-double_vector _ExpMask 0x000fffffffffffff
+	/* coeff1.  */
+	double_vector _poly_coeff_4 0xbfdffffffffff81f
 
-/* Two10 */
-double_vector _Two10 0x3f50000000000000
+	/* General purpose constants for log part: ExpMask.  */
+	double_vector _ExpMask 0x000fffffffffffff
 
-/* MinNorm */
-double_vector _MinNorm 0x0010000000000000
+	/* Two10.  */
+	double_vector _Two10 0x3f50000000000000
 
-/* MaxNorm */
-double_vector _MaxNorm 0x7fefffffffffffff
+	/* MinNorm.  */
+	double_vector _MinNorm 0x0010000000000000
 
-/* HalfMask */
-double_vector _HalfMask 0xfffffffffc000000
+	/* MaxNorm.  */
+	double_vector _MaxNorm 0x7fefffffffffffff
 
-/* One */
-double_vector _One 0x3ff0000000000000
+	/* HalfMask.  */
+	double_vector _HalfMask 0xfffffffffc000000
 
-/* L2H */
-double_vector _L2H 0x3fe62e42fefa0000
+	/* One.  */
+	double_vector _One 0x3ff0000000000000
 
-/* L2L */
-double_vector _L2L 0x3d7cf79abc9e0000
+	/* L2H.  */
+	double_vector _L2H 0x3fe62e42fefa0000
 
-/* Threshold */
-double_vector _Threshold 0x4086a00000000000
+	/* L2L.  */
+	double_vector _L2L 0x3d7cf79abc9e0000
 
-/* Bias */
-double_vector _Bias 0x408ff80000000000
+	/* Threshold.  */
+	double_vector _Threshold 0x4086a00000000000
 
-/* Bias1 */
-double_vector _Bias1 0x408ff00000000000
+	/* Bias.  */
+	double_vector _Bias 0x408ff80000000000
 
-/* L2L */
-double_vector _L2 0x3fe62e42fefa39ef
+	/* Bias1.  */
+	double_vector _Bias1 0x408ff00000000000
 
-/* dInfs = DP infinity, +/- == */
-.if .-dev_spow_data != _dInfs
-.err
-.endif
+	/* L2L.  */
+	double_vector _L2 0x3fe62e42fefa39ef
+
+	/* dInfs = DP infinity, +/- ==.  */
+	.if	.-dev_spow_data != _dInfs
+	.err
+	.endif
 	.quad	0x7ff0000000000000
 	.quad	0xfff0000000000000
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-/* dOnes = DP one, +/- == */
-.if .-dev_spow_data != _dOnes
-.err
-.endif
+	/* dOnes = DP one, +/- ==.  */
+	.if	.-dev_spow_data != _dOnes
+	.err
+	.endif
 	.quad	0x3ff0000000000000
 	.quad	0xbff0000000000000
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-/* dZeros = DP zero +/- == */
-.if .-dev_spow_data != _dZeros
-.err
-.endif
+
+	/* dZeros = DP zero +/- ==.  */
+	.if	.-dev_spow_data != _dZeros
+	.err
+	.endif
 	.quad	0x0000000000000000
 	.quad	0x8000000000000000
-	.rept	48
-	.byte	0
-	.endr
-.if .-dev_spow_data != __dbT
-.err
-.endif
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+
+	.if	.-dev_spow_data != __dbT
+	.err
+	.endif
 	.quad	0x3feffffffc27dd9e
 	.quad	0x3ff00162f1a4047d
 	.quad	0x3ff002c603f68252
@@ -3732,30 +3750,33 @@ double_vector _L2 0x3fe62e42fefa39ef
 	.quad	0x3ffffa74e660a715
 	.quad	0x3ffffd3a52872e44
 	.quad	0x3ffffffffc27dd9e
-	.rept	56
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-/* Other general purpose constants:
- * _dbInvLn2 */
-double_vector __dbInvLn2 0x40a71547652b82fe
+	/* Other general purpose constants: * _dbInvLn2.  */
+	double_vector __dbInvLn2 0x40a71547652b82fe
 
-/* _dbShifter */
-double_vector __dbShifter 0x4338000000000000
+	/* _dbShifter.  */
+	double_vector __dbShifter 0x4338000000000000
 
-/* _dbHALF */
-double_vector __dbHALF 0x3fe0000000000000
+	/* _dbHALF.  */
+	double_vector __dbHALF 0x3fe0000000000000
 
-/* _dbC1 = 2^(1/2^K)-1 */
-double_vector __dbC1 0x3f362f3904051fa1
+	/* _dbC1 = 2^(1/2^K)-1.  */
+	double_vector __dbC1 0x3f362f3904051fa1
 
-/* _lbLOWKBITS = 2^K-1 */
-double_vector __lbLOWKBITS 0x00000000000007ff
+	/* _lbLOWKBITS = 2^K-1.  */
+	double_vector __lbLOWKBITS 0x00000000000007ff
 
-/* _iAbsMask */
-float_vector __iAbsMask 0x7fffffff
+	/* _iAbsMask.  */
+	float_vector __iAbsMask 0x7fffffff
 
-/* _iDomainRange */
-float_vector __iDomainRange 0x4059fe36
-	.type	dev_spow_data,@object
-	.size dev_spow_data,.-dev_spow_data
+	/* _iDomainRange.  */
+	float_vector __iDomainRange 0x4059fe36
+	.type	dev_spow_data, @object
+	.size	dev_spow_data, .-dev_spow_data

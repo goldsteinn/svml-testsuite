@@ -1,0 +1,4071 @@
+43380000000000004338000000000000433800000000000043380000000000004338000000000000433800000000000043380000000000004338000000000000
+	double/dev-exp-rodata.S
+	double/dev-pow-rodata.S
+	double/dev-trig-rodata.S
+	double/core/tan-8-avx512-dev.S
+	double/core/cbrt-8-avx512-dev.S
+	float/dev-powf-rodata.S
+3ff00000000000003ff00000000000003ff00000000000003ff00000000000003ff00000000000003ff00000000000003ff00000000000003ff0000000000000
+	double/dev-exp-rodata.S
+	double/dev-pow-rodata.S
+	double/dev-pow-rodata.S
+	double/dev-log-rodata.S
+	double/core/atanh-8-avx512-dev.S
+	double/core/atanh-8-avx512-dev.S
+	double/core/log1p-8-avx512-dev.S
+	double/core/log10-8-avx512-dev.S
+	double/core/asin-8-avx512-dev.S
+	double/core/tan-8-avx512-dev.S
+	double/core/erfc-8-avx512-dev.S
+	double/core/log2-8-avx512-dev.S
+	double/core/atan-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/cbrt-8-avx512-dev.S
+	double/core/expm1-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+	float/dev-powf-rodata.S
+7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff
+	double/dev-exp-rodata.S
+	double/dev-pow-rodata.S
+	float/dev-powf-rodata.S
+	float/dev-powf-rodata.S
+	float/dev-expf-rodata.S
+	float/dev-trig-rodata.S
+	float/core/asinf-16-avx512-dev.S
+	float/core/erff-16-avx512-dev.S
+	float/core/asinhf-16-avx512-dev.S
+	float/core/exp10f-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+	float/core/atanf-16-avx512-dev.S
+	float/core/exp2f-16-avx512-dev.S
+	float/core/erfcf-16-avx512-dev.S
+	float/core/log1pf-16-avx512-dev.S
+	float/core/hypotf-16-avx512-dev.S
+000fffffffffffff000fffffffffffff000fffffffffffff000fffffffffffff000fffffffffffff000fffffffffffff000fffffffffffff000fffffffffffff
+	double/dev-pow-rodata.S
+	double/dev-pow-rodata.S
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+00100000000000000010000000000000001000000000000000100000000000000010000000000000001000000000000000100000000000000010000000000000
+	double/dev-pow-rodata.S
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+7fefffffffffffff7fefffffffffffff7fefffffffffffff7fefffffffffffff7fefffffffffffff7fefffffffffffff7fefffffffffffff7fefffffffffffff
+	double/dev-pow-rodata.S
+	double/dev-log-rodata.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+	float/dev-powf-rodata.S
+3ff71547652b82fe3ff71547652b82fe3ff71547652b82fe3ff71547652b82fe3ff71547652b82fe3ff71547652b82fe3ff71547652b82fe3ff71547652b82fe
+	double/dev-pow-rodata.S
+	double/core/cosh-8-avx512-dev.S
+	double/core/log2-8-avx512-dev.S
+7fffffffffffffff7fffffffffffffff7fffffffffffffff7fffffffffffffff7fffffffffffffff7fffffffffffffff7fffffffffffffff7fffffffffffffff
+	double/dev-pow-rodata.S
+	double/dev-trig-rodata.S
+	double/core/exp2-8-avx512-dev.S
+	double/core/erf-8-avx512-dev.S
+	double/core/atanh-8-avx512-dev.S
+	double/core/asin-8-avx512-dev.S
+	double/core/exp10-8-avx512-dev.S
+	double/core/tanh-8-avx512-dev.S
+	double/core/erfc-8-avx512-dev.S
+	double/core/atan2-8-avx512-dev.S
+	double/core/atan-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/hypot-8-avx512-dev.S
+3fe62e42fefa39ef3fe62e42fefa39ef3fe62e42fefa39ef3fe62e42fefa39ef3fe62e42fefa39ef3fe62e42fefa39ef3fe62e42fefa39ef3fe62e42fefa39ef
+	double/dev-pow-rodata.S
+	double/dev-log-rodata.S
+	double/core/expm1-8-avx512-dev.S
+	float/dev-powf-rodata.S
+fff0000000000000fff0000000000000fff0000000000000fff0000000000000fff0000000000000fff0000000000000fff0000000000000fff0000000000000
+	double/dev-pow-rodata.S
+	double/dev-pow-rodata.S
+80000000000000008000000000000000800000000000000080000000000000008000000000000000800000000000000080000000000000008000000000000000
+	double/dev-pow-rodata.S
+	double/dev-trig-rodata.S
+	double/core/sinh-8-avx512-dev.S
+	double/core/log1p-8-avx512-dev.S
+	double/core/tanh-8-avx512-dev.S
+	double/core/erfc-8-avx512-dev.S
+	double/core/cosh-8-avx512-dev.S
+	double/core/atan2-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+	double/core/cbrt-8-avx512-dev.S
+	double/core/expm1-8-avx512-dev.S
+43300000000000004330000000000000433000000000000043300000000000004330000000000000433000000000000043300000000000004330000000000000
+	double/dev-pow-rodata.S
+	double/dev-trig-rodata.S
+7f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f8000007f800000
+	double/dev-pow-rodata.S
+	float/dev-powf-rodata.S
+	float/dev-trig-rodata.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f
+	double/dev-pow-rodata.S
+	float/dev-expf-rodata.S
+3fc9999cacdb4d0a3fc9999cacdb4d0a3fc9999cacdb4d0a3fc9999cacdb4d0a3fc9999cacdb4d0a3fc9999cacdb4d0a3fc9999cacdb4d0a3fc9999cacdb4d0a
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+bfd0000148058ee1bfd0000148058ee1bfd0000148058ee1bfd0000148058ee1bfd0000148058ee1bfd0000148058ee1bfd0000148058ee1bfd0000148058ee1
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+3fd55555555543c53fd55555555543c53fd55555555543c53fd55555555543c53fd55555555543c53fd55555555543c53fd55555555543c53fd55555555543c5
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+bfdffffffffff81fbfdffffffffff81fbfdffffffffff81fbfdffffffffff81fbfdffffffffff81fbfdffffffffff81fbfdffffffffff81fbfdffffffffff81f
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+3f500000000000003f500000000000003f500000000000003f500000000000003f500000000000003f500000000000003f500000000000003f50000000000000
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+fffffffffc000000fffffffffc000000fffffffffc000000fffffffffc000000fffffffffc000000fffffffffc000000fffffffffc000000fffffffffc000000
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+3fe62e42fefa00003fe62e42fefa00003fe62e42fefa00003fe62e42fefa00003fe62e42fefa00003fe62e42fefa00003fe62e42fefa00003fe62e42fefa0000
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+3d7cf79abc9e00003d7cf79abc9e00003d7cf79abc9e00003d7cf79abc9e00003d7cf79abc9e00003d7cf79abc9e00003d7cf79abc9e00003d7cf79abc9e0000
+	double/dev-log-rodata.S
+	double/core/atanh-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+	float/dev-powf-rodata.S
+4086a000000000004086a000000000004086a000000000004086a000000000004086a000000000004086a000000000004086a000000000004086a00000000000
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+408ff80000000000408ff80000000000408ff80000000000408ff80000000000408ff80000000000408ff80000000000408ff80000000000408ff80000000000
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+408ff00000000000408ff00000000000408ff00000000000408ff00000000000408ff00000000000408ff00000000000408ff00000000000408ff00000000000
+	double/dev-log-rodata.S
+	float/dev-powf-rodata.S
+3ff921fb54442d183ff921fb54442d183ff921fb54442d183ff921fb54442d183ff921fb54442d183ff921fb54442d183ff921fb54442d183ff921fb54442d18
+	double/dev-trig-rodata.S
+	double/core/asin-8-avx512-dev.S
+	double/core/atan-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+	double/dev-trig-rodata.S
+	double/core/atan2-8-avx512-dev.S
+	double/core/atan-8-avx512-dev.S
+	float/core/atanf-16-avx512-dev.S
+	float/core/atan2f-16-avx512-dev.S
+3fe00000000000003fe00000000000003fe00000000000003fe00000000000003fe00000000000003fe00000000000003fe00000000000003fe0000000000000
+	double/dev-trig-rodata.S
+	double/core/atanh-8-avx512-dev.S
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+	float/dev-powf-rodata.S
+400921fb54442d18400921fb54442d18400921fb54442d18400921fb54442d18400921fb54442d18400921fb54442d18400921fb54442d18400921fb54442d18
+	double/dev-trig-rodata.S
+	double/core/acos-8-avx512-dev.S
+40861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d99
+	double/core/sinh-8-avx512-dev.S
+	double/core/cosh-8-avx512-dev.S
+3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD
+	double/core/sinh-8-avx512-dev.S
+	double/core/cosh-8-avx512-dev.S
+3FA55555CF16D2993FA55555CF16D2993FA55555CF16D2993FA55555CF16D2993FA55555CF16D2993FA55555CF16D2993FA55555CF16D2993FA55555CF16D299
+	double/core/sinh-8-avx512-dev.S
+	double/core/cosh-8-avx512-dev.S
+7fffffffffffffff7fffffffffffffff7fffffffffffffff7fffffffffffffff
+	double/core/atan-4-avx2-dev.S
+	double/core/asinh-4-avx2-dev.S
+	double/core/expm1-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/erfc-4-avx2-dev.S
+	double/core/asin-4-avx2-dev.S
+	double/core/tanh-4-avx2-dev.S
+	double/core/erf-4-avx2-dev.S
+	double/core/atan2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+	double/core/hypot-4-avx2-dev.S
+bff0000000000000bff0000000000000bff0000000000000bff0000000000000
+	double/core/atan-4-avx2-dev.S
+	double/core/expm1-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3ff00000000000003ff00000000000003ff00000000000003ff0000000000000
+	double/core/atan-4-avx2-dev.S
+	double/core/asinh-4-avx2-dev.S
+	double/core/log10-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/erfc-4-avx2-dev.S
+	double/core/asin-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+0000000000000000000000000000000000000000000000000000000000000000
+	double/core/atan-4-avx2-dev.S
+	double/core/atan2-4-avx2-dev.S
+	float/core/powf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+3ff921fb54442d183ff921fb54442d183ff921fb54442d183ff921fb54442d18
+	double/core/atan-4-avx2-dev.S
+	double/core/tan-4-avx2-dev.S
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fc9999CACDB4D0A3fc9999CACDB4D0A3fc9999CACDB4D0A3fc9999CACDB4D0A
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+bfd0000148058EE1bfd0000148058EE1bfd0000148058EE1bfd0000148058EE1
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+3fd55555555543C53fd55555555543C53fd55555555543C53fd55555555543C5
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+bfdFFFFFFFFFF81FbfdFFFFFFFFFF81FbfdFFFFFFFFFF81FbfdFFFFFFFFFF81F
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+000fffffffffffff000fffffffffffff000fffffffffffff000fffffffffffff
+	double/core/asinh-4-avx2-dev.S
+	double/core/log10-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+3f500000000000003f500000000000003f500000000000003f50000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/log10-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+bfefffffffffffffbfefffffffffffffbfefffffffffffffbfefffffffffffff
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+7f3ffffffffff0007f3ffffffffff0007f3ffffffffff0007f3ffffffffff000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+3e000000000000003e000000000000003e000000000000003e00000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+fffffffffffffc00fffffffffffffc00fffffffffffffc00fffffffffffffc00
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+4086a000000000004086a000000000004086a000000000004086a00000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/log10-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+408ff80000000000408ff80000000000408ff80000000000408ff80000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/log10-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+408ff00000000000408ff00000000000408ff00000000000408ff00000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/log10-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+7ff00000000000007ff00000000000007ff00000000000007ff0000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/cosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+7f400000000000007f400000000000007f400000000000007f40000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+3fe62E42FEFA39EF3fe62E42FEFA39EF3fe62E42FEFA39EF3fe62E42FEFA39EF
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/log1p-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+41D000000000000041D000000000000041D000000000000041D0000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+3FD80000000000003FD80000000000003FD80000000000003FD8000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/hypot-4-avx2-dev.S
+3FD18000000000003FD18000000000003FD18000000000003FD1800000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/hypot-4-avx2-dev.S
+3FE00000000000003FE00000000000003FE00000000000003FE0000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+7FEFFFFFFFFFFFFF7FEFFFFFFFFFFFFF7FEFFFFFFFFFFFFF7FEFFFFFFFFFFFFF
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+8000000000000000800000000000000080000000000000008000000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/sinh-4-avx2-dev.S
+	double/core/erfc-4-avx2-dev.S
+	double/core/tanh-4-avx2-dev.S
+	double/core/cosh-4-avx2-dev.S
+	double/core/atan2-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+403F000000000000403F000000000000403F000000000000403F000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+FFFFFE0000000000FFFFFE0000000000FFFFFE0000000000FFFFFE0000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+	double/core/atanh-4-avx2-dev.S
+FFFFFFFFFF000000FFFFFFFFFF000000FFFFFFFFFF000000FFFFFFFFFF000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+3E100000000000003E100000000000003E100000000000003E10000000000000
+	double/core/asinh-4-avx2-dev.S
+	double/core/acosh-4-avx2-dev.S
+42F800000000000042F800000000000042F800000000000042F800000000000042F800000000000042F800000000000042F800000000000042F8000000000000
+	double/core/exp2-8-avx512-dev.S
+	double/core/cosh-8-avx512-dev.S
+3FF00000000000003FF0000000000000
+	double/core/atan2-2-sse4-dev.S
+	double/core/tan-2-sse4-dev.S
+	double/core/hypot-2-sse4-dev.S
+80000000000000008000000000000000
+	double/core/atan2-2-sse4-dev.S
+	double/core/asinh-2-sse4-dev.S
+	double/core/sinh-2-sse4-dev.S
+	double/core/tanh-2-sse4-dev.S
+	double/core/acos-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/cosh-2-sse4-dev.S
+	double/core/erfc-2-sse4-dev.S
+7fffffffffffffff7fffffffffffffff
+	double/core/atan2-2-sse4-dev.S
+	double/core/asinh-2-sse4-dev.S
+	double/core/erf-2-sse4-dev.S
+	double/core/tanh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/hypot-2-sse4-dev.S
+	double/core/erfc-2-sse4-dev.S
+	double/core/atan-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+	double/core/expm1-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+00000000000000000000000000000000
+	double/core/atan2-2-sse4-dev.S
+	double/core/tan-2-sse4-dev.S
+	double/core/erfc-2-sse4-dev.S
+	double/core/atan-2-sse4-dev.S
+	double/core/expm1-2-sse4-dev.S
+	float/core/atan2f-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+0010000000000000001000000000000000100000000000000010000000000000
+	double/core/log10-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+7fefffffffffffff7fefffffffffffff7fefffffffffffff7fefffffffffffff
+	double/core/log10-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+fffffffffc000000fffffffffc000000fffffffffc000000fffffffffc000000
+	double/core/log10-4-avx2-dev.S
+	double/core/log2-4-avx2-dev.S
+7fffffff7fffffff7fffffff7fffffff
+	double/core/exp10-2-sse4-dev.S
+	double/core/exp2-2-sse4-dev.S
+	float/core/cbrtf-4-sse4-dev.S
+	float/core/expm1f-4-sse4-dev.S
+	float/core/asinhf-4-sse4-dev.S
+	float/core/erff-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/exp10f-4-sse4-dev.S
+	float/core/erfcf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+	float/core/exp2f-4-sse4-dev.S
+	float/core/hypotf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+c086232bdd7a8300be1ce91eef3fb100
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086232fdc7ad828be1cefcffda73b6a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862333d97d2ba0be1cef406748f1ff
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862337d48378e0be1cef2a9429925a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086233bcd8fb878be1cf138d17ebecb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086233fc4a3e018be1ceff2dbbbb29e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862343b9c1e270be1cf1a42aae437b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862347acebaf68be1cef3b152048af
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086234b9e2333f0be1cef20e127805e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086234f8d6a5a30be1cf00ad6052cf4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623537ac30980be1cefc4642ee597
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862357662f2660be1cf1f277d36e16
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086235b4fb092a0be1ceed009e8d8e6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086235f37492d28be1cf1e4038cb362
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623631cfad250be1cf0b0873b8557
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086236700c75b98be1cf15bb3227c0b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086236ae2b09fe0be1cf151ef8ca9ed
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086236ec2b87358be1cefe1dc2cd2ed
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862372a0e0a780be1cf0d1eec5454f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623767d2b0b48be1ceeefd570bbce
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086237a57996af0be1cee99ae91b3a7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086237e302d9028be1cf0412830fbd1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086238206e94218be1ceee898588610
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862385dbce4548be1cee9a1fbcaaea
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862389aede5bc0be1ceed8e7cc1ad6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086238d801b4500be1cf10c8d059da6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623914f86be18be1ceee6c63a8165
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623951d228180be1cf0c3592d2ff1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862398e8f04758be1cf0026cc4cb1b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086239cb2f1c538be1cf15d48d8e670
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623a07b28ae60be1cef359363787c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623a44196b390be1cefdf1ab2e82c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623a8063d8338be1cefe43c02aa84
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623abc91ec960be1cf044f5ae35b7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623af8a3c2fb8be1cf0b0b4001e1b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623b349975d98be1cf1bae76dfbcf
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623b70731f810be1cef0a72e13a62
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623bac30da1c8be1cf184007d2b6b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623be7d2bfb40be1cf16f4b239e98
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623c2358ea2a0be1cf0976acada87
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623c5ec3733d0be1cf066318a16ff
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623c9a1274880be1ceffaa7148798
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623cd54607820be1cf23ab02e9b6e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623d105e45800be1cefdfef7d4fde
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623d4b5b47b20be1cf17fece44f2b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623d863d27270be1cf18f907d0d7c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623dc103fccb0be1cee61fe072c98
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623dfbafe1668be1cf022dd891e2f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623e3640eda20be1ceecc1daf4358
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623e70b73a028be1cf0173c4fa380
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623eab12deec8be1cf16a2150c2f4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623ee553f4a30be1cf1bf980b1f4b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623f1f7a93480be1cef8b731663c2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623f5986d2dc0be1cee9a664d7ef4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623f9378cb3f0be1cf1eda2af6400
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08623fcd5094320be1cf1923f9d68d7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086240070e45548be1cf0747cd3e03a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624040b1f6260be1cf22ee855bd6d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862407a3bbe078be1cf0d57360c00b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086240b3abb4398be1ceebc815cd575
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086240ed01efdd0be1cf03bfb970951
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086241263e87f50be1cf16e74768529
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862415f6193658be1cefec64b8becb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086241986b28f30be1cf0838d210baa
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086241d15b5f448be1cf0ea86e75b11
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862420a324ce28be1cf1708d11d805
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624242f008380be1ceea988c5a417
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862427b94a7910be1cef166a7bbca5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086242b420411d0be1cf0c9d9e86a38
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086242ec92eaee8be1cef0946455411
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624324ecbaf98be1cefea60907739
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862435d2dc7160be1cf1ed0934ce42
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086243955624ff8be1cf191ba746c7d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086243cd65ea548be1ceeec78cf2a7e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086244055d2c968be1cef345284c119
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862443d3c012b8be1cf24f77355219
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624475027d5e8be1cf05bf087e114
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086244acb0b65d0be1cef3504a32189
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086244e446c1398be1ceff54b2a406f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862451bc4b2eb8be1cf0757d54ed4f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086245532aa04f0be1cf0c8099fdfd5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862458a789e250be1cf0b173796a31
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086245c1aec1138be1cf11d8734540d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086245f8cd1da60be1cf1916a723ceb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862462fd3c84d8be1cf19a911e1da7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624666c2d5608be1cf23a9ef72e4f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862469d9a591c0be1cef503d947663
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086246d45a67a18be1cf0fceeb1a0b2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862470b0314fa8be1cf107e27e4fbc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086247419475160be1cf03dd9922331
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086247780e9bc98be1cefce1a10e129
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086247ae719cd18be1ceea47f73c4f6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086247e4bd8bd10be1ceec0ac56d100
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862481af27c528be1cee8a6593278a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086248511081c70be1cf2231dd9dec7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862488717af888be1cf0b4b8ed7da8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086248bd0818d68be1cf1bd8d835002
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086248f2e1d0d98be1cf259acc107f4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624928a4eaa20be1cee897636b00c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862495e5179270be1cee757f20c326
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624993e78f490be1cefafd3aa54a4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086249c9673fd10be1cee7298d38b97
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086249fed09d6f8be1ceedc158d4ceb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624a3423babe0be1cf2282987cb2e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624a6960aa400be1cefe7381ecc4b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624a9e877e600be1cef328dbbce80
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624ad39849728be1cefde45f3cc71
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624b08931db58be1cefa8b89433b9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624b3d780d500be1cef6773c0b139
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624b72472a528be1cf031c931c11f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624ba70086b78be1cf088f49275e7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624bdba434630be1cf17de0eaa86d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624c103245238be1cefd492f1ba75
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624c44aacab08be1cf1253e154466
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624c790dd6ad0be1cf0fb09ee6d55
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624cad5b7aa58be1cf1f08dd048fe
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624ce193c8120be1ceeca0809697f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624d15b6d0538be1cef8d5662d968
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624d49c4a4b78be1cee97b556ed78
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624d7dbd56750be1cf1b14b6acb75
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624db1a0f6b00be1cef1e860623f2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624de56f96758be1ceeaf4d156f3d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624e192946bf0be1ceecc12b400ed
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624e4cce18710be1cf180c40c794f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624e805e1c5c8be1cf185a08f7f65
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624eb3d9633d8be1cef45fc924078
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624ee73ffdbb0be1cf1e4f457f32a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624f1a91fc6a0be1cf040147b8a5a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624f4dcf6fc98be1cf1effca0dfb2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624f80f868468be1cf0470146e5bc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624fb40cf6390be1cef4dd186e501
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08624fe70d29e60be1ceebe257f66c7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625019f9137f0be1ceefb7a1c395c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862504cd0c3220be1cf209dedfed8c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862507f9448db0be1cf082da464994
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086250b243b4a18be1cee88694a73cf
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086250e4df165a0be1cf0b61e8f0531
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625117667dd78be1cf1106599c962
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625149d9fad98be1ceff1ee88af1f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862517c399d0c8be1cf0f746994ef6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086251ae85740b8be1cefe8a1d077e4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086251e0bd8f5e0be1cf1a1da036092
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625212e1fe7a8be1cf0f8a7786fcd
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625244f2d0c48be1cefa1174a07a7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625276f0158d8be1cef1043aa5b25
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086252a8d9dc150be1cf15d521c169d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086252dab033898be1cf220bba8861f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862530c732b078be1cef51e310eae2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862533e22d1988be1cf222fcedd8ae
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862536fbf36370be1cefdb4da4bda8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086253a14867ca0be1ceeafc1112171
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086253d2be75280be1cee99dfb4b408
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625404216d160be1cf22d2536f06b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625435715e498be1cef6abbf2e268
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625466ae57648be1cf093a14789f5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625497d866fa0be1cf0f93655603c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086254c8ef9b8b8be1cf1cc40c9aafc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086254f9f4038a8be1ceeea5f4e9157
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862552ae5ad568be1cefa9f52d4997
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862555bc4a7400be1cefa490a638ff
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862558c90ff868be1cef7fcf797d6f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086255bd4ac4590be1cf1b4c51113c9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086255edf203d78be1cef55e5b4a55d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862561e86cc100be1cf0d37a25f9dc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862564f092b028be1ceebe9efc19d9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862567f792e9d8be1cee8ad30a57b5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086256afd6e4c08be1cef4e1817b90b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086256e0225b3b8be1cee7fa9229996
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086257105b9fce0be1cf0b54963d945
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862574082c0298be1cee5f2f3c7995
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862577097c9ee0be1cf0828e303a2c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086257a09acaae0be1cf172c3078947
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086257d08bcfec0be1cf189252afa22
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086258006ae71b8be1cefdb80426923
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625830381da08be1ceef1391a0372
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862585ff380d00be1cf17720c78d13
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862588f9d1df18be1ceef1f9027d83
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086258bf35023b8be1cf06fac99dec9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086258eebb3ad78be1cf1373eeb45c0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862591e2fd4e00be1cef777536bb81
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862594d92dd600be1cf0f43ca40766
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862597ce461558be1cefb2cfc6766b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086259ac246daf0be1ceea49e64ffa2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086259db530f4c8be1cf250fa457dec
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625a0a7053018be1cf17d8bb2a44e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625a397c45918be1cf1d5906d54b7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625a6876f3b30be1cf08fe7b31780
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625a97606a0e0be1cef13edfc9d11
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625ac638b53c8be1cef9d2b107219
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625af4ffe1cb0be1cf1ddd4ff6160
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625b23b5fc390be1cefa02a996495
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625b525b10f68be1cf166a7e37ee5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625b80ef2c680be1cef0b171068a5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625baf725ae28be1cf05c80779283
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625bdde4a8af0be1cf1bbfbffb889
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625c0c4622090be1cf0b8666c0124
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625c3a96d31e0be1cf0a8fcf47a86
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625c68d6c80f0be1cef46e18cb092
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625c97060cef0be1cf1458a350efb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625cc524adc58be1ceeea1dadce12
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625cf332b68b0be1cf0a1bfdc44c7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625d2130332d0be1cef96d02da73e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625d4f1d2f8a8be1cf2451c3c7701
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625d7cf9b7778be1cf10d08f83812
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625daac5d6ba0be1ceec5b4895c5e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625dd881990b0be1cf14e1325c5e4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625e062d0a188be1cf21d0904be12
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625e33c835838be1ceed0839bcf21
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625e615326df0be1cf1bb944889d2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625e8ecde9b48be1cee738e85eece
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625ebc38897e0be1cf25c2bc6ef12
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625ee99311ac8be1cf132b70a41ad
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625f16dd8da28be1cf1984236a6e3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625f441808b78be1cf19ae74998f9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625f71428e370be1cef3e175d61a1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625f9e5d295f8be1cf101f9868fd9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625fcb67e5658be1cee69db83dcd2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08625ff862cd6f8be1cf081b636af51
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086260254dec9a8be1cee62c7d59b3e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626052294df58be1cf1b745c57716
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862607ef4fc868be1cef3d2800ea23
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086260abb103458be1cef480ff1acd2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086260d85d6d200be1cf2424c9a17ef
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626104fa44f90be1cf12cfde90fd5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086261318795a68be1cf21f590dd5b6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862615e0569f48be1cf0c50f9cd28a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862618a73cca30be1ceedbdb520545
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086261b6d2c8668be1cf0b030396011
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086261e32267e98be1cf19917010e96
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862620f62b5cb0be1cf07331355985
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862623b93bc9e8be1cf01ae921a1c3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626267b586ed0be1cefe5cf0dbf0c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626293c81f348be1cf01b258aeb50
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086262bfcb8fe88be1cee6b9e7f4c68
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086262ebbfe3710be1cee684a9b21c9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626317a5242b8be1cf1f8bcde9a8b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086263437b5c6c0be1cf1d063d36238
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862636f42967a8be1cf1e31a19075e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862639afadc950be1cf1d8efdf7e7d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086263c6a438ef0be1cf1812ee72dba
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086263f23eb5b18be1cf1449a9a2279
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862641dca5cfb8be1cee96edce5085
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086264494738e08be1cf06797bd03b2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626474b5536b8be1cef91b9b7ffc1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086264a014b69c0be1cef4b6721278f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086264cb656c678be1cf1942925eb4a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086264f6a77eba8be1cefa2c7bc2e39
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626521daf7758be1cf252595aceb3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862654cffe0718be1cee8e9ae47ec2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862657816437a8be1cf1bf913828fa
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086265a31e2a558be1cf23475d6b366
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086265ce179ebc8be1cef8df00a922b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086265f902aa5f0be1cef279bfa43e0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626623df56e38be1cf080e10b8365
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862664eadade70be1cf1a518f9b544
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086266796db8fd0be1cef9308fed9e9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086266a41f81ae8be1ceea3ae6b19c9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086266cec3117b8be1ceef06003d4c2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086266f95871da8be1cf0b8457ffb0c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626723dfac390be1cf0c526745ad6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862674e58c9fa8be1cf0cf91ff7b5d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626778c3d4798be1cefe260819380
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086267a320d5070be1ceebd90aa27a3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086267cd6fd4ea8be1cf0388121dffa
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086267f7b0dd630be1cf1a3881435f1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626821e3f7a68be1cef28e9d9ac52
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862684c092ce08be1cf02d300062dd
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086268762086350be1cefaee1edfa35
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086268a02a0cbe0be1cf0a5a052e936
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086268ca25c98d8be1cee60a4a497ed
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086268f413c5ab0be1cf0e4a5d0cf49
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862691df40a170be1cf149235a4e6e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626947c69fc80be1cf215180b9fcc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086269718b8fac8be1cef9b156a9840
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862699b42e2a90be1cf054c91441be
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086269c4eca19a8be1cf13ded26512c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086269ee88d5550be1cf22ea4d8ac06
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626a181786a40be1cf2354666ee2e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626a4198be4a8be1cefef936752b3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626a6b0c85020be1cf1e360a9db68
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626a9472e37d8be1ceed6aeb812c5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626abdcbe2650be1cf227340b4986
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626ae7178a5b0be1cf0215a0cbe0d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626b1055e3f70be1cf256adf0ae26
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626b3986f7ca8be1ceff3c67aed06
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626b62aace5c8be1cf2159fb93652
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626b8bc1702e0be1cf01e6dbd1c7f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626bb4cae5b60be1cf009e75d1c0c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626bddc737648be1ceec10a020e73
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626c06b66da08be1cf06d5783eee7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626c2f9890ca0be1cf0cb8f169ffe
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626c586da9388be1cef7de2452430
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626c8135bf3b0be1cf05da6f783ae
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626ca9f0db198be1cefcc877d681d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626cd29f05138be1cef0531954ab3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626cfb4045608be1cf06b8565ea3d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626d23d4a4310be1cefdc455d9d7e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626d4c5c29ad0be1ceefc47e8fa64
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626d74d6ddf48be1cf1872bf033f2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626d9d44c9210be1cf19d91087f9d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626dc5a5f3438be1cf012d444c6ab
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626dedfa64650be1cf0ba528ee153
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626e164224880be1ceeb431709788
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626e3e7d3ba60be1cf0b9af31a6a5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626e66abb1b28be1cf168fb2e135b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626e8ecd8e990be1cef9097461c93
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626eb6e2da3d0be1cee7a434735d8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626edeeb9c7a8be1cf235732b86f2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626f06e7dd280be1cefe1510b89e6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626f2ed7a4120be1cf1f64b9b80ef
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626f56baf9000be1cf08f320ca339
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626f7e91e3b08be1cf1b1de2808a1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626fa65c6bdc0be1cf1976d778b28
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626fce1a99338be1ceef40a4f076f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08626ff5cc73600be1cef3e45869ce3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862701d7202048be1ceef601b4c9d6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086270450b4cbc0be1cf1eaf0b57fd6
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862706c985b1c0be1cef82a44990f3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086270941934b10be1ceefe32981f2c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086270bb8de1018be1cefbf6f5a0445
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086270e2f6678d0be1cf18dba75792c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862710a52cfcc8be1cf0da64ce995f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627131a321318be1cef04ac0fb802
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627158e763268be1cee9d4e2ad9bd
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086271801f9d0f8be1cefa9b55407b5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086271a74bd64a0be1cefe6bd329570
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086271ce6c162c8be1cef0b1205dc85
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086271f58064068be1cef092a785e3f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862721c88c7210be1cf050dcdaac30
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086272438546be8be1cf210907ded8b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862726a75ea1b8be1cee760be44f99
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086272915ab86c0be1ceeeee07c2bcc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086272b833b8df0be1cf06874992df5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086272df00f29d0be1cef8fac5d4899
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627305c26cc70be1cf1103241cc99
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862732c782e788be1cf1d35fef83fe
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627353223ec68be1cef3ec8133e1d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627379c0a4be8be1cef7261daccd8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086273a05367688be1cf18656c50806
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086273c6da8dc68be1cf1c8736e049a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086273ed561ed38be1cf1f93bff4911
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627413c621848be1cf188a4ea680c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862743a2a9cc80be1cf1d270930c80
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086274608397868be1cf25a328c28e2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627486d118a28be1cf106f90aa3b8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086274ad1326f80be1cee5e9d2e885a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086274d349c95c0be1cf1c0bac27228
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086274f975069f8be1cf1a1500f9b1c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862751f94e58c0be1cefc30663ac44
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627545a96ce48be1cf17123e427a2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862756bb2a3678be1cefb92749fea4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627591b08fcc0be1cefa40e1ea74a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086275b7a338c40be1cee6f4612c3e9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086275dd8aa4fa8be1cf1c54a053627
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862760366db168be1ceff5eb503d9e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862762937e1b70be1cf02e47f10cee
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862764efdbf768be1ceeb06e1d0dad
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627674b87ae88be1cf10aadd6dba5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862769a681a9c0be1cf24e9913d30f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086276c00ca51a0be1cef47b301e312
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086276e5a620e48be1ceeb1cefc2e85
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862770b3494788be1cf16f1fbbe011
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627730b8064e8be1ceebdf75174c7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627756307cd70be1cf06e3871a0da
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862777b9dfe7f0be1cef16799fd554
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086277a10091ac0be1cf248dabf5377
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086277c6583cc00be1cf0c78d92a2cd
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086277eba506158be1cf0b911b029f0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627810e6f4028be1cefdc24719766
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086278361e0cd70be1cefbb6562b7e7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862785b4a56dd8be1cf1e0afb349ec
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086278806bd85c0be1cf008292e52fc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086278a58297918be1cf053073872bf
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086278ca8e9ab88be1cf17a0a55a947
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086278ef8fe8068be1ceeffb0b60234
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086279148685aa0be1cf162204794a8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086279397279ce0be1cf24cc8cb48ac
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862795e53ca978be1cf0c9be68d5c3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086279832a7e258be1cf172cd3d7388
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086279a7f69a930be1ceea2465fbce5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086279ccb825f40be1cf0a386d2500f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086279f16f26590be1cf1e338ddc18a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627a161ba1cd0be1cef1f5049867f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627a3abd9e548be1cef96c1ea8b1f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627a5f5521f00be1cf138f6fd3c26
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627a83e2329b0be1cf0d4fcbfdf3a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627aa864d64b0be1cf24870c12c81
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627accdd12f18be1cf0ae2a56348d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627af14aee7a0be1cee8ca1a9b893
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627b15ae6eca8be1cf20414d637b0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627b3a0799c60be1cf0fc6b7b12d8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627b5e5675488be1cf152d93c4a00
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627b829b072a0be1cf1073f9b77c2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627ba6d5553d8be1cee694f97d5a4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627bcb0565500be1cf0456b8239d7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627bef2b3d2b0be1cf211497127e3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627c1346e2930be1cf01856c0384d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627c37585b468be1cefa7dd05479e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627c5b5fad000be1cef3ae8e50b93
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627c7f5cdd750be1ceea5f32fdd3a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627ca34ff2560be1cef424caeb8d9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627cc738f14f0be1cf0194d07a81f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627ceb17e0070be1cf20f452000c1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627d0eecc4210be1cf00e356218e4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627d32b7a33a0be1cef30484b4bcb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627d567882eb0be1ceeea11a6641b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627d7a2f68c80be1cf13492d5bd7b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627d9ddc5a618be1ceeb7048fad96
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627dc17f5d418be1ceef0666f0477
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627de51876ee8be1cf060d4b8b5c2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627e08a7acea8be1cf0b2a4b6ff8c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627e2c2d04b28be1cf0e34809a875
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627e4fa883bf0be1cf16bf74a3522
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627e731a2f848be1cee6a24623d57
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627e96820d718be1cefc7b4f1528e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627eb9e022f18be1cf163051f3548
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627edd34756b8be1cef36b3366305
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627f007f0a408be1cf18134625550
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627f23bfe6cf0be1cf0ec32ec1a11
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627f46f710700be1ceeb3b64f3edc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627f6a248c778be1cf0cd15805bc8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627f8d4860368be1cf20db3bddebe
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627fb06290f90be1cf25188430e25
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627fd37324070be1ceea1713490f9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08627ff67a1ea28be1cf159521d234c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862801977860b8be1cf24dfe50783b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862803c6b5f7d0be1ceef2ef89a60b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862805f55b02c8be1cee7fc919d62c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628082367d4c0be1cf215a7fb513a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086280a50dcc0a8be1cf0e4401c5ed4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086280c7dba1910be1cf04ec734d256
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086280eaa003050be1cf010ad787fea
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862810d5af5880be1cee622478393d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086281300c7e368be1cf01c7482564f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628152b4a22a0be1cf0de20d33536
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086281755366778be1cef2edae5837d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628197e8d02f0be1cf0a345318cc9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086281ba74e45d8be1cf20085aa34b8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086281dcf7a80c0be1cef5fa845ad83
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086281ff71203e0be1cf050d1df69c4
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628221e151f48be1ceffe43c035b9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862824448422b8be1cf14f3018d3c2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628266a5f5dc0be1cef0a5fbae83d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628288fa71f98be1ceff8a95b72a1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086282ab45bb750be1cef073aa9849b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086282cd87d73a8be1cef69b3835c02
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086282efc0ca328be1cf0bc139379a9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628311f099420be1cef247a9ec596
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086283341749490be1cef74bbcc488a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862835634df248be1cef4bc42e7b8e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628378495fad0be1cf136d4d5a810
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862839a54cfb80be1cf0d290b24dd8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086283bc5734168be1ceeebde8e0065
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086283de5091950be1cf1a09f60aa1e
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862840040ecfe0be1cf0803947a234
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628422284b168be1cf0abf7638127
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862844406b0a08be1cf0f73ee12058
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628465dc225a0be1cf2079971b26c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628487a8a4fe0be1cee74957564b1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086284a96c3d420be1ceee77c1b7d43
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086284cb26efd90be1cf23addba6e09
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086284ecd8c1730be1cf199f4a1da60
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862850e81b6bb0be1cf09fdea81393
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862853021d4588be1cf176adb417f7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628551b91ef00be1cf0f64f84a8da
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628573479b220be1ceec34cf49523
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628594cd4d8a8be1cf16d60fbe0bb
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086285b64a3ac40be1cee8de7acfc7b
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086285d7be67630be1ceee6256cce8d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086285f929d7fa0be1cee7d66a3d8a5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862861a8c91170be1cf0bef8265792
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862863be697458be1cf097f890c6f8
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862865d37ef0c8be1cf09502d5c3fc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862867e809cf00be1ceeffb239dac7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862869fc0a56f8be1cf1fbfff95c98
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086286c0f80d090be1cefa57ad3eef7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086286e226d8348be1cf22c58b9183d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287034d0b690be1ceff262d0a248
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287246aab180be1cefa7bc194186
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287457fbbb08be1cf06782d784d9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287668c419e0be1cf1d44d0eaa07
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287879041490be1cf034803c8a48
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287a88bbf158be1cf08e84916b6f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287c97ebf650be1cf0c4d3dc1bc7
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086287ea6946958be1cefb1e4625943
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862880b4b59010be1cf143efdd1fd0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862882c24faff8be1cee9896d016da
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862884cf630e38be1cf2186072f2cc
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862886dbefeff0be1cef9217633d34
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862888e7f699e0be1cf05603549486
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086288af37750b0be1cef50fff513d3
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086288cfe7258c0be1cf127713b32d0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086288f08e7f650be1cf05015520f3d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086289112d86d58be1cf12eb458b26f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628931c4401a8be1cf22eae2887ed
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862895252af6e0be1cefdd6656dd2d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628972d8d9058be1cf1048ea4e646
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c0862899356c1150be1ceec4501167e9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086289b3cc6bcb8be1cf0ad52becc3f
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086289d439dd568be1cf0daa4e00e35
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c086289f49f19df8be1cf00b80de8d6a
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628a14fc258c8be1cf1bcf2ea8464
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628a355104818be1cf0435e2782b0
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628a559dbade0be1cf0e3e1a5f56c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628a75e24cbf8be1cefed9d5a721d
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628a961ebe3f8be1cf0d2d74321e2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628ab65313750be1cf24200eb55e9
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628ad67f50740be1cf23e9d7cf979
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628af6a3794d0be1cf23a088f421c
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628b16bf920e0be1cef2c1de1ab32
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628b36d39ec08be1cf1abc231f7b2
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628b56dfa36d0be1cf2074d5ba303
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+c08628b76e3a4180be1cf05cd5eed880
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+3fc9999CACDB4D0A3fc9999CACDB4D0A
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+bfd0000148058EE1bfd0000148058EE1
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+3fd55555555543C53fd55555555543C5
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+bfdFFFFFFFFFF81FbfdFFFFFFFFFF81F
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+000fffffffffffff000fffffffffffff
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+3f500000000000003f50000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+bfefffffffffffffbfefffffffffffff
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+7f3ffffffffff0007f3ffffffffff000
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+3ff00000000000003ff0000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/atan-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3e000000000000003e00000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+fffffffffffffc00fffffffffffffc00
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+4086a000000000004086a00000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+408ff80000000000408ff80000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+408ff00000000000408ff00000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+7ff00000000000007ff0000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/cosh-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+7f400000000000007f40000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+3fe62E42FEFA39EF3fe62E42FEFA39EF
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+41D000000000000041D0000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+3FD80000000000003FD8000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/hypot-2-sse4-dev.S
+3FD18000000000003FD1800000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/hypot-2-sse4-dev.S
+3FE00000000000003FE0000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+7FEFFFFFFFFFFFFF7FEFFFFFFFFFFFFF
+	double/core/asinh-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+403F000000000000403F000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+FFFFFE0000000000FFFFFE0000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+3E100000000000003E10000000000000
+	double/core/asinh-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+00000000433800000000000043380000
+	double/core/asinh-2-sse4-dev.S
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+	double/core/atanh-2-sse4-dev.S
+	double/core/log1p-2-sse4-dev.S
+	double/core/acosh-2-sse4-dev.S
+	double/core/expm1-2-sse4-dev.S
+42c000000000000042c000000000000042c000000000000042c000000000000042c000000000000042c000000000000042c000000000000042c0000000000000
+	double/core/erf-8-avx512-dev.S
+	double/core/erfc-8-avx512-dev.S
+00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff
+	double/core/erf-8-avx512-dev.S
+	double/core/erfc-8-avx512-dev.S
+40861d9940861d9940861d9940861d99
+	double/core/sinh-2-sse4-dev.S
+	double/core/cosh-2-sse4-dev.S
+3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD
+	double/core/sinh-2-sse4-dev.S
+	double/core/cosh-2-sse4-dev.S
+3FA55555CF16D2993FA55555CF16D299
+	double/core/sinh-2-sse4-dev.S
+	double/core/cosh-2-sse4-dev.S
+000000000000007f000000000000007f
+	double/core/sinh-2-sse4-dev.S
+	double/core/exp2-2-sse4-dev.S
+000000003ff00000000000003ff00000000000003ff00000000000003ff00000
+	double/core/tan-4-avx2-dev.S
+	double/core/tan-4-avx2-dev.S
+3FF00000000000003FF00000000000003FF00000000000003FF0000000000000
+	double/core/tan-4-avx2-dev.S
+	double/core/atan2-4-avx2-dev.S
+	double/core/hypot-4-avx2-dev.S
+00008000000000000000800000000000000080000000000000008000000000000000800000000000000080000000000000008000000000000000800000000000
+	double/core/atanh-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+ffff000000000000ffff000000000000ffff000000000000ffff000000000000ffff000000000000ffff000000000000ffff000000000000ffff000000000000
+	double/core/atanh-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fe62E42FEFA00003fe62E42FEFA00003fe62E42FEFA00003fe62E42FEFA00003fe62E42FEFA00003fe62E42FEFA00003fe62E42FEFA00003fe62E42FEFA0000
+	double/core/atanh-8-avx512-dev.S
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF
+	double/core/cbrt-2-sse4-dev.S
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+40861d9940861d9940861d9940861d9940861d9940861d9940861d9940861d99
+	double/core/sinh-4-avx2-dev.S
+	double/core/cosh-4-avx2-dev.S
+3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD3FDFFFFFFFFFFDBD
+	double/core/sinh-4-avx2-dev.S
+	double/core/cosh-4-avx2-dev.S
+3FA55555CF16D2993FA55555CF16D2993FA55555CF16D2993FA55555CF16D299
+	double/core/sinh-4-avx2-dev.S
+	double/core/cosh-4-avx2-dev.S
+000000000000007f000000000000007f000000000000007f000000000000007f
+	double/core/sinh-4-avx2-dev.S
+	double/core/exp2-4-avx2-dev.S
+00100000000000000010000000000000
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+7fefffffffffffff7fefffffffffffff
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+fffffffffc000000fffffffffc000000
+	double/core/log2-2-sse4-dev.S
+	double/core/log10-2-sse4-dev.S
+3fe80000000000003fe80000000000003fe80000000000003fe80000000000003fe80000000000003fe80000000000003fe80000000000003fe8000000000000
+	double/core/log1p-8-avx512-dev.S
+	double/core/log10-8-avx512-dev.S
+	double/core/log2-8-avx512-dev.S
+3fd34413509f79ff3fd34413509f79ff3fd34413509f79ff3fd34413509f79ff3fd34413509f79ff3fd34413509f79ff3fd34413509f79ff3fd34413509f79ff
+	double/core/log10-8-avx512-dev.S
+	double/core/exp10-8-avx512-dev.S
+42c000000000000042c0000000000000
+	double/core/erf-2-sse4-dev.S
+	double/core/erfc-2-sse4-dev.S
+30000000000000003000000000000000300000000000000030000000000000003000000000000000300000000000000030000000000000003000000000000000
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+40000000000000004000000000000000400000000000000040000000000000004000000000000000400000000000000040000000000000004000000000000000
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+bf918000993B24C3bf918000993B24C3bf918000993B24C3bf918000993B24C3bf918000993B24C3bf918000993B24C3bf918000993B24C3bf918000993B24C3
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3fa07520C70EB9093fa07520C70EB9093fa07520C70EB9093fa07520C70EB9093fa07520C70EB9093fa07520C70EB9093fa07520C70EB9093fa07520C70EB909
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+bf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0ED
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f7A583395D45ED53f7A583395D45ED53f7A583395D45ED53f7A583395D45ED53f7A583395D45ED53f7A583395D45ED53f7A583395D45ED53f7A583395D45ED5
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD6
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD57
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F8
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+3fc555555555529C3fc555555555529C3fc555555555529C3fc555555555529C3fc555555555529C3fc555555555529C3fc555555555529C3fc555555555529C
+	double/core/asin-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+0000007f0000007f0000007f0000007f0000007f0000007f0000007f0000007f
+	double/core/exp10-4-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff7fffffff
+	double/core/exp10-4-avx2-dev.S
+	double/core/exp2-4-avx2-dev.S
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/expm1f-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/exp2f-8-avx2-dev.S
+	float/core/exp10f-8-avx2-dev.S
+	float/core/erff-8-avx2-dev.S
+	float/core/hypotf-8-avx2-dev.S
+	float/core/erfcf-8-avx2-dev.S
+	float/core/cbrtf-8-avx2-dev.S
+3fe00000000000003fe00000000000003fe00000000000003fe0000000000000
+	double/core/acosh-4-avx2-dev.S
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+42c000000000000042c000000000000042c000000000000042c0000000000000
+	double/core/erfc-4-avx2-dev.S
+	double/core/erf-4-avx2-dev.S
+00000000ffffffff00000000ffffffff00000000ffffffff00000000ffffffff
+	double/core/erfc-4-avx2-dev.S
+	double/core/erf-4-avx2-dev.S
+3fe00000000000003fe0000000000000
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+30000000000000003000000000000000
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+bff0000000000000bff0000000000000
+	double/core/acos-2-sse4-dev.S
+	double/core/atan-2-sse4-dev.S
+	double/core/expm1-2-sse4-dev.S
+40000000000000004000000000000000
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+bf918000993B24C3bf918000993B24C3
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3fa400006F70D42D3fa400006F70D42D
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3fa07520C70EB9093fa07520C70EB909
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+bf90FB17F7DBB0EDbf90FB17F7DBB0ED
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f943F44BFBC3BAE3f943F44BFBC3BAE
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f7A583395D45ED53f7A583395D45ED5
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f88F8DC2AFCCAD63f88F8DC2AFCCAD6
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f8C6DBBCB88BD573f8C6DBBCB88BD57
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f91C6DCF538AD2E3f91C6DCF538AD2E
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f96E89CEBDEFadd3f96E89CEBDEFadd
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3f9F1C72E13AD8BE3f9F1C72E13AD8BE
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3fa6DB6DB3B445F83fa6DB6DB3B445F8
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3fb333333337E0DE3fb333333337E0DE
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3fc555555555529C3fc555555555529C
+	double/core/acos-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+3ff921fb54442d183ff921fb54442d18
+	double/core/acos-2-sse4-dev.S
+	double/core/atan-2-sse4-dev.S
+	double/core/asin-2-sse4-dev.S
+42f8000000003ff042f8000000003ff042f8000000003ff042f8000000003ff042f8000000003ff042f8000000003ff042f8000000003ff042f8000000003ff0
+	double/core/exp10-8-avx512-dev.S
+	double/core/expm1-8-avx512-dev.S
+bfffffffffffffffbfffffffffffffffbfffffffffffffffbfffffffffffffffbfffffffffffffffbfffffffffffffffbfffffffffffffffbfffffffffffffff
+	double/core/exp10-8-avx512-dev.S
+	double/core/expm1-8-avx512-dev.S
+3000000000000000300000000000000030000000000000003000000000000000
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+4000000000000000400000000000000040000000000000004000000000000000
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+bf918000993B24C3bf918000993B24C3bf918000993B24C3bf918000993B24C3
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D3fa400006F70D42D
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97bfb7FFFFFFFFFE97
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D3fcFFFFFFFFFFF9D
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fa07520C70EB9093fa07520C70EB9093fa07520C70EB9093fa07520C70EB909
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+bf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0EDbf90FB17F7DBB0ED
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE3f943F44BFBC3BAE
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f7A583395D45ED53f7A583395D45ED53f7A583395D45ED53f7A583395D45ED5
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD63f88F8DC2AFCCAD6
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD573f8C6DBBCB88BD57
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E3f91C6DCF538AD2E
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd3f96E89CEBDEFadd
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE3f9F1C72E13AD8BE
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F83fa6DB6DB3B445F8
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE3fb333333337E0DE
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+3fc555555555529C3fc555555555529C3fc555555555529C3fc555555555529C
+	double/core/asin-4-avx2-dev.S
+	double/core/acos-4-avx2-dev.S
+7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF
+	double/core/cbrt-4-avx2-dev.S
+	float/core/atanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+ffffffff00000000ffffffff00000000
+	double/core/tan-2-sse4-dev.S
+	float/core/cbrtf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+000000003ff00000000000003ff00000
+	double/core/tan-2-sse4-dev.S
+	double/core/tan-2-sse4-dev.S
+0000010000000100000001000000010000000100000001000000010000000100
+	double/core/cosh-4-avx2-dev.S
+	float/core/cbrtf-8-avx2-dev.S
+bff0000000000000bff0000000000000bff0000000000000bff0000000000000bff0000000000000bff0000000000000bff0000000000000bff0000000000000
+	double/core/atan-8-avx512-dev.S
+	double/core/acos-8-avx512-dev.S
+5fe00000000000005fe00000000000005fe00000000000005fe00000000000005fe00000000000005fe00000000000005fe00000000000005fe0000000000000
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fb333220eaf02e73fb333220eaf02e73fb333220eaf02e73fb333220eaf02e73fb333220eaf02e73fb333220eaf02e73fb333220eaf02e73fb333220eaf02e7
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+bfc5555555521e7ebfc5555555521e7ebfc5555555521e7ebfc5555555521e7ebfc5555555521e7ebfc5555555521e7ebfc5555555521e7ebfc5555555521e7e
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fd18000019436123fd18000019436123fd18000019436123fd18000019436123fd18000019436123fd18000019436123fd18000019436123fd1800001943612
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fd40000013b00003fd40000013b00003fd40000013b00003fd40000013b00003fd40000013b00003fd40000013b00003fd40000013b00003fd40000013b0000
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fd80000000000003fd80000000000003fd80000000000003fd80000000000003fd80000000000003fd80000000000003fd80000000000003fd8000000000000
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fc00000000000003fc00000000000003fc00000000000003fc00000000000003fc00000000000003fc00000000000003fc00000000000003fc0000000000000
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+40100000000000004010000000000000401000000000000040100000000000004010000000000000401000000000000040100000000000004010000000000000
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+bfb9a9b040214368bfb9a9b040214368bfb9a9b040214368bfb9a9b040214368bfb9a9b040214368bfb9a9b040214368bfb9a9b040214368bfb9a9b040214368
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fbc80666e2497783fbc80666e2497783fbc80666e2497783fbc80666e2497783fbc80666e2497783fbc80666e2497783fbc80666e2497783fbc80666e249778
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+bfbffffb8a054bc9bfbffffb8a054bc9bfbffffb8a054bc9bfbffffb8a054bc9bfbffffb8a054bc9bfbffffb8a054bc9bfbffffb8a054bc9bfbffffb8a054bc9
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fc24922f71256f13fc24922f71256f13fc24922f71256f13fc24922f71256f13fc24922f71256f13fc24922f71256f13fc24922f71256f13fc24922f71256f1
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+bfc55555559ba736bfc55555559ba736bfc55555559ba736bfc55555559ba736bfc55555559ba736bfc55555559ba736bfc55555559ba736bfc55555559ba736
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fc9999999be77af3fc9999999be77af3fc9999999be77af3fc9999999be77af3fc9999999be77af3fc9999999be77af3fc9999999be77af3fc9999999be77af
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+bfcffffffffffc65bfcffffffffffc65bfcffffffffffc65bfcffffffffffc65bfcffffffffffc65bfcffffffffffc65bfcffffffffffc65bfcffffffffffc65
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+3fd55555555554c13fd55555555554c13fd55555555554c13fd55555555554c13fd55555555554c13fd55555555554c13fd55555555554c13fd55555555554c1
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+bfe0000000000000bfe0000000000000bfe0000000000000bfe0000000000000bfe0000000000000bfe0000000000000bfe0000000000000bfe0000000000000
+	double/core/asinh-8-avx512-dev.S
+	double/core/acosh-8-avx512-dev.S
+00000100000001000000010000000100
+	double/core/cosh-2-sse4-dev.S
+	float/core/cbrtf-4-sse4-dev.S
+47f000000000000047f0000000000000
+	double/core/erfc-2-sse4-dev.S
+	double/core/atan-2-sse4-dev.S
+bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000
+	float/dev-logf-rodata.S
+	float/dev-trig-rodata.S
+	float/core/asinhf-16-avx512-dev.S
+	float/core/log1pf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+00800000008000000080000000800000008000000080000000800000008000000080000000800000008000000080000000800000008000000080000000800000
+	float/dev-logf-rodata.S
+	float/core/tanf-16-avx512-dev.S
+01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+	float/dev-logf-rodata.S
+	float/core/log1pf-16-avx512-dev.S
+3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab
+	float/dev-logf-rodata.S
+	float/core/log1pf-16-avx512-dev.S
+007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff
+	float/dev-logf-rodata.S
+	float/core/tanf-16-avx512-dev.S
+	float/core/log1pf-16-avx512-dev.S
+3f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f8000003f800000
+	float/dev-logf-rodata.S
+	float/dev-expf-rodata.S
+	float/core/asinf-16-avx512-dev.S
+	float/core/erff-16-avx512-dev.S
+	float/core/expm1f-16-avx512-dev.S
+	float/core/asinhf-16-avx512-dev.S
+	float/core/cbrtf-16-avx512-dev.S
+	float/core/log2f-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+	float/core/atanf-16-avx512-dev.S
+	float/core/log10f-16-avx512-dev.S
+	float/core/erfcf-16-avx512-dev.S
+	float/core/log1pf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+	float/core/atan2f-16-avx512-dev.S
+3f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f3172183f317218
+	float/dev-logf-rodata.S
+	float/core/expm1f-16-avx512-dev.S
+	float/core/log1pf-16-avx512-dev.S
+4b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b4000004b400000
+	float/dev-expf-rodata.S
+	float/dev-trig-rodata.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/cbrtf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+3f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f0000003f000000
+	float/dev-trig-rodata.S
+	float/core/asinf-16-avx512-dev.S
+	float/core/asinhf-16-avx512-dev.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/exp10f-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+	float/core/hypotf-16-avx512-dev.S
+000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff
+	float/dev-trig-rodata.S
+	float/core/tanf-16-avx512-dev.S
+80000000800000008000000080000000800000008000000080000000800000008000000080000000800000008000000080000000800000008000000080000000
+	float/dev-trig-rodata.S
+	float/core/expm1f-16-avx512-dev.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/cbrtf-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+	float/core/erfcf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+	float/core/atan2f-16-avx512-dev.S
+2f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f8000002f800000
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+40000000400000004000000040000000400000004000000040000000400000004000000040000000400000004000000040000000400000004000000040000000
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e8000013e800001
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC07
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB4
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C12
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF
+	float/core/asinf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB
+	float/core/asinf-16-avx512-dev.S
+	float/core/atanf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+3f8000003f8000003f8000003f8000003f8000003f8000003f8000003f800000
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/atanf-8-avx2-dev.S
+	float/core/atanf-8-avx2-dev.S
+	float/core/log2f-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+	float/core/log10f-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+	float/core/erfcf-8-avx2-dev.S
+bf000000bf000000bf000000bf000000bf000000bf000000bf000000bf000000
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3eaaaa943eaaaa943eaaaa943eaaaa943eaaaa943eaaaa943eaaaa943eaaaa94
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+be80058ebe80058ebe80058ebe80058ebe80058ebe80058ebe80058ebe80058e
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3e4ce1903e4ce1903e4ce1903e4ce1903e4ce1903e4ce1903e4ce1903e4ce190
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+be28ad37be28ad37be28ad37be28ad37be28ad37be28ad37be28ad37be28ad37
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3e0fcb123e0fcb123e0fcb123e0fcb123e0fcb123e0fcb123e0fcb123e0fcb12
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+be1ad9e3be1ad9e3be1ad9e3be1ad9e3be1ad9e3be1ad9e3be1ad9e3be1ad9e3
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3e0d84ed3e0d84ed3e0d84ed3e0d84ed3e0d84ed3e0d84ed3e0d84ed3e0d84ed
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab3f2aaaab
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/log2f-8-avx2-dev.S
+	float/core/log10f-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+007fffff007fffff007fffff007fffff007fffff007fffff007fffff007fffff
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/log2f-8-avx2-dev.S
+	float/core/log10f-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+	float/core/cbrtf-8-avx2-dev.S
+3f3172183f3172183f3172183f3172183f3172183f3172183f3172183f317218
+	float/core/log1pf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+	float/core/exp2f-8-avx2-dev.S
+007fffff007fffff007fffff007fffff
+	float/core/cbrtf-4-sse4-dev.S
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/log10f-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log2f-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+bf800000bf800000bf800000bf800000
+	float/core/expm1f-4-sse4-dev.S
+	float/core/acosf-4-sse4-dev.S
+4b4000004b4000004b4000004b400000
+	float/core/expm1f-4-sse4-dev.S
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+	float/core/exp10f-4-sse4-dev.S
+	float/core/exp2f-4-sse4-dev.S
+8000000080000000800000008000000080000000800000008000000080000000
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinhf-8-avx2-dev.S
+	float/core/atanf-8-avx2-dev.S
+	float/core/coshf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+	float/core/erfcf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3f0000003f0000003f0000003f0000003f0000003f0000003f0000003f000000
+	float/core/acosf-8-avx2-dev.S
+	float/core/coshf-8-avx2-dev.S
+	float/core/coshf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+	float/core/hypotf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+2f8000002f8000002f8000002f8000002f8000002f8000002f8000002f800000
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+	float/core/erff-8-avx2-dev.S
+bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000
+	float/core/acosf-8-avx2-dev.S
+	float/core/expm1f-8-avx2-dev.S
+4000000040000000400000004000000040000000400000004000000040000000
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004bdC00004
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3e8000013e8000013e8000013e8000013e8000013e8000013e8000013e800001
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC073d2EDC07
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B3CC32A6B
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB43d3A9AB4
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3d997C123d997C123d997C123d997C123d997C123d997C123d997C123d997C12
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB3fc90FDB
+	float/core/acosf-8-avx2-dev.S
+	float/core/asinf-8-avx2-dev.S
+40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB
+	float/core/acosf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+4E8000004E8000004E8000004E8000004E8000004E8000004E8000004E800000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3EC000003EC000003EC000003EC000003EC000003EC000003EC000003EC00000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3EA000003EA000003EA000003EA000003EA000003EA000003EA000003EA00000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3F0000003F0000003F0000003F0000003F0000003F0000003F0000003F000000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+7F7FFFFF7F7FFFFF7F7FFFFF7F7FFFFF7F7FFFFF7F7FFFFF7F7FFFFF7F7FFFFF
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+41F8000041F8000041F8000041F8000041F8000041F8000041F8000041F80000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000FFFF0000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3080000030800000308000003080000030800000308000003080000030800000
+	float/core/asinhf-8-avx2-dev.S
+	float/core/acoshf-8-avx2-dev.S
+3FC90FDB3FC90FDB3FC90FDB3FC90FDB3FC90FDB3FC90FDB3FC90FDB3FC90FDB
+	float/core/atanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+3B322CC03B322CC03B322CC03B322CC03B322CC03B322CC03B322CC03B322CC0
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+BC7F2631BC7F2631BC7F2631BC7F2631BC7F2631BC7F2631BC7F2631BC7F2631
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+3D2BC3843D2BC3843D2BC3843D2BC3843D2BC3843D2BC3843D2BC3843D2BC384
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+BD987629BD987629BD987629BD987629BD987629BD987629BD987629BD987629
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+3DD964743DD964743DD964743DD964743DD964743DD964743DD964743DD96474
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+BE1161F8BE1161F8BE1161F8BE1161F8BE1161F8BE1161F8BE1161F8BE1161F8
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+3E4CB79F3E4CB79F3E4CB79F3E4CB79F3E4CB79F3E4CB79F3E4CB79F3E4CB79F
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+BEAAAA49BEAAAA49BEAAAA49BEAAAA49BEAAAA49BEAAAA49BEAAAA49BEAAAA49
+	float/core/atanf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+0080000000800000008000000080000000800000008000000080000000800000
+	float/core/log2f-8-avx2-dev.S
+	float/core/log10f-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff
+	float/core/log2f-8-avx2-dev.S
+	float/core/log10f-8-avx2-dev.S
+3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3F3170003F3170003F3170003F3170003F3170003F3170003F3170003F317000
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+4b4000004b4000004b4000004b4000004b4000004b4000004b4000004b400000
+	float/core/coshf-8-avx2-dev.S
+	float/core/exp2f-8-avx2-dev.S
+	float/core/exp10f-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3F8000003F8000003F8000003F8000003F8000003F8000003F8000003F800000
+	float/core/coshf-8-avx2-dev.S
+	float/core/atan2f-8-avx2-dev.S
+	float/core/exp2f-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa57
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3d2aaa723d2aaa723d2aaa723d2aaa723d2aaa723d2aaa723d2aaa723d2aaa72
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3c0914613c0914613c0914613c0914613c0914613c0914613c0914613c091461
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+3ab6a8a33ab6a8a33ab6a8a33ab6a8a33ab6a8a33ab6a8a33ab6a8a33ab6a8a3
+	float/core/coshf-8-avx2-dev.S
+	float/core/sinhf-8-avx2-dev.S
+48c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c0000048c00000
+	float/core/expm1f-16-avx512-dev.S
+	float/core/coshf-16-avx512-dev.S
+80000000800000008000000080000000
+	float/core/atan2f-4-sse4-dev.S
+	float/core/sinhf-4-sse4-dev.S
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+	float/core/acosf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+	float/core/erfcf-4-sse4-dev.S
+3FC90FDB3FC90FDB3FC90FDB3FC90FDB
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+40490FDB40490FDB40490FDB40490FDB
+	float/core/atan2f-4-sse4-dev.S
+	float/core/acosf-4-sse4-dev.S
+3B322CC03B322CC03B322CC03B322CC0
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+BC7F2631BC7F2631BC7F2631BC7F2631
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+3D2BC3843D2BC3843D2BC3843D2BC384
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+BD987629BD987629BD987629BD987629
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+3DD964743DD964743DD964743DD96474
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+BE1161F8BE1161F8BE1161F8BE1161F8
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+3E4CB79F3E4CB79F3E4CB79F3E4CB79F
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+BEAAAA49BEAAAA49BEAAAA49BEAAAA49
+	float/core/atan2f-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+3F8000003F8000003F8000003F800000
+	float/core/atan2f-4-sse4-dev.S
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+	float/core/exp2f-4-sse4-dev.S
+5f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f0000005f000000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff7f7fffff
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+be2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DEbe2AA5DE
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+3ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec000003ec00000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+00020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000000200000002000000020000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000fffc0000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+3e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e0000003e000000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+40800000408000004080000040800000408000004080000040800000408000004080000040800000408000004080000040800000408000004080000040800000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810be800810
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e3eaab11e
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+3f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f3170003f317000
+	float/core/asinhf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+3805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf43805fdf4
+	float/core/asinhf-16-avx512-dev.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/acoshf-16-avx512-dev.S
+3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+3F3170003F3170003F3170003F317000
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+42AEAC4E42AEAC4E42AEAC4E42AEAC4E
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+3f0000003f0000003f0000003f000000
+	float/core/sinhf-4-sse4-dev.S
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+	float/core/hypotf-4-sse4-dev.S
+3e2aaa573e2aaa573e2aaa573e2aaa57
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+3d2aaa723d2aaa723d2aaa723d2aaa72
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+3c0914613c0914613c0914613c091461
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+3ab6a8a33ab6a8a33ab6a8a33ab6a8a3
+	float/core/sinhf-4-sse4-dev.S
+	float/core/coshf-4-sse4-dev.S
+42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E42AEAC4E
+	float/core/coshf-16-avx512-dev.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+3F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F8000003F800000
+	float/core/coshf-16-avx512-dev.S
+	float/core/coshf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+	float/core/atan2f-16-avx512-dev.S
+3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B3FB8AA3B
+	float/core/coshf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+3F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F3170003F317000
+	float/core/coshf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+3e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa573e2aaa57
+	float/core/coshf-16-avx512-dev.S
+	float/core/sinhf-16-avx512-dev.S
+3f8000003f8000003f8000003f800000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+	float/core/atanf-4-sse4-dev.S
+	float/core/log10f-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log2f-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+bf000000bf000000bf000000bf000000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+3eaaaa943eaaaa943eaaaa943eaaaa94
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+be80058ebe80058ebe80058ebe80058e
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+3e4ce1903e4ce1903e4ce1903e4ce190
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+be28ad37be28ad37be28ad37be28ad37
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+3e0fcb123e0fcb123e0fcb123e0fcb12
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+be1ad9e3be1ad9e3be1ad9e3be1ad9e3
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+3e0d84ed3e0d84ed3e0d84ed3e0d84ed
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+3f2aaaab3f2aaaab3f2aaaab3f2aaaab
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/log10f-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/log2f-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+4E8000004E8000004E8000004E800000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+3EC000003EC000003EC000003EC00000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+3EA000003EA000003EA000003EA00000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+3F0000003F0000003F0000003F000000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+7F7FFFFF7F7FFFFF7F7FFFFF7F7FFFFF
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+41F8000041F8000041F8000041F80000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+FFFF0000FFFF0000FFFF0000FFFF0000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+30800000308000003080000030800000
+	float/core/asinhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+3f3172183f3172183f3172183f317218
+	float/core/asinhf-4-sse4-dev.S
+	float/core/atanhf-4-sse4-dev.S
+	float/core/acoshf-4-sse4-dev.S
+	float/core/exp2f-4-sse4-dev.S
+	float/core/log1pf-4-sse4-dev.S
+7f8000007f8000007f8000007f8000007f8000007f8000007f8000007f800000
+	float/core/tanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff
+	float/core/tanf-8-avx2-dev.S
+	float/core/cbrtf-8-avx2-dev.S
+4601000046010000460100004601000046010000460100004601000046010000
+	float/core/tanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+3F7FFFFC3F7FFFFC3F7FFFFC3F7FFFFC3F7FFFFC3F7FFFFC3F7FFFFC3F7FFFFC
+	float/core/tanf-8-avx2-dev.S
+	float/core/tanf-8-avx2-dev.S
+2f8000002f8000002f8000002f800000
+	float/core/erff-4-sse4-dev.S
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b3e9a209b
+	float/core/exp10f-16-avx512-dev.S
+	float/core/log10f-16-avx512-dev.S
+00800000008000000080000000800000
+	float/core/log10f-4-sse4-dev.S
+	float/core/log2f-4-sse4-dev.S
+7f7fffff7f7fffff7f7fffff7f7fffff
+	float/core/log10f-4-sse4-dev.S
+	float/core/log2f-4-sse4-dev.S
+40000000400000004000000040000000
+	float/core/acosf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+bdC00004bdC00004bdC00004bdC00004
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3e8000013e8000013e8000013e800001
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3d2EDC073d2EDC073d2EDC073d2EDC07
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3CC32A6B3CC32A6B3CC32A6B3CC32A6B
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3d3A9AB43d3A9AB43d3A9AB43d3A9AB4
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3d997C123d997C123d997C123d997C12
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3e2AAAFF3e2AAAFF3e2AAAFF3e2AAAFF
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+3fc90FDB3fc90FDB3fc90FDB3fc90FDB
+	float/core/acosf-4-sse4-dev.S
+	float/core/asinf-4-sse4-dev.S
+46010000460100004601000046010000460100004601000046010000460100004601000046010000460100004601000046010000460100004601000046010000
+	float/core/tanf-16-avx512-dev.S
+	float/core/tanf-16-avx512-dev.S
+7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF7FFFFFFF
+	float/core/tanf-16-avx512-dev.S
+	float/core/atan2f-16-avx512-dev.S
+bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000bf800000
+	float/core/atanf-16-avx512-dev.S
+	float/core/acosf-16-avx512-dev.S
+46010000460100004601000046010000
+	float/core/tanf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+3F7FFFFC3F7FFFFC3F7FFFFC3F7FFFFC
+	float/core/tanf-4-sse4-dev.S
+	float/core/tanf-4-sse4-dev.S
+40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB40490FDB
+	float/core/acosf-16-avx512-dev.S
+	float/core/atan2f-16-avx512-dev.S
