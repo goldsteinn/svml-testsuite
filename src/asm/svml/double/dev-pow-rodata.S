@@ -1,5 +1,5 @@
 /* Stub .*/
-// Ftype: 2
+	// Ftype: 2
 /* Data for function pow.
    Copyright (C) 2014-2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
@@ -21,20 +21,20 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/double/core/stubs/dev-pow-data.h"
 
 	.section .rodata, "a"
-	.align 64
+	.align	64
 
-/* Data table for vector implementations of function pow.
-   The table may contain polynomial, reduction, lookup coefficients and
-   other coefficients obtained through different methods of research and
-   experimental work.  */
+	/* Data table for vector implementations of function pow. The
+	   table may contain polynomial, reduction, lookup coefficients
+	   and other coefficients obtained through different methods of
+	   research and experimental work.  */
 
-	.globl dev_dpow_data
+	.globl	dev_dpow_data
 dev_dpow_data:
 
-/* Lookup log(2) table (for HSW): */
-.if .-dev_dpow_data != _hsw_log2_table
-.err
-.endif
+	/* Lookup log(2) table (for HSW):.  */
+	.if	.-dev_dpow_data != _hsw_log2_table
+	.err
+	.endif
 	.quad	0xc08ff00000000000
 	.quad	0x0000000000000000
 	.quad	0xc08ff005c3e0ffc2
@@ -1061,14 +1061,17 @@ dev_dpow_data:
 	.quad	0xbd3258e9a821b7cc
 	.quad	0xc08ff80000000000
 	.quad	0x0000000000000000
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-/* Lookup exp(2) table (for HSW): */
-.if .-dev_dpow_data != _hsw_dTe
-.err
-.endif
+	/* Lookup exp(2) table (for HSW):.  */
+	.if	.-dev_dpow_data != _hsw_dTe
+	.err
+	.endif
 	.quad	0x3ff0000000000000
 	.quad	0x3ff00b1afa5abcbf
 	.quad	0x3ff0163da9fb3335
@@ -1326,80 +1329,76 @@ dev_dpow_data:
 	.quad	0x3fffd3c22b8f71f1
 	.quad	0x3fffe9d96b2a23d9
 
-/* General purpose constants:
- * hsw_dMantMask */
-double_vector _hsw_dMantMask 0x000fffffffffffff
+	/* General purpose constants: * hsw_dMantMask.  */
+	double_vector _hsw_dMantMask 0x000fffffffffffff
 
-/* hsw_dOne */
-double_vector _hsw_dOne 0x3ff0000000000000
+	/* hsw_dOne.  */
+	double_vector _hsw_dOne 0x3ff0000000000000
 
-/* hsw_dCvtMask */
-double_vector _hsw_dCvtMask 0x4338000000000000
+	/* hsw_dCvtMask.  */
+	double_vector _hsw_dCvtMask 0x4338000000000000
 
-/* hsw_dMinNorm */
-double_vector _hsw_dMinNorm 0x0010000000000000
+	/* hsw_dMinNorm.  */
+	double_vector _hsw_dMinNorm 0x0010000000000000
 
-/* hsw_dMaxNorm */
-double_vector _hsw_dMaxNorm 0x7fefffffffffffff
+	/* hsw_dMaxNorm.  */
+	double_vector _hsw_dMaxNorm 0x7fefffffffffffff
 
-/* hsw_lRndBit */
-double_vector _hsw_lRndBit 0x0000040000000000
+	/* hsw_lRndBit.  */
+	double_vector _hsw_lRndBit 0x0000040000000000
 
-/* hsw_lRndMask */
-double_vector _hsw_lRndMask 0xfffff80000000000
+	/* hsw_lRndMask.  */
+	double_vector _hsw_lRndMask 0xfffff80000000000
 
-/* Log polynomial:
- * hsw_dc6 */
-double_vector _hsw_dc6 0xbfcec1cfbbc5c90c
+	/* Log polynomial: * hsw_dc6.  */
+	double_vector _hsw_dc6 0xbfcec1cfbbc5c90c
 
-/* hsw_dc5 */
-double_vector _hsw_dc5 0x3fd2776da3d26e6a
+	/* hsw_dc5.  */
+	double_vector _hsw_dc5 0x3fd2776da3d26e6a
 
-/* hsw_dc4 */
-double_vector _hsw_dc4 0xbfd71547655d37e0
+	/* hsw_dc4.  */
+	double_vector _hsw_dc4 0xbfd71547655d37e0
 
-/* hsw_dc3 */
-double_vector _hsw_dc3 0x3fdec709dc39fb02
+	/* hsw_dc3.  */
+	double_vector _hsw_dc3 0x3fdec709dc39fb02
 
-/* hsw_dc1 */
-double_vector _hsw_dc1 0x3c777a3a2c24613d
+	/* hsw_dc1.  */
+	double_vector _hsw_dc1 0x3c777a3a2c24613d
 
-/* hsw_dc1h */
-double_vector _hsw_dc1h 0x3ff71547652b82fe
+	/* hsw_dc1h.  */
+	double_vector _hsw_dc1h 0x3ff71547652b82fe
 
-/* hsw_dc2 */
-double_vector _hsw_dc2 0xbfe71547652b82fe
+	/* hsw_dc2.  */
+	double_vector _hsw_dc2 0xbfe71547652b82fe
 
-/* Additional constants:
- * hsw_AbsMask */
-double_vector _hsw_dAbsMask 0x7fffffffffffffff
+	/* Additional constants: * hsw_AbsMask.  */
+	double_vector _hsw_dAbsMask 0x7fffffffffffffff
 
-/* hsw_dDomainRange */
-double_vector _hsw_dDomainRange 0x408fec0000000000
+	/* hsw_dDomainRange.  */
+	double_vector _hsw_dDomainRange 0x408fec0000000000
 
-/* hsw_dShifter */
-double_vector _hsw_dShifter 0x42b800000003ff00
+	/* hsw_dShifter.  */
+	double_vector _hsw_dShifter 0x42b800000003ff00
 
-/* hsw_dIndexMask */
-double_vector _hsw_dIndexMask 0x00000000000007f8
+	/* hsw_dIndexMask.  */
+	double_vector _hsw_dIndexMask 0x00000000000007f8
 
-/* Exp polynomial:
- * hsw_dce4 */
-double_vector _hsw_dce4 0x3f83b2ab930f15f9
+	/* Exp polynomial: * hsw_dce4.  */
+	double_vector _hsw_dce4 0x3f83b2ab930f15f9
 
-/* hsw_dce3 */
-double_vector _hsw_dce3 0x3fac6b090da1e0a9
+	/* hsw_dce3.  */
+	double_vector _hsw_dce3 0x3fac6b090da1e0a9
 
-/* hsw_dce2 */
-double_vector _hsw_dce2 0x3fcebfbdff82c54d
+	/* hsw_dce2.  */
+	double_vector _hsw_dce2 0x3fcebfbdff82c54d
 
-/* hsw_dce1 */
-double_vector _hsw_dce1 0x3fe62e42fefa39b9
+	/* hsw_dce1.  */
+	double_vector _hsw_dce1 0x3fe62e42fefa39b9
 
-/* Reciprocal lookup table for log part (non HSW): */
-.if .-dev_dpow_data != _rcp_t1
-.err
-.endif
+	/* Reciprocal lookup table for log part (non HSW):.  */
+	.if	.-dev_dpow_data != _rcp_t1
+	.err
+	.endif
 	.quad	0x3ff7154740000000
 	.quad	0x3ff70f8340000000
 	.quad	0x3ff709c240000000
@@ -2426,17 +2425,19 @@ double_vector _hsw_dce1 0x3fe62e42fefa39b9
 	.quad	0x3fe7182a40000000
 	.quad	0x3fe7154740000000
 	.quad	0x0000000000000000
-	.rept	48
-	.byte	0
-	.endr
-
-/* Log(2) lookup table for log part (non HSW): */
-.if .-dev_dpow_data != _log2_t1
-.err
-.endif
-	.rept	2
 	.quad	0x0000000000000000
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+
+	/* Log(2) lookup table for log part (non HSW):.  */
+	.if	.-dev_dpow_data != _log2_t1
+	.err
+	.endif
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 	.quad	0x3f5712e100000000
 	.quad	0x3e0ee8a22f7c5987
 	.quad	0x3f670fc100000000
@@ -4483,17 +4484,19 @@ double_vector _hsw_dce1 0x3fe62e42fefa39b9
 	.quad	0xbe01296a4555af78
 	.quad	0xbf47168e00000000
 	.quad	0xbdf30d6f34ebfa1c
-	.rept	2
 	.quad	0x0000000000000000
-	.endr
-	.rept	48
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000    
 
-/* Exp(2) lookup table for exp part (non HSW) */
-.if .-dev_dpow_data != _exp2_tbl
-.err
-.endif
+	/* Exp(2) lookup table for exp part (non HSW).  */
+	.if	.-dev_dpow_data != _exp2_tbl
+	.err
+	.endif
 	.quad	0x3ff0000000000000
 	.quad	0x0000000000000000
 	.quad	0x3ff0163da9fb3335
@@ -4751,115 +4754,112 @@ double_vector _hsw_dce1 0x3fe62e42fefa39b9
 	.quad	0x3fffd3c22b8f71f1
 	.quad	0x3c62eb74966579e7
 
-/* log2 polynomial coefficients:
- * clv7 */
-double_vector _clv_1 0x3f903950cf599c56
+	/* log2 polynomial coefficients: * clv7.  */
+	double_vector _clv_1 0x3f903950cf599c56
 
-/* clv6 */
-double_vector _clv_2 0xbf9b4ea0e9419f52
+	/* clv6.  */
+	double_vector _clv_2 0xbf9b4ea0e9419f52
 
-/* clv5 */
-double_vector _clv_3 0x3fa7a334ddfc9f86
+	/* clv5.  */
+	double_vector _clv_3 0x3fa7a334ddfc9f86
 
-/* clv4 */
-double_vector _clv_4 0xbfb550472a8bb463
+	/* clv4.  */
+	double_vector _clv_4 0xbfb550472a8bb463
 
-/* clv3 */
-double_vector _clv_5 0x3fc47fd462b3b816
+	/* clv3.  */
+	double_vector _clv_5 0x3fc47fd462b3b816
 
-/* clv2 */
-double_vector _clv_6 0xbfd62e4346694107
+	/* clv2.  */
+	double_vector _clv_6 0xbfd62e4346694107
 
-/* clv1 */
-double_vector _clv_7 0x3e79c3a6966457ee
+	/* clv1.  */
+	double_vector _clv_7 0x3e79c3a6966457ee
 
-/* exponential polynomial coefficients:
- * cev5 */
-double_vector _cev_1 0x3f55d87fe78a6731
+	/* exponential polynomial coefficients: * cev5.  */
+	double_vector _cev_1 0x3f55d87fe78a6731
 
-/* cev4 */
-double_vector _cev_2 0x3f83b2ab6fba4e77
+	/* cev4.  */
+	double_vector _cev_2 0x3f83b2ab6fba4e77
 
-/* cev3 */
-double_vector _cev_3 0x3fac6b08d704a0bf
+	/* cev3.  */
+	double_vector _cev_3 0x3fac6b08d704a0bf
 
-/* cev2 */
-double_vector _cev_4 0x3fcebfbdff82c58e
+	/* cev2.  */
+	double_vector _cev_4 0x3fcebfbdff82c58e
 
-/* cev1 */
-double_vector _cev_5 0x3fe62e42fefa39ef
+	/* cev1.  */
+	double_vector _cev_5 0x3fe62e42fefa39ef
 
-/* General purpose constants:
- * iMantissaMask */
-double_vector _iMantissaMask 0x000fffffffffffff
+	/* General purpose constants: * iMantissaMask.  */
+	double_vector _iMantissaMask 0x000fffffffffffff
 
-/* i3fe7fe0000000000 */
-double_vector _i3fe7fe0000000000 0x3fe7fe0000000000
+	/* i3fe7fe0000000000.  */
+	double_vector _i3fe7fe0000000000 0x3fe7fe0000000000
 
-/* dbOne */
-double_vector _dbOne 0x3ff0000000000000
+	/* dbOne.  */
+	double_vector _dbOne 0x3ff0000000000000
 
-/* iffffffff00000000 */
-double_vector _iffffffff00000000 0xffffffff00000000
+	/* iffffffff00000000.  */
+	double_vector _iffffffff00000000 0xffffffff00000000
 
-/* db2p20_2p19 = 2^20+2^19 */
-double_vector _db2p20_2p19 0x4138000000000000
+	/* db2p20_2p19 = 2^20+2^19.  */
+	double_vector _db2p20_2p19 0x4138000000000000
 
-/* iHighMask */
-double_vector _iHighMask 0xfffffffff8000000
+	/* iHighMask.  */
+	double_vector _iHighMask 0xfffffffff8000000
 
-/* LHN = -log2(e) truncated to 22 bits */
-double_vector _LHN 0xbff7154740000000
+	/* LHN = -log2(e) truncated to 22 bits.  */
+	double_vector _LHN 0xbff7154740000000
 
-/* ifff0000000000000 */
-double_vector _ifff0000000000000 0xfff0000000000000
+	/* ifff0000000000000.  */
+	double_vector _ifff0000000000000 0xfff0000000000000
 
-/* db2p45_2p44 */
-double_vector _db2p45_2p44 0x42c8000000000000
+	/* db2p45_2p44.  */
+	double_vector _db2p45_2p44 0x42c8000000000000
 
-/* NEG_INF */
-double_vector _NEG_INF 0xfff0000000000000
+	/* NEG_INF.  */
+	double_vector _NEG_INF 0xfff0000000000000
 
-/* NEG_ZERO */
-double_vector _NEG_ZERO 0x8000000000000000
+	/* NEG_ZERO.  */
+	double_vector _NEG_ZERO 0x8000000000000000
 
-/* 2pow52 */
-double_vector _d2pow52 0x4330000000000000
+	/* 2pow52.  */
+	double_vector _d2pow52 0x4330000000000000
 
-/* 1div2pow111 */
-double_vector _d1div2pow111 0x3900000000000000
+	/* 1div2pow111.  */
+	double_vector _d1div2pow111 0x3900000000000000
 
-/* HIDELTA */
-float_vector _HIDELTA 0x00100000
+	/* HIDELTA.  */
+	float_vector _HIDELTA 0x00100000
 
-/* LORANGE */
-float_vector _LORANGE 0x00200000
+	/* LORANGE.  */
+	float_vector _LORANGE 0x00200000
 
-/* ABSMASK */
-float_vector _ABSMASK 0x7fffffff
+	/* ABSMASK.  */
+	float_vector _ABSMASK 0x7fffffff
 
-/* INF */
-float_vector _INF 0x7f800000
+	/* INF.  */
+	float_vector _INF 0x7f800000
 
-/* DOMAINRANGE */
-float_vector _DOMAINRANGE 0x408f3fff
+	/* DOMAINRANGE.  */
+	float_vector _DOMAINRANGE 0x408f3fff
 
-/* iIndexMask */
-float_vector _iIndexMask 0x000ffe00
+	/* iIndexMask.  */
+	float_vector _iIndexMask 0x000ffe00
 
-/* iIndexAdd */
-float_vector _iIndexAdd 0x00000200
+	/* iIndexAdd.  */
+	float_vector _iIndexAdd 0x00000200
 
-/* i3fe7fe00 */
-float_vector _i3fe7fe00 0x3fe7fe00
+	/* i3fe7fe00.  */
+	float_vector _i3fe7fe00 0x3fe7fe00
 
-/* i2p20_2p19 */
-float_vector _i2p20_2p19 0x41380000
+	/* i2p20_2p19.  */
+	float_vector _i2p20_2p19 0x41380000
 
-/* iOne */
-float_vector _iOne 0x3ff00000
+	/* iOne.  */
+	float_vector _iOne 0x3ff00000
 
-/* jIndexMask */
-float_vector _jIndexMask 0x0000007f
-	.type	dev_dpow_data,@object
-	.size dev_dpow_data,.-dev_dpow_data
+	/* jIndexMask.  */
+	float_vector _jIndexMask 0x0000007f
+	.type	dev_dpow_data, @object
+	.size	dev_dpow_data, .-dev_dpow_data

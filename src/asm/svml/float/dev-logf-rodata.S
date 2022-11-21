@@ -77,9 +77,13 @@ float_vector _sLn2 0x3f317218
 .endif
 	.long	0x7f800000
 	.long	0xff800000
-	.rept	56
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+    .quad	0x0000000000000000
 
 /* SP one, +/- */
 .if .-dev_slog_data != _sOnes
@@ -87,9 +91,13 @@ float_vector _sLn2 0x3f317218
 .endif
 	.long	0x3f800000
 	.long	0xbf800000
-	.rept	56
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+    .quad	0x0000000000000000
 
 /* SP zero +/- */
 .if .-dev_slog_data != _sZeros
@@ -97,8 +105,12 @@ float_vector _sLn2 0x3f317218
 .endif
 	.long	0x00000000
 	.long	0x80000000
-	.rept	56
-	.byte	0
-	.endr
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+    .quad	0x0000000000000000
 	.type	dev_slog_data,@object
 	.size dev_slog_data,.-dev_slog_data

@@ -52,20 +52,12 @@
 #define _sPI1				896
 #define _sPI2				960
 #define _sPI3				1024
+#define zmmA				zmm1
 
 
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(tanf_16_avx512_dev)
-	pushq	%rbp
-	cfi_def_cfa_offset(16)
-	movq	%rsp, %rbp
-	cfi_def_cfa(6, 16)
-	cfi_offset(6, -16)
-	andq	$-64, %rsp
-	subq	$192, %rsp
-	xorl	%edx, %edx
-
 	/* Large values check */
 	vmovups	_sRangeReductionVal_uisa+__svml_stan_data_internal(%rip), %zmm10
 
@@ -75,12 +67,12 @@ ENTRY(tanf_16_avx512_dev)
 	 *
 	 * start arg. reduction
 	 */
-	vmovups	_sRShifter+__svml_stan_data_internal(%rip), %zmm1
+	vmovups	_sRShifter+__svml_stan_data_internal(%rip), %zmmA
 	vmovups	_sPI1_uisa+__svml_stan_data_internal(%rip), %zmm4
 	vmovups	_sPI2_uisa+__svml_stan_data_internal(%rip), %zmm2
 	vmovups	_sPI3_uisa+__svml_stan_data_internal(%rip), %zmm3
 	vmovaps	%zmm0, %zmm11
-	vandps	_sAbsMask+__svml_stan_data_internal(%rip), %zmm11, %zmm0
+	vandps	_sAbsMask+__svml_stan_data_internal(%rip), %zmm0, %zmm0
 	vcmpps	$22, {sae}, %zmm10, %zmm0, %k6
 	vmovups	__svml_stan_data_internal(%rip), %zmm10
 
@@ -88,10 +80,10 @@ ENTRY(tanf_16_avx512_dev)
 	 *
 	 * End of main path
 	 */
-
+	xorl	%edx, %edx
 	kortestw %k6, %k6
-	vfmadd213ps {rn-sae}, %zmm1, %zmm11, %zmm10
-	vsubps	{rn-sae}, %zmm1, %zmm10, %zmm5
+	vfmadd213ps {rn-sae}, %zmmA, %zmm11, %zmm10
+	vsubps	{rn-sae}, %zmmA, %zmm10, %zmm5
 	vfnmadd213ps {rn-sae}, %zmm11, %zmm5, %zmm4
 	vfnmadd231ps {rn-sae}, %zmm5, %zmm2, %zmm4
 	vfnmadd213ps {rn-sae}, %zmm4, %zmm3, %zmm5
@@ -108,12 +100,12 @@ L(AUX_BRANCH_RETURN):
 	/* Table lookup */
 	vmovups	Th_tbl_uisa+__svml_stan_data_internal(%rip), %zmm3
 	vmovups	_sPC3_uisa+__svml_stan_data_internal(%rip), %zmm0
-	vmulps	{rn-sae}, %zmm5, %zmm5, %zmm1
+	vmulps	{rn-sae}, %zmm5, %zmm5, %zmmA
 	vpermt2ps Th_tbl_uisa+64+__svml_stan_data_internal(%rip), %zmm10, %zmm3
 	vmovups	_sPC5_uisa+__svml_stan_data_internal(%rip), %zmm10
-	vfmadd231ps {rn-sae}, %zmm1, %zmm10, %zmm0
+	vfmadd231ps {rn-sae}, %zmmA, %zmm10, %zmm0
 	vmulps	{rn-sae}, %zmm5, %zmm0, %zmm4
-	vfmadd213ps {rn-sae}, %zmm5, %zmm1, %zmm4
+	vfmadd213ps {rn-sae}, %zmm5, %zmmA, %zmm4
 
 	/*
 	 * Computer Denominator:
@@ -155,20 +147,267 @@ L(AUX_BRANCH_RETURN):
 	 * and exit the function
 	 */
 
-L(EXIT):
-	movq	%rbp, %rsp
-	popq	%rbp
-	cfi_def_cfa(7, 8)
-	cfi_restore(6)
 	ret
-	cfi_def_cfa(6, 16)
-	cfi_offset(6, -16)
 
 	/* Branch to process
 	 * special inputs
 	 */
 
+#define ZERO_R(r)			vpxord r, r, r
+	.p2align 6
+L(AUX_BRANCH):
+	vmovups	_sRangeVal+__svml_stan_data_internal(%rip), %zmm9
+
+	/*
+	 * Get the (2^a / 2pi) mod 1 values from the table.
+	 * Because doesn't have I-type gather, we need a trivial cast
+	 */
+	lea	__svml_stan_reduction_data_internal(%rip), %rax
+	vandps	%zmm0, %zmm9, %zmm3
+	vcmpps	$0, {sae}, %zmm9, %zmm3, %k1
+
+	/*
+	 * Break the P_xxx and m into 16-bit chunks ready for
+	 * the long multiplication via 16x16->32 multiplications
+	 */
+
+	kmovw	%k1, %edx
+	/* Hoping k0 doesn't have some long dependency chain attached to it. */
+	kxnorw	%k0, %k0, %k2
+	kmovd	%k2, %k3
+	kmovd	%k2, %k4
+
+	/* Multiply indexes by 12. Note we could rearrange the data and
+	   then just shift down by 23 saving 2x instructions. This will
+	   probably look slightly better on microbenchmarks but as it is
+	   now we get some construction cache interference between the
+	   gathers. As well this minimizes the total lines brought in. Its
+	   a judgement call but intuitively this will be better for
+	   applications. If someone has the time/inclination benchmarking
+	   this on some real applications may be worth it. */
+	vpsrld	$20, %zmm3, %zmm8
+	vpsrld	$21, %zmm3, %zmm7
+	vpaddd	%zmm7, %zmm8, %zmm4
+
+	/* Offset 4 gather has the most work based on it so we want it to
+       be finished first to keep the bakend busy. */
+
+	vpxord	%zmm15, %zmm15, %zmm15
+	vgatherdps 4(%rax, %zmm4), %zmm15{%k2}
+	movl	$0x55555555, %ecx
+	kmovd	%ecx, %k2
+
+    vpxord	%zmm3, %zmm3, %zmm3
+	vgatherdps (%rax, %zmm4), %zmm3{%k3}
+    vpxord	%zmm2, %zmm2, %zmm2
+	vgatherdps 8(%rax, %zmm4), %zmm2{%k4}
+	vpsrld	$16, %zmm3, %zmm6
+
+
+	/*
+	 * Also get the significand as an integer
+	 * NB: adding in the integer bit is wrong for denorms!
+	 * To make this work for denorms we should do something slightly different
+	 */
+
+	/* zmm0 = zmm0 & (~zmm9) | .FLT_14(%rip).  */
+	vpternlogd $0xba, .FLT_14(%rip), %zmm9, %zmm0
+
+	vpsrld	$16, %zmm0, %zmm8
+	vmovdqu16 %zmm0, %zmm0{%k2}{z}
+
+
+	vpsrld	$16, %zmm15, %zmm4
+	vmovdqu16 %zmm15, %zmm7{%k2}{z}
+	vmovdqu16 %zmm3, %zmm3{%k2}{z}
+	vpsrld	$16, %zmm2, %zmm14
+
+
+	/* Now do the big multiplication and carry propagation */
+	vpmulld	%zmm4, %zmm0, %zmmA
+	vpmulld	%zmm7, %zmm0, %zmm12
+	vpmulld	%zmm3, %zmm0, %zmm9
+	vpmulld	%zmm14, %zmm0, %zmm13
+
+	vpmulld	%zmm4, %zmm8, %zmm4
+	vpmulld	%zmm7, %zmm8, %zmm7
+	vpmulld	%zmm3, %zmm8, %zmm3
+	vpmulld	%zmm14, %zmm8, %zmm14
+
+	vmovdqu16 %zmm2, %zmm2{%k2}{z}
+	vpmulld	%zmm2, %zmm8, %zmm8
+	/* We never take the upperhalf of zmm2. */
+	vpmullw	%zmm6, %zmm0, %zmm2{%k2}{z}
+
+	vpsrld	$16, %zmmA, %zmm15
+	vpsrld	$16, %zmm12, %zmm0
+	vpsrld	$16, %zmm9, %zmm6
+	vpsrld	$16, %zmm13, %zmm13
+
+	vpaddd	%zmm15, %zmm4, %zmm15
+	vpaddd	%zmm0, %zmm7, %zmm7
+	vpaddd	%zmm6, %zmm3, %zmm6
+	vpaddd	%zmm13, %zmm14, %zmm14
+
+	vpsrld	$16, %zmm8, %zmm8
+
+	vmovdqu16 %zmm12, %zmm13{%k2}{z}
+	vpaddd	%zmm14, %zmm13, %zmm3
+
+	vpaddd	%zmm3, %zmm8, %zmm0
+	vpsrld	$16, %zmm0, %zmm12
+	vmovdqu16 %zmmA, %zmmA{%k2}{z}
+	vpaddd	%zmm7, %zmmA, %zmm14
+	vpaddd	%zmm14, %zmm12, %zmm8
+
+	/*
+	 * Now round at the 2^-8 bit position for reduction mod pi/2^7
+	 * instead of the original 2pi (but still with the same 2pi scaling).
+	 * Use a shifter of 2^15 + 2^14.
+	 * The N we get is our final version; it has an offset of
+	 * 2^8 because of the implicit integer bit, and anyway for negative
+	 * starting value it's a 2s complement thing. But we need to mask
+	 * off the exponent part anyway so it's fine.
+	 */
+	vmovups	.FLT_18(%rip), %zmm14
+	/* We already truncated zmm2. */
+	vpaddd	%zmm6, %zmm2, %zmm13
+
+	vpsrld	$16, %zmm8, %zmm4
+	vmovdqu16 %zmm9, %zmm9{%k2}{z}
+	vpaddd	%zmm15, %zmm9, %zmm7
+	vpaddd	%zmm7, %zmm4, %zmm15
+	vpsrld	$16, %zmm15, %zmm12
+	vpaddd	%zmm13, %zmm12, %zmm9
+
+	/* Assemble reduced argument from the pieces */
+	vmovdqu16 %zmm0, %zmm6{%k2}{z}
+	vmovdqu16 %zmm15, %zmm2{%k2}{z}
+	vpslld	$16, %zmm9, %zmm7
+	vpslld	$16, %zmm8, %zmm9
+	vpaddd	%zmm2, %zmm7, %zmm3
+	vpaddd	%zmm6, %zmm9, %zmm9
+	vpsrld	$9, %zmm3, %zmm2
+
+	/*
+	 * We want to incorporate the original sign now too.
+	 * Do it here for convenience in getting the right N value,
+	 * though we could wait right to the end if we were prepared
+	 * to modify the sign of N later too.
+	 * So get the appropriate sign mask now (or sooner).
+	 */
+	vmovaps	.FLT_16(%rip), %zmm7
+	vpandd	%zmm7, %zmm11, %zmmA
+	vpandd	.FLT_21(%rip), %zmm9, %zmm13
+	vpslld	$5, %zmm13, %zmm13
+
+	/*
+	 * Create floating-point high part, implicitly adding integer bit 1
+	 * Incorporate overall sign at this stage too.
+	 */
+	vpternlogd $0xfe, .FLT_17(%rip), %zmmA, %zmm2
+	vaddps	{rn-sae}, %zmm2, %zmm14, %zmm12
+	vsubps	{rn-sae}, %zmm14, %zmm12, %zmm4
+	vsubps	{rn-sae}, %zmm4, %zmm2, %zmm2
+
+	/*
+	 * Create floating-point low and medium parts, respectively
+	 * lo_17, ... lo_0, 0, ..., 0
+	 * hi_8, ... hi_0, lo_31, ..., lo_18
+	 * then subtract off the implicitly added integer bits,
+	 * 2^-46 and 2^-23, respectively.
+	 * Put the original sign into all of them at this stage.
+	 */
+	vmovaps	.FLT_20(%rip), %zmm4
+	vpternlogd $0xfe, %zmm4, %zmmA, %zmm13
+	vpord	%zmm4, %zmmA, %zmm4
+	vpandd	.FLT_23(%rip), %zmm3, %zmm3
+	vsubps	{rn-sae}, %zmm4, %zmm13, %zmm8
+	vandnps	%zmm11, %zmm7, %zmm13
+	vpsrld	$18, %zmm9, %zmm4
+
+	/*
+	 * If the magnitude of the input is <= 2^-20, then
+	 * just pass through the input, since no reduction will be needed and
+	 * the main path will only work accurately if the reduced argument is
+	 * about >= 2^-40 (which it is for all large pi multiples)
+	 */
+	vmovups	.FLT_27(%rip), %zmm7
+	vcmpps	$22, {sae}, %zmm7, %zmm13, %k5
+
+	vpxord	.FLT_22(%rip), %zmmA, %zmm14
+	vpslld	$14, %zmm3, %zmmA
+
+	vpternlogd $0xfe, %zmm4, %zmm14, %zmmA
+	vsubps	{rn-sae}, %zmm14, %zmmA, %zmm7
+
+
+	/* Now add them up into 2 reasonably aligned pieces */
+	vaddps	{rn-sae}, %zmm7, %zmm2, %zmm13
+	vsubps	{rn-sae}, %zmm13, %zmm2, %zmm2
+	vaddps	{rn-sae}, %zmm2, %zmm7, %zmm4
+
+	/*
+	 * The output is _VRES_R (high) + _VRES_E (low), and the integer part is _VRES_IND
+	 * Set sRp2 = _VRES_R^2 and then resume the original code.
+	 */
+
+	vaddps	{rn-sae}, %zmm8, %zmm4, %zmm14
+	vmovups	.FLT_25(%rip), %zmm8
+
+	/* Grab our final N value as an integer, appropriately masked mod 2^8 */
+	vpandd	.FLT_19(%rip), %zmm12, %zmm6
+
+	/*
+	 * Now multiply those numbers all by 2 pi, reasonably accurately.
+	 * (RHi + RLo) * (pi_lead + pi_trail) ~=
+	 * RHi * pi_lead + (RHi * pi_trail + RLo * pi_lead)
+	 */
+	vmovups	.FLT_24(%rip), %zmm12
+	vmulps	{rn-sae}, %zmm12, %zmm13, %zmmA
+	vmovaps	%zmm12, %zmm9
+	vfmsub213ps {rn-sae}, %zmmA, %zmm13, %zmm9
+	vfmadd213ps {rn-sae}, %zmm9, %zmm8, %zmm13
+	vfmadd213ps {rn-sae}, %zmm13, %zmm12, %zmm14
+
+	vmovaps	%zmm14, %zmm12{%k5}{z}
+	vblendmps %zmmA, %zmm11, %zmm7{%k5}
+	vpsrld	$31, %zmm7, %zmm4
+
+	vpaddd	.FLT_28(%rip), %zmm4, %zmm3
+	vpsubd	%zmm3, %zmm6, %zmm2
+	vpsrld	$2, %zmm2, %zmm13
+	vpslld	$2, %zmm13, %zmm9
+
+	/*
+	 *
+	 * End of large arguments path
+	 *
+	 * Merge results from main and large paths:
+	 */
+	vblendmps %zmm13, %zmm10, %zmm10{%k6}
+	vpsubd	%zmm9, %zmm6, %zmm6
+	vmovups	.FLT_29(%rip), %zmm9
+	vcvtdq2ps {rn-sae}, %zmm6, %zmmA
+	vmovups	.FLT_30(%rip), %zmm6
+	vfmadd231ps {rn-sae}, %zmmA, %zmm6, %zmm12
+	vaddps	{rn-sae}, %zmm7, %zmm12, %zmm7
+	vfmadd213ps {rn-sae}, %zmm7, %zmm9, %zmmA
+	vblendmps %zmmA, %zmm5, %zmm5{%k6}
+	/* Return to main vector processing path */
+	jmp	L(AUX_BRANCH_RETURN)
+	# LOE rbx r12 r13 r14 r15 edx zmm5 zmm10 zmm11
+
 L(SPECIAL_VALUES_BRANCH):
+	/* Need to call fallback function so save state of already computed results on the stack. */
+	pushq	%rbp
+	cfi_def_cfa_offset(16)
+	movq	%rsp, %rbp
+	cfi_def_cfa(6, 16)
+	cfi_offset(6, -16)
+	andq	$-64, %rsp
+	subq	$192, %rsp
+
 	vmovups	%zmm11, 64(%rsp)
 	vmovups	%zmm0, 128(%rsp)
 	# LOE rbx r12 r13 r14 r15 edx zmm0
@@ -178,17 +417,10 @@ L(SPECIAL_VALUES_BRANCH):
 
 	vzeroupper
 	movq	%r12, 16(%rsp)
-	/*  DW_CFA_expression: r12 (r12) (DW_OP_lit8; DW_OP_minus; DW_OP_const4s: -64; DW_OP_and; DW_OP_const4s: -176; DW_OP_plus)  */
-	.cfi_escape 0x10, 0x0c, 0x0e, 0x38, 0x1c, 0x0d, 0xc0, 0xff, 0xff, 0xff, 0x1a, 0x0d, 0x50, 0xff, 0xff, 0xff, 0x22
 	movl	%eax, %r12d
 	movq	%r13, 8(%rsp)
-	/*  DW_CFA_expression: r13 (r13) (DW_OP_lit8; DW_OP_minus; DW_OP_const4s: -64; DW_OP_and; DW_OP_const4s: -184; DW_OP_plus)  */
-	.cfi_escape 0x10, 0x0d, 0x0e, 0x38, 0x1c, 0x0d, 0xc0, 0xff, 0xff, 0xff, 0x1a, 0x0d, 0x48, 0xff, 0xff, 0xff, 0x22
 	movl	%edx, %r13d
 	movq	%r14, (%rsp)
-	/*  DW_CFA_expression: r14 (r14) (DW_OP_lit8; DW_OP_minus; DW_OP_const4s: -64; DW_OP_and; DW_OP_const4s: -192; DW_OP_plus)  */
-	.cfi_escape 0x10, 0x0e, 0x0e, 0x38, 0x1c, 0x0d, 0xc0, 0xff, 0xff, 0xff, 0x1a, 0x0d, 0x40, 0xff, 0xff, 0xff, 0x22
-	# LOE rbx r15 r12d r13d
 
 	/* Range mask
 	 * bits check
@@ -221,27 +453,21 @@ L(SPECIAL_VALUES_LOOP):
 	cfi_restore(14)
 	vmovups	128(%rsp), %zmm0
 
-	/* Go to exit */
-	jmp	L(EXIT)
-	/*  DW_CFA_expression: r12 (r12) (DW_OP_lit8; DW_OP_minus; DW_OP_const4s: -64; DW_OP_and; DW_OP_const4s: -176; DW_OP_plus)  */
-	.cfi_escape 0x10, 0x0c, 0x0e, 0x38, 0x1c, 0x0d, 0xc0, 0xff, 0xff, 0xff, 0x1a, 0x0d, 0x50, 0xff, 0xff, 0xff, 0x22
-	/*  DW_CFA_expression: r13 (r13) (DW_OP_lit8; DW_OP_minus; DW_OP_const4s: -64; DW_OP_and; DW_OP_const4s: -184; DW_OP_plus)  */
-	.cfi_escape 0x10, 0x0d, 0x0e, 0x38, 0x1c, 0x0d, 0xc0, 0xff, 0xff, 0xff, 0x1a, 0x0d, 0x48, 0xff, 0xff, 0xff, 0x22
-	/*  DW_CFA_expression: r14 (r14) (DW_OP_lit8; DW_OP_minus; DW_OP_const4s: -64; DW_OP_and; DW_OP_const4s: -192; DW_OP_plus)  */
-	.cfi_escape 0x10, 0x0e, 0x0e, 0x38, 0x1c, 0x0d, 0xc0, 0xff, 0xff, 0xff, 0x1a, 0x0d, 0x40, 0xff, 0xff, 0xff, 0x22
-	# LOE rbx r12 r13 r14 r15 zmm0
-
-	/* Scalar math fucntion call
-	 * to process special input
-	 */
+	movq	%rbp, %rsp
+	popq	%rbp
+	cfi_def_cfa(7, 8)
+	cfi_restore(6)
+	ret
+	cfi_def_cfa(6, 16)
+	cfi_offset(6, -16)
 
 L(SCALAR_MATH_CALL):
 	movl	%r12d, %r14d
-	vmovss	64(%rsp, %r14, 4), %xmm0
+	movss	64(%rsp, %r14, 4), %xmm0
 	call	tanf@PLT
 	# LOE rbx r14 r15 r12d r13d xmm0
 
-	vmovss	%xmm0, 128(%rsp, %r14, 4)
+	movss	%xmm0, 128(%rsp, %r14, 4)
 
 	/* Process special inputs in loop */
 	jmp	L(SPECIAL_VALUES_LOOP)
@@ -253,224 +479,6 @@ L(SCALAR_MATH_CALL):
 	/* Auxilary branch
 	 * for out of main path inputs
 	 */
-
-L(AUX_BRANCH):
-	vmovups	_sRangeVal+__svml_stan_data_internal(%rip), %zmm6
-
-	/*
-	 * Get the (2^a / 2pi) mod 1 values from the table.
-	 * Because doesn't have I-type gather, we need a trivial cast
-	 */
-	lea	__svml_stan_reduction_data_internal(%rip), %rax
-	vmovups	%zmm5, (%rsp)
-	vandps	%zmm0, %zmm6, %zmm14
-	vcmpps	$0, {sae}, %zmm6, %zmm14, %k0
-
-	/*
-	 * Break the P_xxx and m into 16-bit chunks ready for
-	 * the long multiplication via 16x16->32 multiplications
-	 */
-	vmovups	.FLT_15(%rip), %zmm6
-	kxnorw	%k0, %k0, %k1
-	kxnorw	%k0, %k0, %k2
-	kxnorw	%k0, %k0, %k3
-	kmovw	%k0, %edx
-	vpandd	.FLT_12(%rip), %zmm11, %zmm5
-	vpsrld	$23, %zmm5, %zmm7
-	vpslld	$1, %zmm7, %zmm8
-	vpaddd	%zmm7, %zmm8, %zmm9
-	vpslld	$2, %zmm9, %zmm4
-	vpxord	%zmm3, %zmm3, %zmm3
-	vpxord	%zmm15, %zmm15, %zmm15
-	vpxord	%zmm2, %zmm2, %zmm2
-	vgatherdps (%rax, %zmm4), %zmm3{%k1}
-	vgatherdps 4(%rax, %zmm4), %zmm15{%k2}
-	vgatherdps 8(%rax, %zmm4), %zmm2{%k3}
-	vpsrld	$16, %zmm3, %zmm5
-	vpsrld	$16, %zmm2, %zmm13
-
-	/*
-	 * Also get the significand as an integer
-	 * NB: adding in the integer bit is wrong for denorms!
-	 * To make this work for denorms we should do something slightly different
-	 */
-	vpandd	.FLT_13(%rip), %zmm11, %zmm0
-	vpaddd	.FLT_14(%rip), %zmm0, %zmm1
-	vpsrld	$16, %zmm15, %zmm0
-	vpsrld	$16, %zmm1, %zmm8
-	vpandd	%zmm6, %zmm3, %zmm9
-	vpandd	%zmm6, %zmm15, %zmm12
-	vpandd	%zmm6, %zmm2, %zmm7
-	vpandd	%zmm6, %zmm1, %zmm14
-
-	/* Now do the big multiplication and carry propagation */
-	vpmulld	%zmm9, %zmm8, %zmm4
-	vpmulld	%zmm0, %zmm8, %zmm3
-	vpmulld	%zmm12, %zmm8, %zmm2
-	vpmulld	%zmm13, %zmm8, %zmm1
-	vpmulld	%zmm7, %zmm8, %zmm8
-	vpmulld	%zmm5, %zmm14, %zmm7
-	vpmulld	%zmm9, %zmm14, %zmm5
-	vpmulld	%zmm0, %zmm14, %zmm9
-	vpmulld	%zmm12, %zmm14, %zmm0
-	vpmulld	%zmm13, %zmm14, %zmm12
-	vpsrld	$16, %zmm12, %zmm14
-	vpsrld	$16, %zmm0, %zmm13
-	vpsrld	$16, %zmm9, %zmm15
-	vpsrld	$16, %zmm5, %zmm12
-	vpsrld	$16, %zmm8, %zmm8
-	vpaddd	%zmm14, %zmm1, %zmm1
-	vpaddd	%zmm13, %zmm2, %zmm2
-	vpaddd	%zmm15, %zmm3, %zmm15
-	vpaddd	%zmm12, %zmm4, %zmm3
-	vpandd	%zmm6, %zmm0, %zmm13
-	vpaddd	%zmm1, %zmm13, %zmm4
-	vpaddd	%zmm4, %zmm8, %zmm14
-	vpsrld	$16, %zmm14, %zmm0
-	vpandd	%zmm6, %zmm9, %zmm9
-	vpaddd	%zmm2, %zmm9, %zmm1
-	vpaddd	%zmm1, %zmm0, %zmm8
-
-	/*
-	 * Now round at the 2^-8 bit position for reduction mod pi/2^7
-	 * instead of the original 2pi (but still with the same 2pi scaling).
-	 * Use a shifter of 2^15 + 2^14.
-	 * The N we get is our final version; it has an offset of
-	 * 2^8 because of the implicit integer bit, and anyway for negative
-	 * starting value it's a 2s complement thing. But we need to mask
-	 * off the exponent part anyway so it's fine.
-	 */
-	vmovups	.FLT_18(%rip), %zmm1
-	vpandd	%zmm6, %zmm7, %zmm7
-	vpaddd	%zmm3, %zmm7, %zmm13
-	vpsrld	$16, %zmm8, %zmm3
-	vpandd	%zmm6, %zmm5, %zmm5
-	vpaddd	%zmm15, %zmm5, %zmm2
-	vpaddd	%zmm2, %zmm3, %zmm15
-	vpsrld	$16, %zmm15, %zmm12
-	vpaddd	%zmm13, %zmm12, %zmm5
-
-	/* Assemble reduced argument from the pieces */
-	vpandd	%zmm6, %zmm14, %zmm9
-	vpandd	%zmm6, %zmm15, %zmm7
-	vpslld	$16, %zmm5, %zmm6
-	vpslld	$16, %zmm8, %zmm5
-	vpaddd	%zmm7, %zmm6, %zmm4
-	vpaddd	%zmm9, %zmm5, %zmm9
-	vpsrld	$9, %zmm4, %zmm6
-
-	/*
-	 * We want to incorporate the original sign now too.
-	 * Do it here for convenience in getting the right N value,
-	 * though we could wait right to the end if we were prepared
-	 * to modify the sign of N later too.
-	 * So get the appropriate sign mask now (or sooner).
-	 */
-	vpandd	.FLT_16(%rip), %zmm11, %zmm0
-	vpandd	.FLT_21(%rip), %zmm9, %zmm13
-	vpslld	$5, %zmm13, %zmm14
-
-	/*
-	 * Create floating-point high part, implicitly adding integer bit 1
-	 * Incorporate overall sign at this stage too.
-	 */
-	vpxord	.FLT_17(%rip), %zmm0, %zmm8
-	vpord	%zmm8, %zmm6, %zmm2
-	vaddps	{rn-sae}, %zmm2, %zmm1, %zmm12
-	vsubps	{rn-sae}, %zmm1, %zmm12, %zmm3
-	vsubps	{rn-sae}, %zmm3, %zmm2, %zmm7
-
-	/*
-	 * Create floating-point low and medium parts, respectively
-	 * lo_17, ... lo_0, 0, ..., 0
-	 * hi_8, ... hi_0, lo_31, ..., lo_18
-	 * then subtract off the implicitly added integer bits,
-	 * 2^-46 and 2^-23, respectively.
-	 * Put the original sign into all of them at this stage.
-	 */
-	vpxord	.FLT_20(%rip), %zmm0, %zmm6
-	vpord	%zmm6, %zmm14, %zmm15
-	vpandd	.FLT_23(%rip), %zmm4, %zmm4
-	vsubps	{rn-sae}, %zmm6, %zmm15, %zmm8
-	vandps	.FLT_26(%rip), %zmm11, %zmm15
-	vpsrld	$18, %zmm9, %zmm6
-
-	/*
-	 * If the magnitude of the input is <= 2^-20, then
-	 * just pass through the input, since no reduction will be needed and
-	 * the main path will only work accurately if the reduced argument is
-	 * about >= 2^-40 (which it is for all large pi multiples)
-	 */
-	vmovups	.FLT_27(%rip), %zmm14
-	vcmpps	$26, {sae}, %zmm14, %zmm15, %k4
-	vcmpps	$22, {sae}, %zmm14, %zmm15, %k5
-	vpxord	.FLT_22(%rip), %zmm0, %zmm1
-	vpslld	$14, %zmm4, %zmm0
-	vpord	%zmm6, %zmm0, %zmm0
-	vpord	%zmm1, %zmm0, %zmm4
-	vsubps	{rn-sae}, %zmm1, %zmm4, %zmm2
-	vpternlogd $255, %zmm6, %zmm6, %zmm6
-
-	/* Now add them up into 2 reasonably aligned pieces */
-	vaddps	{rn-sae}, %zmm2, %zmm7, %zmm13
-	vsubps	{rn-sae}, %zmm13, %zmm7, %zmm7
-	vaddps	{rn-sae}, %zmm7, %zmm2, %zmm3
-
-	/*
-	 * The output is _VRES_R (high) + _VRES_E (low), and the integer part is _VRES_IND
-	 * Set sRp2 = _VRES_R^2 and then resume the original code.
-	 */
-	vmovups	.FLT_28(%rip), %zmm2
-	vaddps	{rn-sae}, %zmm8, %zmm3, %zmm1
-	vmovups	.FLT_25(%rip), %zmm8
-
-	/* Grab our final N value as an integer, appropriately masked mod 2^8 */
-	vpandd	.FLT_19(%rip), %zmm12, %zmm5
-
-	/*
-	 * Now multiply those numbers all by 2 pi, reasonably accurately.
-	 * (RHi + RLo) * (pi_lead + pi_trail) ~=
-	 * RHi * pi_lead + (RHi * pi_trail + RLo * pi_lead)
-	 */
-	vmovups	.FLT_24(%rip), %zmm12
-	vmulps	{rn-sae}, %zmm12, %zmm13, %zmm0
-	vmovaps	%zmm12, %zmm9
-	vfmsub213ps {rn-sae}, %zmm0, %zmm13, %zmm9
-	vfmadd213ps {rn-sae}, %zmm9, %zmm8, %zmm13
-	vmovaps	%zmm6, %zmm8
-	vfmadd213ps {rn-sae}, %zmm13, %zmm12, %zmm1
-	vpandnd	%zmm15, %zmm15, %zmm8{%k4}
-	vpandnd	%zmm15, %zmm15, %zmm6{%k5}
-	vandps	%zmm11, %zmm6, %zmm14
-	vandps	%zmm0, %zmm8, %zmm15
-	vandps	%zmm1, %zmm8, %zmm12
-	vorps	%zmm15, %zmm14, %zmm6
-	vpsrld	$31, %zmm6, %zmm3
-	vpsubd	%zmm3, %zmm2, %zmm4
-	vpaddd	%zmm4, %zmm5, %zmm7
-	vpsrld	$2, %zmm7, %zmm13
-	vpslld	$2, %zmm13, %zmm9
-
-	/*
-	 *
-	 * End of large arguments path
-	 *
-	 * Merge results from main and large paths:
-	 */
-	vblendmps %zmm13, %zmm10, %zmm10{%k6}
-	vpsubd	%zmm9, %zmm5, %zmm5
-	vmovups	.FLT_29(%rip), %zmm9
-	vcvtdq2ps {rn-sae}, %zmm5, %zmm0
-	vmovups	.FLT_30(%rip), %zmm5
-	vfmadd231ps {rn-sae}, %zmm0, %zmm5, %zmm12
-	vmovups	(%rsp), %zmm5
-	vaddps	{rn-sae}, %zmm6, %zmm12, %zmm6
-	vfmadd213ps {rn-sae}, %zmm6, %zmm9, %zmm0
-	vblendmps %zmm0, %zmm5, %zmm5{%k6}
-
-	/* Return to main vector processing path */
-	jmp	L(AUX_BRANCH_RETURN)
-	# LOE rbx r12 r13 r14 r15 edx zmm5 zmm10 zmm11
 END(tanf_16_avx512_dev)
 
 	.section .rodata, "a"
@@ -573,7 +581,7 @@ END(tanf_16_avx512_dev)
 	.align	64
 
 .FLT_28:
-	.long	0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002, 0x00000002
+	.long	0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe, 0xfffffffe
 	.type	.FLT_28, @object
 	.size	.FLT_28, 64
 	.align	64

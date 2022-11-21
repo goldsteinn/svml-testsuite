@@ -155,6 +155,12 @@ typedef union ref_func {
     ref_v_f_fp_fp__f run_ref_v_f_fp_fp;
 } ref_func_t;
 
+typedef uint64_t (*bench__f)(uint32_t, uint64_t, uint64_t, uint64_t);
+typedef union svml_bench_func {
+    void *   p;
+    bench__f run_bench;
+} svml_bench_func_t;
+
 enum {
     k_test_d_d,
     k_test_d_d_d,
@@ -173,15 +179,16 @@ enum {
 
 
 typedef struct svml_op {
-    char const * const name_;
-    char const * const base_name_;
-    svml_func_t const  svml_func_;
-    ref_func_t const   ref_func_;
-    uint32_t const     sz_;
-    uint8_t const      fp_;
-    uint8_t const      ulp_;
-    uint16_t const     test_type_;
-
+    char const * const      name_;
+    char const * const      base_name_;
+    svml_func_t const       svml_func_;
+    ref_func_t const        ref_func_;
+    uint32_t const          sz_;
+    uint8_t const           fp_;
+    uint8_t const           ulp_;
+    uint16_t const          test_type_;
+    svml_bench_func_t const bench_tput_;
+    svml_bench_func_t const bench_lat_;
 } svml_op_t;
 
 extern const svml_op_t all_svml_defs[];

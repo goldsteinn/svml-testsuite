@@ -27,7 +27,7 @@
    The table may contain polynomial, reduction, lookup coefficients
    and other macro_names obtained through different methods
    of research and experimental work.  */
-
+	.section .rodata, "a"
 	.globl dev_s_trig_data
 dev_s_trig_data:
 
