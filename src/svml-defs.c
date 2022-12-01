@@ -9,9 +9,9 @@ enum { k_default_ulp = 4 };
                     test_type)                                                 \
     {                                                                          \
         V_TO_STR(svml_func), V_TO_STR(ref_func) + 4, { svml_func },            \
-            { ref_func }, sz, is_fp,                                           \
+            { ref_func }, { CAT(ref_func, _mpfr) }, sz, is_fp,                 \
             (ulp) == 0 ? k_default_ulp : (k_default_ulp),                      \
-            CAT(k_test_, test_type), get_bench_funcs(svml_func)                 \
+            CAT(k_test_, test_type), get_bench_funcs(svml_func)                \
     }
 
 #define ADD_DEF(svml_func, ...)                                                \

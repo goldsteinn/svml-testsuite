@@ -70,8 +70,8 @@ if(${WITH_VDSO})
   list(APPEND compiler_flags_extra "-DWITH_VDSO")
 endif()
 
-
-
+list(APPEND link_libraries "-lmpfr")
+list(APPEND link_libraries "-lgmp")
 
 list(FIND llvm_compilers ${COMPILER_LOWER} llvm_compilers)
 list(FIND gnu_compilers ${COMPILER_LOWER} gnu_compilers)

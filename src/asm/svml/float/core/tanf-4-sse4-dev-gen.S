@@ -82,8 +82,42 @@
 #define _sTwo	704
 #define _sCoeffs	720
 
-#define xmmA	xmm1
 
+#define _sinvpi_uisa_	0
+#define _spi1_uisa_	16
+#define _spi2_uisa_	32
+#define _spi3_uisa_	48
+#define _spi2_ha_uisa_	64
+#define _spi3_ha_uisa_	80
+#define th_tbl_uisa_	96
+#define tl_tbl_uisa_	224
+#define _spc3_uisa_	352
+#define _spc5_uisa_	368
+#define _srangereductionval_uisa_	384
+#define _sinvpi_	400
+#define _ssignmask_	416
+#define _sabsmask_	432
+#define _srangeval_	448
+#define _srshifter_	464
+#define _sone_	480
+#define _srangereductionval_	496
+#define _spi1_	512
+#define _spi2_	528
+#define _spi3_	544
+#define _spi4_	560
+#define _spi1_fma_	576
+#define _spi2_fma_	592
+#define _spi3_fma_	608
+#define _sp0_	624
+#define _sp1_	640
+#define _sq0_	656
+#define _sq1_	672
+#define _sq2_	688
+#define _stwo_	704
+#define _scoeffs_	720
+
+#define xmmA	xmm1
+#define xmma	xmm1
 	.section .text.sse4, "ax", @progbits
 ENTRY(tanf_4_sse4_dev)
 	movaps	%xmm0, %xmm15
@@ -168,587 +202,420 @@ ENTRY(tanf_4_sse4_dev)
 
 L(AUX_BRANCH):
 	INC_FALLBACK1
-	subq	$232, %rsp
-	cfi_def_cfa_offset (240)
-
-
 	/* * Get the (2^a / 2pi) mod 1 values from the table. * Because
 	   doesn't have I-type gather, we need a trivial cast.  */
-	lea	__svml_stan_reduction_data_internal(%rip), %rax
-	movups	%xmm15, 64(%rsp)
 	/* * Also get the significand as an integer * NB: adding in the
-	   integer bit is wrong for denorms! * To make this work for
 	   denorms we should do something slightly different.  */
-	movups	%xmm3, 96(%rsp)
-	movups	%xmm0, 112(%rsp)
-
-
-
-	movaps	_sRangeVal + __svml_stan_data_internal(%rip), %xmm3
-	movaps	%xmm3, %xmm2
-	paddd	%xmm4, %xmm2
-
-
-	movaps	_sRangeReductionVal_uisa + __svml_stan_data_internal(%rip), %xmm15
-	pand	%xmm4, %xmm15
-	por	%xmm3, %xmm15
-
-	psrld	$23, %xmm4
-	movdqa	%xmm4, %xmmA
-	paddd	%xmmA, %xmmA
-	paddd	%xmmA, %xmm4
-
-	movq	%xmm4, %rcx
-	pextrq	$1, %xmm4, %rdi
-
-	movl	%ecx, %edx
-	movl	%edi, %esi
-	shrq	$32, %rcx
-	shrq	$32, %rdi
-
-	movq	(%rax, %rdx, 4), %xmmA
-	movq	(%rax, %rcx, 4), %xmm5
-	movq	(%rax, %rsi, 4), %xmm7
-	movq	(%rax, %rdi, 4), %xmm6
-
-	punpckldq %xmm5, %xmmA
-	punpckldq %xmm6, %xmm7
-
-	movaps	%xmmA, %xmm6
-	punpcklqdq %xmm7, %xmmA
-	punpckhqdq %xmm7, %xmm6
-
-	movd	8(%rax, %rdi, 4), %xmm5
-	movd	8(%rax, %rdx, 4), %xmm3
-	movd	8(%rax, %rcx, 4), %xmm0
-	movd	8(%rax, %rsi, 4), %xmm7
-
-	punpckldq %xmm0, %xmm3
-	punpckldq %xmm5, %xmm7
-	punpcklqdq %xmm7, %xmm3
-
-	movmskps %xmm2, %eax
-
-
-	movl	$0xffff, %edx
-	movd	%edx, %xmm0
-	pshufd	$0, %xmm0, %xmm8
-
-	movdqa	%xmm3, %xmm2
-	psrld	$16, %xmm2
-	movdqa	%xmm3, %xmm4
-	psrlq	$48, %xmm4
-	pand	%xmm8, %xmm3
-
-	movdqa	%xmm15, %xmm12
-    psrld	$16, %xmm12
-	movdqa	%xmm15, %xmm11
-	psrlq	$48, %xmm11
-    
-	pand	%xmm8, %xmm15
-	movdqa	%xmm15, %xmm10
-	psrlq	$32, %xmm10
-    
-	movdqa	%xmm15, %xmm13
-	movdqa	%xmm10, %xmm7
-
-	movdqa	%xmmA, %xmm0
-    psrld	$16, %xmm0
-    
-	pand	%xmm8, %xmmA
-	movdqa	%xmmA, %xmm14
-	psrlq	$32, %xmm14
-    
-	movdqu	%xmm0, 128(%rsp)
-	movdqu	%xmmA, 144(%rsp)
-	movdqu	%xmm14, 176(%rsp)
-
-	pmuludq	%xmmA, %xmm13
-    
-	pmuludq	%xmm14, %xmm7
-	psllq	$32, %xmm7
-    
-	blendps	$0xaa, %xmm7, %xmm13
-	movdqa	%xmm15, %xmm7
-	movdqu	%xmm13, 208(%rsp)
-
-	movdqa	%xmm6, %xmm0
-	psrld	$16, %xmm0
-	movdqa	%xmm6, %xmmA
-    psrlq	$48, %xmmA
-    
-	movdqu	%xmm0, %xmm9
-
-	movdqu	%xmmA, 192(%rsp)
-	pand	%xmm8, %xmm6
-	movdqa	%xmm6, %xmm5
-	psrlq	$32, %xmm5
-
-	pmuludq	%xmm0, %xmm7
-
-
-	movdqa	%xmm10, %xmm13
-	pmuludq	%xmmA, %xmm13
-	movdqa	%xmm15, %xmmA
-    pmuludq	%xmm6, %xmmA
-    pmuludq	%xmm12, %xmm6
-    
-	movdqa	%xmm10, %xmm14
-	pmuludq	%xmm5, %xmm14
-	psllq	$32, %xmm14
-
-	movdqa	%xmm12, %xmm0
-	pmuludq	%xmm3, %xmm0
-	psrlq	$32, %xmm3
-
-	pmuludq	%xmm11, %xmm3
-	psllq	$32, %xmm3
-
-	pmuludq	%xmm11, %xmm5
-	psllq	$32, %xmm5
-	blendps	$0xaa, %xmm5, %xmm6
-
-
-	movdqu	208(%rsp), %xmm5
-
-	blendps	$0xaa, %xmm14, %xmmA
-	blendps	$0xaa, %xmm3, %xmm0
-	psrld	$16, %xmm0
-
-	movdqa	%xmm12, %xmm14
-	pmuludq	%xmm12, %xmm9
-	pmuludq	144(%rsp), %xmm12
-	movdqa	%xmm11, %xmm3
-
-	pmuludq	%xmm2, %xmm14
-	pmuludq	%xmm4, %xmm3
-	pmuludq	%xmm15, %xmm2
-	pmuludq	%xmm10, %xmm4
-
-	psllq	$32, %xmm4
-	psllq	$32, %xmm13
-	psllq	$32, %xmm3
-
-	blendps	$0xaa, %xmm13, %xmm7
-	movdqa	%xmmA, %xmm13
-	pand	%xmm8, %xmm13
-	psrld	$16, %xmmA
-	paddd	%xmmA, %xmm6
-
-	blendps	$0xaa, %xmm4, %xmm2
-	psrld	$16, %xmm2
-	blendps	$0xaa, %xmm3, %xmm14
-	paddd	%xmm2, %xmm14
-	paddd	%xmm14, %xmm13
-	paddd	%xmm13, %xmm0
-	movdqa	%xmm5, %xmm13
-	psrld	$16, %xmm5
-
-	pand	%xmm8, %xmm13
-	movdqa	%xmm0, %xmm14
-	pand	%xmm8, %xmm0
-	psrld	$16, %xmm14
-
-	movdqa	%xmm7, %xmm2
-	psrld	$16, %xmm7
-
-	pand	%xmm8, %xmm2
-	paddd	%xmm6, %xmm2
-	paddd	%xmm2, %xmm14
-	movdqa	%xmm14, %xmm3
-	psrld	$16, %xmm3
-
-	movdqu	192(%rsp), %xmm6
-	pmuludq	%xmm11, %xmm6
-	pmuludq	176(%rsp), %xmm11
-    psllq	$32, %xmm11
-	blendps	$0xaa, %xmm11, %xmm12
-	paddd	%xmm5, %xmm12
-
-	psllq	$32, %xmm6
-	blendps	$0xaa, %xmm6, %xmm9
-	paddd	%xmm7, %xmm9
-	paddd	%xmm9, %xmm13
-	paddd	%xmm13, %xmm3
-	movdqa	%xmm3, %xmm4
-	psrld	$16, %xmm4
-	pand	%xmm8, %xmm3
-
-	movdqu	128(%rsp), %xmm7
-	pmuludq	%xmm7, %xmm15
-	psrlq	$32, %xmm7
-	pmuludq	%xmm7, %xmm10
-	psllq	$32, %xmm10
-	blendps	$0xaa, %xmm10, %xmm15
-	pand	%xmm8, %xmm15
-	paddd	%xmm12, %xmm15
-	paddd	%xmm15, %xmm4
-	pslld	$16, %xmm4
-	paddd	%xmm3, %xmm4
-
-
-
-
 	/* Assemble reduced argument from the pieces.  */
-
-
-	movdqa	%xmm4, %xmm5
-	psrld	$9, %xmm5
-	por	_sOne + __svml_stan_data_internal(%rip), %xmm5
-	movl	$0x47400000, %esi
-	movd	%esi, %xmm3
-	pshufd	$0, %xmm3, %xmm3
-	movdqa	%xmm5, %xmm6
-
-
 	/* * Create floating-point low and medium parts, respectively *
-	   lo_17, ... lo_0, 0, ..., 0 * hi_8, ... hi_0, lo_31, ...,
-	   lo_18 * then subtract off the implicitly added integer bits,
-	   * 2^-46 and 2^-23, respectively. * Put the original sign
 	   into all of them at this stage.  */
-
-
-	pslld	$16, %xmm14
-	movl	$0x000001ff, %edi
-	movd	%edi, %xmmA
-	pshufd	$0, %xmmA, %xmmA
-	paddd	%xmm0, %xmm14
-	pand	%xmm4, %xmmA
-	pslld	$14, %xmmA
-
-	movl	$0x3ffff, %edi
-	movd	%edi, %xmm8
-	pshufd	$0, %xmm8, %xmm8
-	pand	%xmm14, %xmm8
-	psrld	$18, %xmm14
-
-	movl	$0x28800000, %edi
-	movd	%edi, %xmm0
-	pshufd	$0, %xmm0, %xmm0
-
-
-	movl	$0x34000000, %edi
-	movd	%edi, %xmm12
-	pshufd	$0, %xmm12, %xmm12
-
-
-	por	%xmm14, %xmmA
-	pslld	$5, %xmm8
-	por	%xmm12, %xmmA
-
 	/* * Now multiply those numbers all by 2 pi, reasonably
-	   accurately. * The top part uses 2pi = s2pi_lead +
 	   s2pi_trail, where * s2pi_lead has 12 significant bits.  */
-
-
 	/* Split RHi into 12-bit leading and trailing parts.  */
-
-
-
-
 	/* * If the magnitude of the input is <= 2^-20, then * just pass
-	   through the input, since no reduction will be needed and *
-	   the main path will only work accurately if the reduced
-	   argument is * about >= 2^-40 (which it is for all large pi
 	   multiples).  */
-
-	por	%xmm0, %xmm8
-	addps	%xmm3, %xmm6
-	subps	%xmm12, %xmmA
-	subps	%xmm0, %xmm8
-	movaps	%xmm6, %xmm2
-
-
-
-	subps	%xmm3, %xmm2
-
 	/* Grab our final N value as an integer, appropriately masked
 	   mod 2^8.  */
-
-	subps	%xmm2, %xmm5
-
 	/* Now add them up into 2 reasonably aligned pieces.  */
-	movaps	%xmm5, %xmm3
-
-	/* * The output is _VRES_R (high) + _VRES_E (low), and the
-	   integer part is _VRES_IND * Set sRp2 = _VRES_R^2 and then
-	   resume the original code. * Argument reduction is now
-	   finished: x = n * pi/128 + r * where n = iIndex and r = sR
-	   (high) + sE (low). * But we have n modulo 256, needed for
-	   sin/cos with period 2pi * but we want it modulo 128 since
-	   tan has period pi.  */
-
-	movl	$0x40c90fdb, %esi
-	movd	%esi, %xmm2
-	pshufd	$0, %xmm2, %xmm2
-	addps	%xmmA, %xmm3
-	movl	$0xfffff000, %esi
-	movd	%esi, %xmm14
-	pshufd	$0, %xmm14, %xmm14
-
-	subps	%xmm3, %xmm5
-
-	addps	%xmm5, %xmmA
-
-	addps	%xmmA, %xmm8
-	movl	$0x40c91000, %edx
-	movd	%edx, %xmmA
-	pshufd	$0, %xmmA, %xmmA
-	movdqa	%xmm14, %xmm7
-	andps	%xmm3, %xmm7
-
-	/* * Do the multiplication as exact top part and "naive" low
-	   part. * This still maintains a similar level of offset and
-	   doesn't drop * the accuracy much below what we already have.
+	/* * The output is _VRES_R (high) + _VRES_E (low), and the tan
+	   has period pi.  */
+	/* * Do the multiplication as exact top part and "naive" low.
 	 */
-	movdqa	%xmmA, %xmm10
-	movl	$0xb795777a, %ecx
-	movd	%ecx, %xmm5
-	pshufd	$0, %xmm5, %xmm5
-	subps	%xmm7, %xmm3
-	mulps	%xmm7, %xmm10
-	mulps	%xmm5, %xmm7
-	mulps	%xmm3, %xmmA
-	mulps	%xmm8, %xmm2
-	mulps	%xmm3, %xmm5
-	addps	%xmm7, %xmmA
-	addps	%xmm5, %xmm2
-
-	addps	%xmm2, %xmmA
-
-	/* * Do another stage of compensated summation to get full
-	   offset * between the pieces sRedHi + sRedLo. * Depending on
-	   the later algorithm, we might avoid this stage.  */
-
-
+	/* * Do another stage of compensated summation to get full the
+	   later algorithm, we might avoid this stage.  */
 	/* Load constants (not all needed at once).  */
-	lea	_sCoeffs + __svml_stan_data_internal(%rip), %rdi
-
-	addps	%xmmA, %xmm10
-
-	movl	$0x7f, %edx
-	movd	%edx, %xmm7
-	pshufd	$0, %xmm7, %xmm7
-	pand	%xmm7, %xmm6
-	movaps	%xmm6, %xmm4
-
 	/* * Simply combine the two parts of the reduced argument *
 	   since we can afford a few ulps in this case.  */
-	pslld	$2, %xmm4
-	paddd	%xmm6, %xmm4
-
-	movq	%xmm4, %rdx
-	movl	%edx, %r11d
-	shrq	$32, %rdx
-
-	pextrq	$1, %xmm4, %rsi
-	movl	%esi, %ecx
-	shrq	$32, %rsi
-
-	movups	(%rdi, %r11, 8), %xmmA	// A0, A1, A2, A3
-	movups	(%rdi, %rdx, 8), %xmm2	// B0, B1, B2, B3
-	movups	(%rdi, %rcx, 8), %xmm4	// C0, C1, C2, D3
-	movups	(%rdi, %rsi, 8), %xmm5	// D0, D1, C2, D3
-
-	movaps	%xmmA, %xmm6
-	punpckldq %xmm2, %xmmA	// A0, B0, A1, B2
-	punpckhdq %xmm2, %xmm6	// A2, B2, A3, B3
-
-	movaps	%xmm4, %xmm2
-	punpckldq %xmm5, %xmm4	// C0, D0, C1, D1
-	punpckhdq %xmm5, %xmm2	// C2, D2, C3, D3
-
-	movaps	%xmmA, %xmm5
-	punpcklqdq %xmm4, %xmmA	// A0, B0, C0, D1
-	punpckhqdq %xmm4, %xmm5	// A1, B1, C1, D1
-
-	movaps	%xmm6, %xmm4
-	punpcklqdq %xmm2, %xmm6	// A2, B2, C2, D2
-	punpckhqdq %xmm2, %xmm4	// A3, B3, C3, D4
-
+	// A0, A1, A2, A3
+	// B0, B1, B2, B3
+	// C0, C1, C2, D3
+	// D0, D1, C2, D3
+	// A0, B0, A1, B2
+	// A2, B2, A3, B3
+	// C0, D0, C1, D1
+	// C2, D2, C3, D3
+	// A0, B0, C0, D1
+	// A1, B1, C1, D1
+	// A2, B2, C2, D2
+	// A3, B3, C3, D4
 	// A, 4, 5, 6
-	movups	16(%rdi, %r11, 8), %xmm0	// A0, A1, A2, A3
-	movups	16(%rdi, %rdx, 8), %xmm2	// B0, B1, B2, B3
-	movups	16(%rdi, %rcx, 8), %xmm3	// C0, C1, C2, D3
-	movups	16(%rdi, %rsi, 8), %xmm7	// D0, D1, C2, D3
-
-	movaps	%xmm0, %xmm8
-	punpckldq %xmm2, %xmm0	// A0, B0, A1, B2
-	punpckhdq %xmm2, %xmm8	// A2, B2, A3, B3
-
-	movaps	%xmm3, %xmm2
-	punpckldq %xmm7, %xmm3	// C0, D0, C1, D1
-	punpckhdq %xmm7, %xmm2	// C2, D2, C3, D3
-
-	movaps	%xmm0, %xmm7
-	punpcklqdq %xmm3, %xmm0	// A0, B0, C0, D1
-	punpckhqdq %xmm3, %xmm7	// A1, B1, C1, D1
-
-	movaps	%xmm8, %xmm3
-	punpcklqdq %xmm2, %xmm8	// A2, B2, C2, D2
-	punpckhqdq %xmm2, %xmm3	// A3, B3, C3, D4
-
-	movq	32(%rdi, %r11, 8), %xmm13
-	movq	32(%rdi, %rdx, 8), %xmm12
-	movq	32(%rdi, %rcx, 8), %xmm9
-	movq	32(%rdi, %rsi, 8), %xmm15
-
-	punpckldq %xmm12, %xmm13
-	punpckldq %xmm15, %xmm9
-
-
-	movaps	%xmm13, %xmm15
-	punpcklqdq %xmm9, %xmm13
-	punpckhqdq %xmm9, %xmm15
-
+	// A0, A1, A2, A3
+	// B0, B1, B2, B3
+	// C0, C1, C2, D3
+	// D0, D1, C2, D3
+	// A0, B0, A1, B2
+	// A2, B2, A3, B3
+	// C0, D0, C1, D1
+	// C2, D2, C3, D3
+	// A0, B0, C0, D1
+	// A1, B1, C1, D1
+	// A2, B2, C2, D2
+	// A3, B3, C3, D4
 	/* *  Compute 2-part reciprocal component * Construct a separate
-	   reduced argument modulo pi near pi/2 multiples. * i.e. (pi/2
-	   - x) mod pi, simply by subtracting the reduced argument *
-	   from an accurate B_hi + B_lo = (128 - n) pi/128. Force the
-	   upper part * of this reduced argument to half-length to
 	   simplify accurate * reciprocation later on.  */
-	movdqa	%xmmA, %xmm9
-	subps	%xmm10, %xmm9
-	movdqa	%xmm14, %xmm2
-	andps	%xmm9, %xmm2
-	subps	%xmm2, %xmm9
-	addps	%xmm9, %xmm5
-
 	/* * Now compute an approximate reciprocal to mix into the
-	   computation * To avoid any danger of nonportability, force
-	   it to 12 bits, * though I suspect it always is anyway on
 	   current platforms.  */
-	rcpps	%xmm2, %xmm9
-	andps	%xmm14, %xmm9
-	mulps	%xmm9, %xmm2
-
 	/* * Get a better approximation to  1/sR_hi (not far short of an
 	   ulp) * using a third-order polynomial approximation.  */
-	movaps	%xmm9, %xmm14
-
-
 	/* * Now compute the error sEr where sRecip_hi = (1/R_hi) * (1 -
 	   sEr) * so that we can compensate for it.  */
-	movups	_sOne + __svml_stan_data_internal(%rip), %xmmA
-
-	movaps	%xmmA, %xmm11
-
-	subps	%xmm2, %xmm11
-	mulps	%xmm11, %xmm14
-	movaps	%xmm11, %xmm12
-	addps	%xmm9, %xmm14
-	mulps	%xmm11, %xmm11
-
-
 	/* *  Compensated sum of dominant component(s) * Compute C0_hi +
-	   C1_hi * Z + Recip_hi + Recip_lo = H4 (hi) + H9 (lo) * H1 =
 	   C1_hi * Z (exact since C1_hi is 1 bit).  */
-	mulps	%xmm10, %xmm7
-	addps	%xmm11, %xmmA
-
 	/* Finally, multiplex both parts so they are only used in
 	   cotangent path.  */
-	mulps	%xmm6, %xmm9
-
 	/* *  Higher polynomial terms * Stage 1 (with unlimited
 	   parallelism) * P3 = C1_lo + C2 * Z.  */
-	mulps	%xmm10, %xmm3
-	mulps	%xmmA, %xmm14
-	addps	%xmm3, %xmm8
-
 	/* * Multiply by sRecip_ok to make sR_lo relative to sR_hi *
-	   Since sR_lo is shifted off by about 12 bits, this is
 	   accurate enough.  */
-	mulps	%xmm14, %xmm5
-
-	/* * Now create a low reciprocal using * (Recip_hi + Er *
-	   Recip_ok) * (1 + sR_lo^2 - sR_lo) * =~= Recip_hi + Recip_ok
-	   * (Er + sR_lo^2 - sR_lo).  */
-	movaps	%xmm5, %xmmA
-	mulps	%xmm5, %xmm5
-	subps	%xmm12, %xmmA
-
+	/* * Now create a low reciprocal using * (Recip_hi + Er * * (Er
+	   + sR_lo^2 - sR_lo).  */
 	/* P4 = C3 + C4 * Z.  */
-	subps	%xmmA, %xmm5
-	mulps	%xmm10, %xmm15
-	mulps	%xmm5, %xmm14
-	addps	%xmm15, %xmm13
-	mulps	%xmm14, %xmm6
-
 	/* H2 = high(C0_hi + C1_hi * Z).  */
-	movdqa	%xmm4, %xmm14
-	addps	%xmm7, %xmm14
-
 	/* H4 = high(H2 + Recip_hi).  */
-	movaps	%xmm14, %xmm5
-
 	/* intermediate in compensated sum.  */
-	subps	%xmm14, %xmm4
-	addps	%xmm9, %xmm5
-
 	/* H5 = low(C0_hi + C1_hi * Z).  */
-	addps	%xmm4, %xmm7
-
 	/* intermediate in compensated sum.  */
-	subps	%xmm5, %xmm9
-
 	/* H7 = low(C0_hi + C1_hi * Z) + Recip_lo.  */
-	addps	%xmm7, %xmm6
-
 	/* H8 = low(H2 + Recip_hi).  */
-	addps	%xmm9, %xmm14
-
 	/* Z2 = Z^2.  */
-	movaps	%xmm10, %xmm7
-
 	/* Now H4 + H9 should be that part.  */
-	addps	%xmm14, %xmm6
-	mulps	%xmm10, %xmm7
-
 	/* P9 = trail(dominant part) + C0_lo.  */
-	addps	%xmm6, %xmm0
-
 	/* * Stage 2 (with unlimited parallelism) * P6 = C1_lo + C2 * Z
 	   + C3 * Z^2 + C4 * Z^3.  */
-	mulps	%xmm7, %xmm13
-	addps	%xmm13, %xmm8
-
 	/* Final accumulation of low part.  */
-	mulps	%xmm8, %xmm10
-
 	/* Merge results from main and large paths:.  */
-	movaps	96(%rsp), %xmm8
-	addps	%xmm10, %xmm0
-	addps	%xmm5, %xmm0
-
-	movups	_sAbsMask + __svml_stan_data_internal(%rip), %xmm12
-	movups	64(%rsp), %xmm15
-	andnps	%xmm15, %xmm12
-
-
-	andps	%xmm8, %xmm0
-	andnps	112(%rsp), %xmm8
-
+	movups	_sAbsMask + __svml_stan_data_internal(%rip), %xmm14
+	andnps	%xmm15, %xmm14
+	movaps	%xmm3, 0(%rsp)
+	andnps	%xmm0, %xmm3
+	lea	_sCoeffs + __svml_stan_data_internal(%rip), %rdx
+	movl	$0x7f, %eax
+	movd	%eax, %xmm0
+	pshufd	$0x0, %xmm0, %xmm0
+	movl	$0xffff, %eax
+	movd	%eax, %xmm8
+	pshufd	$0x0, %xmm8, %xmm8
+	lea	__svml_stan_reduction_data_internal(%rip), %rax
+	movaps	%xmm4, %xmm11
+	psrld	$0x17, %xmm4
+	movaps	%xmm4, %xmmA
+	paddd	%xmm4, %xmm4
+	paddd	%xmm4, %xmmA
+	pextrq	$0x1, %xmmA, %rdi
+	movq	%xmmA, %rsi
+	movl	%esi, %r8d
+	movl	%edi, %ecx
+	shrq	$0x20, %rsi
+	shrq	$0x20, %rdi
+	movq	0(%rax, %rdi, 4), %xmm4
+	movq	0(%rax, %rcx, 4), %xmmA
+	punpckldq %xmm4, %xmmA
+	movq	0(%rax, %rsi, 4), %xmm4
+	movq	0(%rax, %r8, 4), %xmm9
+	punpckldq %xmm4, %xmm9
+	movaps	%xmm9, %xmm4
+	punpcklqdq %xmmA, %xmm9
+	punpckhqdq %xmmA, %xmm4
+	movaps	%xmm9, %xmmA
+	pand	%xmm8, %xmm9
+	psrld	$0x10, %xmmA
+	movaps	%xmm9, %xmm6
+	psrlq	$0x20, %xmm9
+	movaps	_sRangeReductionVal_uisa + __svml_stan_data_internal(%rip), %xmm12
+	pand	%xmm11, %xmm12
+	movaps	_sRangeVal + __svml_stan_data_internal(%rip), %xmm2
+	por	%xmm2, %xmm12
+	paddd	%xmm11, %xmm2
+	movmskps %xmm2, %r9d
+	movaps	%xmm12, %xmm11
+	pand	%xmm8, %xmm12
+	movaps	%xmm12, %xmm2
+	psrlq	$0x20, %xmm12
+	movaps	%xmm12, %xmm7
+	pmuludq	%xmm9, %xmm12
+	psllq	$0x20, %xmm12
+	movaps	%xmm2, %xmm13
+	pmuludq	%xmm6, %xmm2
+	blendps	$0xaa, %xmm12, %xmm2
+	movaps	%xmm2, %xmm12
+	psrld	$0x10, %xmm2
+	pand	%xmm8, %xmm12
+	movaps	%xmm11, %xmm5
+	psrlq	$0x30, %xmm11
+	psrld	$0x10, %xmm5
+	pmuludq	%xmm5, %xmm6
+	pmuludq	%xmm11, %xmm9
+	psllq	$0x20, %xmm9
+	blendps	$0xaa, %xmm9, %xmm6
+	paddd	%xmm2, %xmm6
+	movaps	%xmmA, %xmm9
+	psrlq	$0x20, %xmmA
+	pmuludq	%xmm13, %xmm9
+	pmuludq	%xmm7, %xmmA
+	psllq	$0x20, %xmmA
+	blendps	$0xaa, %xmmA, %xmm9
+	pand	%xmm8, %xmm9
+	paddd	%xmm6, %xmm9
+	movaps	%xmm4, %xmmA
+	psrlq	$0x30, %xmm4
+	movaps	%xmm4, %xmm6
+	pmuludq	%xmm11, %xmm4
+	psllq	$0x20, %xmm4
+	pmuludq	%xmm7, %xmm6
+	psllq	$0x20, %xmm6
+	movaps	%xmmA, %xmm2
+	psrld	$0x10, %xmmA
+	pand	%xmm8, %xmm2
+	movaps	%xmmA, %xmm10
+	pmuludq	%xmm5, %xmmA
+	blendps	$0xaa, %xmm4, %xmmA
+	pmuludq	%xmm13, %xmm10
+	blendps	$0xaa, %xmm6, %xmm10
+	movaps	%xmm10, %xmm4
+	psrld	$0x10, %xmm10
+	pand	%xmm8, %xmm4
+	paddd	%xmm10, %xmmA
+	paddd	%xmmA, %xmm12
+	movaps	%xmm2, %xmmA
+	psrlq	$0x20, %xmm2
+	movaps	%xmm2, %xmm6
+	pmuludq	%xmm11, %xmm2
+	psllq	$0x20, %xmm2
+	pmuludq	%xmm7, %xmm6
+	psllq	$0x20, %xmm6
+	movaps	%xmmA, %xmm10
+	pmuludq	%xmm5, %xmmA
+	blendps	$0xaa, %xmm2, %xmmA
+	pmuludq	%xmm13, %xmm10
+	blendps	$0xaa, %xmm6, %xmm10
+	movaps	%xmm10, %xmm6
+	psrld	$0x10, %xmm10
+	pand	%xmm8, %xmm6
+	paddd	%xmm10, %xmmA
+	paddd	%xmmA, %xmm4
+	movd	8(%rax, %rdi, 4), %xmmA
+	movd	8(%rax, %rcx, 4), %xmm2
+	punpckldq %xmmA, %xmm2
+	movd	8(%rax, %r8, 4), %xmmA
+	movd	8(%rax, %rsi, 4), %xmm10
+	punpckldq %xmm10, %xmmA
+	punpcklqdq %xmm2, %xmmA
+	movaps	%xmmA, %xmm2
+	psrlq	$0x30, %xmmA
+	pmuludq	%xmmA, %xmm7
+	psllq	$0x20, %xmm7
+	pmuludq	%xmm11, %xmmA
+	psllq	$0x20, %xmmA
+	movaps	%xmm2, %xmm10
+	psrld	$0x10, %xmm2
+	pand	%xmm8, %xmm10
+	pmuludq	%xmm2, %xmm13
+	blendps	$0xaa, %xmm7, %xmm13
+	psrld	$0x10, %xmm13
+	pmuludq	%xmm5, %xmm2
+	blendps	$0xaa, %xmmA, %xmm2
+	paddd	%xmm13, %xmm2
+	paddd	%xmm2, %xmm6
+	pmuludq	%xmm10, %xmm5
+	psrlq	$0x20, %xmm10
+	pmuludq	%xmm11, %xmm10
+	psllq	$0x20, %xmm10
+	blendps	$0xaa, %xmm10, %xmm5
+	psrld	$0x10, %xmm5
+	paddd	%xmm6, %xmm5
+	movaps	%xmm5, %xmm11
+	psrld	$0x10, %xmm5
+	pand	%xmm8, %xmm11
+	paddd	%xmm4, %xmm5
+	movaps	%xmm5, %xmm4
+	psrld	$0x10, %xmm5
+	paddd	%xmm12, %xmm5
+	pslld	$0x10, %xmm4
+	paddd	%xmm11, %xmm4
+	pand	%xmm5, %xmm8
+	psrld	$0x10, %xmm5
+	paddd	%xmm9, %xmm5
+	pslld	$0x10, %xmm5
+	paddd	%xmm8, %xmm5
+	movaps	%xmm5, %xmm8
+	psrld	$0x9, %xmm5
+	por	_sOne + __svml_stan_data_internal(%rip), %xmm5
+	movl	$0x47400000, %eax
+	movd	%eax, %xmm11
+	pshufd	$0x0, %xmm11, %xmm11
+	movaps	%xmm5, %xmmA
+	addps	%xmm11, %xmm5
+	movaps	%xmm5, %xmm9
+	subps	%xmm11, %xmm5
+	subps	%xmm5, %xmmA
+	pand	%xmm0, %xmm9
+	movaps	%xmm9, %xmm0
+	pslld	$0x2, %xmm9
+	paddd	%xmm0, %xmm9
+	movq	%xmm9, %rax
+	movl	%eax, %edi
+	shrq	$0x20, %rax
+	pextrq	$0x1, %xmm9, %rsi
+	movl	%esi, %r8d
+	shrq	$0x20, %rsi
+	movups	16(%rdx, %rax, 8), %xmm0
+	movups	16(%rdx, %rdi, 8), %xmm11
+	movaps	%xmm11, %xmm9
+	punpckldq %xmm0, %xmm11
+	punpckhdq %xmm0, %xmm9
+	movups	16(%rdx, %rsi, 8), %xmm0
+	movups	16(%rdx, %r8, 8), %xmm6
+	movaps	%xmm6, %xmm12
+	punpckldq %xmm0, %xmm6
+	punpckhdq %xmm0, %xmm12
+	movaps	%xmm11, %xmm0
+	punpckhqdq %xmm6, %xmm11
+	punpcklqdq %xmm6, %xmm0
+	movl	$0xfffff000, %ecx
+	movd	%ecx, %xmm6
+	pshufd	$0x0, %xmm6, %xmm6
+	movl	$0x34000000, %ecx
+	movd	%ecx, %xmm2
+	pshufd	$0x0, %xmm2, %xmm2
+	movl	$0x1ff, %ecx
+	movd	%ecx, %xmm7
+	pshufd	$0x0, %xmm7, %xmm7
+	pand	%xmm8, %xmm7
+	pslld	$0xe, %xmm7
+	movaps	%xmm4, %xmm8
+	psrld	$0x12, %xmm4
+	por	%xmm4, %xmm7
+	por	%xmm2, %xmm7
+	subps	%xmm2, %xmm7
+	movaps	%xmmA, %xmm4
+	addps	%xmm7, %xmmA
+	subps	%xmmA, %xmm4
+	addps	%xmm4, %xmm7
+	movaps	%xmm6, %xmm4
+	andps	%xmmA, %xmm6
+	subps	%xmm6, %xmmA
+	movl	$0xb795777a, %ecx
+	movd	%ecx, %xmm2
+	pshufd	$0x0, %xmm2, %xmm2
+	movaps	%xmm6, %xmm13
+	mulps	%xmm2, %xmm6
+	mulps	%xmmA, %xmm2
+	movl	$0x40c91000, %ecx
+	movd	%ecx, %xmm5
+	pshufd	$0x0, %xmm5, %xmm5
+	mulps	%xmm5, %xmm13
+	mulps	%xmmA, %xmm5
+	addps	%xmm6, %xmm5
+	movl	$0x40c90fdb, %ecx
+	movd	%ecx, %xmmA
+	pshufd	$0x0, %xmmA, %xmmA
+	movl	$0x28800000, %ecx
+	movd	%ecx, %xmm6
+	pshufd	$0x0, %xmm6, %xmm6
+	movl	$0x3ffff, %ecx
+	movd	%ecx, %xmm10
+	pshufd	$0x0, %xmm10, %xmm10
+	pand	%xmm8, %xmm10
+	pslld	$0x5, %xmm10
+	por	%xmm6, %xmm10
+	subps	%xmm6, %xmm10
+	addps	%xmm7, %xmm10
+	mulps	%xmm10, %xmmA
+	addps	%xmm2, %xmmA
+	addps	%xmmA, %xmm5
+	addps	%xmm5, %xmm13
+	mulps	%xmm13, %xmm11
+	movups	0(%rdx, %rsi, 8), %xmm8
+	movups	0(%rdx, %r8, 8), %xmmA
+	movaps	%xmmA, %xmm6
+	punpckhdq %xmm8, %xmmA
+	punpckldq %xmm8, %xmm6
+	movups	0(%rdx, %rax, 8), %xmm8
+	movups	0(%rdx, %rdi, 8), %xmm2
+	movaps	%xmm2, %xmm7
+	punpckhdq %xmm8, %xmm2
+	punpckldq %xmm8, %xmm7
+	movaps	%xmm2, %xmm8
+	punpckhqdq %xmmA, %xmm2
+	punpcklqdq %xmmA, %xmm8
+	movaps	%xmm2, %xmmA
+	addps	%xmm11, %xmm2
+	subps	%xmm2, %xmmA
+	addps	%xmmA, %xmm11
+	movups	_sOne + __svml_stan_data_internal(%rip), %xmmA
+	movaps	%xmm7, %xmm5
+	punpcklqdq %xmm6, %xmm7
+	punpckhqdq %xmm6, %xmm5
+	subps	%xmm13, %xmm7
+	movaps	%xmm4, %xmm6
+	andps	%xmm7, %xmm4
+	subps	%xmm4, %xmm7
+	addps	%xmm7, %xmm5
+	rcpps	%xmm4, %xmm7
+	andps	%xmm6, %xmm7
+	mulps	%xmm7, %xmm4
+	movaps	%xmmA, %xmm6
+	subps	%xmm4, %xmmA
+	movaps	%xmmA, %xmm4
+	mulps	%xmmA, %xmmA
+	addps	%xmmA, %xmm6
+	movaps	%xmm7, %xmmA
+	mulps	%xmm4, %xmm7
+	addps	%xmmA, %xmm7
+	mulps	%xmm8, %xmmA
+	mulps	%xmm6, %xmm7
+	mulps	%xmm7, %xmm5
+	movaps	%xmm5, %xmm6
+	subps	%xmm4, %xmm5
+	mulps	%xmm6, %xmm6
+	subps	%xmm5, %xmm6
+	mulps	%xmm6, %xmm7
+	mulps	%xmm7, %xmm8
+	addps	%xmm11, %xmm8
+	movaps	%xmm2, %xmm4
+	addps	%xmmA, %xmm2
+	subps	%xmm2, %xmmA
+	addps	%xmmA, %xmm4
+	addps	%xmm4, %xmm8
+	addps	%xmm8, %xmm0
+	movq	32(%rdx, %rsi, 8), %xmm4
+	movq	32(%rdx, %r8, 8), %xmm8
+	punpckldq %xmm4, %xmm8
+	movq	32(%rdx, %rdi, 8), %xmm4
+	movq	32(%rdx, %rax, 8), %xmm11
+	punpckldq %xmm11, %xmm4
+	movaps	%xmm4, %xmm11
+	punpckhqdq %xmm8, %xmm4
+	punpcklqdq %xmm8, %xmm11
+	mulps	%xmm13, %xmm4
+	addps	%xmm4, %xmm11
+	movaps	%xmm13, %xmm4
+	mulps	%xmm13, %xmm13
+	mulps	%xmm13, %xmm11
+	movaps	%xmm9, %xmm8
+	punpckhqdq %xmm12, %xmm9
+	punpcklqdq %xmm12, %xmm8
+	mulps	%xmm4, %xmm9
+	addps	%xmm9, %xmm8
+	addps	%xmm11, %xmm8
+	mulps	%xmm8, %xmm4
+	addps	%xmm4, %xmm0
+	addps	%xmm2, %xmm0
+	andps	0(%rsp), %xmm0
 	/* And now the very final summation.  */
-
 	/* *  The end of implementation (LA with huge args reduction) *
 	   End of large arguments path (_HA_, _LA_ and _EP_).  */
-
-
-	orps	%xmm8, %xmm0
-	xorps	%xmm12, %xmm0
+	orps	%xmm3, %xmm0
+	xorps	%xmm14, %xmm0	/* N. */
 	/* Return to main vector processing path.  */
-L(AUX_BRANCH_RETURN):
-	testl	%eax, %eax
-
+	testl	%r9d, %r9d	/* N. */
 	/* Go to special inputs processing branch.  */
+	/* Restore registers * and exit the function.  */
+	/* Branch to process * special inputs.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
-
 
 	/* Restore registers * and exit the function.  */
 
-L(EXIT):
-	addq	$232, %rsp
 	cfi_def_cfa_offset (8)
 	ret
 	cfi_def_cfa_offset (240)
@@ -756,9 +623,10 @@ L(EXIT):
 	/* Branch to process * special inputs.  */
 
 L(SPECIAL_VALUES_BRANCH):
+	movl	%r8d, %eax
+	subq	$64, %rsp
 	movups	%xmm15, 32(%rsp)
 	movups	%xmm0, 48(%rsp)
-
 
 	xorl	%edx, %edx
 	movq	%r12, 16(%rsp)
@@ -803,8 +671,9 @@ L(SPECIAL_VALUES_LOOP):
 	cfi_offset (12, -224)
 	cfi_offset (13, -232)
 	cfi_offset (14, -240)
-
-
+L(EXIT):
+	addq	$64, %rsp
+	ret
 	/* Scalar math fucntion call * to process special input.  */
 
 L(SCALAR_MATH_CALL):

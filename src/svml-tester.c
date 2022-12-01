@@ -9,6 +9,7 @@
 #include "util/verbosity.h"
 
 #include "math-func-defs.h"
+#include "math-defs.h"
 
 #include "svml-func-defs.h"
 #include "svml-test-constants.h"
@@ -23,8 +24,13 @@
 #include "svml-dbl-state.h"
 #include "svml-flt-state.h"
 
+__thread uint64_t G_total_fallbacks0 = 0;
+__thread uint64_t G_total_fallbacks1 = 0;
+
 
 typedef struct ulp_hist {
+    uint64_t fallbacks0_;
+    uint64_t fallbacks1_;
     uint64_t ulps_[k_max_ulp + 1];
 } ulp_hist_t;
 
@@ -66,7 +72,9 @@ pop_tgroup(void) {
 static void
 create_ulp_hist(uint32_t     item_width,
                 uint8_t *    hist_bytes,
-                ulp_hist_t * hist_out) {
+                ulp_hist_t * hist_out,
+                uint64_t     fallbacks0,
+                uint64_t     fallbacks1) {
     uint32_t i, j;
     die_assert(item_width == 4 || item_width == 8);
     for (i = 0; i <= k_max_ulp; ++i) {
@@ -78,6 +86,8 @@ create_ulp_hist(uint32_t     item_width,
         }
         hist_out->ulps_[i] = sum;
     }
+    hist_out->fallbacks0_ = fallbacks0;
+    hist_out->fallbacks1_ = fallbacks1;
 }
 
 static void
@@ -85,15 +95,15 @@ test_op_out(test_svml_op_t const * op) {
     uint32_t i;
     uint64_t sum = 0, wsum = 0;
     double   sum_dbl, wsum_dbl;
-
     for (i = 0; i <= k_max_ulp; ++i) {
         sum += op->hist_.ulps_[i];
         wsum += op->hist_.ulps_[i] * i;
     }
     wsum_dbl = (double)wsum;
     sum_dbl  = (double)sum;
-    print("%12s -> %32s: %.4lf \n", op->op_.base_name_, op->op_.name_,
-          (wsum_dbl / sum_dbl));
+    print("%12s -> %32s: %.4lf (%lu / %lu / %lu)\n", op->op_.base_name_,
+          op->op_.name_, (wsum_dbl / sum_dbl), op->hist_.fallbacks0_,
+          op->hist_.fallbacks1_, sum);
     for (i = 0; i <= k_max_ulp; ++i) {
         uint64_t vi     = op->hist_.ulps_[i];
         double   vi_dbl = (double)vi;

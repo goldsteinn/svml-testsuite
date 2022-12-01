@@ -160,6 +160,7 @@ ENTRY(tanf_16_avx512_dev)
 
 	.p2align 4
 L(AUX_BRANCH):
+	INC_FALLBACK1
 	/* Get the (2^a / 2pi) mod 1 values from the table. * Because
 	   doesn't have I-type gather, we need a trivial cast.  */
 
@@ -507,6 +508,7 @@ L(SPECIAL_VALUES_LOOP):
 
 	/* Scalar math fucntion call to process special input.  */
 	movss	64(%rsp, %rbp, 4), %xmm0
+	INC_FALLBACK0
 	call	tanf@PLT
 
 	/* No good way to avoid the store-forwarding fault this will

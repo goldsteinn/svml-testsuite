@@ -11,11 +11,24 @@ typedef struct flt_state {
     uint32_t state2_;
 } flt_state_t;
 
+
+#define V0 0
+#if V0 == 1
+# define FPC(x) ((int32_t)(((1UL << 32) / 16) * (x)))
+#elif V0 == 2
+# define FPC(x) x
+#else
+# define FPC(x) ((x) | (int32_t)0xc6000000)
+#endif
+
 static void
 flt_state_init(flt_state_t * flt_state) {
     seed_rand(12345);
-    flt_state->cnt_ =
-        _mm512_set_epi32(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+
+    flt_state->cnt_ = _mm512_set_epi32(
+        FPC(0), FPC(1), FPC(2), FPC(3), FPC(4), FPC(5), FPC(6), FPC(7), FPC(8),
+        FPC(9), FPC(10), FPC(11), FPC(12), FPC(13), FPC(14), FPC(15));
+
     flt_state->loop_cnt_ = 0;
     flt_state->state2_   = 0;
 }
@@ -37,14 +50,31 @@ I_flt_state_is_done(flt_state_t * flt_state) {
 static bool
 flt_state_next(flt_state_t * flt_state, uint8_t * scratch) {
     uint32_t i;
-    __m512i  cnt, incr;
+    __m512i  cnt, incr, mask;
+
     if (I_flt_state_is_done(flt_state)) {
         return true;
     }
+#if V0 == 2
+    mask = _mm512_set_epi32(0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, -1);
+#else
+    (void)(mask);
+#endif
 
-    cnt  = flt_state->cnt_;
+    cnt = flt_state->cnt_;
+#if V0 == 1
+    incr = _mm512_set1_epi32(1);
+#elif V0 == 2
     incr = _mm512_set1_epi32(16);
+#else
+    incr = _mm512_set1_epi32(16);
+#endif
+
+
     for (i = 0; i < k_test_width; i += sizeof(__m512i)) {
+#if V0 == 2
+        cnt = _mm512_or_si512(cnt, mask);
+#endif
         __builtin_memcpy(scratch + i, &cnt, sizeof(__m512i));
         __builtin_memcpy(scratch + i + k_test_width, &cnt, sizeof(__m512i));
 

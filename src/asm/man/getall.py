@@ -1,4 +1,6 @@
 import os
+import sys
+
 import copy
 
 mans = {}
@@ -55,11 +57,12 @@ for line in open("funcs.txt"):
     mans.setdefault(key, {}).setdefault(func, fdef)
 
 defs = {}
+sortables = []
 for k0 in mans:
     for func in mans[k0]:
         fdef = mans[k0][func]
-        print(fdef)
-        continue
+        fdef = fdef.replace("float complex", "cfloat_t").replace(
+            "double complex", "cdouble_t").replace("complex", "cdouble_t")
 
         pos = fdef.find(func)
         ret = fdef[:pos]
@@ -71,9 +74,9 @@ for k0 in mans:
 
         ret = ret.lstrip().rstrip()
         types = [
-            "double complex", "float complex", "complex", "float", "double",
-            "long int", "long long int", "int", "void", "int *", "float *",
-            "double *", "const char *", "long double"
+            "cdouble_t", "cfloat_t", "float", "double", "long int",
+            "long long int", "int", "void", "int *", "float *", "double *",
+            "const char *", "long double"
         ]
 
         rest = rest.split(",")
@@ -95,8 +98,75 @@ for k0 in mans:
             best_matches.append(best_match.lstrip().rstrip())
             best_match = ""
         assert func not in defs
-
         defs[func] = [ret] + best_matches
+        sortables.append("-".join(defs[func] + ["ZZZ" + func]))
+sortables.sort()
+
+all_vnames = set()
+for s in sortables:
+    func = s.split("-")[-1][3:]
+    assert func in defs, func
+    types = defs[func]
+
+    assert len(types) != 0
+    #    print(func)
+    #    print(str(types))
+
+    bad = "die(\"Unimplemented!\");"
+    is_bad = False
+    mpfrs = []
+    for t in types:
+        if t == "float":
+            mpfrs.append("flt")
+        elif t == "double":
+            mpfrs.append("d")
+        elif t == "float *":
+            mpfrs.append("flt")
+        elif t == "long double":
+            mpfrs.append("ld")
+        elif t == "int" or t == "long" or t == "long int" or t == "long long int":
+            mpfrs.append("si")
+        elif t == "unsigned int" or t == "unsigned long" or t == "unsigned":
+            mpfrs.append("ui")
+        else:
+            is_bad = True
+    args = types[1:]
+    for i in range(0, len(args)):
+        args[i] = args[i] + " " + "arg{}".format(i)
+    func_def = "static {} run_mpfr_{}({})".format(types[0], func,
+                                                  ",".join(args))
+    content = []
+
+    if is_bad:
+        for i in range(0, len(args)):
+            content.append("(void)(arg{});".format(i))
+        content.append("die(\"Unimplemented!\");")
+    else:
+        cnts = {}
+        vnames = []
+        content = []
+        for i in range(0, len(types)):
+            vname = "G_{}_op{}_".format(mpfrs[i], "{}")
+            if vname not in cnts:
+                cnts[vname] = 0
+            cnt = cnts[vname]
+            cnts[vname] += 1
+            vname = vname.format(cnt)
+            all_vnames.add(vname)
+            vname = vname.format(cnt)
+            if i != 0:
+                content.append("mpfr_set_{} ({}, arg{}, MPFR_RNDN);".format(
+                    mpfrs[i], vname, i - 1))
+            vnames.append(vname)
+
+        f = func
+        if f[-1] == "f" and "float " in " ".join(types):
+            f = f[:-1]
+        content.append("mpfr_{} ({}, MPFR_RNDN);".format(f, ",".join(vnames)))
+        content.append("return mpfr_get_{} ({}, MPFR_RNDN);".format(mpfrs[0], vnames[0]))
+    print(func_def + "{" + "\n".join(content) + "}")
+
+print("\n".join(["extern __thread mpfr_t {};".format(x) for x in all_vnames]))
 sys.exit(0)
 ulps = {}
 

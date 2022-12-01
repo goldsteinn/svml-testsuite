@@ -1,7 +1,10 @@
 #ifndef SRC_D_MATH_FUNC_DEFS_H_
 #define SRC_D_MATH_FUNC_DEFS_H_
 
+#include <mpfr.h>
+
 #include "math-defs.h"
+#include "mpfr-func-defs.h"
 
 static double
 run_acos(double x) {
@@ -523,6 +526,7 @@ static double
 run_tan(double x) {
     return tan(x);
 }
+
 static float
 run_tanf(float x) {
     return tanf(x);
@@ -753,6 +757,3 @@ run_ctanhf(cfloat_t z) {
 }
 
 #endif
-
-
-

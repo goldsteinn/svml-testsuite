@@ -115,21 +115,21 @@ ENTRY(tanf_8_avx2_dev)
 	vfmadd213ps _sQ0 + __svml_stan_data_internal(%rip), %ymm2, %ymm3
 	vmulps	%ymm4, %ymm7, %ymm4
 	vpslld	$31, %ymm5, %ymm2
-	vandnps	%ymm0, %ymm6, %ymm0
+
+
+	vandnps	%ymm0, %ymm6, %ymm7
+
 	/* Exchanged numerator and denominator if necessary.  */
 	vblendvps %ymm2, %ymm3, %ymm4, %ymm6
-	vblendvps %ymm2, %ymm4, %ymm3, %ymm7
-
+	vblendvps %ymm2, %ymm4, %ymm3, %ymm3
 
 	/* Large values check.  */
-	vpcmpgtd _sRangeReductionVal + __svml_stan_data_internal(%rip), %ymmA, %ymm5
-	vpmovmskb %ymm5, %edx
+	vpcmpgtd _sRangeReductionVal + __svml_stan_data_internal(%rip), %ymmA, %ymm10
+	vpmovmskb %ymm10, %edx
 
 	/* Division.  */
-	vdivps	%ymm7, %ymm6, %ymm3
+	vdivps	%ymm3, %ymm6, %ymm3
 
-
-	/* * * End of main path (_LA_ and _EP_).  */
 
 
 	testl	%edx, %edx
@@ -137,16 +137,24 @@ ENTRY(tanf_8_avx2_dev)
 	/* Go to auxilary branch.  */
 	jne	L(AUX_BRANCH)
 
+	/* * * End of main path (_LA_ and _EP_).  */
+	vxorps	%ymm2, %ymm7, %ymm7
+
+
 	/* Sign setting.  */
-	vxorps	%ymm0, %ymm3, %ymm0
+	vxorps	%ymm7, %ymm3, %ymm0
+
+
 
 	ret
 
 
 L(AUX_BRANCH):
-
+	INC_FALLBACK1
 	/* Sign setting.  */
-
+    vpandn   %ymm3, %ymm10, %ymm3
+    vpxor   %ymm3, %ymm7, %ymm12
+    vmovaps %ymm0, %ymm11
 
 
 	/* Sign setting. NB for all special case values this is
@@ -158,7 +166,7 @@ L(AUX_BRANCH):
 
 	vpsrld	$23, %ymmA, %ymm6
 	vpaddd	%ymm6, %ymm6, %ymm2
-	vxorps	%ymm0, %ymm3, %ymm12
+
 	vpaddd	%ymm6, %ymm2, %ymm3
 
 	/* Collect indexes.  */
@@ -167,7 +175,6 @@ L(AUX_BRANCH):
 	shrq	$32, %rax
 
 	vmovq	(%rdx, %rcx, 4), %xmm4
-	vmovaps	%ymm5, %ymm10
 	vmovq	(%rdx, %rax, 4), %xmm5
 	vpunpckldq %xmm5, %xmm4, %xmm4
 
@@ -202,8 +209,6 @@ L(AUX_BRANCH):
 
 	vmovdqa	.FLT_15(%rip), %ymm9
 
-	/* Better to use `vpand` than `vpblendw`.  */
-	vmovdqu	.FLT_19(%rip), %ymm3
 
 	vpunpcklqdq %ymm2, %ymm4, %ymm7
 	vpunpckhqdq %ymm2, %ymm4, %ymm6
@@ -211,23 +216,22 @@ L(AUX_BRANCH):
 	/* * Break the P_xxx and m into 16-bit chunks ready for * the
 	   long multiplication via 16x16->32 multiplications.  */
 	vpandn	%ymmA, %ymm9, %ymm5
-	vmovaps	%ymm0, %ymm11
-	vpsrld	$16, %ymm5, %ymm0
+	vpsrld	$16, %ymm5, %ymm3
 
-	vpor	.FLT_18(%rip), %ymm0, %ymm4
-	vmovd	8(%rdx, %rcx, 4), %xmm0
+	vpor	.FLT_18(%rip), %ymm3, %ymm4
+	vmovd	8(%rdx, %rcx, 4), %xmm5
 	vmovd	8(%rdx, %rax, 4), %xmm2
-	vpunpckldq %xmm2, %xmm0, %xmm0
+	vpunpckldq %xmm2, %xmm5, %xmm3
 
 	vmovd	8(%rdx, %rsi, 4), %xmm2
 	vmovd	8(%rdx, %rdi, 4), %xmm5
 	vpunpckldq %xmm5, %xmm2, %xmm2
 
-	vpunpcklqdq %xmm2, %xmm0, %xmm13
+	vpunpcklqdq %xmm2, %xmm3, %xmm13
 
-	vmovd	8(%rdx, %r8, 4), %xmm0
+	vmovd	8(%rdx, %r8, 4), %xmm3
 	vmovd	8(%rdx, %r10, 4), %xmm5
-	vpunpckldq %xmm5, %xmm0, %xmm0
+	vpunpckldq %xmm5, %xmm3, %xmm0
 	/* * Also get the significand as an integer * NB: adding in the
 	   integer bit is wrong for denorms! * To make this work for
 	   denorms we should do something slightly different.  */
@@ -235,6 +239,8 @@ L(AUX_BRANCH):
 	vmovd	8(%rdx, %r11, 4), %xmm5
 	vpunpckldq %xmm5, %xmm2, %xmm2
 
+	/* Better to use `vpand` than `vpblendw`.  */
+	vmovdqu	.FLT_19(%rip), %ymm3
 
 	vpunpcklqdq %xmm2, %xmm0, %xmm0
 	vinsertf128 $1, %xmm0, %ymm13, %ymm13
@@ -585,11 +591,11 @@ L(AUX_BRANCH):
 
 	/* *  The end of implementation (LA with huge args reduction) *
 	   End of large arguments path (_HA_, _LA_ and _EP_).  */
-
-	vxorps	%ymm11, %ymm6, %ymm11
-
+    vpand   %ymm6, %ymm10, %ymm6
 	/* Merge results from main and large paths:.  */
-	vblendvps %ymm10, %ymm11, %ymm12, %ymm0
+    //   	vblendvps %ymm10, %ymm6, %ymm12, %ymm0
+    vpxor   %ymm6, %ymm12, %ymm0
+
 
 	/* Return to main vector processing path.  */
 
@@ -612,14 +618,11 @@ L(SPECIAL_VALUES_BRANCH):
 	movq	%rsp, %r13
 	andq	$-32, %rsp
 	addq	$-64, %rsp
-
-
 	/* Save all already computed inputs.  */
-	vmovups	%ymm0, (%rsp)
+	vmovdqa64 %ymm11, 32(%rsp)
 	/* Save origional input (ymm12 unchanged for all special values
 	   up to this point).  */
-	vmovups	%ymm12, 32(%rsp)
-
+	vmovups	%ymm0, (%rsp)
 	vzeroupper
 	/* eax has 1s where there was a special value that needs to be
 	   handled by a atanhf call.  */
@@ -638,6 +641,7 @@ L(SPECIAL_VALUES_LOOP):
 	tzcntl	%ebx, %ebp
 	/* Scalar math fucntion call to process special input.  */
 	movss	32(%rsp, %rbp, 4), %xmm0
+	INC_FALLBACK0
 	call	tanf@PLT
 
 	/* No good way to avoid the store-forwarding fault this will

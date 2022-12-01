@@ -183,6 +183,7 @@ typedef struct svml_op {
     char const * const      base_name_;
     svml_func_t const       svml_func_;
     ref_func_t const        ref_func_;
+    ref_func_t const        mpfr_ref_func_;
     uint32_t const          sz_;
     uint8_t const           fp_;
     uint8_t const           ulp_;
