@@ -11,8 +11,9 @@
 
 #include "util/common.h"
 #include "util/macro.h"
-
+#include "util/error-util.h"
 /* fd operations. */
+#define file_exists(...) CAT(I_file_exists, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define safe_open(...)   CAT(safe_open, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
 #define ensure_open(...) CAT(ensure_open, PP_NARG(__VA_ARGS__))(__VA_ARGS__)
 
@@ -26,7 +27,7 @@
 #define safe_fstat(fd, buf)  I_safe_fstat(fd, buf, I_ERR_ARGS)
 #define check_access(path, mode, ...)                                          \
     _check_access(path, mode, I_ERR_ARGS, __VA_ARGS__)
-#define safe_access(path, mode) I_safe_access(path, mode, I_ERR_ARGS)
+#define safe_access(path, mode) access(path, mode)
 #define safe_close(fd)          I_safe_close(fd, I_ERR_ARGS)
 #define ensure_close(fd)        I_ensure_close(fd, I_ERR_ARGS)
 
@@ -36,8 +37,9 @@
 #define check_open3(path, flags, mode, ...)                                    \
     I_check_open3(path, flags, mode, I_ERR_ARGS, __VA_ARGS__)
 
-#define safe_open2(path, flags)       I_safe_open2(path, flags, I_ERR_ARGS)
-#define safe_open3(path, flags, mode) I_safe_open3(path, flags, mode, I_ERR_ARGS)
+#define safe_open2(path, flags) I_safe_open2(path, flags, I_ERR_ARGS)
+#define safe_open3(path, flags, mode)                                          \
+    I_safe_open3(path, flags, mode, I_ERR_ARGS)
 
 #define ensure_open2(path, flags) I_ensure_open2(path, flags, I_ERR_ARGS)
 #define ensure_open3(path, flags, mode)                                        \
@@ -130,11 +132,7 @@ int32_t NONNULL(2, 3, 4) I_safe_fstat(int32_t fd,
                                       char const * restrict fn,
                                       char const * restrict func,
                                       uint32_t ln);
-int32_t NONNULL(1, 3, 4) I_safe_access(char const * restrict path,
-                                       int32_t mode,
-                                       char const * restrict fn,
-                                       char const * restrict func,
-                                       uint32_t ln);
+
 int32_t NONNULL(2, 3) I_safe_close(int32_t fd,
                                    char const * restrict fn,
                                    char const * restrict func,
@@ -213,7 +211,8 @@ static NONNULL(1, 2, 3) uint64_t
                       char const * restrict func,
                       uint32_t ln) {
     if (file_stats->st_size < 0) {
-        I_die(fn, func, ln, NULL, "Invalid File Size: %ld", file_stats->st_size);
+        I_die(fn, func, ln, NULL, "Invalid File Size: %ld",
+              file_stats->st_size);
     }
     return CAST(uint64_t, file_stats->st_size);
 }
@@ -276,5 +275,16 @@ NONNULL(1, 2, 3, 4, 5) I_safe_readfile(char const * restrict path,
     return ret;
 }
 
+
+
+static bool
+I_file_exists2(char const * path, int32_t mode) {
+    return access(path, mode) == 0;
+}
+
+static bool
+I_file_exists1(char const * path) {
+    return I_file_exists2(path, 0);
+}
 
 #endif

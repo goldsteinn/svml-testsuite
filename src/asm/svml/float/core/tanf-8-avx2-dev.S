@@ -87,9 +87,13 @@
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(tanf_8_avx2_dev)
-	/* * Legacy Code * Here HW FMA can be unavailable.  */
+// abf-off
 	vmovups	_sAbsMask + __svml_stan_data_internal(%rip), %ymm6
-	/* * * Main path (_LA_ and _EP_) * * Octant calculation.  */
+	/*
+	 * Main path (_LA_ and _EP_)
+	 *
+	 * Octant calculation
+	 */
 	vmovups	_sInvPi + __svml_stan_data_internal(%rip), %ymm5
 	vmovups	_sRShifter + __svml_stan_data_internal(%rip), %ymm2
 
@@ -114,6 +118,7 @@ ENTRY(tanf_8_avx2_dev)
 	vfmadd213ps _sP0 + __svml_stan_data_internal(%rip), %ymm2, %ymm4
 	vfmadd213ps _sQ0 + __svml_stan_data_internal(%rip), %ymm2, %ymm3
 	vmulps	%ymm4, %ymm7, %ymm4
+	/* Inversion mask and sign calculation.  */
 	vpslld	$31, %ymm5, %ymm2
 
 
@@ -130,38 +135,33 @@ ENTRY(tanf_8_avx2_dev)
 	/* Division.  */
 	vdivps	%ymm3, %ymm6, %ymm3
 
-
-
+	/*
+	 * End of main path (_LA_ and _EP_)
+	 */
 	testl	%edx, %edx
 
 	/* Go to auxilary branch.  */
 	jne	L(AUX_BRANCH)
 
-	/* * * End of main path (_LA_ and _EP_).  */
 	vxorps	%ymm2, %ymm7, %ymm7
-
-
 	/* Sign setting.  */
 	vxorps	%ymm7, %ymm3, %ymm0
-
-
-
 	ret
 
 
 L(AUX_BRANCH):
 	INC_FALLBACK1
-	/* Sign setting.  */
-    vpandn   %ymm3, %ymm10, %ymm3
-    vpxor   %ymm3, %ymm7, %ymm12
-    vmovaps %ymm0, %ymm11
-
-
 	/* Sign setting. NB for all special case values this is
 	   equivilent to the input (ymm0).  */
+	vpandn	%ymm3, %ymm10, %ymm3
+	vpxor	%ymm3, %ymm7, %ymm12
+	vmovaps	%ymm0, %ymm11
 
-	/* * Get the (2^a / 2pi) mod 1 values from the table. * Because
-	   doesn't have I-type gather, we need a trivial cast.  */
+
+	/*
+	 * Get the (2^a / 2pi) mod 1 values from the table.
+	 * Because doesn't have I-type gather, we need a trivial cast
+	 */
 	lea	__svml_stan_reduction_data_internal(%rip), %rdx
 
 	vpsrld	$23, %ymmA, %ymm6
@@ -213,8 +213,10 @@ L(AUX_BRANCH):
 	vpunpcklqdq %ymm2, %ymm4, %ymm7
 	vpunpckhqdq %ymm2, %ymm4, %ymm6
 
-	/* * Break the P_xxx and m into 16-bit chunks ready for * the
-	   long multiplication via 16x16->32 multiplications.  */
+	/*
+	 * Break the P_xxx and m into 16-bit chunks ready for
+	 * the long multiplication via 16x16->32 multiplications
+	 */
 	vpandn	%ymmA, %ymm9, %ymm5
 	vpsrld	$16, %ymm5, %ymm3
 
@@ -232,9 +234,11 @@ L(AUX_BRANCH):
 	vmovd	8(%rdx, %r8, 4), %xmm3
 	vmovd	8(%rdx, %r10, 4), %xmm5
 	vpunpckldq %xmm5, %xmm3, %xmm0
-	/* * Also get the significand as an integer * NB: adding in the
-	   integer bit is wrong for denorms! * To make this work for
-	   denorms we should do something slightly different.  */
+	/*
+	 * Also get the significand as an integer
+	 * NB: adding in the integer bit is wrong for denorms!
+	 * To make this work for denorms we should do something slightly different
+	 */
 	vmovd	8(%rdx, %r9, 4), %xmm2
 	vmovd	8(%rdx, %r11, 4), %xmm5
 	vpunpckldq %xmm5, %xmm2, %xmm2
@@ -254,9 +258,6 @@ L(AUX_BRANCH):
 	vpsrld	$16, %ymm6, %ymm0
 	vpmulld	%ymm2, %ymm5, %ymm2
 	vpand	%ymm3, %ymm2, %ymm15
-
-
-
 	vpsrld	$16, %ymm13, %ymm6
 	vpand	%ymm3, %ymm13, %ymm2
 	vpmulld	%ymm6, %ymm4, %ymm13
@@ -274,7 +275,6 @@ L(AUX_BRANCH):
 	vpand	%ymm3, %ymm2, %ymm8
 	vpsrld	$16, %ymm2, %ymm2
 	vpsrld	$16, %ymm13, %ymm6
-
 
 	/* Assemble reduced argument from the pieces.  */
 	vpand	%ymm3, %ymm13, %ymm13
@@ -297,44 +297,29 @@ L(AUX_BRANCH):
 	vpsrld	$16, %ymm0, %ymm2
 	vpand	%ymm3, %ymm0, %ymm0
 
-	/* * We want to incorporate the original sign now too. * Do it
-	   here for convenience in getting the right N value, * though
-	   we could wait right to the end if we were prepared * to
-	   modify the sign of N later too. * So get the appropriate
-	   sign mask now (or sooner).  */
-
-	// UNUSED - ZERO
-	// vpand   .FLT_20(%rip), %ymmA, %ymm3
-
 	vpaddd	%ymm5, %ymm15, %ymm7
 	vpaddd	%ymm13, %ymm8, %ymm8
 
-	/* * Now round at the 2^-8 bit position for reduction mod pi/2^7
-	   * instead of the original 2pi (but still with the same 2pi
-	   scaling). * Use a shifter of 2^15 + 2^14. * The N we get is
-	   our final version; it has an offset of * 2^8 because of the
-	   implicit integer bit, and anyway for negative * starting
-	   value it's a 2s complement thing. But we need to mask * off
-	   the exponent part anyway so it's fine.  */
+	/*
+	 * Now round at the 2^-8 bit position for reduction mod pi/2^7
+	 * instead of the original 2pi (but still with the same 2pi scaling).
+	 * Use a shifter of 2^15 + 2^14.
+	 * The N we get is our final version; it has an offset of
+	 * 2^8 because of the implicit integer bit, and anyway for negative
+	 * starting value it's a 2s complement thing. But we need to mask
+	 * off the exponent part anyway so it's fine.
+	 */
 	vpaddd	%ymm7, %ymm2, %ymm2
 	vmovups	.FLT_22(%rip), %ymm14
 
-
-	/* * Create floating-point high part, implicitly adding integer
-	   bit 1 * Incorporate overall sign at this stage too.  */
-
-	// UNUSED - ZERO
-	// vpxor   .FLT_21(%rip), %ymm3, %ymm15
-
-	/* * Create floating-point low and medium parts, respectively *
-	   lo_17, ... lo_0, 0, ..., 0 * hi_8, ... hi_0, lo_31, ...,
-	   lo_18 * then subtract off the implicitly added integer bits,
-	   * 2^-46 and 2^-23, respectively. * Put the original sign
-	   into all of them at this stage.  */
-
-
-	// UNUSED - ZERO
-	// vpxor   .FLT_23(%rip), %ymm3, %ymm7
+	/*
+	 * Create floating-point low and medium parts, respectively
+	 * lo_17, ... lo_0, 0, ..., 0
+	 * hi_8, ... hi_0, lo_31, ..., lo_18
+	 * then subtract off the implicitly added integer bits,
+	 * 2^-46 and 2^-23, respectively.
+	 * Put the original sign into all of them at this stage.
+	 */
 	vmovdqa	.FLT_23(%rip), %ymm7
 
 	vpslld	$16, %ymm2, %ymm2
@@ -345,26 +330,24 @@ L(AUX_BRANCH):
 	vpslld	$5, %ymm0, %ymm4
 	vmovdqa	_sOne + __svml_stan_data_internal(%rip), %ymm15
 	vpor	%ymm15, %ymm6, %ymm6
-	// UNUSED - ZERO
-	// vpxor   .FLT_25(%rip), %ymm3, %ymm15
 
 	vpand	.FLT_26(%rip), %ymm2, %ymm3
 	vpor	%ymm7, %ymm4, %ymm5
 	vmovdqa	.FLT_25(%rip), %ymm4
 
-	/* * If the magnitude of the input is <= 2^-20, then * just pass
-	   through the input, since no reduction will be needed and *
-	   the main path will only work accurately if the reduced
-	   argument is * about >= 2^-40 (which it is for all large pi
-	   multiples).  */
-
+	/*
+	 * If the magnitude of the input is <= 2^-20, then
+	 * just pass through the input, since no reduction will be needed and
+	 * the main path will only work accurately if the reduced argument is
+	 * about >= 2^-40 (which it is for all large pi multiples)
+	 */
 	vpslld	$14, %ymm3, %ymm2
 
-
-
-	/* * Now multiply those numbers all by 2 pi, reasonably
-	   accurately. * (RHi + RLo) * (pi_lead + pi_trail) ~= * RHi *
-	   pi_lead + (RHi * pi_trail + RLo * pi_lead).  */
+	/*
+	 * Now multiply those numbers all by 2 pi, reasonably accurately.
+	 * (RHi + RLo) * (pi_lead + pi_trail) ~=
+	 * RHi * pi_lead + (RHi * pi_trail + RLo * pi_lead)
+	 */
 	vmovups	.FLT_27(%rip), %ymm3
 	vaddps	%ymm14, %ymm6, %ymm13
 	vpor	%ymm8, %ymm2, %ymm2
@@ -392,13 +375,15 @@ L(AUX_BRANCH):
 	vfmadd132ps .FLT_28(%rip), %ymm0, %ymm2
 	vpcmpgtd %ymm4, %ymmA, %ymm5
 
-	/* * The output is _VRES_R (high) + _VRES_E (low), and the
-	   integer part is _VRES_IND * Set sRp2 = _VRES_R^2 and then
-	   resume the original code. * Argument reduction is now
-	   finished: x = n * pi/128 + r * where n = iIndex and r = sR
-	   (high) + sE (low). * But we have n modulo 256, needed for
-	   sin/cos with period 2pi * but we want it modulo 128 since
-	   tan has period pi.  */
+	/*
+	 * The output is _VRES_R (high) + _VRES_E (low), and the integer part is _VRES_IND
+	 * Set sRp2 = _VRES_R^2 and then resume the original code.
+	 * Argument reduction is now finished: x = n * pi/128 + r
+	 * where n = iIndex and r = sR (high) + sE (low).
+	 * But we have n modulo 256, needed for sin/cos with period 2pi
+	 * but we want it modulo 128 since tan has period pi.
+	 */
+
 	vpand	.FLT_32(%rip), %ymm13, %ymm0
 	vfmadd213ps %ymm2, %ymm3, %ymm8
 
@@ -415,8 +400,10 @@ L(AUX_BRANCH):
 
 
 
-	/* * Simply combine the two parts of the reduced argument *
-	   since we can afford a few ulps in this case.  */
+	/*
+	 * Simply combine the two parts of the reduced argument
+	 * since we can afford a few ulps in this case.
+	 */
 
 	/* Load constants (not all needed at once).  */
 	lea	_sCoeffs + __svml_stan_data_internal(%rip), %rdx
@@ -486,20 +473,23 @@ L(AUX_BRANCH):
 	vfmadd213ps %ymm3, %ymm6, %ymm7
 	vinserti128 $0x1, %xmm4, %ymm2, %ymm3
 
-
-	/* *  Compute 2-part reciprocal component * Construct a separate
-	   reduced argument modulo pi near pi/2 multiples. * i.e. (pi/2
-	   - x) mod pi, simply by subtracting the reduced argument *
-	   from an accurate B_hi + B_lo = (128 - n) pi/128. Force the
-	   upper part * of this reduced argument to half-length to
-	   simplify accurate * reciprocation later on.  */
+	/*
+	 *  Compute 2-part reciprocal component
+	 * Construct a separate reduced argument modulo pi near pi/2 multiples.
+	 * i.e. (pi/2 - x) mod pi, simply by subtracting the reduced argument
+	 * from an accurate B_hi + B_lo = (128 - n) pi/128. Force the upper part
+	 * of this reduced argument to half-length to simplify accurate
+	 * reciprocation later on.
+	 */
 	vsubps	%ymm6, %ymm13, %ymm2
 	vsubps	%ymm2, %ymm13, %ymm13
 	vsubps	%ymm6, %ymm13, %ymm13
 
-
-	/* *  Higher polynomial terms * Stage 1 (with unlimited
-	   parallelism) * P3 = C1_lo + C2 * Z.  */
+	/*
+	 *  Higher polynomial terms
+	 * Stage 1 (with unlimited parallelism)
+	 * P3 = C1_lo + C2 * Z
+	 */
 	vmovq	32(%rdx, %rax, 8), %xmm4
 	vpcmpgtd %ymmA, %ymm9, %ymm9
 	vmovmskps %ymm9, %eax
@@ -529,36 +519,43 @@ L(AUX_BRANCH):
 	vsubps	%ymm9, %ymm2, %ymm2
 
 	/* P4 = C3 + C4 * Z.  */
-
 	vaddps	%ymm2, %ymm0, %ymm0
 	vaddps	%ymm0, %ymm13, %ymm0
 
-	/* * Now compute an approximate reciprocal to mix into the
-	   computation * To avoid any danger of nonportability, force
-	   it to 12 bits, * though I suspect it always is anyway on
-	   current platforms.  */
+	/*
+	 * Now compute an approximate reciprocal to mix into the computation
+	 * To avoid any danger of nonportability, force it to 12 bits,
+	 * though I suspect it always is anyway on current platforms.
+	 */
 	vrcpps	%ymm9, %ymm13
 	vandps	%ymmA, %ymm13, %ymm13
 
-	/* * Now compute the error sEr where sRecip_hi = (1/R_hi) * (1 -
-	   sEr) * so that we can compensate for it.  */
+	/*
+	 * Now compute the error sEr where sRecip_hi = (1/R_hi) * (1 - sEr)
+	 * so that we can compensate for it.
+	 */
 	vfnmadd213ps %ymm15, %ymm13, %ymm9
 
-	/* * Get a better approximation to  1/sR_hi (not far short of an
-	   ulp) * using a third-order polynomial approximation.  */
+	/*
+	 * Get a better approximation to  1/sR_hi (not far short of an ulp)
+	 * using a third-order polynomial approximation
+	 */
 	vmovaps	%ymm13, %ymm2
 	vfmadd231ps %ymm9, %ymm9, %ymm15
 	vfmadd213ps %ymm13, %ymm9, %ymm2
 	vmulps	%ymm15, %ymm2, %ymmA
 
-	/* * Multiply by sRecip_ok to make sR_lo relative to sR_hi *
-	   Since sR_lo is shifted off by about 12 bits, this is
-	   accurate enough.  */
+	/*
+	 * Multiply by sRecip_ok to make sR_lo relative to sR_hi
+	 * Since sR_lo is shifted off by about 12 bits, this is accurate enough.
+	 */
 	vmulps	%ymmA, %ymm0, %ymm2
 
-	/* * Now create a low reciprocal using * (Recip_hi + Er *
-	   Recip_ok) * (1 + sR_lo^2 - sR_lo) * =~= Recip_hi + Recip_ok
-	   * (Er + sR_lo^2 - sR_lo).  */
+	/*
+	 * Now create a low reciprocal using
+	 * (Recip_hi + Er * Recip_ok) * (1 + sR_lo^2 - sR_lo)
+	 * =~= Recip_hi + Recip_ok * (Er + sR_lo^2 - sR_lo)
+	 */
 	vsubps	%ymm9, %ymm2, %ymm9
 	vfmsub213ps %ymm9, %ymm2, %ymm2
 	vmulps	%ymm2, %ymmA, %ymm9
@@ -576,8 +573,10 @@ L(AUX_BRANCH):
 	vmulps	%ymm6, %ymm6, %ymmA
 	vaddps	%ymm2, %ymm9, %ymm2
 
-	/* * Stage 2 (with unlimited parallelism) * P6 = C1_lo + C2 * Z
-	   + C3 * Z^2 + C4 * Z^3.  */
+	/*
+	 * Stage 2 (with unlimited parallelism)
+	 * P6 = C1_lo + C2 * Z + C3 * Z^2 + C4 * Z^3
+	 */
 	vfmadd213ps %ymm7, %ymm4, %ymmA
 
 	/* P9 = trail(dominant part) + C0_lo.  */
@@ -589,15 +588,13 @@ L(AUX_BRANCH):
 	/* And now the very final summation.  */
 	vaddps	%ymmA, %ymm3, %ymm6
 
-	/* *  The end of implementation (LA with huge args reduction) *
-	   End of large arguments path (_HA_, _LA_ and _EP_).  */
-    vpand   %ymm6, %ymm10, %ymm6
+	/*
+	 *  The end of implementation (LA with huge args reduction)
+	 * End of large arguments path (_HA_, _LA_ and _EP_)
+	 */
+	vpand	%ymm6, %ymm10, %ymm6
 	/* Merge results from main and large paths:.  */
-    //   	vblendvps %ymm10, %ymm6, %ymm12, %ymm0
-    vpxor   %ymm6, %ymm12, %ymm0
-
-
-	/* Return to main vector processing path.  */
+	vpxor	%ymm6, %ymm12, %ymm0
 
 
 	/* `al` has 0 at special values. If all 1s `incb al` will
@@ -607,60 +604,82 @@ L(AUX_BRANCH):
 	jne	L(SPECIAL_VALUES_BRANCH)
 	ret
 
-
 	/* Cold case. edx has 1s where there was a special value that
-	   needs to be handled by a atanhf call. Optimize for code size
-	   moreso than speed here.  */
+	   needs to be handled by a tanhf call. Optimize for code size
+	   more so than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
+
+	/* Use r13 to save/restore the stack. This allows us to use rbp
+	   as callee save register saving code size.  */
 	pushq	%r13
-	pushq	%rbp
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (r13, -16)
+	/* Need to callee save registers to preserve state across tanhf
+	   calls.  */
 	pushq	%rbx
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (rbx, -24)
+	pushq	%rbp
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (rbp, -32)
 	movq	%rsp, %r13
+	cfi_def_cfa_register (r13)
+
+	/* Align stack and make room for 2x ymm vectors.  */
 	andq	$-32, %rsp
 	addq	$-64, %rsp
-	/* Save all already computed inputs.  */
-	vmovdqa64 %ymm11, 32(%rsp)
-	/* Save origional input (ymm12 unchanged for all special values
-	   up to this point).  */
-	vmovups	%ymm0, (%rsp)
+
+
+	/* Save original input (ymm0 unchanged up to this point).  */
+	vmovaps	%ymm11, 32(%rsp)
+	vmovaps	%ymm0, (%rsp)
+
 	vzeroupper
+
 	/* eax has 1s where there was a special value that needs to be
-	   handled by a atanhf call.  */
+	   handled by a tanf call.  */
 	negb	%al
 	movzbl	%al, %ebx
-
 L(SPECIAL_VALUES_LOOP):
 
 	/* use rbp as index for special value that is saved across calls
-	   to atanhf. We technically don't need a callee save register
+	   to tanhf. We technically don't need a callee save register
 	   here as offset to rsp is always [0, 28] so we can restore
 	   rsp by realigning to 64. Essentially the tradeoff is 1 extra
 	   save/restore vs 2 extra instructions in the loop. Realigning
 	   also costs more code size.  */
 	xorl	%ebp, %ebp
 	tzcntl	%ebx, %ebp
-	/* Scalar math fucntion call to process special input.  */
-	movss	32(%rsp, %rbp, 4), %xmm0
-	INC_FALLBACK0
+
+	/* Scalar math function call to process special input.  */
+	vmovss	32(%rsp, %rbp, 4), %xmm0
 	call	tanf@PLT
 
 	/* No good way to avoid the store-forwarding fault this will
 	   cause on return. `lfence` avoids the SF fault but at greater
 	   cost as it serialized stack/callee save restoration.  */
-	movss	%xmm0, (%rsp, %rbp, 4)
+	vmovss	%xmm0, (%rsp, %rbp, 4)
 
 	blsrl	%ebx, %ebx
 	jnz	L(SPECIAL_VALUES_LOOP)
 
 
 
-	/* All results have been written to 32(%rsp).  */
+	/* All results have been written to (%rsp).  */
 	vmovups	(%rsp), %ymm0
 	/* Restore rsp.  */
 	movq	%r13, %rsp
-	popq	%rbx
+	cfi_def_cfa_register (rsp)
+	/* Restore callee save registers.  */
 	popq	%rbp
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (rbp)
+	popq	%rbx
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (rbp)
 	popq	%r13
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (r13)
 	ret
 END(tanf_8_avx2_dev)
 

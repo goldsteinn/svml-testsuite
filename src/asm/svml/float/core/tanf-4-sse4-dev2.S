@@ -82,47 +82,13 @@
 #define _sTwo	704
 #define _sCoeffs	720
 
-
-#define _sinvpi_uisa_	0
-#define _spi1_uisa_	16
-#define _spi2_uisa_	32
-#define _spi3_uisa_	48
-#define _spi2_ha_uisa_	64
-#define _spi3_ha_uisa_	80
-#define th_tbl_uisa_	96
-#define tl_tbl_uisa_	224
-#define _spc3_uisa_	352
-#define _spc5_uisa_	368
-#define _srangereductionval_uisa_	384
-#define _sinvpi_	400
-#define _ssignmask_	416
-#define _sabsmask_	432
-#define _srangeval_	448
-#define _srshifter_	464
-#define _sone_	480
-#define _srangereductionval_	496
-#define _spi1_	512
-#define _spi2_	528
-#define _spi3_	544
-#define _spi4_	560
-#define _spi1_fma_	576
-#define _spi2_fma_	592
-#define _spi3_fma_	608
-#define _sp0_	624
-#define _sp1_	640
-#define _sq0_	656
-#define _sq1_	672
-#define _sq2_	688
-#define _stwo_	704
-#define _scoeffs_	720
-
 #define xmmA	xmm1
-#define xmma	xmm1
+
 	.section .text.sse4, "ax", @progbits
 ENTRY(tanf_4_sse4_dev)
 	movaps	%xmm0, %xmm15
 	movups	_sAbsMask + __svml_stan_data_internal(%rip), %xmm4
-	/* * Legacy Code * Here HW FMA can be unavailable.  */
+
 	andps	%xmm0, %xmm4
 
 	movups	_sInvPi + __svml_stan_data_internal(%rip), %xmm0
@@ -131,11 +97,14 @@ ENTRY(tanf_4_sse4_dev)
 	/* Range reduction.  */
 	movaps	%xmm4, %xmmA
 
-	/* * * Main path (_LA_ and _EP_) * * Octant calculation.  */
+	/*
+	 * Main path (_LA_ and _EP_)
+	 *
+	 * Octant calculation
+	 */
 	movups	_sRShifter + __svml_stan_data_internal(%rip), %xmm3
 
 	/* Large values check.  */
-
 	movups	_sPI1 + __svml_stan_data_internal(%rip), %xmm5
 	movups	_sPI2 + __svml_stan_data_internal(%rip), %xmm6
 	addps	%xmm3, %xmm0
@@ -153,16 +122,14 @@ ENTRY(tanf_4_sse4_dev)
 	movups	_sQ2 + __svml_stan_data_internal(%rip), %xmm6
 
 
-
 	/* Rational approximation.  */
 	movups	_sP1 + __svml_stan_data_internal(%rip), %xmm5
+
+	/* Inversion mask and sign calculation.  */
 	pslld	$31, %xmm0
 	subps	%xmm7, %xmmA
 
 	/* Exchanged numerator and denominator if necessary.  */
-
-
-	/* Inversion mask and sign calculation.  */
 	subps	%xmm2, %xmmA
 	movaps	%xmmA, %xmm3
 	mulps	%xmmA, %xmmA
@@ -188,40 +155,47 @@ ENTRY(tanf_4_sse4_dev)
 	pcmpgtd	_sRangeReductionVal + __svml_stan_data_internal(%rip), %xmm3
 	pmovmskb %xmm3, %edx
 
-	/* * * End of main path (_LA_ and _EP_).  */
-
+	/*
+	 * End of main path (_LA_ and _EP_)
+	 */
 	testl	%edx, %edx
 	/* Go to auxilary branch.  */
 	jne	L(AUX_BRANCH)
 
+    /* Set sign.  */
 	andnps	%xmm15, %xmm4
 	pxor	%xmm4, %xmm0
-	/* Return from auxilary branch * for out of main path inputs.
-	 */
 	ret
 
 L(AUX_BRANCH):
-	INC_FALLBACK1
 	movaps	%xmm3, %xmm14
 	andnps	%xmm0, %xmm3
-	movl	$0xfffff000, %eax
-	movd	%eax, %xmm0
-	pshufd	$0x0, %xmm0, %xmm0
-	movl	$0xffff, %eax
-	movd	%eax, %xmm9
-	pshufd	$0x0, %xmm9, %xmm9
-	lea	__svml_stan_reduction_data_internal(%rip), %rax
-	movaps	%xmm4, %xmma
+
+	/*
+	 * Get the (2^a / 2pi) mod 1 values from the table.
+	 * Because doesn't have I-type gather, we need a trivial cast
+	 */
+	movaps	%xmm4, %xmmA
 	psrld	$0x17, %xmm4
+	/* Compute indices in xmm5 (need 4x scale).  */
 	movaps	%xmm4, %xmm5
 	paddd	%xmm4, %xmm4
 	paddd	%xmm4, %xmm5
+
 	pextrq	$0x1, %xmm5, %rcx
 	movq	%xmm5, %rdx
+	/* Broadcast to xmm9 before eax is in use. Use for 16x16 -> 32
+	   mults.  */
+	movl	$0xffff, %eax
+	movd	%eax, %xmm9
+
+	/* Move indices into GPRs.  */
 	movl	%edx, %esi
 	movl	%ecx, %edi
 	shrq	$0x20, %rdx
 	shrq	$0x20, %rcx
+
+	lea	__svml_stan_reduction_data_internal(%rip), %rax
 	movq	0(%rax, %rcx, 4), %xmm4
 	movq	0(%rax, %rdi, 4), %xmm5
 	punpckldq %xmm4, %xmm5
@@ -231,18 +205,29 @@ L(AUX_BRANCH):
 	movaps	%xmm4, %xmm2
 	punpcklqdq %xmm5, %xmm4
 	punpckhqdq %xmm5, %xmm2
+
+	pshufd	$0x0, %xmm9, %xmm9
+	/*
+	 * Break the P_xxx and m into 16-bit chunks ready for
+	 * the long multiplication via 16x16->32 multiplications
+	 */
 	movaps	%xmm4, %xmm5
 	pand	%xmm9, %xmm4
 	psrld	$0x10, %xmm5
 	movaps	%xmm4, %xmm6
 	psrlq	$0x20, %xmm4
-	movaps	_srangereductionval_uisa_ + __svml_stan_data_internal(%rip), %xmm8
-	pand	%xmma, %xmm8
-	movaps	_srangeval_ + __svml_stan_data_internal(%rip), %xmm7
+	movaps	_sRangeReductionVal_uisa + __svml_stan_data_internal(%rip), %xmm8
+	pand	%xmmA, %xmm8
+	/*
+	 * Also get the significand as an integer
+	 * NB: adding in the integer bit is wrong for denorms!
+	 * To make this work for denorms we should do something slightly different
+	 */
+	movaps	_sRangeVal + __svml_stan_data_internal(%rip), %xmm7
 	por	%xmm7, %xmm8
-	paddd	%xmma, %xmm7
+	paddd	%xmmA, %xmm7
 	movmskps %xmm7, %r8d
-	movaps	%xmm8, %xmma
+	movaps	%xmm8, %xmmA
 	pand	%xmm9, %xmm8
 	movaps	%xmm8, %xmm7
 	psrlq	$0x20, %xmm8
@@ -255,10 +240,10 @@ L(AUX_BRANCH):
 	movaps	%xmm7, %xmm8
 	psrld	$0x10, %xmm7
 	pand	%xmm9, %xmm8
-	movaps	%xmma, %xmm13
-	psrld	$0x10, %xmma
+	movaps	%xmmA, %xmm13
+	psrld	$0x10, %xmmA
 	psrlq	$0x30, %xmm13
-	pmuludq	%xmma, %xmm6
+	pmuludq	%xmmA, %xmm6
 	pmuludq	%xmm13, %xmm4
 	psllq	$0x20, %xmm4
 	blendps	$0xaa, %xmm4, %xmm6
@@ -275,7 +260,7 @@ L(AUX_BRANCH):
 	psrld	$0x10, %xmm2
 	movaps	%xmm11, %xmm6
 	pmuludq	%xmm2, %xmm11
-	pmuludq	%xmma, %xmm2
+	pmuludq	%xmmA, %xmm2
 	movaps	%xmm5, %xmm7
 	psrlq	$0x30, %xmm5
 	pand	%xmm9, %xmm7
@@ -295,7 +280,7 @@ L(AUX_BRANCH):
 	pmuludq	%xmm7, %xmm6
 	movaps	%xmm7, %xmm2
 	psrlq	$0x20, %xmm7
-	pmuludq	%xmma, %xmm2
+	pmuludq	%xmmA, %xmm2
 	movaps	%xmm12, %xmm10
 	pmuludq	%xmm7, %xmm12
 	psllq	$0x20, %xmm12
@@ -318,16 +303,16 @@ L(AUX_BRANCH):
 	movaps	%xmm12, %xmm2
 	psrld	$0x10, %xmm12
 	pmuludq	%xmm12, %xmm5
-	pmuludq	%xmma, %xmm12
+	pmuludq	%xmmA, %xmm12
 	movaps	%xmm2, %xmm6
 	psrlq	$0x30, %xmm2
 	pand	%xmm9, %xmm6
-	pmuludq	%xmm6, %xmma
+	pmuludq	%xmm6, %xmmA
 	psrlq	$0x20, %xmm6
 	pmuludq	%xmm13, %xmm6
 	psllq	$0x20, %xmm6
-	blendps	$0xaa, %xmm6, %xmma
-	psrld	$0x10, %xmma
+	blendps	$0xaa, %xmm6, %xmmA
+	psrld	$0x10, %xmmA
 	pmuludq	%xmm2, %xmm13
 	pmuludq	%xmm10, %xmm2
 	psllq	$0x20, %xmm2
@@ -337,88 +322,133 @@ L(AUX_BRANCH):
 	blendps	$0xaa, %xmm13, %xmm12
 	paddd	%xmm5, %xmm12
 	paddd	%xmm12, %xmm7
-	paddd	%xmm7, %xmma
-	movaps	%xmma, %xmm5
-	psrld	$0x10, %xmma
+	paddd	%xmm7, %xmmA
+	movaps	%xmmA, %xmm5
+	psrld	$0x10, %xmmA
 	pand	%xmm9, %xmm5
-	paddd	%xmm11, %xmma
-	movaps	%xmma, %xmm2
-	psrld	$0x10, %xmma
-	paddd	%xmm8, %xmma
+	paddd	%xmm11, %xmmA
+	movaps	%xmmA, %xmm2
+	psrld	$0x10, %xmmA
+	paddd	%xmm8, %xmmA
 	pslld	$0x10, %xmm2
 	paddd	%xmm5, %xmm2
-	pand	%xmma, %xmm9
-	psrld	$0x10, %xmma
-	paddd	%xmm4, %xmma
-	pslld	$0x10, %xmma
-	paddd	%xmm9, %xmma
-	movaps	%xmma, %xmm4
-	psrld	$0x9, %xmma
-	por	_sone_ + __svml_stan_data_internal(%rip), %xmma
+	pand	%xmmA, %xmm9
+	psrld	$0x10, %xmmA
+	paddd	%xmm4, %xmmA
+	pslld	$0x10, %xmmA
+	paddd	%xmm9, %xmmA
+	movaps	%xmmA, %xmm4
+	/* Assemble reduced argument from the pieces.  */
+	psrld	$0x9, %xmmA
+	/*
+	 * Create floating-point high part, implicitly adding integer bit 1
+	 * Incorporate overall sign at this stage too.
+	 */
+	por	_sOne + __svml_stan_data_internal(%rip), %xmmA
 	movl	$0x47400000, %eax
 	movd	%eax, %xmm9
 	pshufd	$0x0, %xmm9, %xmm9
-	movaps	%xmma, %xmm5
-	addps	%xmm9, %xmma
-	movaps	%xmma, %xmm6
-	subps	%xmm9, %xmma
-	subps	%xmma, %xmm5
+	movaps	%xmmA, %xmm5
+	addps	%xmm9, %xmmA
+	movaps	%xmmA, %xmm6
+	subps	%xmm9, %xmmA
+	/* Grab our final N value as an integer, appropriately masked
+	   mod 2^8.  */
+	subps	%xmmA, %xmm5
 	movaps	%xmm2, %xmm9
 	psrld	$0x12, %xmm2
 	movl	$0x1ff, %eax
-	movd	%eax, %xmma
-	pshufd	$0x0, %xmma, %xmma
-	pand	%xmm4, %xmma
-	pslld	$0xe, %xmma
-	por	%xmm2, %xmma
+	movd	%eax, %xmmA
+	pshufd	$0x0, %xmmA, %xmmA
+	pand	%xmm4, %xmmA
+	pslld	$0xe, %xmmA
+	por	%xmm2, %xmmA
 	movl	$0x34000000, %eax
 	movd	%eax, %xmm4
 	pshufd	$0x0, %xmm4, %xmm4
-	por	%xmm4, %xmma
-	subps	%xmm4, %xmma
+	por	%xmm4, %xmmA
+	subps	%xmm4, %xmmA
 	movaps	%xmm5, %xmm4
-	addps	%xmma, %xmm5
+	addps	%xmmA, %xmm5
+
+	/* Split RHi into 12-bit leading and trailing parts. */
+	movl	$0xfffff000, %eax
+	movd	%eax, %xmm0
+	pshufd	$0x0, %xmm0, %xmm0
 	subps	%xmm5, %xmm4
-	addps	%xmm4, %xmma
+	addps	%xmm4, %xmmA
 	movaps	%xmm0, %xmm4
 	andps	%xmm5, %xmm0
 	subps	%xmm0, %xmm5
+	/*
+	 * Do the multiplication as exact top part and "naive" low.
+	 */
 	movl	$0xb795777a, %eax
 	movd	%eax, %xmm2
 	pshufd	$0x0, %xmm2, %xmm2
 	movaps	%xmm2, %xmm8
 	mulps	%xmm5, %xmm2
+	movl	$0x3ffff, %eax
+	movd	%eax, %xmm10
+
 	mulps	%xmm0, %xmm8
 	movl	$0x28800000, %eax
 	movd	%eax, %xmm7
-	pshufd	$0x0, %xmm7, %xmm7
-	movl	$0x3ffff, %eax
-	movd	%eax, %xmm10
+
+
 	pshufd	$0x0, %xmm10, %xmm10
 	pand	%xmm9, %xmm10
 	pslld	$0x5, %xmm10
+
+	pshufd	$0x0, %xmm7, %xmm7
+
+	/*
+	 * If the magnitude of the input is <= 2^-20, then
+	 * just pass through the input, since no reduction will be needed and
+	 * the main path will only work accurately if the reduced argument is
+	 * about >= 2^-40 (which it is for all large pi multiples)
+	 */
 	por	%xmm7, %xmm10
 	subps	%xmm7, %xmm10
-	addps	%xmma, %xmm10
+	addps	%xmmA, %xmm10
+	/*
+	 * Now multiply those numbers all by 2 pi, reasonably accurately.
+	 * The top part uses 2pi = s2pi_lead + s2pi_trail, where
+	 * s2pi_lead has 12 significant bits.
+	 */
+
 	movl	$0x40c90fdb, %eax
 	movd	%eax, %xmm9
 	pshufd	$0x0, %xmm9, %xmm9
 	mulps	%xmm10, %xmm9
 	addps	%xmm2, %xmm9
+	/* Now add them up into 2 reasonably aligned pieces */
 	movl	$0x40c91000, %eax
-	movd	%eax, %xmma
-	pshufd	$0x0, %xmma, %xmma
-	mulps	%xmma, %xmm0
-	mulps	%xmm5, %xmma
-	addps	%xmm8, %xmma
-	addps	%xmm9, %xmma
-	addps	%xmma, %xmm0
-	lea	_scoeffs_ + __svml_stan_data_internal(%rip), %rax
+	movd	%eax, %xmmA
+	pshufd	$0x0, %xmmA, %xmmA
+	mulps	%xmmA, %xmm0
+	mulps	%xmm5, %xmmA
+	addps	%xmm8, %xmmA
+	addps	%xmm9, %xmmA
+	addps	%xmmA, %xmm0
+	lea	_sCoeffs + __svml_stan_data_internal(%rip), %rax
+	/*
+	 * The output is _VRES_R (high) + _VRES_E (low), and the integer part is _VRES_IND
+	 * Set sRp2 = _VRES_R^2 and then resume the original code.
+	 * Argument reduction is now finished: x = n * pi/128 + r
+	 * where n = iIndex and r = sR (high) + sE (low).
+	 * But we have n modulo 256, needed for sin/cos with period 2pi
+	 * but we want it modulo 128 since tan has period pi.
+	 */
 	movl	$0x7f, %ecx
 	movd	%ecx, %xmm9
 	pshufd	$0x0, %xmm9, %xmm9
 	pand	%xmm9, %xmm6
 	movaps	%xmm6, %xmm9
+	/*
+	 * Simply combine the two parts of the reduced argument
+	 * since we can afford a few ulps in this case.
+	 */
 	pslld	$0x2, %xmm6
 	paddd	%xmm9, %xmm6
 	movq	%xmm6, %rcx
@@ -428,40 +458,48 @@ L(AUX_BRANCH):
 	movl	%esi, %edi
 	shrq	$0x20, %rsi
 	movups	16(%rax, %rcx, 8), %xmm9
-	movups	16(%rax, %rdx, 8), %xmma
-	movaps	%xmma, %xmm5
-	punpckhdq %xmm9, %xmma
+	movups	16(%rax, %rdx, 8), %xmmA
+	movaps	%xmmA, %xmm5
+	punpckhdq %xmm9, %xmmA
 	punpckldq %xmm9, %xmm5
 	movups	16(%rax, %rsi, 8), %xmm9
 	movups	16(%rax, %rdi, 8), %xmm2
 	movaps	%xmm2, %xmm6
 	punpckhdq %xmm9, %xmm2
 	punpckldq %xmm9, %xmm6
-	movaps	%xmma, %xmm9
-	punpckhqdq %xmm2, %xmma
+	movaps	%xmmA, %xmm9
+	punpckhqdq %xmm2, %xmmA
 	punpcklqdq %xmm2, %xmm9
-	mulps	%xmm0, %xmma
-	addps	%xmma, %xmm9
-	movq	32(%rax, %rsi, 8), %xmma
+	/* *  Higher polynomial terms * Stage 1 (with unlimited
+	   parallelism) * P3 = C1_lo + C2 * Z.  */
+	mulps	%xmm0, %xmmA
+	addps	%xmmA, %xmm9
+	movq	32(%rax, %rsi, 8), %xmmA
 	movq	32(%rax, %rdi, 8), %xmm2
-	punpckldq %xmma, %xmm2
-	movq	32(%rax, %rcx, 8), %xmma
+	punpckldq %xmmA, %xmm2
+	movq	32(%rax, %rcx, 8), %xmmA
 	movq	32(%rax, %rdx, 8), %xmm8
-	punpckldq %xmma, %xmm8
-	movaps	%xmm8, %xmma
+	punpckldq %xmmA, %xmm8
+	movaps	%xmm8, %xmmA
 	punpckhqdq %xmm2, %xmm8
-	punpcklqdq %xmm2, %xmma
+	punpcklqdq %xmm2, %xmmA
 	mulps	%xmm0, %xmm8
-	addps	%xmm8, %xmma
+	addps	%xmm8, %xmmA
 	movaps	%xmm0, %xmm2
 	mulps	%xmm0, %xmm0
-	mulps	%xmm0, %xmma
-	addps	%xmma, %xmm9
+	/*
+	 *  Higher polynomial terms
+	 * Stage 1 (with unlimited parallelism)
+	 * P3 = C1_lo + C2 * Z
+	 */
+	mulps	%xmm0, %xmmA
+	addps	%xmmA, %xmm9
+	/* Final accumulation of low part.  */
 	mulps	%xmm2, %xmm9
 	movups	0(%rax, %rsi, 8), %xmm0
-	movups	0(%rax, %rdi, 8), %xmma
-	movaps	%xmma, %xmm8
-	punpckldq %xmm0, %xmma
+	movups	0(%rax, %rdi, 8), %xmmA
+	movaps	%xmmA, %xmm8
+	punpckldq %xmm0, %xmmA
 	punpckhdq %xmm0, %xmm8
 	movups	0(%rax, %rcx, 8), %xmm0
 	movups	0(%rax, %rdx, 8), %xmm7
@@ -469,34 +507,64 @@ L(AUX_BRANCH):
 	punpckldq %xmm0, %xmm7
 	punpckhdq %xmm0, %xmm10
 	movaps	%xmm7, %xmm0
-	punpcklqdq %xmma, %xmm7
-	punpckhqdq %xmma, %xmm0
+	punpcklqdq %xmmA, %xmm7
+	punpckhqdq %xmmA, %xmm0
+	/*
+	 *  Compute 2-part reciprocal component
+	 * Construct a separate reduced argument modulo pi near pi/2 multiples.
+	 * i.e. (pi/2 - x) mod pi, simply by subtracting the reduced argument
+	 * from an accurate B_hi + B_lo = (128 - n) pi/128. Force the upper part
+	 * of this reduced argument to half-length to simplify accurate
+	 * reciprocation later on.
+	 */
 	subps	%xmm2, %xmm7
-	movaps	%xmm4, %xmma
+	movaps	%xmm4, %xmmA
 	andps	%xmm7, %xmm4
 	subps	%xmm4, %xmm7
 	addps	%xmm7, %xmm0
+	/*
+	 * Now compute an approximate reciprocal to mix into the computation
+	 * To avoid any danger of nonportability, force it to 12 bits,
+	 * though I suspect it always is anyway on current platforms.
+	 */
 	rcpps	%xmm4, %xmm7
-	andps	%xmma, %xmm7
+	andps	%xmmA, %xmm7
 	mulps	%xmm7, %xmm4
-	movaps	%xmm10, %xmma
+	movaps	%xmm10, %xmmA
 	punpcklqdq %xmm8, %xmm10
-	punpckhqdq %xmm8, %xmma
+	punpckhqdq %xmm8, %xmmA
 	movaps	%xmm7, %xmm8
+	/* Finally, multiplex both parts so they are only used in
+	   cotangent path.  */
 	mulps	%xmm10, %xmm7
 	movaps	%xmm5, %xmm11
 	punpckhqdq %xmm6, %xmm5
 	punpcklqdq %xmm6, %xmm11
+	/*
+	 *  Compensated sum of dominant component(s)
+	 * Compute C0_hi + C1_hi * Z + Recip_hi + Recip_lo = H4 (hi) + H9 (lo)
+	 * H1 = C1_hi * Z (exact since C1_hi is 1 bit)
+	 */
 	mulps	%xmm2, %xmm5
-	movaps	%xmma, %xmm2
-	addps	%xmm5, %xmma
-	subps	%xmma, %xmm2
+	movaps	%xmmA, %xmm2
+	/* H2 = high(C0_hi + C1_hi * Z).  */
+	addps	%xmm5, %xmmA
+	/* H4 = high(H2 + Recip_hi).  */
+	/* intermediate in compensated sum.  */
+	subps	%xmmA, %xmm2
+	/* H5 = low(C0_hi + C1_hi * Z).  */
 	addps	%xmm2, %xmm5
-	movaps	%xmma, %xmm2
-	addps	%xmm7, %xmma
-	subps	%xmma, %xmm7
+	movaps	%xmmA, %xmm2
+	addps	%xmm7, %xmmA
+	/* intermediate in compensated sum.  */
+	subps	%xmmA, %xmm7
+	/* H8 = low(H2 + Recip_hi).  */
 	addps	%xmm7, %xmm2
-	movups	_sone_ + __svml_stan_data_internal(%rip), %xmm6
+	/*
+	 * Get a better approximation to  1/sR_hi (not far short of an ulp)
+	 * using a third-order polynomial approximation
+	 */
+	movups	_sOne + __svml_stan_data_internal(%rip), %xmm6
 	movaps	%xmm6, %xmm7
 	subps	%xmm4, %xmm6
 	movaps	%xmm6, %xmm4
@@ -506,107 +574,107 @@ L(AUX_BRANCH):
 	mulps	%xmm4, %xmm8
 	addps	%xmm6, %xmm8
 	mulps	%xmm7, %xmm8
+	/*
+	 * Multiply by sRecip_ok to make sR_lo relative to sR_hi
+	 * Since sR_lo is shifted off by about 12 bits, this is accurate enough.
+	 */
 	mulps	%xmm8, %xmm0
 	movaps	%xmm0, %xmm6
-	subps	%xmm4, %xmm0 // c - (a - b) = c - a + b
-	mulps	%xmm6, %xmm6 // (b - a) - c = -c - a + b
+	subps	%xmm4, %xmm0
+	/*
+	 * Now create a low reciprocal using
+	 * (Recip_hi + Er * Recip_ok) * (1 + sR_lo^2 - sR_lo)
+	 * =~= Recip_hi + Recip_ok * (Er + sR_lo^2 - sR_lo)
+	 */
+	mulps	%xmm6, %xmm6
+	/* P4 = C3 + C4 * Z.  */
 	subps	%xmm0, %xmm6
 	mulps	%xmm6, %xmm8
 	mulps	%xmm8, %xmm10
+	/* H7 = low(C0_hi + C1_hi * Z) + Recip_lo.  */
 	addps	%xmm5, %xmm10
+	/* Z2 = Z^2.  */
+	/* Now H4 + H9 should be that part.  */
 	addps	%xmm2, %xmm10
+	/* P9 = trail(dominant part) + C0_lo.  */
 	addps	%xmm10, %xmm11
+	/* Merge results from main and large paths:.  */
 	addps	%xmm9, %xmm11
-	addps	%xmma, %xmm11
+	addps	%xmmA, %xmm11
+	/* And now the very final summation.  */
 	andps	%xmm14, %xmm11
+
+	/*
+	 *  The end of implementation (LA with huge args reduction)
+	 * End of large arguments path (_HA_, _LA_ and _EP_)
+	 */
 	orps	%xmm3, %xmm11
-	movups	_sabsmask_ + __svml_stan_data_internal(%rip), %xmm3
+	movups	_sAbsMask + __svml_stan_data_internal(%rip), %xmm3
 	andnps	%xmm15, %xmm3
-	xorps	%xmm3, %xmm11	/* N. */
-	/* Go to special inputs processing branch.  */
+
+	/* Incorperate original sign.  */
+	xorps	%xmm3, %xmm11
+	/* Return to main vector processing path.  */
 	testl	%r8d, %r8d
+	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
 	movaps	%xmm11, %xmm0
+	ret
 
-	/* Restore registers * and exit the function.  */
 
+	/* Cold case. edx has 1s where there was a special value that
+	   needs to be handled by a tanhf call. Optimize for code size
+	   more so than speed here.  */
+L(SPECIAL_VALUES_BRANCH):
+
+	/* Stack coming in 16-byte aligned. Set 8-byte misaligned so on
+	   call entry will be 16-byte aligned.  */
+	subq	$56, %rsp
+	cfi_def_cfa_offset (64)
+	movups	%xmm11, 24(%rsp)
+	movups	%xmm15, 40(%rsp)
+
+	/* Use rbx/rbp for callee save registers as they get short
+	   encoding for many instructions (as compared with r12/r13).
+	 */
+	movq	%rbx, (%rsp)
+	cfi_offset (rbx, -64)
+	movq	%rbp, 8(%rsp)
+	cfi_offset (rbp, -56)
+	/* r8d has 1s where there was a special value that needs to be
+	   handled by a tanf call.  */
+	movl	%r8d, %ebx
+L(SPECIAL_VALUES_LOOP):
+
+	/* use rbp as index for special value that is saved across calls
+	   to tanhf. We technically don't need a callee save register
+	   here as offset to rsp is always [0, 12] so we can restore
+	   rsp by realigning to 64. Essentially the tradeoff is 1 extra
+	   save/restore vs 2 extra instructions in the loop.  */
+	xorl	%ebp, %ebp
+	bsfl	%ebx, %ebp
+
+	/* Scalar math fucntion call to process special input.  */
+	movss	40(%rsp, %rbp, 4), %xmm0
+	call	tanf@PLT
+	/* No good way to avoid the store-forwarding fault this will
+	   cause on return. `lfence` avoids the SF fault but at greater
+	   cost as it serialized stack/callee save restoration.  */
+	movss	%xmm0, 24(%rsp, %rbp, 4)
+
+	leal	-1(%rbx), %eax
+	andl	%eax, %ebx
+	jnz	L(SPECIAL_VALUES_LOOP)
+
+	/* All results have been written to 24(%rsp).  */
+	movups	24(%rsp), %xmm0
+	movq	(%rsp), %rbx
+	cfi_restore (rbx)
+	movq	8(%rsp), %rbp
+	cfi_restore (rbp)
+	addq	$56, %rsp
 	cfi_def_cfa_offset (8)
 	ret
-	cfi_def_cfa_offset (240)
-
-	/* Branch to process * special inputs.  */
-
-L(SPECIAL_VALUES_BRANCH):
-	movl	%r8d, %eax
-	subq	$64, %rsp
-	movups	%xmm15, 32(%rsp)
-	movups	%xmm11, 48(%rsp)
-
-	xorl	%edx, %edx
-	movq	%r12, 16(%rsp)
-	cfi_offset (12, -224)
-	movl	%edx, %r12d
-	movq	%r13, 8(%rsp)
-	cfi_offset (13, -232)
-	movl	%eax, %r13d
-	movq	%r14, (%rsp)
-	cfi_offset (14, -240)
-
-
-	/* Range mask * bits check.  */
-
-L(RANGEMASK_CHECK):
-	btl	%r12d, %r13d
-
-	/* Call scalar math function.  */
-	jc	L(SCALAR_MATH_CALL)
-
-
-	/* Special inputs * processing loop.  */
-
-L(SPECIAL_VALUES_LOOP):
-	incl	%r12d
-	cmpl	$4, %r12d
-
-	/* Check bits in range mask.  */
-	jl	L(RANGEMASK_CHECK)
-
-
-	movq	16(%rsp), %r12
-	cfi_restore (12)
-	movq	8(%rsp), %r13
-	cfi_restore (13)
-	movq	(%rsp), %r14
-	cfi_restore (14)
-	movups	48(%rsp), %xmm0
-
-	/* Go to exit.  */
-	jmp	L(EXIT)
-	cfi_offset (12, -224)
-	cfi_offset (13, -232)
-	cfi_offset (14, -240)
-L(EXIT):
-	addq	$64, %rsp
-	ret
-	/* Scalar math fucntion call * to process special input.  */
-
-L(SCALAR_MATH_CALL):
-	movl	%r12d, %r14d
-	movss	32(%rsp, %r14, 4), %xmm0
-	INC_FALLBACK0
-	call	tanf@PLT
-
-
-	movss	%xmm0, 48(%rsp, %r14, 4)
-
-	/* Process special inputs in loop.  */
-	jmp	L(SPECIAL_VALUES_LOOP)
-	cfi_restore (12)
-	cfi_restore (13)
-	cfi_restore (14)
-
-
-	/* Auxilary branch * for out of main path inputs.  */
 
 
 END(tanf_4_sse4_dev)

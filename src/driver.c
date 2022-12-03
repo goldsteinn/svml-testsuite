@@ -5,20 +5,22 @@
 #include "util/error-util.h"
 #include "util/memory-util.h"
 #include "util/verbosity.h"
+#include "util/string-util.h"
 
 #include "sys/sys-info.h"
 
+#include "mpfr-gen.h"
 #include "svml-benchmarker.h"
 #include "svml-def-helpers.h"
 #include "svml-defs.h"
 #include "svml-tester.h"
-
 
 static int32_t verbosity;
 
 static int32_t      test  = 0;
 static int32_t      bench = 0;
 static int32_t      list  = 0;
+static int32_t      gen   = 0;
 static char const * todo  = NULL;
 
 
@@ -38,6 +40,7 @@ static arg_option_t args[]     = {
     ADD_ARG(KindOption, Set, "--list", 0, &list, "todo=list"),
     ADD_ARG(KindOption, Set, "--test", 0, &test, "todo=test"),
     ADD_ARG(KindOption, Set, "--bench", 0, &bench, "todo=bench"),
+    ADD_ARG(KindOption, Set, "--gen", 0, &gen, "todo=gen"),
     ADD_ARG(KindOption,
                 Integer,
                 ("-c", "--cpu"),
@@ -145,6 +148,9 @@ main(int argc, char * argv[]) {
         }
         if (!strcasecmp(todo, "list")) {
             list = 1;
+        }
+        if (!strcasecmp(todo, "gen")) {
+            gen = 1;
         }
     }
     if (bench_todo != NULL) {
@@ -295,6 +301,16 @@ main(int argc, char * argv[]) {
     if (bench) {
         run_svml_benches(svml_ops_to_run, num_svml_ops_to_run, &bench_conf);
     }
+    if (gen) {
+        for (i = 0; i < num_svml_ops_to_run; ++i) {
+            enum { k_tmpbuf_size = 256 };
+            char tmpbuf[k_tmpbuf_size];
+            safe_snprintf(tmpbuf, k_tmpbuf_size, "mpfr-%s.zst",
+                          svml_ops_to_run[i].base_name_);
+            mpfr_gen_results(tmpbuf, &(svml_ops_to_run[i]));
+        }
+    }
+
 
     if (should_free) {
         safe_sfree(svml_ops_to_run_builder,

@@ -25,10 +25,6 @@ class ISAS(IntEnum):
     AVX512 = 8,
     ANY = 9,
 
-class Label():
-    def __init__(self, lbl, insns):
-        self.lbl = lbl
-        self.insns = insns
 
 def isa_str_to_enum(s):
     s = s.lower()
@@ -1145,12 +1141,12 @@ def build_op(op_info, pieces, i):
     elif pieces[i].lower().startswith("l(") and pieces[i].endswith(")"):
         vprint("Handling Label")
         assert opp.label_valid()
-        opt = Label(pieces[i][1:])
+        opt = Label(pieces[i])
         opt_info = opt.T()
         end = i + 1
     else:
         vprint("Handling Agen")
-        assert opp.agen_valid()
+        assert opp.agen_valid(), pieces
         op_cnt = 0
         cp_cnt = 0
         reg_start = None
@@ -3301,7 +3297,6 @@ def optimize(insn_lines):
     for insn_pieces in insn_lines:
         insn = Insn(i, insn_pieces[0], insn_pieces[1])
         insns.append(insn)
-        insn.pout()
         i += 1
 
     insns = set_return(insns)
@@ -3312,8 +3307,8 @@ def optimize(insn_lines):
     best_liveness = None
     best_fixed_map = None
     best_cost = None
-    iter_cnt = 1
-    strat_cnt = 1
+    iter_cnt = 5
+    strat_cnt = 4
     for strat in range(0, strat_cnt):
         for i in range(0, iter_cnt):
             insns = move_elim(insns)
@@ -3418,7 +3413,7 @@ def output(insns, comments, labels):
     print("\n".join(out))
 
 
-set_verbosity(1)
+set_verbosity(0)
 assert len(sys.argv) > 2
 G_isa_max = isa_str_to_enum(sys.argv[1])
 assert G_isa_max is not None

@@ -88,7 +88,7 @@
 ENTRY(tanf_4_sse4_dev)
 	movaps	%xmm0, %xmm15
 	movups	_sAbsMask + __svml_stan_data_internal(%rip), %xmm4
-	/* * Legacy Code * Here HW FMA can be unavailable.  */
+
 	andps	%xmm0, %xmm4
 
 	movups	_sInvPi + __svml_stan_data_internal(%rip), %xmm0
@@ -97,11 +97,15 @@ ENTRY(tanf_4_sse4_dev)
 	/* Range reduction.  */
 	movaps	%xmm4, %xmmA
 
-	/* * * Main path (_LA_ and _EP_) * * Octant calculation.  */
+	/*
+	 *
+	 * Main path (_LA_ and _EP_)
+	 *
+	 * Octant calculation
+	 */
 	movups	_sRShifter + __svml_stan_data_internal(%rip), %xmm3
 
-	/* Large values check.  */
-
+	/* Large values check */
 	movups	_sPI1 + __svml_stan_data_internal(%rip), %xmm5
 	movups	_sPI2 + __svml_stan_data_internal(%rip), %xmm6
 	addps	%xmm3, %xmm0
@@ -118,17 +122,17 @@ ENTRY(tanf_4_sse4_dev)
 	subps	%xmm6, %xmmA
 	movups	_sQ2 + __svml_stan_data_internal(%rip), %xmm6
 
-
-
 	/* Rational approximation.  */
 	movups	_sP1 + __svml_stan_data_internal(%rip), %xmm5
+
+    /* Inversion mask and sign calculation */
 	pslld	$31, %xmm0
 	subps	%xmm7, %xmmA
 
 	/* Exchanged numerator and denominator if necessary.  */
 
 
-	/* Inversion mask and sign calculation.  */
+    /* Exchanged numerator and denominator if necessary */
 	subps	%xmm2, %xmmA
 	movaps	%xmmA, %xmm3
 	mulps	%xmmA, %xmmA
@@ -151,6 +155,7 @@ ENTRY(tanf_4_sse4_dev)
 	pxor	%xmm3, %xmm0
 
 	movaps	%xmm4, %xmm3
+
 	pcmpgtd	_sRangeReductionVal + __svml_stan_data_internal(%rip), %xmm3
 	pmovmskb %xmm3, %edx
 
@@ -244,30 +249,30 @@ L(AUX_BRANCH):
     psrld	$16, %xmm12
 	movdqa	%xmm15, %xmm11
 	psrlq	$48, %xmm11
-    
+
 	pand	%xmm8, %xmm15
 	movdqa	%xmm15, %xmm10
 	psrlq	$32, %xmm10
-    
+
 	movdqa	%xmm15, %xmm13
 	movdqa	%xmm10, %xmm7
 
 	movdqa	%xmmA, %xmm0
     psrld	$16, %xmm0
-    
+
 	pand	%xmm8, %xmmA
 	movdqa	%xmmA, %xmm14
 	psrlq	$32, %xmm14
-    
+
 	movdqu	%xmm0, 128(%rsp)
 	movdqu	%xmmA, 144(%rsp)
 	movdqu	%xmm14, 176(%rsp)
 
 	pmuludq	%xmmA, %xmm13
-    
+
 	pmuludq	%xmm14, %xmm7
 	psllq	$32, %xmm7
-    
+
 	blendps	$0xaa, %xmm7, %xmm13
 	movdqa	%xmm15, %xmm7
 	movdqu	%xmm13, 208(%rsp)
@@ -276,7 +281,7 @@ L(AUX_BRANCH):
 	psrld	$16, %xmm0
 	movdqa	%xmm6, %xmmA
     psrlq	$48, %xmmA
-    
+
 	movdqu	%xmm0, %xmm9
 
 	movdqu	%xmmA, 192(%rsp)
@@ -292,7 +297,7 @@ L(AUX_BRANCH):
 	movdqa	%xmm15, %xmmA
     pmuludq	%xmm6, %xmmA
     pmuludq	%xmm12, %xmm6
-    
+
 	movdqa	%xmm10, %xmm14
 	pmuludq	%xmm5, %xmm14
 	psllq	$32, %xmm14

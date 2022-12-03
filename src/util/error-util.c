@@ -6,15 +6,7 @@
 #include "lib/commonlib.h"
 
 enum { I_STRERROR_BUFLEN = 512 };
-
-#define I_strerror(err, errbuf)                                                \
-    ({                                                                         \
-        if (strerror_r(err, errbuf, I_STRERROR_BUFLEN)) {                      \
-            memcpy_c(errbuf, "Error generating strerror msg!",                 \
-                     strlen("Error generating strerror msg!"));                \
-        }                                                                      \
-        (errbuf);                                                              \
-    })
+#define I_strerror(err, errbuf) strerror_r(err, errbuf, I_STRERROR_BUFLEN)
 
 EXIT_FUNC
 static void

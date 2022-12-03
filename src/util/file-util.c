@@ -30,7 +30,9 @@ I_safe_open3(char const * restrict path,
              char const * restrict fn,
              char const * restrict func,
              uint32_t ln) {
-    int32_t ret = open(path, mode);
+
+    int32_t ret = open(path, flags, mode);
+
     if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
         I_errdie(fn, func, ln, NULL, errno,
                  "Unable to open \"%s\" with [flags=0x%03x][mode=0x%03x])\n",
@@ -68,6 +70,7 @@ I_ensure_open3(char const * restrict path,
     int32_t fd;
     for (;;) {
         fd = I_safe_open3(path, flags, mode, fn, func, ln);
+
         if (LIKELY(fd >= 0)) {
             break;
         }
@@ -187,19 +190,6 @@ I_safe_fstat(int32_t fd,
     return ret;
 }
 
-int32_t
-I_safe_access(char const * restrict path,
-              int32_t mode,
-              char const * restrict fn,
-              char const * restrict func,
-              uint32_t ln) {
-    int32_t ret = access(path, mode);
-    if (UNLIKELY(ret < 0 && errno != EAGAIN)) {
-        I_errdie(fn, func, ln, NULL, errno,
-                 "Unable to access \"%s\" with [mode=0x%03x]\n", path, mode);
-    }
-    return ret;
-}
 
 int32_t
 I_safe_close(int32_t fd,
