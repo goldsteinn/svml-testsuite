@@ -49,45 +49,25 @@
 /* Offsets for data table __svml_stan_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define _sInvPI_uisa	0
-#define _sPI1_uisa	32
-#define _sPI2_uisa	64
-#define _sPI3_uisa	96
-#define _sPI2_ha_uisa	128
-#define _sPI3_ha_uisa	160
-#define Th_tbl_uisa	192
-#define Tl_tbl_uisa	320
-#define _sPC3_uisa	448
-#define _sPC5_uisa	480
-#define _sRangeReductionVal_uisa	512
-#define _sInvPi	544
-#define _sSignMask	576
-#define _sAbsMask	608
-#define _sRangeVal	640
-#define _sRShifter	672
-#define _sOne	704
-#define _sRangeReductionVal	736
-#define _sPI1	768
-#define _sPI2	800
-#define _sPI3	832
-#define _sPI4	864
-#define _sPI1_FMA	896
-#define _sPI2_FMA	928
-#define _sPI3_FMA	960
-#define _sP0	992
-#define _sP1	1024
-#define _sQ0	1056
-#define _sQ1	1088
-#define _sQ2	1120
-#define _sTwo	1152
-#define _sCoeffs	1184
+#define _sAbsMask	0
+#define _sInvPi	32
+#define _sRShifter	64
+#define _sPI1_FMA	96
+#define _sPI2_FMA	128
+#define _sPI3_FMA	160
+#define _sQ2	192
+#define _sP1	224
+#define _sQ1	256
+#define _sP0	288
+#define _sRangeReductionVal	320
+#define _sOne	352
+#define _sCoeffs	384
 
 #define xmmA	xmm1
 #define ymmA	ymm1
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(tanf_8_avx2_dev)
-// abf-off
 	vmovups	_sAbsMask + __svml_stan_data_internal(%rip), %ymm6
 	/*
 	 * Main path (_LA_ and _EP_)
@@ -115,8 +95,9 @@ ENTRY(tanf_8_avx2_dev)
 
 	vmulps	%ymm7, %ymm7, %ymm2
 	vfmadd213ps _sQ1 + __svml_stan_data_internal(%rip), %ymm2, %ymm3
-	vfmadd213ps _sP0 + __svml_stan_data_internal(%rip), %ymm2, %ymm4
-	vfmadd213ps _sQ0 + __svml_stan_data_internal(%rip), %ymm2, %ymm3
+	vmovups	_sP0 + __svml_stan_data_internal(%rip), %ymm8
+	vfmadd213ps %ymm8, %ymm2, %ymm4
+	vfmadd213ps %ymm8, %ymm2, %ymm3
 	vmulps	%ymm4, %ymm7, %ymm4
 	/* Inversion mask and sign calculation.  */
 	vpslld	$31, %ymm5, %ymm2
@@ -150,7 +131,6 @@ ENTRY(tanf_8_avx2_dev)
 
 
 L(AUX_BRANCH):
-	INC_FALLBACK1
 	/* Sign setting. NB for all special case values this is
 	   equivilent to the input (ymm0).  */
 	vpandn	%ymm3, %ymm10, %ymm3
@@ -686,222 +666,113 @@ END(tanf_8_avx2_dev)
 
 	.section .rodata, "a"
 	.align	32
-
 .FLT_15:
 	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000
 	.type	.FLT_15, @object
 	.size	.FLT_15, 32
-	.align	32
 
-.FLT_16:
-	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000
-	.type	.FLT_16, @object
-	.size	.FLT_16, 32
 	.align	32
-
-.FLT_17:
-	.long	0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff
-	.type	.FLT_17, @object
-	.size	.FLT_17, 32
-	.align	32
-
 .FLT_18:
 	.long	0x00000080, 0x00000080, 0x00000080, 0x00000080, 0x00000080, 0x00000080, 0x00000080, 0x00000080
 	.type	.FLT_18, @object
 	.size	.FLT_18, 32
-	.align	32
 
+	.align	32
 .FLT_19:
 	.long	0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff
 	.type	.FLT_19, @object
 	.size	.FLT_19, 32
-	.align	32
 
-.FLT_20:
-	.long	0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000
-	.type	.FLT_20, @object
-	.size	.FLT_20, 32
 	.align	32
-
-.FLT_21:
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.type	.FLT_21, @object
-	.size	.FLT_21, 32
-	.align	32
-
 .FLT_22:
 	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000, 0x47400000, 0x47400000, 0x47400000, 0x47400000
 	.type	.FLT_22, @object
 	.size	.FLT_22, 32
-	.align	32
 
+	.align	32
 .FLT_23:
 	.long	0x28800000, 0x28800000, 0x28800000, 0x28800000, 0x28800000, 0x28800000, 0x28800000, 0x28800000
 	.type	.FLT_23, @object
 	.size	.FLT_23, 32
-	.align	32
 
+	.align	32
 .FLT_24:
 	.long	0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff
 	.type	.FLT_24, @object
 	.size	.FLT_24, 32
-	.align	32
 
-.FLT_25:
-	.long	0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000
-	.type	.FLT_25, @object
-	.size	.FLT_25, 32
 	.align	32
-
 .FLT_26:
 	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
 	.type	.FLT_26, @object
 	.size	.FLT_26, 32
-	.align	32
 
+	.align	32
+.FLT_25:
+	.long	0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000, 0x34000000
+	.type	.FLT_25, @object
+	.size	.FLT_25, 32
+
+	.align	32
 .FLT_27:
 	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb
 	.type	.FLT_27, @object
 	.size	.FLT_27, 32
-	.align	32
 
-.FLT_28:
-	.long	0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e
-	.type	.FLT_28, @object
-	.size	.FLT_28, 32
 	.align	32
-
-.FLT_29:
-	.long	0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff
-	.type	.FLT_29, @object
-	.size	.FLT_29, 32
-	.align	32
-
-.FLT_30:
-	.long	0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000
-	.type	.FLT_30, @object
-	.size	.FLT_30, 32
-	.align	32
-
 .FLT_31:
 	.long	0x000000ff, 0x000000ff, 0x000000ff, 0x000000ff, 0x000000ff, 0x000000ff, 0x000000ff, 0x000000ff
 	.type	.FLT_31, @object
 	.size	.FLT_31, 32
-	.align	32
 
+	.align	32
+.FLT_30:
+	.long	0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000, 0x35800000
+	.type	.FLT_30, @object
+	.size	.FLT_30, 32
+
+	.align	32
+.FLT_28:
+	.long	0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e
+	.type	.FLT_28, @object
+	.size	.FLT_28, 32
+
+	.align	32
 .FLT_32:
 	.long	0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f
 	.type	.FLT_32, @object
 	.size	.FLT_32, 32
-	.align	32
 
+	.align	32
 .FLT_33:
 	.long	0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000
 	.type	.FLT_33, @object
 	.size	.FLT_33, 32
-	.align	32
-
 #ifdef __svml_stan_data_internal_typedef
 	typedef	unsigned int VUINT32;
 	typedef	struct{
-	__declspec (align(32))VUINT32 _sInvPI_uisa[8][1];
-	__declspec (align(32))VUINT32 _sPI1_uisa[8][1];
-	__declspec (align(32))VUINT32 _sPI2_uisa[8][1];
-	__declspec (align(32))VUINT32 _sPI3_uisa[8][1];
-	__declspec (align(32))VUINT32 _sPI2_ha_uisa[8][1];
-	__declspec (align(32))VUINT32 _sPI3_ha_uisa[8][1];
-	__declspec (align(32))VUINT32 Th_tbl_uisa[32][1];
-	__declspec (align(32))VUINT32 Tl_tbl_uisa[32][1];
-	__declspec (align(32))VUINT32 _sPC3_uisa[8][1];
-	__declspec (align(32))VUINT32 _sPC5_uisa[8][1];
-	__declspec (align(32))VUINT32 _sRangeReductionVal_uisa[8][1];
-	__declspec (align(32))VUINT32 _sInvPi[8][1];
-	__declspec (align(32))VUINT32 _sSignMask[8][1];
 	__declspec (align(32))VUINT32 _sAbsMask[8][1];
-	__declspec (align(32))VUINT32 _sRangeVal[8][1];
+	__declspec (align(32))VUINT32 _sInvPi[8][1];
 	__declspec (align(32))VUINT32 _sRShifter[8][1];
-	__declspec (align(32))VUINT32 _sOne[8][1];
-	__declspec (align(32))VUINT32 _sRangeReductionVal[8][1];
-	__declspec (align(32))VUINT32 _sPI1[8][1];
-	__declspec (align(32))VUINT32 _sPI2[8][1];
-	__declspec (align(32))VUINT32 _sPI3[8][1];
-	__declspec (align(32))VUINT32 _sPI4[8][1];
 	__declspec (align(32))VUINT32 _sPI1_FMA[8][1];
 	__declspec (align(32))VUINT32 _sPI2_FMA[8][1];
 	__declspec (align(32))VUINT32 _sPI3_FMA[8][1];
-	__declspec (align(32))VUINT32 _sP0[8][1];
-	__declspec (align(32))VUINT32 _sP1[8][1];
-	__declspec (align(32))VUINT32 _sQ0[8][1];
-	__declspec (align(32))VUINT32 _sQ1[8][1];
 	__declspec (align(32))VUINT32 _sQ2[8][1];
-	__declspec (align(32))VUINT32 _sTwo[8][1];
+	__declspec (align(32))VUINT32 _sP1[8][1];
+	__declspec (align(32))VUINT32 _sQ1[8][1];
+	__declspec (align(32))VUINT32 _sP0[8][1];
+	__declspec (align(32))VUINT32 _sRangeReductionVal[8][1];
+	__declspec (align(32))VUINT32 _sOne[8][1];
 	__declspec (align(32))VUINT32 _sCoeffs[128][10][1];
 	}__svml_stan_data_internal;
 #endif
 __svml_stan_data_internal:
-	/* UISA.  */
-	.long	0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983	/* _sInvPI_uisa */
-	.align	32
-	.long	0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda	/* _sPI1_uisa */
-	.align	32
-	.long	0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168	/* _sPI2_uisa */
-	.align	32
-	.long	0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5	/* _sPI3_uisa */
-	.align	32
-	.long	0x31a22000, 0x31a22000, 0x31a22000, 0x31a22000, 0x31a22000, 0x31a22000, 0x31a22000, 0x31a22000	/* _sPI2_ha_uisa */
-	.align	32
-	.long	0x2a34611a, 0x2a34611a, 0x2a34611a, 0x2a34611a, 0x2a34611a, 0x2a34611a, 0x2a34611a, 0x2a34611a	/* _sPI3_ha_uisa */
-	/* Th_tbl_uisa for i from 0 to 31 do printsingle(tan(i*Pi/32));.
-	 */
-	.align	32
-	.long	0x80000000, 0x3dc9b5dc, 0x3e4bafaf, 0x3e9b5042
-	.long	0x3ed413cd, 0x3f08d5b9, 0x3f2b0dc1, 0x3f521801
-	.long	0x3f800000, 0x3f9bf7ec, 0x3fbf90c7, 0x3fef789e
-	.long	0x401a827a, 0x4052facf, 0x40a0dff7, 0x41227363
-	.long	0xff7fffff, 0xc1227363, 0xc0a0dff7, 0xc052facf
-	.long	0xc01a827a, 0xbfef789e, 0xbfbf90c7, 0xbf9bf7ec
-	.long	0xbf800000, 0xbf521801, 0xbf2b0dc1, 0xbf08d5b9
-	.long	0xbed413cd, 0xbe9b5042, 0xbe4bafaf, 0xbdc9b5dc
-	/* Tl_tbl_uisa for i from 0 to 31 do
-	   printsingle(tan(i*Pi/32)-round(tan(i*Pi/32), SG, RN));.  */
-	.align	32
-	.long	0x80000000, 0x3145b2da, 0x2f2a62b0, 0xb22a39c2
-	.long	0xb1c0621a, 0xb25ef963, 0x32ab7f99, 0x32ae4285
-	.long	0x00000000, 0x33587608, 0x32169d18, 0xb30c3ec0
-	.long	0xb3cc0622, 0x3390600e, 0x331091dc, 0xb454a046
-	.long	0xf3800000, 0x3454a046, 0xb31091dc, 0xb390600e
-	.long	0x33cc0622, 0x330c3ec0, 0xb2169d18, 0xb3587608
-	.long	0x00000000, 0xb2ae4285, 0xb2ab7f99, 0x325ef963
-	.long	0x31c0621a, 0x322a39c2, 0xaf2a62b0, 0xb145b2da
-	.align	32
-	.long	0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6	/* _sPC3_uisa */
-	.align	32
-	.long	0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888	/* _sPC5_uisa */
-	.align	32
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000	/* _sRangeReductionVal_uisa */
-	.align	32
-	.long	0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983	/* _sInvPi */
-	.align	32
-	.long	0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000	/* _sSignMask */
 	.align	32
 	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF	/* _sAbsMask */
 	.align	32
-	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000	/* _sRangeVal */
+	.long	0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983	/* _sInvPi */
 	.align	32
 	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000	/* _sRShifter */
-	.align	32
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000	/* _sOne */
-	.align	32
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000	/* _sRangeVal */
-	.align	32
-	.long	0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000	/* _sPI1 */
-	.align	32
-	.long	0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000	/* _sPI2 */
-	.align	32
-	.long	0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000	/* _sPI3 */
-	.align	32
-	.long	0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A	/* _sPI4 */
-	// PI1, PI2, and PI3 when FMA is available
 	.align	32
 	.long	0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB	/* _sPI1_FMA */
 	.align	32
@@ -909,17 +780,17 @@ __svml_stan_data_internal:
 	.align	32
 	.long	0xA6F72CED, 0xA6F72CED, 0xA6F72CED, 0xA6F72CED, 0xA6F72CED, 0xA6F72CED, 0xA6F72CED, 0xA6F72CED	/* _sPI3_FMA */
 	.align	32
-	.long	0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC	/* _sP0 */
+	.long	0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B	/* _sQ2 */
 	.align	32
 	.long	0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4	/* _sP1 */
 	.align	32
-	.long	0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC	/* _sQ0 */
-	.align	32
 	.long	0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB	/* _sQ1 */
 	.align	32
-	.long	0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B	/* _sQ2 */
+	.long	0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC	/* _sP0 */
 	.align	32
-	.long	0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000, 0x40000000	/* _sTwo */
+	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000, 0x46010000	/* _sRangeReductionVal */
+	.align	32
+	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000	/* _sOne */
 	// _sCoeffs Breakpoint B = 0 * pi/128, function tan(B + x)
 	.align	32
 	.long	0x3FC90FDB	// B' = pi/2 - B (high single)
@@ -2210,7 +2081,7 @@ __svml_stan_data_internal:
 #ifdef __svml_stan_reduction_data_internal_typedef
 	typedef	unsigned int VUINT32;
 	typedef	struct{
-	__declspec (align(32))VUINT32 _sPtable[256][3][1];
+	__declspec (align(32))VUINT32 _sPtable[257][3][1];
 	}__svml_stan_reduction_data_internal;
 #endif
 __svml_stan_reduction_data_internal:

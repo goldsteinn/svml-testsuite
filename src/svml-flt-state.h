@@ -77,6 +77,7 @@ flt_state_next(flt_state_t * flt_state, uint8_t * scratch) {
 #endif
         __builtin_memcpy(scratch + i, &cnt, sizeof(__m512i));
         __builtin_memcpy(scratch + i + k_test_width, &cnt, sizeof(__m512i));
+        __builtin_memcpy(scratch + i + k_test_width * 2, &cnt, sizeof(__m512i));
 
         cnt = _mm512_add_epi32(cnt, incr);
     }
@@ -281,9 +282,11 @@ flt_state_next2(flt_state_t * flt_state,
     for (i = 0; i < k_test_width; i += sizeof(__m512i)) {
         __builtin_memcpy(scratch0 + i, &cnt0, sizeof(__m512i));
         __builtin_memcpy(scratch0 + i + k_test_width, &cnt0, sizeof(__m512i));
+        __builtin_memcpy(scratch0 + i + k_test_width * 2, &cnt0, sizeof(__m512i));
 
         __builtin_memcpy(scratch1 + i, &cnt1, sizeof(__m512i));
         __builtin_memcpy(scratch1 + i + k_test_width, &cnt1, sizeof(__m512i));
+        __builtin_memcpy(scratch1 + i + k_test_width * 2, &cnt1, sizeof(__m512i));
 
         cnt0 = _mm512_add_epi32(cnt0, incr0);
         cnt1 = _mm512_add_epi32(cnt1, incr1);

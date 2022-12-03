@@ -114,7 +114,7 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         k_snan              = 0x80, /* snan */
     };
 
-    __m512i  v0, v1, max_ulp;
+    __m512i  v0, v1, a0, a1, max_ulp;
     uint32_t i;
 
     max_ulp = vset1(max_ulp_i);
@@ -135,14 +135,20 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 #endif
 
-
+#if 0
         resneq = vcmplt(v0, vset1(0)) ^ vcmplt(v1, vset1(0));
         if (UNLIKELY(1 && resneq != 0)) {
             FP_EQ_FAIL();
             return false;
         }
-        tmpv0 = vand(v0, VABS_MSK);
-        tmpv1 = vand(v1, VABS_MSK);
+        a0 = v0;
+        a1 = v1;
+#else
+        a0 = vand(v0, VABS_MSK);
+        a1 = vand(v1, VABS_MSK);
+#endif
+
+        
         tmpv0 = v0;
         tmpv1 = v1;
 
@@ -156,15 +162,15 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 
 
-        res0 = vfpclass((vec_T)v0, k_negative);
-        res1 = vfpclass((vec_T)v1, k_negative);
+        res0 = vfpclass((vec_T)a0, k_negative);
+        res1 = vfpclass((vec_T)a1, k_negative);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;
         }
 
-        res0 = mask_vfpclass(resneq, (vec_T)v0, k_snan);
-        res1 = mask_vfpclass(resneq, (vec_T)v1, k_snan);
+        res0 = mask_vfpclass(resneq, (vec_T)a0, k_snan);
+        res1 = mask_vfpclass(resneq, (vec_T)a1, k_snan);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;
@@ -176,10 +182,8 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 
 
-        tmpv0 = vand(v0, VABS_MSK);
-        tmpv1 = vand(v1, VABS_MSK);
-        res0  = mask_vfpclass(resneq, (vec_T)tmpv0, k_positive_infinity);
-        res1  = mask_vfpclass(resneq, (vec_T)tmpv1, k_positive_infinity);
+        res0  = mask_vfpclass(resneq, (vec_T)a0, k_positive_infinity);
+        res1  = mask_vfpclass(resneq, (vec_T)a1, k_positive_infinity);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;

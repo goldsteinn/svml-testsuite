@@ -67,6 +67,7 @@ dbl_state_next(dbl_state_t * dbl_state, uint8_t * scratch) {
         }
         __builtin_memcpy(scratch, dbl_state->buf_, k_test_width);
         __builtin_memcpy(scratch + k_test_width, dbl_state->buf_, k_test_width);
+        __builtin_memcpy(scratch + k_test_width * 2, dbl_state->buf_, k_test_width);
 
         dbl_state->offset_ = offset + k_test_width;
         return false;
@@ -92,10 +93,12 @@ dbl_state_next2(dbl_state_t * dbl_state,
     buf0 = dbl_state->buf_ + offset;
     __builtin_memcpy(scratch0, buf0, k_test_width);
     __builtin_memcpy(scratch0 + k_test_width, buf0, k_test_width);
+    __builtin_memcpy(scratch0 + k_test_width * 2, buf0, k_test_width);
 
     buf1 = dbl_state->buf_ + k_dbl_arr_sz - offset - k_test_width;
     __builtin_memcpy(scratch1, buf1, k_test_width);
     __builtin_memcpy(scratch1 + k_test_width, buf1, k_test_width);
+    __builtin_memcpy(scratch1 + k_test_width * 2, buf1, k_test_width);
     state2 = dbl_state->state2_;
     switch (state2 % 8) {
         case 0: {

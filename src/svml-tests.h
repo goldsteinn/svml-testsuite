@@ -5,7 +5,7 @@
 
 #ifndef SVML_TESTS_COMMON
 # define SVML_TESTS_COMMON
-# define svml_T_T_runner(T, scratch_buf, runner)                               \
+# define svml_T_T_runner(T, scratch_buf, runner, offset)                       \
         {                                                                      \
             uint32_t I_tmp_i_;                                                 \
             G_total_fallbacks0 = fallback_stack[i][0];                         \
@@ -13,7 +13,8 @@
             for (I_tmp_i_ = 0; I_tmp_i_ < k_test_width;                        \
                  I_tmp_i_ += sizeof(T)) {                                      \
                 T I_tmp_arg_;                                                  \
-                __builtin_memcpy(&I_tmp_arg_, (scratch_buf) + I_tmp_i_,        \
+                __builtin_memcpy(&I_tmp_arg_,                                  \
+                                 (scratch_buf) + I_tmp_i_ + (offset),          \
                                  sizeof(T));                                   \
                 I_tmp_arg_ = runner(I_tmp_arg_);                               \
                 __builtin_memcpy((scratch_buf) + I_tmp_i_, &I_tmp_arg_,        \
@@ -23,7 +24,7 @@
             fallback_stack[i][1] = G_total_fallbacks1;                         \
         }
 
-# define svml_T_T_T_runner(T, scratch_buf0, scratch_buf1, runner)              \
+# define svml_T_T_T_runner(T, scratch_buf0, scratch_buf1, runner, offset)      \
         {                                                                      \
             uint32_t I_tmp_i_;                                                 \
             G_total_fallbacks0 = fallback_stack[i][0];                         \
@@ -31,9 +32,11 @@
             for (I_tmp_i_ = 0; I_tmp_i_ < k_test_width;                        \
                  I_tmp_i_ += sizeof(T)) {                                      \
                 T I_tmp_arg0_, I_tmp_arg1_, I_tmp_res_;                        \
-                __builtin_memcpy(&I_tmp_arg0_, (scratch_buf0) + I_tmp_i_,      \
+                __builtin_memcpy(&I_tmp_arg0_,                                 \
+                                 (scratch_buf0) + I_tmp_i_ + (offset),         \
                                  sizeof(T));                                   \
-                __builtin_memcpy(&I_tmp_arg1_, (scratch_buf1) + I_tmp_i_,      \
+                __builtin_memcpy(&I_tmp_arg1_,                                 \
+                                 (scratch_buf1) + I_tmp_i_ + (offset),         \
                                  sizeof(T));                                   \
                 I_tmp_res_ = runner(I_tmp_arg0_, I_tmp_arg1_);                 \
                 __builtin_memcpy((scratch_buf0) + I_tmp_i_, &I_tmp_res_,       \
@@ -43,7 +46,7 @@
             fallback_stack[i][1] = G_total_fallbacks1;                         \
         }
 
-# define svml_v_T_Tp_Tp_runner(T, scratch_buf0, scratch_buf1, runner)          \
+# define svml_v_T_Tp_Tp_runner(T, scratch_buf0, scratch_buf1, runner, offset)  \
         {                                                                      \
             uint32_t I_tmp_i_;                                                 \
             G_total_fallbacks0 = fallback_stack[i][0];                         \
@@ -51,7 +54,8 @@
             for (I_tmp_i_ = 0; I_tmp_i_ < k_test_width;                        \
                  I_tmp_i_ += sizeof(T)) {                                      \
                 T I_tmp_arg_, I_tmp_res0_, I_tmp_res1_;                        \
-                __builtin_memcpy(&I_tmp_arg_, (scratch_buf0) + I_tmp_i_,       \
+                __builtin_memcpy(&I_tmp_arg_,                                  \
+                                 (scratch_buf0) + I_tmp_i_ + (offset),         \
                                  sizeof(T));                                   \
                 runner(I_tmp_arg_, &I_tmp_res0_, &I_tmp_res1_);                \
                 __builtin_memcpy((scratch_buf0) + I_tmp_i_, &I_tmp_res0_,      \
@@ -107,7 +111,7 @@ CAT(svml_tester_, T_T)(void * arg) {
     uint32_t const         tidx    = tgroup->tidx_;
     test_svml_op_t * const ops     = tgroup->ops_;
     uint32_t               i, test_cnt;
-    uint8_t                scratch[k_test_width * (2 + WITH_DBG_OUTPUT)];
+    uint8_t                scratch[k_test_width * 3];
     uint8_t                hist[num_ops][64 * (k_max_ulp + 1)];
     T_state_t              test_state;
     uint64_t               fallback_stack[num_ops][2];
@@ -130,18 +134,15 @@ CAT(svml_tester_, T_T)(void * arg) {
         }
         i = 0;
 
-#if WITH_DBG_OUTPUT
-        __builtin_memcpy(scratch + k_test_width * 2, scratch + k_test_width,
-                         k_test_width);
-#endif
-        svml_T_T_runner(T, scratch, ops->op_.ref_func_.run_ref_T_T);
+        svml_T_T_runner(T, scratch, ops->op_.ref_func_.run_ref_T_T, k_test_width * 0);
+
         {
             uint32_t sz;
             i = 0;
             for (sz = ops[i].op_.sz_; i < num_ops && sz == 16; ++i) {
                 test_print_progress(ops[i].op_);
                 svml_T_T_runner(__m128i, scratch + k_test_width,
-                                ops[i].op_.svml_func_.run_f_f_16);
+                                ops[i].op_.svml_func_.run_f_f_16, k_test_width);
                 if (UNLIKELY(
                         !T_eq(scratch, ops[i].op_.ulp_, (uint8_t *)&hist[i]) ||
                         0)) {
@@ -169,7 +170,7 @@ CAT(svml_tester_, T_T)(void * arg) {
             for (sz = ops[i].op_.sz_; i < num_ops && sz == 32; ++i) {
                 test_print_progress(ops[i].op_);
                 svml_T_T_runner(__m256i, scratch + k_test_width,
-                                ops[i].op_.svml_func_.run_f_f_32);
+                                ops[i].op_.svml_func_.run_f_f_32, k_test_width);
                 die_assert(T_eq(scratch, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -177,7 +178,7 @@ CAT(svml_tester_, T_T)(void * arg) {
             for (; i < num_ops; ++i) {
                 test_print_progress(ops[i].op_);
                 svml_T_T_runner(__m512i, scratch + k_test_width,
-                                ops[i].op_.svml_func_.run_f_f_64);
+                                ops[i].op_.svml_func_.run_f_f_64, k_test_width);
                 die_assert(T_eq(scratch, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -203,8 +204,8 @@ CAT(svml_tester_, T_T_T)(void * arg) {
     uint32_t const         tidx    = tgroup->tidx_;
     test_svml_op_t * const ops     = tgroup->ops_;
     uint32_t               i, test_cnt;
-    uint8_t                scratch0[k_test_width * (2 + WITH_DBG_OUTPUT)];
-    uint8_t                scratch1[k_test_width * (2 + WITH_DBG_OUTPUT)];
+    uint8_t                scratch0[k_test_width * 3];
+    uint8_t                scratch1[k_test_width * 3];
     uint8_t                hist[num_ops][64 * (k_max_ulp + 1)];
     T_state_t              test_state;
     uint64_t               fallback_stack[num_ops][2];
@@ -226,14 +227,8 @@ CAT(svml_tester_, T_T_T)(void * arg) {
         }
 
         i = 0;
-#if WITH_DBG_OUTPUT
-        __builtin_memcpy(scratch0 + k_test_width * 2, scratch0 + k_test_width,
-                         k_test_width);
-        __builtin_memcpy(scratch1 + k_test_width * 2, scratch1 + k_test_width,
-                         k_test_width);
-#endif
         svml_T_T_T_runner(T, scratch0, scratch1,
-                          ops->op_.ref_func_.run_ref_T_T_T);
+                          ops->op_.ref_func_.run_ref_T_T_T, 0);
         {
             uint32_t sz;
             i = 0;
@@ -241,7 +236,7 @@ CAT(svml_tester_, T_T_T)(void * arg) {
                 test_print_progress(ops[i].op_);
                 svml_T_T_T_runner(__m128i, scratch0 + k_test_width,
                                   scratch1 + k_test_width,
-                                  ops[i].op_.svml_func_.run_f_f_f_16);
+                                  ops[i].op_.svml_func_.run_f_f_f_16, k_test_width);
                 die_assert(T_eq(scratch0, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -251,7 +246,7 @@ CAT(svml_tester_, T_T_T)(void * arg) {
                 test_print_progress(ops[i].op_);
                 svml_T_T_T_runner(__m256i, scratch0 + k_test_width,
                                   scratch1 + k_test_width,
-                                  ops[i].op_.svml_func_.run_f_f_f_32);
+                                  ops[i].op_.svml_func_.run_f_f_f_32, k_test_width);
                 die_assert(T_eq(scratch0, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -260,7 +255,7 @@ CAT(svml_tester_, T_T_T)(void * arg) {
                 test_print_progress(ops[i].op_);
                 svml_T_T_T_runner(__m512i, scratch0 + k_test_width,
                                   scratch1 + k_test_width,
-                                  ops[i].op_.svml_func_.run_f_f_f_64);
+                                  ops[i].op_.svml_func_.run_f_f_f_64, k_test_width);
                 die_assert(T_eq(scratch0, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -286,8 +281,8 @@ CAT(svml_tester_, v_T_Tp_Tp)(void * arg) {
     uint32_t const         tidx    = tgroup->tidx_;
     test_svml_op_t * const ops     = tgroup->ops_;
     uint32_t               i, test_cnt;
-    uint8_t                scratch[k_test_width * (2 + WITH_DBG_OUTPUT)];
-    uint8_t                scratch_res[k_test_width * 2];
+    uint8_t                scratch[k_test_width * 3];
+    uint8_t                scratch_res[k_test_width * 3];
     uint8_t                hist[num_ops][64 * (k_max_ulp + 1)];
     T_state_t              test_state;
     uint64_t               fallback_stack[num_ops][2];
@@ -310,12 +305,8 @@ CAT(svml_tester_, v_T_Tp_Tp)(void * arg) {
         }
 
         i = 0;
-#if WITH_DBG_OUTPUT
-        __builtin_memcpy(scratch + k_test_width * 2, scratch + k_test_width,
-                         k_test_width);
-#endif
         svml_v_T_Tp_Tp_runner(T, scratch, scratch_res,
-                              ops->op_.ref_func_.run_ref_v_T_Tp_Tp);
+                              ops->op_.ref_func_.run_ref_v_T_Tp_Tp, k_test_width);
         {
             uint32_t sz;
             i = 0;
@@ -323,7 +314,7 @@ CAT(svml_tester_, v_T_Tp_Tp)(void * arg) {
                 test_print_progress(ops[i].op_);
                 svml_v_T_Tp_Tp_runner(__m128i, scratch + k_test_width,
                                       scratch_res + k_test_width,
-                                      ops[i].op_.svml_func_.run_v_f_fp_fp_16);
+                                      ops[i].op_.svml_func_.run_v_f_fp_fp_16, k_test_width);
                 die_assert(T_eq(scratch, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -336,7 +327,7 @@ CAT(svml_tester_, v_T_Tp_Tp)(void * arg) {
                 test_print_progress(ops[i].op_);
                 svml_v_T_Tp_Tp_runner(__m256i, scratch + k_test_width,
                                       scratch_res + k_test_width,
-                                      ops[i].op_.svml_func_.run_v_f_fp_fp_32);
+                                      ops[i].op_.svml_func_.run_v_f_fp_fp_32, k_test_width);
                 die_assert(T_eq(scratch, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);
@@ -348,7 +339,7 @@ CAT(svml_tester_, v_T_Tp_Tp)(void * arg) {
                 test_print_progress(ops[i].op_);
                 svml_v_T_Tp_Tp_runner(__m512i, scratch + k_test_width,
                                       scratch_res + k_test_width,
-                                      ops[i].op_.svml_func_.run_v_f_fp_fp_64);
+                                      ops[i].op_.svml_func_.run_v_f_fp_fp_64, k_test_width);
                 die_assert(T_eq(scratch, ops[i].op_.ulp_, (uint8_t *)&hist[i]),
                            "Failed(%u): %s\n", ops[i].op_.ulp_,
                            ops[i].op_.name_);

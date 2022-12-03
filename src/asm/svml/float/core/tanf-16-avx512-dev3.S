@@ -50,13 +50,15 @@
 #define _sRangeVal	768
 
 #define zmmA	zmm1
-#define PRECISE	1
-
-
+#define HIGH_PRECISION	0
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(tanf_16_avx512_dev)
-	/* * * Main path * * start arg. reduction.  */
+	/*
+	 * Main path
+	 *
+	 * start arg. reduction
+	 */
 	vmovups	_sInvPI_uisa + __svml_stan_data_internal(%rip), %zmm10
 	vmovups	_sRShifter + __svml_stan_data_internal(%rip), %zmmA
 	vfmadd213ps {rn-sae}, %zmmA, %zmm0, %zmm10
@@ -76,9 +78,8 @@ ENTRY(tanf_16_avx512_dev)
 	vandps	%zmm7, %zmm0, %zmm11
 	vcmpps	$22, {sae}, %zmm6, %zmm11, %k6
 
-	/* * * End of main path.  */
-	/* Go to auxilary branch.  */
 	ktestd	%k6, %k6
+	/* Go to auxilary branch.  */
 	jne	L(AUX_BRANCH)
 
 
@@ -92,50 +93,33 @@ ENTRY(tanf_16_avx512_dev)
 	vpermt2ps Th_tbl_uisa + 64 + __svml_stan_data_internal(%rip), %zmm10, %zmm3
 	vfmadd213ps {rn-sae}, %zmm5, %zmm2, %zmm11
 
-	/* * Computer Denominator: * sDenominator - sDlow ~=
-	   1-(sTh+sTl)*(sP+sPlow).  */
+	/*
+	 * Computer Denominator:
+	 * sDenominator - sDlow ~= 1-(sTh+sTl)*(sP+sPlow)
+	 */
 	vmulps	{rn-sae}, %zmm11, %zmm3, %zmm7
 
 
 	vmovups	_sOne + __svml_stan_data_internal(%rip), %zmm5
 
-	/* * Compute Numerator: * sNumerator + sNlow ~=
-	   sTh+sTl+sP+sPlow.  */
-
+	/*
+	 * Compute Numerator:
+	 * sNumerator + sNlow ~= sTh+sTl+sP+sPlow
+	 */
 	vaddps	{rn-sae}, %zmm3, %zmm11, %zmm8
 	vsubps	{rn-sae}, %zmm7, %zmm5, %zmm9
 
-
-// abf-off
-	/* NB: Alot of the computation here is unnecissary if lower
-	   precision is acceptable. Lower precision version:
-	   ```
-	   vrcp14ps %zmm9, %zmm14
-	   vmulps	{rn-sae}, %zmm8, %zmm14, %zmm0
-	   vfmsub213ps {rn-sae}, %zmm8, %zmm0, %zmm9
-	   vfnmadd231ps {rn-sae}, %zmm9, %zmm14, %zmm0
-	   ```
-	   Running all floating point bit patterns using the lower
-       precision method gets the following distribution of ULP error:
-       0  : 0.856122 (3677017866)
-       1  : 0.141876 (609352916)
-       2  : 0.001948 (8368020  )
-       3  : 0.000053 (227690   )
-       4  : 0.000000 (804      )
-       Avg: 0.145932
-	   The higher precision version (current) gets the following ULP
-       error breakdown:
-       0  : 0.866810 (3722920128)
-       1  : 0.131973 (566817724)
-       2  : 0.001169 (5022802  )
-       3  : 0.000048 (205902   )
-       4  : 0.000000 (740      )
-       Avg: 0.134456
-       ULP error rates measured against scalar `tanf` so its not exact.
-	*/
-// abf-on
-
-#if 0
+#if HIGH_PRECISION == 1
+	/*
+	 * Highest Precision Version:
+     * error breakdown:
+     * 0  : 3722920128 (0.8668)
+     * 1  :  566817724 (0.1320)
+     * 2  :    5022802 (0.0012)
+     * 3  :     205902 (0.0000)
+     * 4  :        740 (0.0000)
+     * Avg: 0.134456
+	 */
 	vrcp14ps %zmm9, %zmm14
 	vsubps	{rn-sae}, %zmm3, %zmm8, %zmm2
 
@@ -150,23 +134,23 @@ ENTRY(tanf_16_avx512_dev)
 	vsubps	{rn-sae}, %zmm13, %zmm12, %zmm0
 
 	vfnmadd213ps {rn-sae}, %zmm15, %zmm14, %zmm0
-#elif 0
-	vrcp14ps %zmm9, %zmm14
-	vmulps	{rn-sae}, %zmm8, %zmm14, %zmm0
 #else
+	/*
+	 * Highest Precision Version:
+     * error breakdown:
+     * 0  : 3374033104 (0.7856)
+     * 1  :  893707604 (0.2081)
+     * 2  :   26831634 (0.0062)
+     * 3  :     393466 (0.0001)
+     * 4  :       1488 (0.0000)
+     * Avg: 0.2209
+	 */
 	vdivps	{rn-sae}, %zmm9, %zmm8, %zmm0
 #endif
 	ret
 
 	.p2align 4
 L(AUX_BRANCH):
-	INC_FALLBACK1
-	/* Get the (2^a / 2pi) mod 1 values from the table. * Because
-	   doesn't have I-type gather, we need a trivial cast.  */
-
-	/* * Break the P_xxx and m into 16-bit chunks ready for * the
-	   long multiplication via 16x16->32 multiplications.  */
-
 	/* Hoping k0 doesn't have some long dependency chain attached to
 	   it. NB: We really don't need all 1s, we only need the `k6`
 	   mask. Currently `vpgatherdps` does not optimize out any
@@ -186,6 +170,10 @@ L(AUX_BRANCH):
 	vpaddd	%zmm8, %zmm8, %zmmA
 	vpaddd	%zmmA, %zmm8, %zmm14
 
+	/*
+	 * Get the (2^a / 2pi) mod 1 values from the table.
+	 * Because doesn't have I-type gather, we need a trivial cast
+	 */
 	lea	__svml_stan_reduction_data_internal(%rip), %rax
 
 	/* Offset 4 gather has the most work based on it so we want it
@@ -196,24 +184,30 @@ L(AUX_BRANCH):
 	vgatherdps 4(%rax, %zmm14, 4), %zmm4{%k2}
 
 
-	/* * If the magnitude of the input is <= 2^-20, then * just pass
-	   through the input, since no reduction will be needed and *
-	   the main path will only work accurately if the reduced
-	   argument is * about >= 2^-40 (which it is for all large pi
-	   multiples).  */
-
+	/*
+	 * If the magnitude of the input is <= 2^-20, then
+	 * just pass through the input, since no reduction will be needed and
+	 * the main path will only work accurately if the reduced argument is
+	 * about >= 2^-40 (which it is for all large pi multiples)
+	 */
 	vmovups	_sRangeVal + __svml_stan_data_internal(%rip), %zmm9
 	/* `zmm11` already has sign bit cast off. We are checking if the
 	   exp was 0xff so we can just use unsigned comparison.  */
 	vpcmpd	$5, %zmm9, %zmm11, %k1
 
-	/* * Also get the significand as an integer * NB: adding in the
-	   integer bit is wrong for denorms! * To make this work for
-	   denorms we should do something slightly different.  */
+	/*
+	 * Also get the significand as an integer
+	 * NB: adding in the integer bit is wrong for denorms!
+	 * To make this work for denorms we should do something slightly different
+	 */
 
 	/* zmm9 = zmm9 & (~zmm11) | .FLT_14(%rip).  */
 	vpternlogd $0xae, .FLT_14(%rip){1to16}, %zmm11, %zmm9
 
+	/*
+	 * Break the P_xxx and m into 16-bit chunks ready for
+	 * the long multiplication via 16x16->32 multiplications
+	 */
 	movl	$0x55555555, %ecx
 	kmovd	%ecx, %k2
 
@@ -282,13 +276,15 @@ L(AUX_BRANCH):
 
 	vpaddd	%zmm14, %zmm12, %zmm8
 
-	/* * Now round at the 2^-8 bit position for reduction mod pi/2^7
-	   * instead of the original 2pi (but still with the same 2pi
-	   scaling). * Use a shifter of 2^15 + 2^14. * The N we get is
-	   our final version; it has an offset of * 2^8 because of the
-	   implicit integer bit, and anyway for negative * starting
-	   value it's a 2s complement thing. But we need to mask * off
-	   the exponent part anyway so it's fine.  */
+	/*
+	 * Now round at the 2^-8 bit position for reduction mod pi/2^7
+	 * instead of the original 2pi (but still with the same 2pi scaling).
+	 * Use a shifter of 2^15 + 2^14.
+	 * The N we get is our final version; it has an offset of
+	 * 2^8 because of the implicit integer bit, and anyway for negative
+	 * starting value it's a 2s complement thing. But we need to mask
+	 * off the exponent part anyway so it's fine.
+	 */
 
 	/* We already truncated zmm2.  */
 	vpaddd	%zmm6, %zmm2, %zmm13
@@ -310,28 +306,34 @@ L(AUX_BRANCH):
 	vmovaps	_sOne + __svml_stan_data_internal(%rip), %zmm9
 	vmovups	.FLT_18(%rip), %zmm14
 	vpsrld	$9, %zmm3, %zmm2
-	/* * We want to incorporate the original sign now too. * Do it
-	   here for convenience in getting the right N value, * though
-	   we could wait right to the end if we were prepared * to
-	   modify the sign of N later too. * So get the appropriate
-	   sign mask now (or sooner).  */
+
+	/*
+	 * We want to incorporate the original sign now too.
+	 * Do it here for convenience in getting the right N value,
+	 * though we could wait right to the end if we were prepared
+	 * to modify the sign of N later too.
+	 * So get the appropriate sign mask now (or sooner).
+	 */
 	vpandnd	%zmm0, %zmm7, %zmmA
 	vpslld	$5, %zmm11, %zmm13
 
-
-	/* * Create floating-point high part, implicitly adding integer
-	   bit 1 * Incorporate overall sign at this stage too.  */
-
+	/*
+	 * Create floating-point high part, implicitly adding integer bit 1
+	 * Incorporate overall sign at this stage too.
+	 */
 	vpternlogd $0xfe, %zmm9, %zmmA, %zmm2
 	vaddps	{rn-sae}, %zmm2, %zmm14, %zmm12
 	vsubps	{rn-sae}, %zmm14, %zmm12, %zmm15
 	vsubps	{rn-sae}, %zmm15, %zmm2, %zmm2
 
-	/* * Create floating-point low and medium parts, respectively *
-	   lo_17, ... lo_0, 0, ..., 0 * hi_8, ... hi_0, lo_31, ...,
-	   lo_18 * then subtract off the implicitly added integer bits,
-	   * 2^-46 and 2^-23, respectively. * Put the original sign
-	   into all of them at this stage.  */
+	/*
+	 * Create floating-point low and medium parts, respectively
+	 * lo_17, ... lo_0, 0, ..., 0
+	 * hi_8, ... hi_0, lo_31, ..., lo_18
+	 * then subtract off the implicitly added integer bits,
+	 * 2^-46 and 2^-23, respectively.
+	 * Put the original sign into all of them at this stage.
+	 */
 
 	/* Save code size by microfusing vpord .FLT_20, %zmmA. This
 	   increase the dependency chain on computing `zmm13` (we could
@@ -360,10 +362,10 @@ L(AUX_BRANCH):
 	   later on.  */
 	vaddps	{rn-sae}, %zmm2, %zmm11, %zmm15
 
-	/* * The output is _VRES_R (high) + _VRES_E (low), and the
-	   integer part is _VRES_IND * Set sRp2 = _VRES_R^2 and then
-	   resume the original code.  */
-
+	/*
+	 * The output is _VRES_R (high) + _VRES_E (low), and the integer part is _VRES_IND
+	 * Set sRp2 = _VRES_R^2 and then resume the original code.
+	 */
 	vaddps	{rn-sae}, %zmm8, %zmm15, %zmm15
 	vmovups	.FLT_25(%rip), %zmm8
 
@@ -372,9 +374,11 @@ L(AUX_BRANCH):
 	vpsrld	$23, %zmm7, %zmm6
 	vpandd	%zmm6, %zmm12, %zmm6
 
-	/* * Now multiply those numbers all by 2 pi, reasonably
-	   accurately. * (RHi + RLo) * (pi_lead + pi_trail) ~= * RHi *
-	   pi_lead + (RHi * pi_trail + RLo * pi_lead).  */
+	/*
+	 * Now multiply those numbers all by 2 pi, reasonably accurately.
+	 * (RHi + RLo) * (pi_lead + pi_trail) ~=
+	 * RHi * pi_lead + (RHi * pi_trail + RLo * pi_lead)
+	 */
 	vmovups	.FLT_24(%rip), %zmm12
 	vmulps	{rn-sae}, %zmm12, %zmm13, %zmmA
 	vblendmps %zmmA, %zmm0, %zmm14{%k5}
@@ -392,9 +396,11 @@ L(AUX_BRANCH):
 	vpsrld	$2, %zmm2, %zmm10{%k6}
 	vpslld	$2, %zmm10, %zmm11
 
-	/* * * End of large arguments path * * Merge results from main
-	   and large paths:.  */
-
+	/*
+	 * End of large arguments path
+	 *
+	 * Merge results from main and large paths:
+	 */
 	vpsubd	%zmm11, %zmm6, %zmm6
 	vmovups	.FLT_29(%rip), %zmm11
 	vcvtdq2ps {rn-sae}, %zmm6, %zmmA
@@ -414,17 +420,20 @@ L(AUX_BRANCH):
 	vmulps	{rn-sae}, %zmm5, %zmm4, %zmm15
 	vfmadd213ps {rn-sae}, %zmm5, %zmmA, %zmm15
 
-	/* * Computer Denominator: * sDenominator - sDlow ~=
-	   1-(sTh+sTl)*(sP+sPlow).  */
+	/*
+	 * Computer Denominator:
+	 * sDenominator - sDlow ~= 1-(sTh+sTl)*(sP+sPlow)
+	 */
 	vmulps	{rn-sae}, %zmm15, %zmm3, %zmm7
 
-	/* * Compute Numerator: * sNumerator + sNlow ~=
-	   sTh+sTl+sP+sPlow.  */
+	/*
+	 * Compute Numerator:
+	 * sNumerator + sNlow ~= sTh+sTl+sP+sPlow
+	 */
 	vaddps	{rn-sae}, %zmm3, %zmm15, %zmm8
 	vsubps	{rn-sae}, %zmm7, %zmm9, %zmm11
 
-
-#if 0
+#if HIGH_PRECISION == 1
 	vrcp14ps %zmm11, %zmm14
 	vsubps	{rn-sae}, %zmm3, %zmm8, %zmm2
 	vsubps	{rn-sae}, %zmm9, %zmm11, %zmm6
@@ -449,10 +458,7 @@ L(AUX_BRANCH):
 	jne	L(SPECIAL_VALUES_BRANCH)
 	vdivps	%zmm11, %zmm8, %zmm0
 #endif
-
-
 	/* Restore registers * and exit the function.  */
-
 	ret
 
 
@@ -473,7 +479,7 @@ L(SPECIAL_VALUES_BRANCH):
 	cfi_def_cfa (rsp, 32)
 	movq	%rsp, %r13
 	cfi_def_cfa (r13, 32)
-#if 0
+#if HIGH_PRECISION == 1
 	vsubps	{rn-sae}, %zmm13, %zmm12, %zmm1
 	vfnmadd213ps {rn-sae}, %zmm4, %zmm1, %zmm14
 #else
@@ -508,7 +514,6 @@ L(SPECIAL_VALUES_LOOP):
 
 	/* Scalar math fucntion call to process special input.  */
 	movss	64(%rsp, %rbp, 4), %xmm0
-	INC_FALLBACK0
 	call	tanf@PLT
 
 	/* No good way to avoid the store-forwarding fault this will

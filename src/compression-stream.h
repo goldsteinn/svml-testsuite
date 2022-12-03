@@ -75,6 +75,7 @@ static NONNULL(1, 2) uint64_t cstream_read(cstream_t * restrict cstream,
         total_read += remaining_bytes;
         bytes = AGU_T(bytes, remaining_bytes);
         if (UNLIKELY(I_cstream_read(cstream) != k_cstream_cont)) {
+            cstream->usr_buf_rd_pos_ += total_read;
             return total_read;
         }
 
@@ -107,6 +108,7 @@ NONNULL(1, 2) cstream_write(cstream_t * restrict cstream,
                  remaining_bytes);
         sz -= remaining_bytes;
         bytes = AGU_T(bytes, remaining_bytes);
+        cstream->usr_buf_.size_ += remaining_bytes;
         I_cstream_write(cstream);
 
         die_assert(cstream->usr_buf_.size_ == 0);
