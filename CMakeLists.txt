@@ -72,6 +72,7 @@ endif()
 
 list(APPEND link_libraries "-lmpfr")
 list(APPEND link_libraries "-lgmp")
+list(APPEND link_libraries "-lzstd")
 
 list(FIND llvm_compilers ${COMPILER_LOWER} llvm_compilers)
 list(FIND gnu_compilers ${COMPILER_LOWER} gnu_compilers)
