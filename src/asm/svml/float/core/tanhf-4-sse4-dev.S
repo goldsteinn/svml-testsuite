@@ -73,7 +73,7 @@
 
 
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
 
 /* tanhf data tables for avx2 and sse4 implementatins defined here.
  */
@@ -108,7 +108,7 @@ ENTRY(tanhf_4_sse4_dev)
 	movl	%edi, %esi
 	shrq	$32, %rdi
 
-	movaps	TANHF_DATA(_sAbsMask)(%rip), %xmm1
+	movaps	COMMON_DATA(_AbsMask)(%rip), %xmm1
 	andps	%xmm1, %xmm0
 
 	leaq	TANHF_DATA(_lookupTable)(%rip), %rax

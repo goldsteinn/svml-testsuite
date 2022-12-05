@@ -32,30 +32,31 @@
 /* Offsets for data table __svml_satan_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define _sSIGN_MASK	0
-#define _sONE	16
-#define _sPIO2	32
-#define _sPC8	48
-#define _sPC7	64
-#define _sPC6	80
-#define _sPC5	96
-#define _sPC4	112
-#define _sPC3	128
+#define LOCAL_DATA_NAME	__svml_satan_data_internal
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
+#define _SignMask	0
+#define _sPIO2	16
+#define _sPC7	32
+#define _sPC5	48
+#define _sPC3	64
+#define _sPC1	80
+#define _sPC8	96
+#define _sPC6	112
+#define _sPC4	128
 #define _sPC2	144
-#define _sPC1	160
+#define _sPC0	160
 
 #define xmmA	xmm1
 
 	.section .text.sse4, "ax", @progbits
 ENTRY(atanf_4_sse4_dev)
-#if 1
 	// Code Out Begin
 	/* * 1) If x>1,      then r=-1/x, PIO2=Pi/2 * 2) If -1<=x<=1,
 	   PIO2=-Pi/2.  */
-	movups	_sONE + __svml_satan_data_internal(%rip), %xmmA
+	movups	COMMON_DATA(_OneF)(%rip), %xmmA
 	/* * To use minps\maxps operations for argument reduction *
 	   Variables * Constants.  */
-	movups	__svml_satan_data_internal(%rip), %xmm5
+	movups	LOCAL_DATA(_SignMask)(%rip), %xmm5
 	movaps	%xmm5, %xmm6
 	andnps	%xmm0, %xmm5
 	andps	%xmm6, %xmm0
@@ -63,7 +64,7 @@ ENTRY(atanf_4_sse4_dev)
 	pcmpgtd	%xmmA, %xmm5
 	andps	%xmm5, %xmm6
 	pxor	%xmm0, %xmm6
-	andps	_sPIO2 + __svml_satan_data_internal(%rip), %xmm5
+	andps	LOCAL_DATA(_sPIO2)(%rip), %xmm5
 	pxor	%xmm0, %xmm5
 	movaps	%xmmA, %xmm0
 	minps	%xmm4, %xmmA
@@ -74,20 +75,20 @@ ENTRY(atanf_4_sse4_dev)
 	mulps	%xmmA, %xmmA
 	movaps	%xmmA, %xmm4
 	mulps	%xmmA, %xmmA
-	movups	_sPC7 + __svml_satan_data_internal(%rip), %xmm2
+	movups	LOCAL_DATA(_sPC7)(%rip), %xmm2
 	mulps	%xmmA, %xmm2
-	addps	_sPC5 + __svml_satan_data_internal(%rip), %xmm2
+	addps	LOCAL_DATA(_sPC5)(%rip), %xmm2
 	mulps	%xmmA, %xmm2
-	addps	_sPC3 + __svml_satan_data_internal(%rip), %xmm2
+	addps	LOCAL_DATA(_sPC3)(%rip), %xmm2
 	mulps	%xmmA, %xmm2
-	addps	_sPC1 + __svml_satan_data_internal(%rip), %xmm2
-	movups	_sPC8 + __svml_satan_data_internal(%rip), %xmm3
+	addps	LOCAL_DATA(_sPC1)(%rip), %xmm2
+	movups	LOCAL_DATA(_sPC8)(%rip), %xmm3
 	mulps	%xmmA, %xmm3
-	addps	_sPC6 + __svml_satan_data_internal(%rip), %xmm3
+	addps	LOCAL_DATA(_sPC6)(%rip), %xmm3
 	mulps	%xmmA, %xmm3
-	addps	_sPC4 + __svml_satan_data_internal(%rip), %xmm3
+	addps	LOCAL_DATA(_sPC4)(%rip), %xmm3
 	mulps	%xmmA, %xmm3
-	addps	_sPC2 + __svml_satan_data_internal(%rip), %xmm3
+	addps	LOCAL_DATA(_sPC2)(%rip), %xmm3
 	mulps	%xmm4, %xmm3
 	addps	%xmm3, %xmm2
 	mulps	%xmm2, %xmm4
@@ -100,107 +101,21 @@ ENTRY(atanf_4_sse4_dev)
 	/* N.  */
 	ret	/* N. */
 	// Code Out End
-#else
-	/* * To use minps\maxps operations for argument reduction *
-	   uncomment _AT_USEMINMAX_ definition *  Declarations *
-	   Variables * Constants.  */
-	movups	__svml_satan_data_internal(%rip), %xmm2
-	movups	%xmm2, %xmm4
-
-	/* * 1) If x>1,      then r=-1/x, PIO2=Pi/2 * 2) If -1<=x<=1,
-	   then r=x,    PIO2=0 * 3) If x<-1,     then r=-1/x,
-	   PIO2=-Pi/2.  */
-	movups	_sONE + __svml_satan_data_internal(%rip), %xmmA
-	andnps	%xmm0, %xmm2
-	movaps	%xmm2, %xmm9
-	movaps	%xmmA, %xmm3
-	pcmpgtd	%xmmA, %xmm9
-	maxps	%xmm2, %xmm3
-	minps	%xmm2, %xmmA
-	divps	%xmm3, %xmmA
-	movaps	%xmm9, %xmm10
-	andps	%xmm4, %xmm0
-	andps	%xmm4, %xmm9
-	pxor	%xmm0, %xmm9
-	pxor	%xmmA, %xmm9
-
-	/* Polynomial.  */
-	movaps	%xmm9, %xmm8
-	mulps	%xmm9, %xmm8
-	movaps	%xmm8, %xmm7
-	mulps	%xmm8, %xmm7
-	movups	_sPC8 + __svml_satan_data_internal(%rip), %xmm6
-	mulps	%xmm7, %xmm6
-	movups	_sPC7 + __svml_satan_data_internal(%rip), %xmm5
-	mulps	%xmm7, %xmm5
-	addps	_sPC6 + __svml_satan_data_internal(%rip), %xmm6
-	mulps	%xmm7, %xmm6
-	addps	_sPC5 + __svml_satan_data_internal(%rip), %xmm5
-	mulps	%xmm7, %xmm5
-	addps	_sPC4 + __svml_satan_data_internal(%rip), %xmm6
-	mulps	%xmm7, %xmm6
-	addps	_sPC3 + __svml_satan_data_internal(%rip), %xmm5
-	mulps	%xmm5, %xmm7
-	addps	_sPC2 + __svml_satan_data_internal(%rip), %xmm6
-	mulps	%xmm8, %xmm6
-	addps	_sPC1 + __svml_satan_data_internal(%rip), %xmm7
-	andps	_sPIO2 + __svml_satan_data_internal(%rip), %xmm10
-	addps	%xmm6, %xmm7
-	mulps	%xmm7, %xmm8
-	pxor	%xmm0, %xmm10
-	addps	_sPC0 + __svml_satan_data_internal(%rip), %xmm8
-
-	/* Reconstruction.  */
-	mulps	%xmm8, %xmm9
-	addps	%xmm9, %xmm10
-	movaps	%xmm10, %xmm0
-	ret
-#endif
 END(atanf_4_sse4_dev)
 
-	.section .rodata, "a"
+	.section .rodata.sse4, "a"
 	.align	16
+LOCAL_DATA_NAME:
+	DATA_VEC (LOCAL_DATA_NAME, _SignMask, 0x80000000)
+	DATA_VEC (LOCAL_DATA_NAME, _sPIO2, 0x3fc90fdb)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC7, 0xBC7F2631)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC5, 0xBD987629)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC3, 0xBE1161F8)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC1, 0xBEAAAA49)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC8, 0x3B322CC0)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC6, 0x3D2BC384)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC4, 0x3DD96474)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC2, 0x3E4CB79F)
 
-#ifdef __svml_satan_data_internal_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(16))VUINT32 _sSIGN_MASK[4][1];
-	__declspec (align(16))VUINT32 _sABS_MASK[4][1];
-	__declspec (align(16))VUINT32 _sONE[4][1];
-	__declspec (align(16))VUINT32 _sPIO2[4][1];
-	__declspec (align(16))VUINT32 _sPC8[4][1];
-	__declspec (align(16))VUINT32 _sPC7[4][1];
-	__declspec (align(16))VUINT32 _sPC6[4][1];
-	__declspec (align(16))VUINT32 _sPC5[4][1];
-	__declspec (align(16))VUINT32 _sPC4[4][1];
-	__declspec (align(16))VUINT32 _sPC3[4][1];
-	__declspec (align(16))VUINT32 _sPC2[4][1];
-	__declspec (align(16))VUINT32 _sPC1[4][1];
-	__declspec (align(16))VUINT32 _sPC0[4][1];
-	}__svml_satan_data_internal;
-#endif
-__svml_satan_data_internal:
-	.long	0x80000000, 0x80000000, 0x80000000, 0x80000000	// _sSIGN_MASK
-	.align	16
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000	// _sONE
-	.align	16
-	.long	0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB	// _sPIO2
-	.align	16
-	.long	0x3B322CC0, 0x3B322CC0, 0x3B322CC0, 0x3B322CC0	// _sPC8
-	.align	16
-	.long	0xBC7F2631, 0xBC7F2631, 0xBC7F2631, 0xBC7F2631	// _sPC7
-	.align	16
-	.long	0x3D2BC384, 0x3D2BC384, 0x3D2BC384, 0x3D2BC384	// _sPC6
-	.align	16
-	.long	0xBD987629, 0xBD987629, 0xBD987629, 0xBD987629	// _sPC5
-	.align	16
-	.long	0x3DD96474, 0x3DD96474, 0x3DD96474, 0x3DD96474	// _sPC4
-	.align	16
-	.long	0xBE1161F8, 0xBE1161F8, 0xBE1161F8, 0xBE1161F8	// _sPC3
-	.align	16
-	.long	0x3E4CB79F, 0x3E4CB79F, 0x3E4CB79F, 0x3E4CB79F	// _sPC2
-	.align	16
-	.long	0xBEAAAA49, 0xBEAAAA49, 0xBEAAAA49, 0xBEAAAA49	// _sPC1
-	.align	16
-	.type	__svml_satan_data_internal, @object
-	.size	__svml_satan_data_internal, .-__svml_satan_data_internal
+	.type	LOCAL_DATA_NAME, @object
+	.size	LOCAL_DATA_NAME, .-LOCAL_DATA_NAME

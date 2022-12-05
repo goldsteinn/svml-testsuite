@@ -27,7 +27,6 @@
 #define _sPoly_4	96
 #define _sPoly_3	128
 #define _sPoly_2	160
-#define _sPoly_1	192
 
 
 
@@ -200,9 +199,6 @@ LOCAL_DATA_NAME:
 
 	/* 3.3336564898490905761718750e-01.  */
 	DATA_VEC (LOCAL_DATA_NAME, _sPoly_2, 0x3eaaaee7)
-
-	/* -5.0000000000000000000000000e-01.  */
-	DATA_VEC (LOCAL_DATA_NAME, _sPoly_1, 0xbf000000)
 
 	.type	LOCAL_DATA_NAME, @object
 	.size	LOCAL_DATA_NAME, .-LOCAL_DATA_NAME

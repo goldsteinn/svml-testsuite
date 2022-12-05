@@ -76,7 +76,7 @@
 
 /* tanhf data tables for avx2 and sse4 implementatins defined here.
  */
-#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanhf-rodata-avx2.S"
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanhf-rodata.S"
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(tanhf_8_avx2_dev)

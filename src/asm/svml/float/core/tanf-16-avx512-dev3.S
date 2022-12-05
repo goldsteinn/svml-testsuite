@@ -36,17 +36,19 @@
 /* Offsets for data table __svml_stan_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
+#define LOCAL_DATA_NAME	__svml_stan_data_internal
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define _sInvPI_uisa	0
 #define _sRShifter	64
 #define _sPI1_uisa	128
 #define _sPI2_uisa	192
 #define _sPI3_uisa	256
-#define _sAbsMask	320
+#define _sAbsMask	320 // dead
 #define _sRangeReductionVal_uisa	384
 #define _sPC5_uisa	448
 #define _sPC3_uisa	512
 #define Th_tbl_uisa	576
-#define _sOne	704
+#define _sOne	704 // dead
 #define _sRangeVal	768
 
 #define zmmA	zmm1
@@ -54,27 +56,23 @@
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(tanf_16_avx512_dev)
-	/*
-	 * Main path
-	 *
-	 * start arg. reduction
-	 */
-	vmovups	_sInvPI_uisa + __svml_stan_data_internal(%rip), %zmm10
-	vmovups	_sRShifter + __svml_stan_data_internal(%rip), %zmmA
+	/* * Main path * * start arg. reduction.  */
+	vmovups	LOCAL_DATA(_sInvPI_uisa)(%rip), %zmm10
+	vmovups	LOCAL_DATA(_sRShifter)(%rip), %zmmA
 	vfmadd213ps {rn-sae}, %zmmA, %zmm0, %zmm10
 	vsubps	{rn-sae}, %zmmA, %zmm10, %zmm5
-	vmovups	_sPI1_uisa + __svml_stan_data_internal(%rip), %zmm4
+	vmovups	LOCAL_DATA(_sPI1_uisa)(%rip), %zmm4
 	vfnmadd213ps {rn-sae}, %zmm0, %zmm5, %zmm4
-	vmovups	_sPI2_uisa + __svml_stan_data_internal(%rip), %zmm2
+	vmovups	LOCAL_DATA(_sPI2_uisa)(%rip), %zmm2
 	vfnmadd231ps {rn-sae}, %zmm5, %zmm2, %zmm4
-	vmovups	_sPI3_uisa + __svml_stan_data_internal(%rip), %zmm3
+	vmovups	LOCAL_DATA(_sPI3_uisa)(%rip), %zmm3
 	vfnmadd213ps {rn-sae}, %zmm4, %zmm3, %zmm5
 
 	/* Reused throughout in large case.  */
-	vmovaps	_sAbsMask + __svml_stan_data_internal(%rip), %zmm7
+	vmovaps	COMMON_DATA(_AbsMask)(%rip), %zmm7
 
 	/* Large values check.  */
-	vmovups	_sRangeReductionVal_uisa + __svml_stan_data_internal(%rip), %zmm6
+	vmovups	LOCAL_DATA(_sRangeReductionVal_uisa)(%rip), %zmm6
 	vandps	%zmm7, %zmm0, %zmm11
 	vcmpps	$22, {sae}, %zmm6, %zmm11, %k6
 
@@ -85,41 +83,31 @@ ENTRY(tanf_16_avx512_dev)
 
 	/* Table lookup.  */
 	vmulps	{rn-sae}, %zmm5, %zmm5, %zmmA
-	vmovups	_sPC5_uisa + __svml_stan_data_internal(%rip), %zmm4
-	vmovups	_sPC3_uisa + __svml_stan_data_internal(%rip), %zmm11
+	vmovups	LOCAL_DATA(_sPC5_uisa)(%rip), %zmm4
+	vmovups	LOCAL_DATA(_sPC3_uisa)(%rip), %zmm11
 	vfmadd231ps {rn-sae}, %zmmA, %zmm4, %zmm11
 	vmulps	{rn-sae}, %zmm5, %zmmA, %zmm2
-	vmovups	Th_tbl_uisa + __svml_stan_data_internal(%rip), %zmm3
-	vpermt2ps Th_tbl_uisa + 64 + __svml_stan_data_internal(%rip), %zmm10, %zmm3
+	vmovups	LOCAL_DATA(Th_tbl_uisa)(%rip), %zmm3
+	vpermt2ps LOCAL_DATA(Th_tbl_uisa + 64)(%rip), %zmm10, %zmm3
 	vfmadd213ps {rn-sae}, %zmm5, %zmm2, %zmm11
 
-	/*
-	 * Computer Denominator:
-	 * sDenominator - sDlow ~= 1-(sTh+sTl)*(sP+sPlow)
-	 */
+	/* * Computer Denominator: * sDenominator - sDlow ~=
+	   1-(sTh+sTl)*(sP+sPlow).  */
 	vmulps	{rn-sae}, %zmm11, %zmm3, %zmm7
 
 
-	vmovups	_sOne + __svml_stan_data_internal(%rip), %zmm5
+	vmovups	COMMON_DATA(_OneF)(%rip), %zmm5
 
-	/*
-	 * Compute Numerator:
-	 * sNumerator + sNlow ~= sTh+sTl+sP+sPlow
-	 */
+	/* * Compute Numerator: * sNumerator + sNlow ~=
+	   sTh+sTl+sP+sPlow.  */
 	vaddps	{rn-sae}, %zmm3, %zmm11, %zmm8
 	vsubps	{rn-sae}, %zmm7, %zmm5, %zmm9
 
 #if HIGH_PRECISION == 1
-	/*
-	 * Highest Precision Version:
-     * error breakdown:
-     * 0  : 3722920128 (0.8668)
-     * 1  :  566817724 (0.1320)
-     * 2  :    5022802 (0.0012)
-     * 3  :     205902 (0.0000)
-     * 4  :        740 (0.0000)
-     * Avg: 0.134456
-	 */
+	/* * Highest Precision Version: * error breakdown: * 0  :
+	   3722920128 (0.8668) * 1  :  566817724 (0.1320) * 2  :
+	   5022802 (0.0012) * 3  :     205902 (0.0000) * 4  : 740
+	   (0.0000) * Avg: 0.134456.  */
 	vrcp14ps %zmm9, %zmm14
 	vsubps	{rn-sae}, %zmm3, %zmm8, %zmm2
 
@@ -135,16 +123,10 @@ ENTRY(tanf_16_avx512_dev)
 
 	vfnmadd213ps {rn-sae}, %zmm15, %zmm14, %zmm0
 #else
-	/*
-	 * Highest Precision Version:
-     * error breakdown:
-     * 0  : 3374033104 (0.7856)
-     * 1  :  893707604 (0.2081)
-     * 2  :   26831634 (0.0062)
-     * 3  :     393466 (0.0001)
-     * 4  :       1488 (0.0000)
-     * Avg: 0.2209
-	 */
+	/* * Highest Precision Version: * error breakdown: * 0  :
+	   3374033104 (0.7856) * 1  :  893707604 (0.2081) * 2  :
+	   26831634 (0.0062) * 3  :     393466 (0.0001) * 4  : 1488
+	   (0.0000) * Avg: 0.2209.  */
 	vdivps	{rn-sae}, %zmm9, %zmm8, %zmm0
 #endif
 	ret
@@ -170,10 +152,8 @@ L(AUX_BRANCH):
 	vpaddd	%zmm8, %zmm8, %zmmA
 	vpaddd	%zmmA, %zmm8, %zmm14
 
-	/*
-	 * Get the (2^a / 2pi) mod 1 values from the table.
-	 * Because doesn't have I-type gather, we need a trivial cast
-	 */
+	/* * Get the (2^a / 2pi) mod 1 values from the table. * Because
+	   doesn't have I-type gather, we need a trivial cast.  */
 	lea	__svml_stan_reduction_data_internal(%rip), %rax
 
 	/* Offset 4 gather has the most work based on it so we want it
@@ -184,30 +164,25 @@ L(AUX_BRANCH):
 	vgatherdps 4(%rax, %zmm14, 4), %zmm4{%k2}
 
 
-	/*
-	 * If the magnitude of the input is <= 2^-20, then
-	 * just pass through the input, since no reduction will be needed and
-	 * the main path will only work accurately if the reduced argument is
-	 * about >= 2^-40 (which it is for all large pi multiples)
-	 */
-	vmovups	_sRangeVal + __svml_stan_data_internal(%rip), %zmm9
+	/* * If the magnitude of the input is <= 2^-20, then * just pass
+	   through the input, since no reduction will be needed and *
+	   the main path will only work accurately if the reduced
+	   argument is * about >= 2^-40 (which it is for all large pi
+	   multiples).  */
+	vmovups	LOCAL_DATA(_sRangeVal)(%rip), %zmm9
 	/* `zmm11` already has sign bit cast off. We are checking if the
 	   exp was 0xff so we can just use unsigned comparison.  */
 	vpcmpd	$5, %zmm9, %zmm11, %k1
 
-	/*
-	 * Also get the significand as an integer
-	 * NB: adding in the integer bit is wrong for denorms!
-	 * To make this work for denorms we should do something slightly different
-	 */
+	/* * Also get the significand as an integer * NB: adding in the
+	   integer bit is wrong for denorms! * To make this work for
+	   denorms we should do something slightly different.  */
 
 	/* zmm9 = zmm9 & (~zmm11) | .FLT_14(%rip).  */
 	vpternlogd $0xae, .FLT_14(%rip){1to16}, %zmm11, %zmm9
 
-	/*
-	 * Break the P_xxx and m into 16-bit chunks ready for
-	 * the long multiplication via 16x16->32 multiplications
-	 */
+	/* * Break the P_xxx and m into 16-bit chunks ready for * the
+	   long multiplication via 16x16->32 multiplications.  */
 	movl	$0x55555555, %ecx
 	kmovd	%ecx, %k2
 
@@ -276,15 +251,13 @@ L(AUX_BRANCH):
 
 	vpaddd	%zmm14, %zmm12, %zmm8
 
-	/*
-	 * Now round at the 2^-8 bit position for reduction mod pi/2^7
-	 * instead of the original 2pi (but still with the same 2pi scaling).
-	 * Use a shifter of 2^15 + 2^14.
-	 * The N we get is our final version; it has an offset of
-	 * 2^8 because of the implicit integer bit, and anyway for negative
-	 * starting value it's a 2s complement thing. But we need to mask
-	 * off the exponent part anyway so it's fine.
-	 */
+	/* * Now round at the 2^-8 bit position for reduction mod pi/2^7
+	   * instead of the original 2pi (but still with the same 2pi
+	   scaling). * Use a shifter of 2^15 + 2^14. * The N we get is
+	   our final version; it has an offset of * 2^8 because of the
+	   implicit integer bit, and anyway for negative * starting
+	   value it's a 2s complement thing. But we need to mask * off
+	   the exponent part anyway so it's fine.  */
 
 	/* We already truncated zmm2.  */
 	vpaddd	%zmm6, %zmm2, %zmm13
@@ -303,48 +276,41 @@ L(AUX_BRANCH):
 	vpslldq	$2, %zmm8, %zmm11
 	vpblendmw %zmm4, %zmmA, %zmm3{%k2}
 	vmovdqu16 %zmm9, %zmm11{%k2}
-	vmovaps	_sOne + __svml_stan_data_internal(%rip), %zmm9
+	vmovaps	COMMON_DATA(_OneF)(%rip), %zmm9
 	vmovups	.FLT_18(%rip), %zmm14
 	vpsrld	$9, %zmm3, %zmm2
 
-	/*
-	 * We want to incorporate the original sign now too.
-	 * Do it here for convenience in getting the right N value,
-	 * though we could wait right to the end if we were prepared
-	 * to modify the sign of N later too.
-	 * So get the appropriate sign mask now (or sooner).
-	 */
+	/* * We want to incorporate the original sign now too. * Do it
+	   here for convenience in getting the right N value, * though
+	   we could wait right to the end if we were prepared * to
+	   modify the sign of N later too. * So get the appropriate
+	   sign mask now (or sooner).  */
 	vpandnd	%zmm0, %zmm7, %zmmA
 	vpslld	$5, %zmm11, %zmm13
 
-	/*
-	 * Create floating-point high part, implicitly adding integer bit 1
-	 * Incorporate overall sign at this stage too.
-	 */
+	/* * Create floating-point high part, implicitly adding integer
+	   bit 1 * Incorporate overall sign at this stage too.  */
 	vpternlogd $0xfe, %zmm9, %zmmA, %zmm2
 	vaddps	{rn-sae}, %zmm2, %zmm14, %zmm12
 	vsubps	{rn-sae}, %zmm14, %zmm12, %zmm15
 	vsubps	{rn-sae}, %zmm15, %zmm2, %zmm2
 
-	/*
-	 * Create floating-point low and medium parts, respectively
-	 * lo_17, ... lo_0, 0, ..., 0
-	 * hi_8, ... hi_0, lo_31, ..., lo_18
-	 * then subtract off the implicitly added integer bits,
-	 * 2^-46 and 2^-23, respectively.
-	 * Put the original sign into all of them at this stage.
-	 */
+	/* * Create floating-point low and medium parts, respectively *
+	   lo_17, ... lo_0, 0, ..., 0 * hi_8, ... hi_0, lo_31, ...,
+	   lo_18 * then subtract off the implicitly added integer bits,
+	   * 2^-46 and 2^-23, respectively. * Put the original sign
+	   into all of them at this stage.  */
 
 	/* Save code size by microfusing vpord .FLT_20, %zmmA. This
 	   increase the dependency chain on computing `zmm13` (we could
 	   use vptern).  */
 	vpord	.FLT_20(%rip){1to16}, %zmmA, %zmm15
-	vpsrld	$22, %zmm7, %zmm8
-	vpsrld	$8, %zmm7, %zmm14
 	/* Don't need to full addition result.  */
-	vpandd	%zmm8, %zmm4, %zmm3
-	/* zmm13 = (zmm13 & zmm14) | zmm15.  */
-	vpternlogd $0xea, %zmm15, %zmm14, %zmm13
+	vmovaps	.FLT_31(%rip), %zmm6
+	vpandd	%zmm6, %zmm4, %zmm3
+	/* zmm13 = (zmm13 & ~_NotIOffExpoMask) | zmm15.  */
+	vpternlogd $0xdc, COMMON_DATA(_NotiOffExpoMask)(%rip){1to16}, %zmm15, %zmm13
+
 	vsubps	{rn-sae}, %zmm15, %zmm13, %zmm8
 	vpsrld	$18, %zmm11, %zmm15
 
@@ -362,23 +328,19 @@ L(AUX_BRANCH):
 	   later on.  */
 	vaddps	{rn-sae}, %zmm2, %zmm11, %zmm15
 
-	/*
-	 * The output is _VRES_R (high) + _VRES_E (low), and the integer part is _VRES_IND
-	 * Set sRp2 = _VRES_R^2 and then resume the original code.
-	 */
+	/* * The output is _VRES_R (high) + _VRES_E (low), and the
+	   integer part is _VRES_IND * Set sRp2 = _VRES_R^2 and then
+	   resume the original code.  */
 	vaddps	{rn-sae}, %zmm8, %zmm15, %zmm15
 	vmovups	.FLT_25(%rip), %zmm8
 
 	/* Grab our final N value as an integer, appropriately masked
 	   mod 2^8.  */
-	vpsrld	$23, %zmm7, %zmm6
 	vpandd	%zmm6, %zmm12, %zmm6
 
-	/*
-	 * Now multiply those numbers all by 2 pi, reasonably accurately.
-	 * (RHi + RLo) * (pi_lead + pi_trail) ~=
-	 * RHi * pi_lead + (RHi * pi_trail + RLo * pi_lead)
-	 */
+	/* * Now multiply those numbers all by 2 pi, reasonably
+	   accurately. * (RHi + RLo) * (pi_lead + pi_trail) ~= * RHi *
+	   pi_lead + (RHi * pi_trail + RLo * pi_lead).  */
 	vmovups	.FLT_24(%rip), %zmm12
 	vmulps	{rn-sae}, %zmm12, %zmm13, %zmmA
 	vblendmps %zmmA, %zmm0, %zmm14{%k5}
@@ -396,11 +358,8 @@ L(AUX_BRANCH):
 	vpsrld	$2, %zmm2, %zmm10{%k6}
 	vpslld	$2, %zmm10, %zmm11
 
-	/*
-	 * End of large arguments path
-	 *
-	 * Merge results from main and large paths:
-	 */
+	/* * End of large arguments path * * Merge results from main and
+	   large paths:.  */
 	vpsubd	%zmm11, %zmm6, %zmm6
 	vmovups	.FLT_29(%rip), %zmm11
 	vcvtdq2ps {rn-sae}, %zmm6, %zmmA
@@ -411,25 +370,21 @@ L(AUX_BRANCH):
 
 
 	/* Table lookup.  */
-	vmovups	Th_tbl_uisa + __svml_stan_data_internal(%rip), %zmm3
-	vmovups	_sPC3_uisa + __svml_stan_data_internal(%rip), %zmm4
+	vmovups	LOCAL_DATA(Th_tbl_uisa)(%rip), %zmm3
+	vmovups	LOCAL_DATA(_sPC3_uisa)(%rip), %zmm4
 	vmulps	{rn-sae}, %zmm5, %zmm5, %zmmA
-	vpermt2ps Th_tbl_uisa + 64 + __svml_stan_data_internal(%rip), %zmm10, %zmm3
-	vmovups	_sPC5_uisa + __svml_stan_data_internal(%rip), %zmm10
+	vpermt2ps LOCAL_DATA(Th_tbl_uisa + 64)(%rip), %zmm10, %zmm3
+	vmovups	LOCAL_DATA(_sPC5_uisa)(%rip), %zmm10
 	vfmadd231ps {rn-sae}, %zmmA, %zmm10, %zmm4
 	vmulps	{rn-sae}, %zmm5, %zmm4, %zmm15
 	vfmadd213ps {rn-sae}, %zmm5, %zmmA, %zmm15
 
-	/*
-	 * Computer Denominator:
-	 * sDenominator - sDlow ~= 1-(sTh+sTl)*(sP+sPlow)
-	 */
+	/* * Computer Denominator: * sDenominator - sDlow ~=
+	   1-(sTh+sTl)*(sP+sPlow).  */
 	vmulps	{rn-sae}, %zmm15, %zmm3, %zmm7
 
-	/*
-	 * Compute Numerator:
-	 * sNumerator + sNlow ~= sTh+sTl+sP+sPlow
-	 */
+	/* * Compute Numerator: * sNumerator + sNlow ~=
+	   sTh+sTl+sP+sPlow.  */
 	vaddps	{rn-sae}, %zmm3, %zmm15, %zmm8
 	vsubps	{rn-sae}, %zmm7, %zmm9, %zmm11
 
@@ -515,7 +470,7 @@ L(SPECIAL_VALUES_LOOP):
 	/* Scalar math fucntion call to process special input.  */
 	movss	64(%rsp, %rbp, 4), %xmm0
 	call	tanf@PLT
-
+	INC_FALLBACK0
 	/* No good way to avoid the store-forwarding fault this will
 	   cause on return. `lfence` avoids the SF fault but at greater
 	   cost as it serialized stack/callee save restoration.  */
@@ -539,7 +494,7 @@ L(SPECIAL_VALUES_LOOP):
 	ret
 END(tanf_16_avx512_dev)
 
-	.section .rodata, "a"
+	.section .rodata.evex512, "a"
 
 	/* Place the minimally aligned pieces at the begining so there
 	   is a chance they fit in aligning bytes.  */
@@ -559,23 +514,7 @@ END(tanf_16_avx512_dev)
 	.type	.FLT_22, @object
 	.size	.FLT_22, 4
 
-#ifdef __svml_stan_data_internal_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(64))VUINT32 _sInvPI_uisa[16][1];
-	__declspec (align(64))VUINT32 _sRShifter[16][1];
-	__declspec (align(64))VUINT32 _sPI1_uisa[16][1];
-	__declspec (align(64))VUINT32 _sPI2_uisa[16][1];
-	__declspec (align(64))VUINT32 _sPI3_uisa[16][1];
-	__declspec (align(64))VUINT32 _sAbsMask[16][1];
-	__declspec (align(64))VUINT32 _sRangeReductionVal_uisa[16][1];
-	__declspec (align(64))VUINT32 _sPC5_uisa[16][1];
-	__declspec (align(64))VUINT32 _sPC3_uisa[16][1];
-	__declspec (align(64))VUINT32 Th_tbl_uisa[32][1];
-	__declspec (align(64))VUINT32 _sOne[16][1];
-	__declspec (align(64))VUINT32 _sRangeVal[16][1];
-	}__svml_stan_data_internal;
-#endif
+
 	/* UISA.  */
 	.align	64
 __svml_stan_data_internal:
@@ -723,6 +662,22 @@ __svml_stan_data_internal:
 	.long	0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e
 	.type	.FLT_30, @object
 	.size	.FLT_30, 64
+	.align	64
+.FLT_32:
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
+	.type	.FLT_32, @object
+	.size	.FLT_32, 64
+	.align	64
+.FLT_31:
+	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
+	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
+	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
+	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
+	.type	.FLT_31, @object
+	.size	.FLT_31, 64
 
 	.align	64
 #ifdef __svml_stan_reduction_data_internal_typedef

@@ -32,7 +32,9 @@
 /* Offsets for data table __svml_satan_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define _sSIGN_MASK	( 0 * 2)
+#define LOCAL_DATA_NAME	__svml_satan_data_internal
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
+#define _SignMask	( 0 * 2)
 #define _sONE	( 32 * 2)
 #define _sPIO2	( 64 * 2)
 #define _sPC8	( 96 * 2)
@@ -51,16 +53,16 @@ ENTRY(atanf_16_avx512_dev)
 	/* * 1) If x>1,      then r=-1/x, PIO2=Pi/2 * 2) If -1<=x<=1,
 	   then r=x,    PIO2=0 * 3) If x<-1,     then r=-1/x,
 	   PIO2=-Pi/2.  */
-	vmovups	_sONE + __svml_satan_data_internal(%rip), %zmm2
-	vmovups	__svml_satan_data_internal(%rip), %zmm7
+	vmovups	COMMON_DATA(_OneF)(%rip), %zmm2
+	vmovups	LOCAL_DATA(_SignMask)(%rip), %zmm7
 
 
 	/* * To use minps\maxps operations for argument reduction *
 	   uncomment _AT_USEMINMAX_ definition *  Declarations *
 	   Variables * Constants.  */
 	vandnps	%zmm0, %zmm7, %zmm3
-    vpcmpgtd %zmm2, %zmm3, %k1
-    
+	vpcmpgtd %zmm2, %zmm3, %k1
+
 	vmaxps	%zmm3, %zmm2, %zmm5
 	vminps	%zmm3, %zmm2, %zmm4
 
@@ -70,23 +72,23 @@ ENTRY(atanf_16_avx512_dev)
 	vandps	%zmm7, %zmm0, %zmm3
 	vmovdqa32 %zmm7, %zmm7{%k1}{z}
 
-    vmulps	%zmm4, %zmm4, %zmm1
+	vmulps	%zmm4, %zmm4, %zmm1
 	vpternlogq $0x96, %zmm3, %zmm4, %zmm7
 
 	/* Polynomial.  */
 
-	vmovups	_sPC8 + __svml_satan_data_internal(%rip), %zmm0
-	vmovups	_sPC7 + __svml_satan_data_internal(%rip), %zmm4
+	vmovups	LOCAL_DATA(_sPC8)(%rip), %zmm0
+	vmovups	LOCAL_DATA(_sPC7)(%rip), %zmm4
 	vmulps	%zmm1, %zmm1, %zmm5
-	vfmadd213ps _sPC6 + __svml_satan_data_internal(%rip), %zmm5, %zmm0
-	vfmadd213ps _sPC5 + __svml_satan_data_internal(%rip), %zmm5, %zmm4
-	vfmadd213ps _sPC4 + __svml_satan_data_internal(%rip), %zmm5, %zmm0
-	vfmadd213ps _sPC3 + __svml_satan_data_internal(%rip), %zmm5, %zmm4
-	vfmadd213ps _sPC2 + __svml_satan_data_internal(%rip), %zmm5, %zmm0
-	vfmadd213ps _sPC1 + __svml_satan_data_internal(%rip), %zmm5, %zmm4
+	vfmadd213ps LOCAL_DATA(_sPC6)(%rip), %zmm5, %zmm0
+	vfmadd213ps LOCAL_DATA(_sPC5)(%rip), %zmm5, %zmm4
+	vfmadd213ps LOCAL_DATA(_sPC4)(%rip), %zmm5, %zmm0
+	vfmadd213ps LOCAL_DATA(_sPC3)(%rip), %zmm5, %zmm4
+	vfmadd213ps LOCAL_DATA(_sPC2)(%rip), %zmm5, %zmm0
+	vfmadd213ps LOCAL_DATA(_sPC1)(%rip), %zmm5, %zmm4
 	vfmadd213ps %zmm4, %zmm1, %zmm0
 	vfmadd213ps %zmm2, %zmm1, %zmm0
-	vorps	_sPIO2 + __svml_satan_data_internal(%rip), %zmm3, %zmm3{%k1}
+	vorps	LOCAL_DATA(_sPIO2)(%rip), %zmm3, %zmm3{%k1}
 
 	/* Reconstruction.  */
 	vfmadd213ps %zmm3, %zmm7, %zmm0
@@ -94,27 +96,9 @@ ENTRY(atanf_16_avx512_dev)
 
 END(atanf_16_avx512_dev)
 
-	.section .rodata, "a"
+	.section .rodata.evex512, "a"
 	.align	64
 
-#ifdef __svml_satan_data_internal_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(32))VUINT32 _sSIGN_MASK[8][1];
-	__declspec (align(32))VUINT32 _sABS_MASK[8][1];
-	__declspec (align(32))VUINT32 _sONE[8][1];
-	__declspec (align(32))VUINT32 _sPIO2[8][1];
-	__declspec (align(32))VUINT32 _sPC8[8][1];
-	__declspec (align(32))VUINT32 _sPC7[8][1];
-	__declspec (align(32))VUINT32 _sPC6[8][1];
-	__declspec (align(32))VUINT32 _sPC5[8][1];
-	__declspec (align(32))VUINT32 _sPC4[8][1];
-	__declspec (align(32))VUINT32 _sPC3[8][1];
-	__declspec (align(32))VUINT32 _sPC2[8][1];
-	__declspec (align(32))VUINT32 _sPC1[8][1];
-	__declspec (align(32))VUINT32 _sPC0[8][1];
-	}__svml_satan_data_internal;
-#endif
 __svml_satan_data_internal:
 	.long	0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000	// _sSIGN_MASK
 	.long	0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000, 0x80000000	// _sSIGN_MASK

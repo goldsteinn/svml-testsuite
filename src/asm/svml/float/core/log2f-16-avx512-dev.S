@@ -31,6 +31,8 @@
 /* Offsets for data table __svml_slog2_data_internal_avx512
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
+#define LOCAL_DATA_NAME	__svml_slog2_data_internal_avx512
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define One	0
 #define coeff4	64
 #define coeff3	128
@@ -42,7 +44,7 @@
 	.section .text.evex512, "ax", @progbits
 ENTRY(log2f_16_avx512_dev)
 	vgetmantps $11, {sae}, %zmm0, %zmm3
-	vmovups	__svml_slog2_data_internal_avx512(%rip), %zmm1
+	vmovups	LOCAL_DATA(One ) (%rip), %zmm1
 	vgetexpps {sae}, %zmm0, %zmm5
 
 	/* x<=0?  */
@@ -50,10 +52,10 @@ ENTRY(log2f_16_avx512_dev)
 	vsubps	{rn-sae}, %zmm1, %zmm3, %zmm9
 	vpsrld	$19, %zmm3, %zmm7
 	vgetexpps {sae}, %zmm3, %zmm6
-	vpermps	coeff4 + __svml_slog2_data_internal_avx512(%rip), %zmm7, %zmm1
-	vpermps	coeff3 + __svml_slog2_data_internal_avx512(%rip), %zmm7, %zmm2
-	vpermps	coeff2 + __svml_slog2_data_internal_avx512(%rip), %zmm7, %zmm4
-	vpermps	coeff1 + __svml_slog2_data_internal_avx512(%rip), %zmm7, %zmm8
+	vpermps	LOCAL_DATA(coeff4 ) (%rip), %zmm7, %zmm1
+	vpermps	LOCAL_DATA(coeff3 ) (%rip), %zmm7, %zmm2
+	vpermps	LOCAL_DATA(coeff2 ) (%rip), %zmm7, %zmm4
+	vpermps	LOCAL_DATA(coeff1 ) (%rip), %zmm7, %zmm8
 	vsubps	{rn-sae}, %zmm6, %zmm5, %zmm10
     vfpclassps $94, %zmm0, %k0
 	vfmadd213ps {rn-sae}, %zmm2, %zmm9, %zmm1
@@ -142,19 +144,9 @@ L(SPECIAL_VALUES_LOOP):
 	ret
 END(log2f_16_avx512_dev)
 
-	.section .rodata, "a"
+	.section .rodata.evex512, "a"
 	.align	64
 
-#ifdef __svml_slog2_data_internal_avx512_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(64))VUINT32 One[16][1];
-	__declspec (align(64))VUINT32 coeff4[16][1];
-	__declspec (align(64))VUINT32 coeff3[16][1];
-	__declspec (align(64))VUINT32 coeff2[16][1];
-	__declspec (align(64))VUINT32 coeff1[16][1];
-	}__svml_slog2_data_internal_avx512;
-#endif
 __svml_slog2_data_internal_avx512:
 	/* One.  */
 	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000

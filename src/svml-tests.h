@@ -165,6 +165,7 @@ CAT(svml_tester_, T_T)(void * arg) {
                         fprintf(stderr, "[%2zu] -> %lx (%lx vs %lx)\n",
                                 j / sizeof(T), tmp2_, tmp0_, tmp1_);
                     }
+                    die();
                 }
             }
 

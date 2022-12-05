@@ -5,10 +5,11 @@ from copy import (deepcopy)
 
 def get_data_name(data_piece):
     name_map = {
-        "3f800000": "_One",
+        "3f800000": "_OneF",
         "ff800000": "_NotiOffExpoMask",
         "3f2aaaab": "_IBrkValue",
         "7fffffff": "_AbsMask",
+        "80000000": "_SignMask",
         "01000000": "_ILoRange",
         "bf000000": "_Neg5F",
         "3f317218": "_Ln2",
@@ -16,7 +17,7 @@ def get_data_name(data_piece):
         "3fc90fdb": "_TanSPI1_FMA",
     }
 
-    assert data_piece in name_map
+    assert data_piece in name_map, data_piece
 
     return name_map[data_piece]
 
@@ -36,6 +37,9 @@ class Common_Data():
         assert self.vec_size % 2 == 0
         self.vec_size = int(self.vec_size / 2)
 
+    def section(self):
+        return {16: "sse4", 32: "avx2", 64: "evex512"}[self.vec_size]
+
     def add_offset(self):
         global G_offsets
         global G_nimpls
@@ -50,13 +54,15 @@ class Common_Data():
     def get_offsets(self):
         global G_offsets
         assert self.sym in G_offsets
-        return "#define {}\t{}".format(self.sym, self.vec_size * G_offsets[self.sym])
+        return "#define {}\t{}".format(self.sym,
+                                       self.vec_size * G_offsets[self.sym])
 
     def get_defs(self):
         out = []
         out.append("\t/* Used By: {}.  */".format(", ".join(sorted(
             self.impls))))
-        out.append("\tDATA_VEC({}, {})".format(self.sym, "0x" + self.glob[0]))
+        out.append("\tDATA_VEC(COMMON_DATA_NAME, {}, {})".format(
+            self.sym, "0x" + self.glob[0]))
         return "\n".join(out)
 
 
@@ -67,16 +73,16 @@ def output(cds):
     out = []
     out.append(offsets)
     out.append("")
-    out.append("\t.section SECTION, \"a\"")
-    out.append("\t.align\tVEC_SIZE")
-    out.append("\t.globl\tDATA_NAME")
+    out.append("\t.section .rodata.{}, \"a\"".format(cds[0].section()))
+    out.append("\t.align\t{}".format(cds[0].vec_size))
+    out.append("\t.globl\tCOMMON_DATA_NAME")
     out.append("")
-    out.append("DATA_NAME:")
+    out.append("COMMON_DATA_NAME:")
     out.append("")
     out.append(defs)
     out.append("")
-    out.append("\t.type\tDATA_NAME, @object")
-    out.append("\t.size\tDATA_NAME, .-DATA_NAME")
+    out.append("\t.type\tCOMMON_DATA_NAME, @object")
+    out.append("\t.size\tCOMMON_DATA_NAME, .-COMMON_DATA_NAME")
     return "\n".join(out)
 
 
@@ -157,7 +163,7 @@ def parse_explicit_data(line):
         assert is_int(piece, base)
         assert piece_sz * 2 == len(piece)
         glob.append(piece)
-        assert piece == glob[0]
+        assert piece == glob[0], "{} == {}".format(piece, glob[0])
 
     assert len(glob) % 2 == 0
     return glob, impl, name
@@ -203,7 +209,7 @@ for line in open(f):
     line = strs(line).lower()
     if line == "":
         continue
-
+    print(line)
     glob = None
     impl = None
     name = None
@@ -211,7 +217,7 @@ for line in open(f):
         glob, impl, name = parse_explicit_data(line)
         if gsz is None:
             gsz = len(glob)
-        assert gsz == len(glob)
+        assert gsz == len(glob), "{} != {}\n\t{}".format(len(glob), gsz, glob)
     elif line.startswith("float_vector"):
         assert gsz is not None
         data, impl, name = parse_macro_data(line)
@@ -224,6 +230,9 @@ for line in open(f):
     assert glob is not None
     assert impl is not None
     assert name is not None
+
+    if impl == "unused":
+        continue
 
     globs.setdefault("".join(glob), []).append(
         (deepcopy(glob), deepcopy(impl), deepcopy(name)))

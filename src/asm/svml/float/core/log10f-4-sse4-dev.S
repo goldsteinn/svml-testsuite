@@ -31,64 +31,69 @@
 /* Offsets for data table __svml_slog10_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define MinNorm	0
-#define MaxNorm	16
-#define L2H	32
-#define L2L	48
-#define iBrkValue	64
-#define iOffExpoMask	80
-#define One	96
-#define sPoly	112
-#define L2	256
+#define LOCAL_DATA_NAME	__svml_slog10_data_internal
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
+
+#define _L2L	0
+#define _Coeff_9	16
+#define _Coeff_8	32
+#define _Coeff_7	48
+#define _Coeff_6	64
+#define _Coeff_5	80
+#define _Coeff_4	96
+#define _Coeff_3	112
+#define _Coeff_2	128
+#define _Coeff_1	144
+#define _L2H	160
 
 #define xmmA	xmm1
 
 	.section .text.sse4, "ax", @progbits
 ENTRY(log10f_4_sse4_dev)
 	// Code Out Begin
-	movdqu	MinNorm + __svml_slog10_data_internal(%rip), %xmm2
+	movdqu	COMMON_DATA(_NotiOffExpoMask)(%rip), %xmm2
 	movaps	%xmm0, %xmm3
 	psubd	%xmm2, %xmm0
-	movaps	MaxNorm + __svml_slog10_data_internal(%rip), %xmm4
+	movaps	COMMON_DATA(_ILoRange)(%rip), %xmm4
 	pcmpgtd	%xmm0, %xmm4
 	/* combine and get argument value range mask.  */
 	movmskps %xmm4, %eax
-	movups	L2L + __svml_slog10_data_internal(%rip), %xmm0
+	movups	LOCAL_DATA(_L2L)(%rip), %xmm0
 	/* reduction: compute r, n.  */
-	movdqu	iBrkValue + __svml_slog10_data_internal(%rip), %xmm4
+	movdqu	COMMON_DATA(_IBrkValue)(%rip), %xmm4
 	movaps	%xmm3, %xmm6
 	psubd	%xmm4, %xmm3
 	pandn	%xmm3, %xmm2
 	paddd	%xmm4, %xmm2
-	subps	One + __svml_slog10_data_internal(%rip), %xmm2
+	subps	COMMON_DATA(_OneF)(%rip), %xmm2
 	psrad	$0x17, %xmm3
 	cvtdq2ps %xmm3, %xmm4
 	mulps	%xmm4, %xmm0
 	movaps	%xmm2, %xmm3
 	mulps	%xmm2, %xmm2
-	movups	sPoly + __svml_slog10_data_internal(%rip), %xmmA
+	movups	LOCAL_DATA(_Coeff_9)(%rip), %xmmA
 	mulps	%xmm3, %xmmA
-	addps	sPoly + 16 + __svml_slog10_data_internal(%rip), %xmmA
+	addps	LOCAL_DATA(_Coeff_8)(%rip), %xmmA
 	mulps	%xmm2, %xmmA
-	movups	sPoly + 32 + __svml_slog10_data_internal(%rip), %xmm5
+	movups	LOCAL_DATA(_Coeff_7)(%rip), %xmm5
 	mulps	%xmm3, %xmm5
-	addps	sPoly + 48 + __svml_slog10_data_internal(%rip), %xmm5
+	addps	LOCAL_DATA(_Coeff_6)(%rip), %xmm5
 	addps	%xmmA, %xmm5
 	mulps	%xmm2, %xmm5
-	movups	sPoly + 64 + __svml_slog10_data_internal(%rip), %xmmA
+	movups	LOCAL_DATA(_Coeff_5)(%rip), %xmmA
 	mulps	%xmm3, %xmmA
-	addps	sPoly + 80 + __svml_slog10_data_internal(%rip), %xmmA
+	addps	LOCAL_DATA(_Coeff_4)(%rip), %xmmA
 	addps	%xmm5, %xmmA
 	mulps	%xmmA, %xmm2
-	movups	sPoly + 96 + __svml_slog10_data_internal(%rip), %xmmA
+	movups	LOCAL_DATA(_Coeff_3)(%rip), %xmmA
 	mulps	%xmm3, %xmmA
-	addps	sPoly + 112 + __svml_slog10_data_internal(%rip), %xmmA
+	addps	LOCAL_DATA(_Coeff_2)(%rip), %xmmA
 	addps	%xmm2, %xmmA
 	mulps	%xmm3, %xmmA
-	addps	sPoly + 128 + __svml_slog10_data_internal(%rip), %xmmA
+	addps	LOCAL_DATA(_Coeff_1)(%rip), %xmmA
 	mulps	%xmmA, %xmm3
 	addps	%xmm3, %xmm0
-	movups	L2H + __svml_slog10_data_internal(%rip), %xmm2
+	movups	LOCAL_DATA(_L2H)(%rip), %xmm2
 	mulps	%xmm4, %xmm2
 	addps	%xmm2, %xmm0
 	/* N.  */
@@ -155,58 +160,20 @@ L(SPECIAL_VALUES_LOOP):
 	ret
 END(log10f_4_sse4_dev)
 
-	.section .rodata, "a"
+	.section .rodata.sse4, "a"
 	.align	16
 
-#ifdef __svml_slog10_data_internal_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(16))VUINT32 MinNorm[4][1];
-	__declspec (align(16))VUINT32 MaxNorm[4][1];
-	__declspec (align(16))VUINT32 L2H[4][1];
-	__declspec (align(16))VUINT32 L2L[4][1];
-	__declspec (align(16))VUINT32 iBrkValue[4][1];
-	__declspec (align(16))VUINT32 iOffExpoMask[4][1];
-	__declspec (align(16))VUINT32 One[4][1];
-	__declspec (align(16))VUINT32 sPoly[9][4][1];
-	__declspec (align(16))VUINT32 L2[4][1];
-	}__svml_slog10_data_internal;
-#endif
-__svml_slog10_data_internal:
-	/* MinNorm.  */
-	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
-	/* MaxNorm.  */
-	.align	16
-	.long	0x01000000, 0x01000000, 0x01000000, 0x01000000
-	/* L2H.  */
-	.align	16
-	.long	0x3e9a2100, 0x3e9a2100, 0x3e9a2100, 0x3e9a2100
-	/* L2L.  */
-	.align	16
-	.long	0xb64AF600, 0xb64AF600, 0xb64AF600, 0xb64AF600
-	/* iBrkValue = SP 2/3.  */
-	.align	16
-	.long	0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab
-	/* iOffExpoMask = SP significand mask.  */
-	.align	16
-	.long	0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff
-	/* sOne = SP 1.0.  */
-	.align	16
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	/* spoly[9].  */
-	.align	16
-	.long	0x3d8063B4, 0x3d8063B4, 0x3d8063B4, 0x3d8063B4	/* coeff9 */
-	.long	0xbd890073, 0xbd890073, 0xbd890073, 0xbd890073	/* coeff8 */
-	.long	0x3d775317, 0x3d775317, 0x3d775317, 0x3d775317	/* coeff7 */
-	.long	0xbd91FB27, 0xbd91FB27, 0xbd91FB27, 0xbd91FB27	/* coeff6 */
-	.long	0x3dB20B96, 0x3dB20B96, 0x3dB20B96, 0x3dB20B96	/* coeff5 */
-	.long	0xbdDE6E20, 0xbdDE6E20, 0xbdDE6E20, 0xbdDE6E20	/* coeff4 */
-	.long	0x3e143CE5, 0x3e143CE5, 0x3e143CE5, 0x3e143CE5	/* coeff3 */
-	.long	0xbe5E5BC5, 0xbe5E5BC5, 0xbe5E5BC5, 0xbe5E5BC5	/* coeff2 */
-	.long	0x3eDE5BD9, 0x3eDE5BD9, 0x3eDE5BD9, 0x3eDE5BD9	/* coeff1 */
-	/* L2.  */
-	.align	16
-	.long	0x3e9a209b, 0x3e9a209b, 0x3e9a209b, 0x3e9a209b
-	.align	16
-	.type	__svml_slog10_data_internal, @object
-	.size	__svml_slog10_data_internal, .-__svml_slog10_data_internal
+LOCAL_DATA_NAME:
+	DATA_VEC (LOCAL_DATA_NAME, _L2L, 0xb64af600)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_9, 0x3d8063b4)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_8, 0xbd890073)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_7, 0x3d775317)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_6, 0xbd91fb27)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_5, 0x3db20b96)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_4, 0xbdde6e20)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_3, 0x3e143ce5)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_2, 0xbe5e5bc5)
+	DATA_VEC (LOCAL_DATA_NAME, _Coeff_1, 0x3ede5bd9)
+	DATA_VEC (LOCAL_DATA_NAME, _L2H, 0x3e9a2100)
+	.type	LOCAL_DATA_NAME, @object
+	.size	LOCAL_DATA_NAME, .-LOCAL_DATA_NAME

@@ -18,7 +18,8 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-
+#define LOCAL_DATA_NAME	__svml_dev_slog_data_avx512
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define _sPoly_1                      	0
 #define _sPoly_2                      	64
 #define _sPoly_3                      	128
@@ -62,40 +63,39 @@ ENTRY(logf_16_avx512_dev)
 	   for 4-ulp, degree 3 for half-precision.  */
 
 
-	vmovups	_iBrkValue+ __svml_dev_slog_data_avx512(%rip), %zmm4
-	vmovups	_sPoly_7+ __svml_dev_slog_data_avx512(%rip), %zmm8
+	vmovups	LOCAL_DATA(_iBrkValue) (%rip), %zmm4
+	vmovups	LOCAL_DATA(_sPoly_7) (%rip), %zmm8
 
 	/* check for working range, set special argument mask
 	   (denormals/zero/Inf/NaN).  */
-	vmovups	_iHiDelta+ __svml_dev_slog_data_avx512(%rip), %zmm3
-	vpaddd	%zmm3, %zmm0, %zmm1
-	// vpaddd  _iOffExpoMask+ __svml_dev_slog_data_avx512(%rip), %zmm0, %zmm1
+	vmovups	LOCAL_DATA(_iHiDelta) (%rip), %zmm3
+	vpsubd	%zmm3, %zmm0, %zmm1
+	// LOCAL_DATA(vpaddd  _iOffExpoMask) (%rip), %zmm0, %zmm1
 
 	/* reduction: compute r,n.  */
 	vpsubd	%zmm4, %zmm0, %zmm2
-	vmovups	_iLoRange+ __svml_dev_slog_data_avx512(%rip), %zmm7
-	vpcmpd	$2, %zmm7, %zmm1, %k0
-
+	vpcmpd	$2, LOCAL_DATA(_iLoRange)(%rip){1to16}, %zmm1, %k0
 	/* exponent_x (mantissa_x<4/3) or exponent_x+1 (mantissa_x>4/3).
 	 */
 	vpsrad	$23, %zmm2, %zmm5
-	vpternlogd $0x28, %zmm2, %zmm7, %zmm3
-	// vpandd  _iOffExpoMask+ __svml_dev_slog_data_avx512(%rip), %zmm2, %zmm3
+    vpandnd  %zmm2, %zmm3, %zmm3
+
+	// LOCAL_DATA(vpandd  _iOffExpoMask) (%rip), %zmm2, %zmm3
 
 	/* mantissa_x (mantissa_x<4/3), or 0.5*mantissa_x
 	   (mantissa_x>4/3).  */
 	vpaddd	%zmm4, %zmm3, %zmm7
 
 	/* reduced argument R.  */
-	vsubps	_sOne+ __svml_dev_slog_data_avx512(%rip), %zmm7, %zmm9
+	vsubps	LOCAL_DATA(_sOne) (%rip), %zmm7, %zmm9
 
 	/* polynomial evaluation starts here.  */
-	vfmadd213ps _sPoly_6+ __svml_dev_slog_data_avx512(%rip), %zmm9, %zmm8
-	vfmadd213ps _sPoly_5+ __svml_dev_slog_data_avx512(%rip), %zmm9, %zmm8
-	vfmadd213ps _sPoly_4+ __svml_dev_slog_data_avx512(%rip), %zmm9, %zmm8
-	vfmadd213ps _sPoly_3+ __svml_dev_slog_data_avx512(%rip), %zmm9, %zmm8
-	vfmadd213ps _sPoly_2+ __svml_dev_slog_data_avx512(%rip), %zmm9, %zmm8
-	vfmadd213ps _sPoly_1+ __svml_dev_slog_data_avx512(%rip), %zmm9, %zmm8
+	vfmadd213ps LOCAL_DATA(_sPoly_6) (%rip), %zmm9, %zmm8
+	vfmadd213ps LOCAL_DATA(_sPoly_5) (%rip), %zmm9, %zmm8
+	vfmadd213ps LOCAL_DATA(_sPoly_4) (%rip), %zmm9, %zmm8
+	vfmadd213ps LOCAL_DATA(_sPoly_3) (%rip), %zmm9, %zmm8
+	vfmadd213ps LOCAL_DATA(_sPoly_2) (%rip), %zmm9, %zmm8
+	vfmadd213ps LOCAL_DATA(_sPoly_1) (%rip), %zmm9, %zmm8
 	vmulps	%zmm9, %zmm8, %zmm10
 
 	/* polynomial evaluation end.  */
@@ -104,7 +104,7 @@ ENTRY(logf_16_avx512_dev)
 	kmovw	%k0, %ecx
 	/* final reconstruction: add exponent_value*log2 to polynomial
 	   result.  */
-	vfmadd132ps _sLn2+ __svml_dev_slog_data_avx512(%rip), %zmm10, %zmm1
+	vfmadd132ps LOCAL_DATA(_sLn2) (%rip), %zmm10, %zmm1
 	testl	%ecx, %ecx
 	jne	L(SPECIAL_VALUES_BRANCH)
 
@@ -185,7 +185,7 @@ END(logf_16_avx512_dev)
 
 
 
-	.section .rodata, "a"
+	.section .rodata.evex512, "a"
 	.align	64
 
 	/* Data table for vector implementations of function logf. The
@@ -219,7 +219,7 @@ __svml_dev_slog_data_avx512:
 	float_vector _sPoly_7 0xbe1b6a22
 
 	/* Constant for work range check: Delta 80000000-7f800000.  */
-	float_vector _iHiDelta 0x00800000
+	float_vector _iHiDelta 0xff800000
 
 	/* Constant for work range check: 00800000 + Delta.  */
 	float_vector _iLoRange 0x00ffffff

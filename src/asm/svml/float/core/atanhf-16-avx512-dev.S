@@ -42,6 +42,8 @@
 /* Offset into __svml_satanh_data_internal_avx512. 4-byte aligned as
    the memory is broadcast to {1to16}.  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
+#define LOCAL_DATA_NAME	__svml_satanh_data_internal_avx512_al64
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define AbsMask				0
 
 /* Offset into __svml_satanh_data_internal_avx512_al64. The full value
@@ -61,12 +63,11 @@
 
 
 
-#define ATANHF_DATA(x)			((x)+__svml_satanh_data_internal_avx512_al64)
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(atanhf_16_avx512_dev)
-	vandps	AbsMask+__svml_satanh_data_internal_avx512(%rip){1to16}, %zmm0, %zmm6
-	vmovups	ATANHF_DATA(One)(%rip), %zmm4
+	vandps	COMMON_DATA(_AbsMask)(%rip){1to16}, %zmm0, %zmm6
+	vmovups	COMMON_DATA(_OneF)(%rip), %zmm4
 
 	/* 1+y */
 	vaddps	{rn-sae}, %zmm4, %zmm6, %zmm9
@@ -75,8 +76,8 @@ ENTRY(atanhf_16_avx512_dev)
 	vsubps	{rn-sae}, %zmm6, %zmm4, %zmm8
 
 	/* round reciprocals to 1+5b mantissas */
-	vmovups	ATANHF_DATA(AddB5)(%rip), %zmm14
-	vmovups	ATANHF_DATA(RcpBitMask)(%rip), %zmm1
+	vmovups	LOCAL_DATA(AddB5)(%rip), %zmm14
+	vmovups	LOCAL_DATA(RcpBitMask)(%rip), %zmm1
 
 	/* RcpP ~ 1/Yp */
 	vrcp14ps %zmm9, %zmm12
@@ -109,8 +110,8 @@ ENTRY(atanhf_16_avx512_dev)
 	/* Reduced argument: Rm = (RcpM*Ym - 1)+RcpM*Ym_low */
 	vfmsub213ps {rn-sae}, %zmm4, %zmm12, %zmm8
 
-	vmovups	ATANHF_DATA(Log_tbl_L_lo)(%rip), %zmm10
-	vmovups	ATANHF_DATA(Log_tbl_L_hi)(%rip), %zmm13
+	vmovups	LOCAL_DATA(Log_tbl_L_lo)(%rip), %zmm10
+	vmovups	LOCAL_DATA(Log_tbl_L_hi)(%rip), %zmm13
 
 	/* exponents */
 	vfmadd231ps {rn-sae}, %zmm7, %zmm3, %zmm9
@@ -125,8 +126,8 @@ ENTRY(atanhf_16_avx512_dev)
 	/* Prepare table index */
 	vpsrld	$18, %zmm7, %zmm3
 	vpsrld	$18, %zmm12, %zmm2
-	vmovups	ATANHF_DATA(Log_tbl_H_lo)(%rip), %zmm11
-	vmovups	ATANHF_DATA(Log_tbl_H_hi)(%rip), %zmm7
+	vmovups	LOCAL_DATA(Log_tbl_H_lo)(%rip), %zmm11
+	vmovups	LOCAL_DATA(Log_tbl_H_hi)(%rip), %zmm7
 	/* Km-Kp */
 
 	vmovaps	%zmm3, %zmm5
@@ -138,22 +139,22 @@ ENTRY(atanhf_16_avx512_dev)
 	vsubps	{rn-sae}, %zmm3, %zmm10, %zmm7
 
 	/* K*L2H + Th */
-	vmovups	ATANHF_DATA(L2H)(%rip), %zmm2
+	vmovups	LOCAL_DATA(L2H)(%rip), %zmm2
 
 	/* K*L2L + Tl */
-	vmovups	ATANHF_DATA(L2L)(%rip), %zmm3
+	vmovups	LOCAL_DATA(L2L)(%rip), %zmm3
 
 	/* table values */
 	vsubps	{rn-sae}, %zmm5, %zmm11, %zmm5
 	vfmadd231ps {rn-sae}, %zmm1, %zmm2, %zmm5
 	vfmadd213ps {rn-sae}, %zmm7, %zmm3, %zmm1
 	/* polynomials */
-	vmovups	ATANHF_DATA(poly_coeff3)(%rip), %zmm7
-	vmovups	ATANHF_DATA(poly_coeff2)(%rip), %zmm10
+	vmovups	LOCAL_DATA(poly_coeff3)(%rip), %zmm7
+	vmovups	LOCAL_DATA(poly_coeff2)(%rip), %zmm10
 	vmovaps	%zmm10, %zmm14
 	vfmadd231ps {rn-sae}, %zmm9, %zmm7, %zmm10
 	vfmadd231ps {rn-sae}, %zmm8, %zmm7, %zmm14
-	vmovups	ATANHF_DATA(poly_coeff1)(%rip), %zmm12
+	vmovups	LOCAL_DATA(poly_coeff1)(%rip), %zmm12
 	vfmadd213ps {rn-sae}, %zmm12, %zmm9, %zmm10
 	vfmadd213ps {rn-sae}, %zmm12, %zmm8, %zmm14
 	vfmadd213ps {rn-sae}, %zmm4, %zmm9, %zmm10

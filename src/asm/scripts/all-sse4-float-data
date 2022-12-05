@@ -1,0 +1,207 @@
+
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000 	/* log2f-MinNorm.  */
+
+	.long	0x01000000, 0x01000000, 0x01000000, 0x01000000 	/* log2f-MaxNorm.  */
+
+	.long	0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab 	/* log2f-iBrkValue = SP 2/3.  */
+
+
+	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000 	/* log2f-sOne = SP 1.0.  */
+	.long	0x3e554012, 0x3e554012, 0x3e554012, 0x3e554012	/* log2f-coeff9 */
+	.long	0xbe638E14, 0xbe638E14, 0xbe638E14, 0xbe638E14	/* log2f-coeff8 */
+	.long	0x3e4D660B, 0x3e4D660B, 0x3e4D660B, 0x3e4D660B	/* log2f-coeff7 */
+	.long	0xbe727824, 0xbe727824, 0xbe727824, 0xbe727824	/* log2f-coeff6 */
+	.long	0x3e93DD07, 0x3e93DD07, 0x3e93DD07, 0x3e93DD07	/* log2f-coeff5 */
+	.long	0xbeB8B969, 0xbeB8B969, 0xbeB8B969, 0xbeB8B969	/* log2f-coeff4 */
+	.long	0x3eF637C0, 0x3eF637C0, 0x3eF637C0, 0x3eF637C0	/* log2f-coeff3 */
+	.long	0xbf38AA2B, 0xbf38AA2B, 0xbf38AA2B, 0xbf38AA2B	/* log2f-coeff2 */
+	.long	0x3fB8AA3B, 0x3fB8AA3B, 0x3fB8AA3B, 0x3fB8AA3B	/* log2f-coeff1 */
+
+
+
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000   	/* log10f-MinNorm.  */
+
+	.align	16
+	.long	0x01000000, 0x01000000, 0x01000000, 0x01000000 	/* log10f-MaxNorm.  */
+
+	.align	16
+	.long	0x3e9a2100, 0x3e9a2100, 0x3e9a2100, 0x3e9a2100 	/* log10f-L2H.  */
+
+	.align	16
+	.long	0xb64AF600, 0xb64AF600, 0xb64AF600, 0xb64AF600 	/* log10f-L2L.  */
+
+	.align	16
+	.long	0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab 	/* log10f-iBrkValue = SP 2/3.  */
+
+	.align	16
+	.long	0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff 	/* unused-iOffExpoMask = SP significand mask.  */
+
+	.align	16
+	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000 	/* log10f-sOne = SP 1.0.  */
+	.align	16
+	.long	0x3d8063B4, 0x3d8063B4, 0x3d8063B4, 0x3d8063B4	/* log10f-coeff9 */
+	.long	0xbd890073, 0xbd890073, 0xbd890073, 0xbd890073	/* log10f-coeff8 */
+	.long	0x3d775317, 0x3d775317, 0x3d775317, 0x3d775317	/* log10f-coeff7 */
+	.long	0xbd91FB27, 0xbd91FB27, 0xbd91FB27, 0xbd91FB27	/* log10f-coeff6 */
+	.long	0x3dB20B96, 0x3dB20B96, 0x3dB20B96, 0x3dB20B96	/* log10f-coeff5 */
+	.long	0xbdDE6E20, 0xbdDE6E20, 0xbdDE6E20, 0xbdDE6E20	/* log10f-coeff4 */
+	.long	0x3e143CE5, 0x3e143CE5, 0x3e143CE5, 0x3e143CE5	/* log10f-coeff3 */
+	.long	0xbe5E5BC5, 0xbe5E5BC5, 0xbe5E5BC5, 0xbe5E5BC5	/* log10f-coeff2 */
+	.long	0x3eDE5BD9, 0x3eDE5BD9, 0x3eDE5BD9, 0x3eDE5BD9	/* log10f-coeff1 */
+
+	.align	16
+	.long	0x3e9a209b, 0x3e9a209b, 0x3e9a209b, 0x3e9a209b 	/* log10f-L2.  */
+
+
+
+	float_vector logf-_sPoly_1 0xbf000000 
+
+	float_vector logf-_sPoly_2 0x3eaaaee7 	
+
+	float_vector logf-_sPoly_3 0xbe80061d 	
+
+
+
+
+	float_vector logf-_sPoly_4 0x3e4afb81	
+
+
+	float_vector logf-_sPoly_5 0xbe289358	
+
+
+	float_vector logf-_sPoly_6 0x3e2db86b	
+
+
+	float_vector logf-_sPoly_7 0xbe1b6a22	
+
+
+	float_vector logf-_iHiDelta 0xff800000	
+
+
+	float_vector logf-_iLoRange 0x01000000	
+
+
+	float_vector logf-_iBrkValue 0x3f2aaaab	
+
+
+	float_vector logf-_iOffExpoMask 0x007fffff	
+
+
+	float_vector logf-_sOne 0x3f800000	
+
+
+	float_vector logf-_sLn2 0x3f317218	
+
+
+
+	.align	16
+	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF	/*tanf- _sAbsMask */
+	.align	16
+	.long	0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983	/*tanf- _sInvPi */
+	.align	16
+	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000	/*tanf- _sRShifter */
+	.align	16
+	.long	0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000	/*tanf- _sPI1 */
+	.align	16
+	.long	0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000	/*tanf- _sPI2 */
+	.align	16
+	.long	0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000	/*tanf- _sPI3 */
+	.align	16
+	.long	0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A	/*tanf- _sPI4 */
+	.align	16
+	.long	0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B	/*tanf- _sQ2 */
+	.align	16
+	.long	0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4	/*tanf- _sP1 */
+	.align	16
+	.long	0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB	/*tanf- _sQ1 */
+	.align	16
+	.long	0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC	/*tanf- _sP0 */
+	.align	16
+	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000	/*tanf- _sRangeReductionVal */
+	.align	16
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000	/*tanf- _sRangeReductionVal_uisa */
+	.align	16
+	.long	0x00800000, 0x00800000, 0x00800000, 0x00800000	/*tanf- _sRangeVal */
+	.align	16
+	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000	/*tanf- _sOne */
+	.align	16
+	.long	0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff	/*tanf- _sLow16 */
+	.align	16
+	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff	/*tanf- _sLow9 */
+	.align	16
+	.long	0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff	/*tanf- _sLow18 */
+	.align	16
+	.long	0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f	/*tanf- _sLow7 */
+	.align	16
+	.long	0x28800000, 0x28800000, 0x28800000, 0x28800000	/*tanf- _FLT_1 */
+	.align	16
+	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb	/*tanf- _FLT_2 */
+	.align	16
+	.long	0x40c91000, 0x40c91000, 0x40c91000, 0x40c91000	/*tanf- FLT_3 */
+	.align	16
+	.long	0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000	/*tanf- Neg4096 */
+	.align	16
+	.long	0x34000000, 0x34000000, 0x34000000, 0x34000000	/*tanf- FLT_4 */
+	.align	16
+	.long	0xb795777a, 0xb795777a, 0xb795777a, 0xb795777a	/*tanf- FLT_5 */
+	.align	16
+	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000	/*tanf- FLT_6 */
+	.align	16
+
+	.long	0x80000000, 0x80000000, 0x80000000, 0x80000000	//atanf- _sSIGN_MASK
+	.align	16
+	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000	//atanf- _sONE
+	.align	16
+	.long	0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB, 0x3FC90FDB	//atanf- _sPIO2
+	.align	16
+	.long	0x3B322CC0, 0x3B322CC0, 0x3B322CC0, 0x3B322CC0	//atanf- _sPC8
+	.align	16
+	.long	0xBC7F2631, 0xBC7F2631, 0xBC7F2631, 0xBC7F2631	//atanf- _sPC7
+	.align	16
+	.long	0x3D2BC384, 0x3D2BC384, 0x3D2BC384, 0x3D2BC384	//atanf- _sPC6
+	.align	16
+	.long	0xBD987629, 0xBD987629, 0xBD987629, 0xBD987629	//atanf- _sPC5
+	.align	16
+	.long	0x3DD96474, 0x3DD96474, 0x3DD96474, 0x3DD96474	//atanf- _sPC4
+	.align	16
+	.long	0xBE1161F8, 0xBE1161F8, 0xBE1161F8, 0xBE1161F8	//atanf- _sPC3
+	.align	16
+	.long	0x3E4CB79F, 0x3E4CB79F, 0x3E4CB79F, 0x3E4CB79F	//atanf- _sPC2
+	.align	16
+	.long	0xBEAAAA49, 0xBEAAAA49, 0xBEAAAA49, 0xBEAAAA49	//atanf- _sPC1
+
+
+
+
+	.align	16
+	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000 	/*atanhf- sOne = SP 1.0 */
+
+	.long	0x7fffffff, 0x7fffffff, 0x7fffffff, 0x7fffffff 	/*atanhf- SgnMask */
+
+	.align	16
+	.long	0xFFFFF000, 0xFFFFF000, 0xFFFFF000, 0xFFFFF000 	/*atanhf- sTopMask12 */
+
+	.align	16
+	.long	0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab, 0x3f2aaaab 	/*atanhf- iBrkValue = SP 2/3 */
+
+	.align	16
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000 	/*atanhf- iOffExpoMask = SP significand mask ==*/
+
+	.align	16
+	.long	0x3e0d84ed, 0x3e0d84ed, 0x3e0d84ed, 0x3e0d84ed /*atanhf- 1.3820238411426544189453125e-01 P7 */
+	.long	0xbe1ad9e3, 0xbe1ad9e3, 0xbe1ad9e3, 0xbe1ad9e3 /*atanhf- -1.5122179687023162841796875e-01 P6 */
+	.long	0x3e0fcb12, 0x3e0fcb12, 0x3e0fcb12, 0x3e0fcb12 /*atanhf- 1.4042308926582336425781250e-01 P5 */
+	.long	0xbe28ad37, 0xbe28ad37, 0xbe28ad37, 0xbe28ad37 /*atanhf- -1.6472326219081878662109375e-01 P4 */
+	.long	0x3e4ce190, 0x3e4ce190, 0x3e4ce190, 0x3e4ce190 /*atanhf- 2.0007920265197753906250000e-01 P3 */
+	.long	0xbe80058e, 0xbe80058e, 0xbe80058e, 0xbe80058e /*atanhf- -2.5004237890243530273437500e-01 P2 */
+	.long	0x3eaaaa94, 0x3eaaaa94, 0x3eaaaa94, 0x3eaaaa94 /*atanhf- 3.3333265781402587890625000e-01 P1 */
+	.long	0xbf000000, 0xbf000000, 0xbf000000, 0xbf000000 /*atanhf- -5.0000000000000000000000000e-01 P0 */
+
+
+	.align	16
+	.long	0x3f317218, 0x3f317218, 0x3f317218, 0x3f317218 	/*atanhf- sLn2 = SP ln(2) */
+
+	.align	16
+	.long	0x0C000000, 0x0C000000, 0x0C000000, 0x0C000000 	/*atanhf- TinyRange */
+    
+    

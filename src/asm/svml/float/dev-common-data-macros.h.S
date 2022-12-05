@@ -1,3 +1,6 @@
+#ifndef SRC_D_ASM_D_SVML_D_FLOAT_D_DEV_COMMON_DATA_MACROS_H_S_
+#define SRC_D_ASM_D_SVML_D_FLOAT_D_DEV_COMMON_DATA_MACROS_H_S_
+
 .macro check_offset data_section offset
 	.if	.-\data_section != \offset
 	.err
@@ -22,3 +25,6 @@
 	float_vectorN data_section 8 offset value
 #define float_vector64(data_section, offset, value)	\
 	float_vectorN data_section 16 offset value
+
+
+#endif

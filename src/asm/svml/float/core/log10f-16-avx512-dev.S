@@ -31,6 +31,8 @@
 /* Offsets for data table __svml_slog10_data_internal_avx512
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
+#define LOCAL_DATA_NAME	__svml_slog10_data_internal_avx512
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define One	0
 #define coeff4	64
 #define coeff3	128
@@ -43,21 +45,21 @@
 	.section .text.evex512, "ax", @progbits
 ENTRY(log10f_16_avx512_dev)
 	vgetmantps $11, {sae}, %zmm0, %zmm3
-	vmovups	__svml_slog10_data_internal_avx512(%rip), %zmmA
+	vmovups	LOCAL_DATA(_OneF)(%rip), %zmmA
 	vgetexpps {sae}, %zmm0, %zmm5
 	vpsrld	$19, %zmm3, %zmm7
 	vgetexpps {sae}, %zmm3, %zmm6
 	vsubps	{rn-sae}, %zmm1, %zmm3, %zmm11
-	vpermps	coeff4 + __svml_slog10_data_internal_avx512(%rip), %zmm7, %zmmA
-	vpermps	coeff3 + __svml_slog10_data_internal_avx512(%rip), %zmm7, %zmm2
+	vpermps	LOCAL_DATA(coeff4)(%rip), %zmm7, %zmmA
+	vpermps	LOCAL_DATA(coeff3)(%rip), %zmm7, %zmm2
 	vsubps	{rn-sae}, %zmm6, %zmm5, %zmm9
-	vpermps	coeff2 + __svml_slog10_data_internal_avx512(%rip), %zmm7, %zmm4
-	vpermps	coeff1 + __svml_slog10_data_internal_avx512(%rip), %zmm7, %zmm8
+	vpermps	LOCAL_DATA(coeff2)(%rip), %zmm7, %zmm4
+	vpermps	LOCAL_DATA(coeff1)(%rip), %zmm7, %zmm8
 
 	/* x<=0?  */
 	vfpclassps $0x5e, %zmm0, %k0
 	vfmadd213ps {rn-sae}, %zmm2, %zmm11, %zmmA
-	vmulps	L2 + __svml_slog10_data_internal_avx512(%rip), %zmm9, %zmm12
+	vmulps	LOCAL_DATA(L2)(%rip), %zmm9, %zmm12
 	vfmadd213ps {rn-sae}, %zmm4, %zmm11, %zmmA
 	vfmadd213ps {rn-sae}, %zmm8, %zmm11, %zmmA
 	vfmadd213ps {rn-sae}, %zmm12, %zmm11, %zmmA
@@ -120,7 +122,7 @@ L(SPECIAL_VALUES_LOOP):
 	/* Scalar math fucntion call to process special input.  */
 	movss	64(%rsp, %rbp, 4), %xmm0
 	call	log10f@PLT
-    INC_FALLBACK0
+	INC_FALLBACK0
 	/* No good way to avoid the store-forwarding fault this will
 	   cause on return. `lfence` avoids the SF fault but at greater
 	   cost as it serialized stack/callee save restoration.  */
@@ -144,20 +146,9 @@ L(SPECIAL_VALUES_LOOP):
 	ret
 END(log10f_16_avx512_dev)
 
-	.section .rodata, "a"
+	.section .rodata.evex512, "a"
 	.align	64
 
-#ifdef __svml_slog10_data_internal_avx512_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(64))VUINT32 One[16][1];
-	__declspec (align(64))VUINT32 coeff4[16][1];
-	__declspec (align(64))VUINT32 coeff3[16][1];
-	__declspec (align(64))VUINT32 coeff2[16][1];
-	__declspec (align(64))VUINT32 coeff1[16][1];
-	__declspec (align(64))VUINT32 L2[16][1];
-	}__svml_slog10_data_internal_avx512;
-#endif
 __svml_slog10_data_internal_avx512:
 	/* One.  */
 	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000

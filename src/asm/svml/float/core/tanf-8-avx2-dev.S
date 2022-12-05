@@ -74,9 +74,8 @@
 #define FLT_9	576
 #define FLT_10	608
 #define FLT_11	640
-#define FLT_12	672
-#define _Reduction	704
-#define _Coeffs	3776
+#define _Reduction	672
+#define _Coeffs	3744
 
 
 #define xmmA	xmm1
@@ -310,6 +309,7 @@ L(AUX_BRANCH):
 	vmovdqa	COMMON_DATA(_OneF)(%rip), %ymm15
 	vpor	%ymm15, %ymm6, %ymm6
 
+    
 	vpand	LOCAL_DATA(FLT_6)(%rip), %ymm2, %ymm3
 	vpor	%ymm7, %ymm4, %ymm5
 	vmovdqa	LOCAL_DATA(FLT_7)(%rip), %ymm4
@@ -331,13 +331,12 @@ L(AUX_BRANCH):
 
 	/* Grab our final N value as an integer, appropriately masked
 	   mod 2^8.  */
-	vpand	LOCAL_DATA(FLT_9)(%rip), %ymm13, %ymm13
 	vpor	%ymm4, %ymm2, %ymm2
 	vsubps	%ymm0, %ymm6, %ymm6
 	vsubps	%ymm7, %ymm5, %ymm0
 	vsubps	%ymm4, %ymm2, %ymm14
 
-	vmovups	LOCAL_DATA(FLT_10)(%rip), %ymm4
+	vmovups	LOCAL_DATA(FLT_9)(%rip), %ymm4
 	/* Now add them up into 2 reasonably aligned pieces.  */
 	vaddps	%ymm14, %ymm6, %ymm2
 	vsubps	%ymm2, %ymm6, %ymm6
@@ -348,7 +347,7 @@ L(AUX_BRANCH):
 	vfmsub213ps %ymm7, %ymm2, %ymm0
 
 
-	vfmadd132ps LOCAL_DATA(FLT_11)(%rip), %ymm0, %ymm2
+	vfmadd132ps LOCAL_DATA(FLT_10)(%rip), %ymm0, %ymm2
 	vpcmpgtd %ymm4, %ymmA, %ymm5
 
 	/* * The output is _VRES_R (high) + _VRES_E (low), and the
@@ -359,7 +358,7 @@ L(AUX_BRANCH):
 	   sin/cos with period 2pi * but we want it modulo 128 since
 	   tan has period pi.  */
 
-	vpand	LOCAL_DATA(FLT_12)(%rip), %ymm13, %ymm0
+	vpand	LOCAL_DATA(FLT_11)(%rip), %ymm13, %ymm0
 	vfmadd213ps %ymm2, %ymm3, %ymm8
 
 
@@ -643,17 +642,25 @@ END(tanf_8_avx2_dev)
 	.section .rodata.avx2, "a"
 	.align	32
 LOCAL_DATA_NAME:
+#if 0	
+	DATA_VEC (LOCAL_DATA_NAME, _sPI2_FMA, 0xB33BBD2E) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, _sPI3_FMA, 0xA6F72CED) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_0, 0x7f800000) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_1, 0x00000080) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_10, 0x35800000) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_11, 0xb43bbd2e) // avx2
+#endif
 	DATA_VEC (LOCAL_DATA_NAME, _sInvPi, 0x3F22F983)
 	DATA_VEC (LOCAL_DATA_NAME, _sRShifter, 0x4B400000)
-	DATA_VEC (LOCAL_DATA_NAME, _sPI2_FMA, 0xB33BBD2E)
-	DATA_VEC (LOCAL_DATA_NAME, _sPI3_FMA, 0xA6F72CED)
+	DATA_VEC (LOCAL_DATA_NAME, _sPI2_FMA, 0xB33BBD2E) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, _sPI3_FMA, 0xA6F72CED) // avx2
 	DATA_VEC (LOCAL_DATA_NAME, _sQ2, 0x3C1F336B)
 	DATA_VEC (LOCAL_DATA_NAME, _sP1, 0xBDC433B4)
 	DATA_VEC (LOCAL_DATA_NAME, _sQ1, 0xBEDBB7AB)
 	DATA_VEC (LOCAL_DATA_NAME, _sP0, 0x3F7FFFFC)
 	DATA_VEC (LOCAL_DATA_NAME, _sRangeReductionVal, 0x46010000)
-	DATA_VEC (LOCAL_DATA_NAME, FLT_0, 0x7f800000)
-	DATA_VEC (LOCAL_DATA_NAME, FLT_1, 0x00000080)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_0, 0x7f800000) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_1, 0x00000080) // avx2
 	DATA_VEC (LOCAL_DATA_NAME, FLT_2, 0x0000ffff)
 	DATA_VEC (LOCAL_DATA_NAME, FLT_3, 0x47400000)
 	DATA_VEC (LOCAL_DATA_NAME, FLT_4, 0x28800000)
@@ -661,11 +668,10 @@ LOCAL_DATA_NAME:
 	DATA_VEC (LOCAL_DATA_NAME, FLT_6, 0x000001ff)
 	DATA_VEC (LOCAL_DATA_NAME, FLT_7, 0x34000000)
 	DATA_VEC (LOCAL_DATA_NAME, FLT_8, 0x40c90fdb)
-	DATA_VEC (LOCAL_DATA_NAME, FLT_9, 0x000000ff)
-	DATA_VEC (LOCAL_DATA_NAME, FLT_10, 0x35800000)
-	DATA_VEC (LOCAL_DATA_NAME, FLT_11, 0xb43bbd2e)
-	DATA_VEC (LOCAL_DATA_NAME, FLT_12, 0x0000007f)
-	DATA_BLOCK (LOCAL_DATA_NAME, _Reduction,
+	DATA_VEC (LOCAL_DATA_NAME, FLT_9, 0x35800000) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_10, 0xb43bbd2e) // avx2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_11, 0x0000007f)
+	float_block (LOCAL_DATA_NAME, _Reduction,
 	/* P_hi     P_med       P_lo.  */
 	0x00000000, 0x00000000, 0x00000000,	/* 0 */
 	0x00000000, 0x00000000, 0x00000000,	/* 1 */
@@ -924,7 +930,7 @@ LOCAL_DATA_NAME:
 	0x4D377036, 0xD8A5664F, 0x10E4107F,	/* 254 */
 	0x9A6EE06D, 0xB14ACC9E, 0x21C820FF	/* 255 */)
 	/* _Coeffs Breakpoint B = 0 * pi/128, function tan(B + x).  */
-	DATA_BLOCK (LOCAL_DATA_NAME, _Coeffs,
+	float_block (LOCAL_DATA_NAME, _Coeffs,
 	0x3FC90FDB,	/* B' = pi/2 - B (high single).  */
 	0xB33BBD2E,	/* B' = pi/2 - B (low single).  */
 	0x00000000,	/* tau (1 for cot path).  */

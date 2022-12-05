@@ -49,6 +49,8 @@
 /* Offsets for data table __svml_stan_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
+#define LOCAL_DATA_NAME	__svml_slog10_data_internal
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
 #define _sInvPI_uisa	0
 #define _sPI1_uisa	16
 #define _sPI2_uisa	32
@@ -97,15 +99,10 @@ ENTRY(tanf_4_sse4_dev)
 	/* Range reduction.  */
 	movaps	%xmm4, %xmmA
 
-	/*
-	 *
-	 * Main path (_LA_ and _EP_)
-	 *
-	 * Octant calculation
-	 */
+	/* * * Main path (_LA_ and _EP_) * * Octant calculation.  */
 	movups	_sRShifter + __svml_stan_data_internal(%rip), %xmm3
 
-	/* Large values check */
+	/* Large values check.  */
 	movups	_sPI1 + __svml_stan_data_internal(%rip), %xmm5
 	movups	_sPI2 + __svml_stan_data_internal(%rip), %xmm6
 	addps	%xmm3, %xmm0
@@ -125,24 +122,25 @@ ENTRY(tanf_4_sse4_dev)
 	/* Rational approximation.  */
 	movups	_sP1 + __svml_stan_data_internal(%rip), %xmm5
 
-    /* Inversion mask and sign calculation */
+	/* Inversion mask and sign calculation.  */
 	pslld	$31, %xmm0
 	subps	%xmm7, %xmmA
 
 	/* Exchanged numerator and denominator if necessary.  */
 
 
-    /* Exchanged numerator and denominator if necessary */
+	/* Exchanged numerator and denominator if necessary.  */
 	subps	%xmm2, %xmmA
 	movaps	%xmmA, %xmm3
 	mulps	%xmmA, %xmmA
 	mulps	%xmmA, %xmm6
 	mulps	%xmmA, %xmm5
 	addps	_sQ1 + __svml_stan_data_internal(%rip), %xmm6
-	addps	_sP0 + __svml_stan_data_internal(%rip), %xmm5
+	movaps	_sP0 + __svml_stan_data_internal(%rip), %xmm2
+	addps	%xmm2, %xmm5
 	mulps	%xmm6, %xmmA
 	mulps	%xmm5, %xmm3
-	addps	_sQ0 + __svml_stan_data_internal(%rip), %xmmA
+	addps	%xmm2, %xmmA
 
 	movaps	%xmm3, %xmm2
 	blendvps %xmm0, %xmmA, %xmm3
@@ -195,7 +193,7 @@ L(AUX_BRANCH):
 
 
 	movaps	_sRangeReductionVal_uisa + __svml_stan_data_internal(%rip), %xmm15
-	pand	%xmm4, %xmm15
+	pandn	%xmm4, %xmm15
 	por	%xmm3, %xmm15
 
 	psrld	$23, %xmm4
@@ -246,7 +244,7 @@ L(AUX_BRANCH):
 	pand	%xmm8, %xmm3
 
 	movdqa	%xmm15, %xmm12
-    psrld	$16, %xmm12
+	psrld	$16, %xmm12
 	movdqa	%xmm15, %xmm11
 	psrlq	$48, %xmm11
 
@@ -258,7 +256,7 @@ L(AUX_BRANCH):
 	movdqa	%xmm10, %xmm7
 
 	movdqa	%xmmA, %xmm0
-    psrld	$16, %xmm0
+	psrld	$16, %xmm0
 
 	pand	%xmm8, %xmmA
 	movdqa	%xmmA, %xmm14
@@ -280,7 +278,7 @@ L(AUX_BRANCH):
 	movdqa	%xmm6, %xmm0
 	psrld	$16, %xmm0
 	movdqa	%xmm6, %xmmA
-    psrlq	$48, %xmmA
+	psrlq	$48, %xmmA
 
 	movdqu	%xmm0, %xmm9
 
@@ -295,8 +293,8 @@ L(AUX_BRANCH):
 	movdqa	%xmm10, %xmm13
 	pmuludq	%xmmA, %xmm13
 	movdqa	%xmm15, %xmmA
-    pmuludq	%xmm6, %xmmA
-    pmuludq	%xmm12, %xmm6
+	pmuludq	%xmm6, %xmmA
+	pmuludq	%xmm12, %xmm6
 
 	movdqa	%xmm10, %xmm14
 	pmuludq	%xmm5, %xmm14
@@ -366,7 +364,7 @@ L(AUX_BRANCH):
 	movdqu	192(%rsp), %xmm6
 	pmuludq	%xmm11, %xmm6
 	pmuludq	176(%rsp), %xmm11
-    psllq	$32, %xmm11
+	psllq	$32, %xmm11
 	blendps	$0xaa, %xmm11, %xmm12
 	paddd	%xmm5, %xmm12
 
@@ -873,6 +871,8 @@ END(tanf_4_sse4_dev)
 	__declspec (align(16))VUINT32 _sCoeffs[128][10][1];
 	}__svml_stan_data_internal;
 #endif
+	
+// BEGINN
 __svml_stan_data_internal:
 	/* UISA.  */
 	.long	0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983	/* _sInvPI_uisa */
@@ -913,7 +913,7 @@ __svml_stan_data_internal:
 	.align	16
 	.long	0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888	/* _sPC5_uisa */
 	.align	16
-	.long	0x007fffff, 0x007fffff, 0x007fffff, 0x007fffff	/* _sRangeVal */
+	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000	/* _sRangeVal */
 	.align	16
 	.long	0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983	/* _sInvPi */
 	.align	16
@@ -2511,8 +2511,3 @@ __svml_stan_reduction_data_internal:
 	.type	__svml_stan_reduction_data_internal, @object
 	.size	__svml_stan_reduction_data_internal, .-__svml_stan_reduction_data_internal
 	.align	16
-
-.FLT_16:
-	.long	0xffffffff, 0x00000000, 0xffffffff, 0x00000000
-	.type	.FLT_16, @object
-	.size	.FLT_16, 16
