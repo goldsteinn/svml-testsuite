@@ -19,178 +19,235 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 
-#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/dev-logf-data.h"
+#define _sPoly_1	0
+#define _sPoly_2	64
+#define _sPoly_3	128
+#define _sPoly_4	192
+#define _sPoly_5	256
+#define _sPoly_6	320
+#define _sPoly_7	384
+#define _iHiDelta	448
+#define _iLoRange	512
+#define _iBrkValue	576
+#define _iOffExpoMask	640
+#define _sOne	704
+#define _sLn2	768
+#define _sInfs	832
+#define _sOnes	896
+#define _sZeros	960
 
+.macro float_vector offset value
+	.if	.-__svml_dev_slog_data_sse4 != \offset
+	.err
+	.endif
+	.rept	16
+	.long	\value
+	.endr
+.endm
+
+#define xmmA	xmm1
 	.section .text.sse4, "ax", @progbits
-ENTRY (logf_4_sse4_dev)
-/*
-   ALGORITHM DESCRIPTION:
+ENTRY(logf_4_sse4_dev)
+	// Code Out Begin
+	movdqu	_iLoRange + __svml_dev_slog_data_sse4(%rip), %xmmA
+	/* ALGORITHM DESCRIPTION: log(x) = exponent_x*log(2) + for
+	   4-ulp, degree 3 for half-precision.  */
+	/* reduction: compute r,n.  */
+	/* check for working range, set special argument mask
+	   (denormals/zero/Inf/NaN).  */
+	movdqu	_iHiDelta + __svml_dev_slog_data_sse4(%rip), %xmm2
+	movaps	%xmm0, %xmm3
+	psubd	%xmm2, %xmm3
+	pcmpgtd	%xmm3, %xmmA
+	movmskps %xmmA, %eax
 
-     log(x) = exponent_x*log(2) + log(mantissa_x),         if mantissa_x<4/3
-     log(x) = (exponent_x+1)*log(2) + log(0.5*mantissa_x), if mantissa_x>4/3
+	movdqu	_iBrkValue + __svml_dev_slog_data_sse4(%rip), %xmmA
+	movaps	%xmm0, %xmm3
+	psubd	%xmmA, %xmm0
+	pandn	%xmm0, %xmm2
+	paddd	%xmmA, %xmm2
+	/* reduced argument R.  */
+	subps	_sOne + __svml_dev_slog_data_sse4(%rip), %xmm2
+	/* exponent_x (mantissa_x<4/3) or exponent_x+1 (mantissa_x>4/3).
+	 */
+	psrad	$0x17, %xmm0
+	/* mantissa_x (mantissa_x<4/3), or 0.5*mantissa_x
+	   (mantissa_x>4/3).  */
+	cvtdq2ps %xmm0, %xmm0
+	/* final reconstruction: add exponent_value*log2 to polynomial
+	   result.  */
+	mulps	_sLn2 + __svml_dev_slog_data_sse4(%rip), %xmm0
+	movups	_sPoly_7 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	/* polynomial evaluation starts here.  */
+	mulps	%xmm2, %xmmA
+	addps	_sPoly_6 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	mulps	%xmm2, %xmmA
+	addps	_sPoly_5 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	mulps	%xmm2, %xmmA
+	addps	_sPoly_4 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	mulps	%xmm2, %xmmA
+	addps	_sPoly_3 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	mulps	%xmm2, %xmmA
+	addps	_sPoly_2 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	mulps	%xmm2, %xmmA
+	addps	_sPoly_1 + __svml_dev_slog_data_sse4(%rip), %xmmA
+	mulps	%xmm2, %xmmA
+	/* polynomial evaluation end.  */
+	mulps	%xmm2, %xmmA
+	addps	%xmmA, %xmm2
+	addps	%xmm2, %xmm0
+	testl	%eax, %eax	/* N. */
+	jne	L(SPECIAL_VALUES_BRANCH)	/* N. */
+	ret	/* N. */
+	/* Cold case. edx has 1s where there was a special value that
+	   more so than speed here.  */
+L(SPECIAL_VALUES_BRANCH):
+	/* Stack coming in 16-byte aligned. Set 8-byte misaligned so on
+	   call entry will be 16-byte aligned.  */
+	/* N.  */
+	/* N.  */
+	subq	$0x38, %rsp	/* N. */
+	/* N.  */
+	movups	%xmm0, 24(%rsp)	/* N. */
+	/* N.  */
+	movups	%xmm3, 40(%rsp)	/* N. */
+	// Code Out End
 
-     R = mantissa_x - 1,     if mantissa_x<4/3
-     R = 0.5*mantissa_x - 1, if mantissa_x>4/3
-     |R|< 1/3
+	/* Use rbx/rbp for callee save registers as they get short
+	   encoding for many instructions (as compared with r12/r13).
+	 */
+	movq	%rbx, (%rsp)
+	cfi_offset (rbx, -64)
+	movq	%rbp, 8(%rsp)
+	cfi_offset (rbp, -56)
+	/* edx has 1s where there was a special value that needs to be
+	   handled by a tanhf call.  */
+	movl	%eax, %ebx
+L(SPECIAL_VALUES_LOOP):
 
-     log(1+R) is approximated as a polynomial: degree 9 for 1-ulp,
-     degree 7 for 4-ulp, degree 3 for half-precision.  */
+	/* use rbp as index for special value that is saved across calls
+	   to tanhf. We technically don't need a callee save register
+	   here as offset to rsp is always [0, 12] so we can restore
+	   rsp by realigning to 64. Essentially the tradeoff is 1 extra
+	   save/restore vs 2 extra instructions in the loop.  */
+	xorl	%ebp, %ebp
+	bsfl	%ebx, %ebp
 
-        pushq     %rbp
-        cfi_adjust_cfa_offset (8)
-        cfi_rel_offset (%rbp, 0)
-        movq      %rsp, %rbp
-        cfi_def_cfa_register (%rbp)
-        andq      $-64, %rsp
-        subq      $320, %rsp
+	/* Scalar math fucntion call to process special input.  */
+	movss	40(%rsp, %rbp, 4), %xmm0
+	call	logf@PLT
+	INC_FALLBACK0
+	/* No good way to avoid the store-forwarding fault this will
+	   cause on return. `lfence` avoids the SF fault but at greater
+	   cost as it serialized stack/callee save restoration.  */
+	movss	%xmm0, 24(%rsp, %rbp, 4)
 
-/* reduction: compute r,n */
-        movaps    %xmm0, %xmm2
+	leal	-1(%rbx), %eax
+	andl	%eax, %ebx
+	jnz	L(SPECIAL_VALUES_LOOP)
 
-/* check for working range,
-   set special argument mask (denormals/zero/Inf/NaN) */
-        movq      GOTREF(dev_slog_data)(%rip), %rax
-        movdqu _iHiDelta(%rax), %xmm1
-        movdqu _iLoRange(%rax), %xmm4
-        paddd     %xmm0, %xmm1
-        movdqu _iBrkValue(%rax), %xmm3
-        pcmpgtd   %xmm1, %xmm4
-        movdqu _iOffExpoMask(%rax), %xmm1
-        psubd     %xmm3, %xmm2
-        pand      %xmm2, %xmm1
+	/* All results have been written to 24(%rsp).  */
+	movups	24(%rsp), %xmm0
+	movq	(%rsp), %rbx
+	cfi_restore (rbx)
+	movq	8(%rsp), %rbp
+	cfi_restore (rbp)
+	addq	$56, %rsp
+	cfi_def_cfa_offset (8)
+	ret
+END(logf_4_sse4_dev)
 
-/* exponent_x (mantissa_x<4/3) or exponent_x+1 (mantissa_x>4/3) */
-        psrad     $23, %xmm2
-        paddd     %xmm3, %xmm1
-        movups _sPoly_7(%rax), %xmm5
+	.section .rodata, "a"
+	.align	64
 
-/* mantissa_x (mantissa_x<4/3), or 0.5*mantissa_x (mantissa_x>4/3) */
-        cvtdq2ps  %xmm2, %xmm6
+	/* Data table for vector implementations of function logf. The
+	   table may contain polynomial, reduction, lookup coefficients
+	   and other coefficients obtained through different methods of
+	   research and experimental work.  */
 
-/* reduced argument R */
-        subps _sOne(%rax), %xmm1
-        movmskps  %xmm4, %ecx
+	.globl	__svml_dev_slog_data_sse4
+__svml_dev_slog_data_sse4:
 
-/* final reconstruction:
-   add exponent_value*log2 to polynomial result */
-        mulps _sLn2(%rax), %xmm6
+	/* Polynomial sPoly[] coefficients: *
+	   -5.0000000000000000000000000e-01.  */
+	float_vector _sPoly_1 0xbf000000
 
-/* polynomial evaluation starts here */
-        mulps     %xmm1, %xmm5
-        addps _sPoly_6(%rax), %xmm5
-        mulps     %xmm1, %xmm5
-        addps _sPoly_5(%rax), %xmm5
-        mulps     %xmm1, %xmm5
-        addps _sPoly_4(%rax), %xmm5
-        mulps     %xmm1, %xmm5
-        addps _sPoly_3(%rax), %xmm5
-        mulps     %xmm1, %xmm5
-        addps _sPoly_2(%rax), %xmm5
-        mulps     %xmm1, %xmm5
-        addps _sPoly_1(%rax), %xmm5
-        mulps     %xmm1, %xmm5
+	/* 3.3336564898490905761718750e-01.  */
+	float_vector _sPoly_2 0x3eaaaee7
 
-/* polynomial evaluation end */
-        mulps     %xmm1, %xmm5
-        addps     %xmm5, %xmm1
-        addps     %xmm6, %xmm1
-        testl     %ecx, %ecx
-        jne       .LBL_1_3
+	/* -2.5004664063453674316406250e-01.  */
+	float_vector _sPoly_3 0xbe80061d
 
-.LBL_1_2:
-        cfi_remember_state
-        movdqa    %xmm1, %xmm0
-        movq      %rbp, %rsp
-        cfi_def_cfa_register (%rsp)
-        popq      %rbp
-        cfi_adjust_cfa_offset (-8)
-        cfi_restore (%rbp)
-        ret
+	/* 1.9822503626346588134765625e-01.  */
+	float_vector _sPoly_4 0x3e4afb81
 
-.LBL_1_3:
-        cfi_restore_state
-        movups    %xmm0, 192(%rsp)
-        movups    %xmm1, 256(%rsp)
-        je        .LBL_1_2
+	/* -1.6462457180023193359375000e-01.  */
+	float_vector _sPoly_5 0xbe289358
 
-        xorb      %dl, %dl
-        xorl      %eax, %eax
-        movups    %xmm8, 112(%rsp)
-        movups    %xmm9, 96(%rsp)
-        movups    %xmm10, 80(%rsp)
-        movups    %xmm11, 64(%rsp)
-        movups    %xmm12, 48(%rsp)
-        movups    %xmm13, 32(%rsp)
-        movups    %xmm14, 16(%rsp)
-        movups    %xmm15, (%rsp)
-        movq      %rsi, 136(%rsp)
-        movq      %rdi, 128(%rsp)
-        movq      %r12, 168(%rsp)
-        cfi_offset_rel_rsp (12, 168)
-        movb      %dl, %r12b
-        movq      %r13, 160(%rsp)
-        cfi_offset_rel_rsp (13, 160)
-        movl      %ecx, %r13d
-        movq      %r14, 152(%rsp)
-        cfi_offset_rel_rsp (14, 152)
-        movl      %eax, %r14d
-        movq      %r15, 144(%rsp)
-        cfi_offset_rel_rsp (15, 144)
-        cfi_remember_state
+	/* 1.6964881122112274169921875e-01.  */
+	float_vector _sPoly_6 0x3e2db86b
 
-.LBL_1_6:
-        btl       %r14d, %r13d
-        jc        .LBL_1_12
+	/* -1.5177205204963684082031250e-01.  */
+	float_vector _sPoly_7 0xbe1b6a22
 
-.LBL_1_7:
-        lea       1(%r14), %esi
-        btl       %esi, %r13d
-        jc        .LBL_1_10
+	/* Constant for work range check: Delta 80000000-7f800000.  */
+	float_vector _iHiDelta 0xff800000
 
-.LBL_1_8:
-        incb      %r12b
-        addl      $2, %r14d
-        cmpb      $16, %r12b
-        jb        .LBL_1_6
+	/* Constant for work range check: 00800000 + Delta.  */
+	float_vector _iLoRange 0x01000000
 
-        movups    112(%rsp), %xmm8
-        movups    96(%rsp), %xmm9
-        movups    80(%rsp), %xmm10
-        movups    64(%rsp), %xmm11
-        movups    48(%rsp), %xmm12
-        movups    32(%rsp), %xmm13
-        movups    16(%rsp), %xmm14
-        movups    (%rsp), %xmm15
-        movq      136(%rsp), %rsi
-        movq      128(%rsp), %rdi
-        movq      168(%rsp), %r12
-        cfi_restore (%r12)
-        movq      160(%rsp), %r13
-        cfi_restore (%r13)
-        movq      152(%rsp), %r14
-        cfi_restore (%r14)
-        movq      144(%rsp), %r15
-        cfi_restore (%r15)
-        movups    256(%rsp), %xmm1
-        jmp       .LBL_1_2
+	/* Mantissa break point  SP 2/3.  */
+	float_vector _iBrkValue 0x3f2aaaab
 
-.LBL_1_10:
-        cfi_restore_state
-        movzbl    %r12b, %r15d
-        movss     196(%rsp,%r15,8), %xmm0
+	/* SP significand mask.  */
+	float_vector _iOffExpoMask 0x007fffff
 
-        call      JUMPTARGET(logf)
+	/* 1.0f.  */
+	float_vector _sOne 0x3f800000
 
-        movss     %xmm0, 260(%rsp,%r15,8)
-        jmp       .LBL_1_8
+	/* SP log(2).  */
+	float_vector _sLn2 0x3f317218
 
-.LBL_1_12:
-        movzbl    %r12b, %r15d
-        movss     192(%rsp,%r15,8), %xmm0
+	/* SP infinity, +/-.  */
+	.if	.-__svml_dev_slog_data_sse4 != _sInfs
+	.err
+	.endif
+	.long	0x7f800000
+	.long	0xff800000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-        call      JUMPTARGET(logf)
+	/* SP one, +/-.  */
+	.if	.-__svml_dev_slog_data_sse4 != _sOnes
+	.err
+	.endif
+	.long	0x3f800000
+	.long	0xbf800000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
 
-        movss     %xmm0, 256(%rsp,%r15,8)
-        jmp       .LBL_1_7
-
-END (logf_4_sse4_dev)
+	/* SP zero +/-.  */
+	.if	.-__svml_dev_slog_data_sse4 != _sZeros
+	.err
+	.endif
+	.long	0x00000000
+	.long	0x80000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.quad	0x0000000000000000
+	.type	__svml_dev_slog_data_sse4, @object
+	.size	__svml_dev_slog_data_sse4, .-__svml_dev_slog_data_sse4

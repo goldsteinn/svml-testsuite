@@ -72,11 +72,11 @@
  */
 
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-avx2-rodata-offsets.h"
 
 /* tanhf data tables for avx2 and sse4 implementatins defined here.
  */
-#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanhf-rodata.S"
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanhf-rodata-avx2.S"
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(tanhf_8_avx2_dev)
@@ -140,7 +140,7 @@ ENTRY(tanhf_8_avx2_dev)
 	vunpcklpd %ymm1, %ymm5, %ymm3
 	vunpckhpd %ymm1, %ymm5, %ymm1
 
-	vmovaps	TANHF_DATA(_sAbsMask)(%rip), %ymm11
+	vmovaps	COMMON_DATA(_AbsMask)(%rip), %ymm11
 	/* Store special cases in ymm15.  */
 	vpcmpgtd TANHF_DATA(_iExpMask)(%rip), %ymm4, %ymm15
 

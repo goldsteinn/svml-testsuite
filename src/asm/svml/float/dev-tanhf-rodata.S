@@ -30,21 +30,9 @@
 
 #define TANHF_DATA(offset)		((offset)+dev_stanh_data_internal_avx2)
 #ifndef ONLY_DECL_OFFSET
-	.section .rodata, "a"
+	.section .rodata.avx2.sse4, "a"
 	.align	32
 
-# ifdef dev_stanh_data_internal_typedef
-typedef unsigned int VUINT32;
-typedef struct
-	{
-	__declspec(align(32)) VUINT32 _iExpMantMask[8][1];
-	__declspec(align(32)) VUINT32 _iMinIdxOfsMask[8][1];
-	__declspec(align(32)) VUINT32 _iMaxIdxMask[8][1];
-	__declspec(align(32)) VUINT32 _sAbsMask[8][1];
-	__declspec(align(32)) VUINT32 _iExpMask[8][1];
-	__declspec(align(32)) VUINT32 _lookupTable[(134*4)][2];
-} dev_stanh_data_internal;
-# endif
 
 
 dev_stanh_data_internal:

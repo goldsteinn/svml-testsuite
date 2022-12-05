@@ -21,6 +21,7 @@
 #ifndef S_LOGF_DATA_H
 #define S_LOGF_DATA_H
 
+#define FOO 64
 #define _sPoly_1                      	0
 #define _sPoly_2                      	64
 #define _sPoly_3                      	128
@@ -38,8 +39,10 @@
 #define _sOnes                        	896
 #define _sZeros                       	960
 
+#define FOOBAR  dev_slog_data
+
 .macro float_vector offset value
-.if .-dev_slog_data != \offset
+.if .-FOOBAR != \offset
 .err
 .endif
 .rept 16

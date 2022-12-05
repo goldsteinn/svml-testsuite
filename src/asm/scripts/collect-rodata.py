@@ -326,8 +326,9 @@ class Macro:
 
         self.insns = None
 
-        assert self.macro_name() not in all_macros, self.macro_name()
-        all_macros[self.macro_name()] = self
+        if self.macro_name() != "float_vector":
+            assert self.macro_name() not in all_macros, self.macro_name()
+        all_macros.setdefault(self.macro_name(), self)
 
     def macro_name(self):
         pieces = self.lines[self.start].split()

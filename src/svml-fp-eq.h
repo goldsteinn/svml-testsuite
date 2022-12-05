@@ -48,8 +48,10 @@ printv64(const char * name, __m512i v) {
                 PRINTV(inp);                                                   \
                 PRINTV(v0);                                                    \
                 PRINTV(v1);                                                    \
-                PRINTV(vsub(v0, v1));                                   \
-                fprintf(stderr, "---- %u ----\n", __LINE__);                   \
+                PRINTV(vsub(v0, v1));                                          \
+                fprintf(stderr, "---- %u (%x vs %x) ----\n", __LINE__,         \
+                        mask_vfpclass(resneq, (vec_T)a0, k_snan),              \
+                        mask_vfpclass(resneq, (vec_T)a1, k_snan));             \
             }
 # else
 #  define FP_EQ_FAIL()                                                         \
@@ -135,20 +137,18 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 #endif
 
+        a0 = vand(v0, VABS_MSK);
+        a1 = vand(v1, VABS_MSK);
+
 #if 0
         resneq = vcmplt(v0, vset1(0)) ^ vcmplt(v1, vset1(0));
         if (UNLIKELY(1 && resneq != 0)) {
             FP_EQ_FAIL();
             return false;
         }
-        a0 = v0;
-        a1 = v1;
-#else
-        a0 = vand(v0, VABS_MSK);
-        a1 = vand(v1, VABS_MSK);
 #endif
 
-        
+
         tmpv0 = v0;
         tmpv1 = v1;
 
@@ -162,15 +162,15 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 
 
-        res0 = vfpclass((vec_T)a0, k_negative);
-        res1 = vfpclass((vec_T)a1, k_negative);
+        res0 = vfpclass((vec_T)v0, k_negative);
+        res1 = vfpclass((vec_T)v1, k_negative);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;
         }
 
-        res0 = mask_vfpclass(resneq, (vec_T)a0, k_snan);
-        res1 = mask_vfpclass(resneq, (vec_T)a1, k_snan);
+        res0 = mask_vfpclass(resneq, (vec_T)a0, k_qnan);
+        res1 = mask_vfpclass(resneq, (vec_T)a1, k_qnan);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;
@@ -182,8 +182,8 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 
 
-        res0  = mask_vfpclass(resneq, (vec_T)a0, k_positive_infinity);
-        res1  = mask_vfpclass(resneq, (vec_T)a1, k_positive_infinity);
+        res0 = mask_vfpclass(resneq, (vec_T)a0, k_positive_infinity);
+        res1 = mask_vfpclass(resneq, (vec_T)a1, k_positive_infinity);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;

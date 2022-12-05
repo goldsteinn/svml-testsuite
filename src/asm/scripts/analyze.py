@@ -2,7 +2,7 @@ import os
 import sys
 import copy
 from common_util import (strs, is_int, vprint, set_verbosity, tern,
-                         push_verbosity, pop_verbosity, vvprint)
+                         push_verbosity, pop_verbosity, vvprint, vvvprint)
 from enum import Enum, IntEnum
 
 G_all_insns = {}
@@ -11,7 +11,7 @@ G_reg_map = None
 G_isa_max = None
 Gk_agu_ops = {"+", "-"}
 G_ruses = None
-
+G_ret_reg = "mm0"
 
 class ISAS(IntEnum):
     GENERIC = 0,
@@ -754,6 +754,7 @@ class Reg_Info():
 
     def is_vec(self):
         return self.rtype == Op_Types.VEC
+
     def is_sp(self):
         return self.name == "rsp"
 
@@ -1314,8 +1315,9 @@ class Insn():
                 if self.ops[i].op_info.is_write():
                     assert self.ops[i].opt.proto_out.ssa_name not in init_in
                     if self.is_ret and False:
+                        global G_ret_reg
                         assert self.ops[i].opt.proto_out.fixed is not None
-                        assert self.ops[i].opt.proto_out.fixed.endswith("mm0")
+                        assert self.ops[i].opt.proto_out.fixed.endswith(G_ret_reg)
 
                         fixed_ssa_out.append(
                             self.ops[i].opt.proto_out.ssa_name)
@@ -1345,7 +1347,20 @@ class Insn():
         if self.insn_info.commute is False:
             return None
         if self.insn_info.commute_custom:
-            if self.name == "blendps":
+            if self.name in {"cmpleps", "cmpltps", "cmpnleps", "cmpnltps"}:
+
+                assert len(self.ops) == 2
+                assert self.ops[1].op_info.op_target == Op_Targets.SRCDST
+                assert self.ops[0].op_info.op_target == Op_Targets.SRC
+
+                if not isinstance(self.ops[0].opt, Reg):
+                    return None
+                if not isinstance(self.ops[1].opt, Reg):
+                    return None
+
+                return self.ops[0].opt.proto_in
+
+            elif self.name == "blendps":
                 assert len(self.ops) == 3
                 assert self.ops[2].op_info.op_target == Op_Targets.SRCDST
                 assert self.ops[1].op_info.op_target == Op_Targets.SRC
@@ -1383,7 +1398,36 @@ class Insn():
             return False
 
         if self.insn_info.commute_custom:
-            if self.name == "blendps":
+            if self.name in {"cmpleps", "cmpltps", "cmpnleps", "cmpnltps"}:
+                swaps = {
+                    "cmpleps": "cmpnleps",
+                    "cmpltps": "cmpnltps",
+                    "cmpnleps": "cmpleps",
+                    "cmpnltps": "cmpltps"
+                }
+                new_name = swaps[self.name]
+#                assert False
+                assert len(self.ops) == 2
+                assert self.ops[1].op_info.op_target == Op_Targets.SRCDST
+                assert self.ops[0].op_info.op_target == Op_Targets.SRC
+
+                if not isinstance(self.ops[0].opt, Reg):
+                    return False
+                if not isinstance(self.ops[1].opt, Reg):
+                    return False
+
+                assert self.ops[0].op_info.op_type == self.ops[
+                    1].op_info.op_type
+                assert self.ops[0].op_info.size() == self.ops[1].op_info.size()
+
+                reg0 = copy.deepcopy(self.ops[0].opt.proto_in)
+                reg1 = copy.deepcopy(self.ops[1].opt.proto_in)
+
+                self.ops[0].opt.proto_in = reg1
+                self.ops[1].opt.proto_in = reg0
+                self.name = new_name
+
+            elif self.name == "blendps":
                 assert len(self.ops) == 3
                 assert self.ops[2].op_info.op_target == Op_Targets.SRCDST
                 assert self.ops[1].op_info.op_target == Op_Targets.SRC
@@ -1938,6 +1982,7 @@ class Insn():
         return self.ops[-1].op_info.op_type == Op_Types.VEC
 
     def fix_return_dst(self):
+        global G_ret_reg
         assert self.insn_info.num_ops() > 0
         assert self.vec_dst()
         assert self.ops[-1].op_info.is_write()
@@ -1945,7 +1990,7 @@ class Insn():
         assert isinstance(self.ops[-1].opt, Reg)
         assert self.ops[-1].opt.proto_out is not None
         assert self.ops[-1].opt.proto_out.fixed is None
-        assert self.ops[-1].opt.rname.endswith("mm0")
+        assert self.ops[-1].opt.rname.endswith(G_ret_reg)
         self.needed = True
 
         self.is_ret = True
@@ -2059,7 +2104,7 @@ def replace_spills(insns):
 
 
 def move_elim(insns):
-
+    vprint("Move Eliminating!")
     for insn in insns:
 
         for op in insn.ops:
@@ -2110,6 +2155,9 @@ def move_elim(insns):
     insns = tmp_insns
     for i in range(0, len(insns)):
         insns[i].iid = i
+
+    for insn in insns:
+        vvvprint(insn.to_str())
 
 
 #        insns[i].pout()
@@ -2497,6 +2545,7 @@ def new_move_insn(insn):
 
 
 def reinsert_moves(insns):
+    vprint("Reinsert Moves")
     global G_ruses
 
     for insn in insns:
@@ -2592,13 +2641,17 @@ def reinsert_moves(insns):
                     if i != true_last_uses[lu]:
                         new_insn, op_src, mov_src, mov_dst = new_move_insn(
                             insns[i])
+                        vvvprint("New Move: {}\n\t{} -> {}".format(
+                            insns[i].to_str(), mov_src, mov_dst))
                         changed = True
                         did_commute = False
                         if op_src is not None:
                             if true_last_uses[op_src] == i:
                                 did_commute = insns[i].do_commute()
+                                vvvprint("COMMUTED!")
 
                         if not did_commute:
+                            vvvprint("INSERTED!")
                             moves[mov_src] = mov_dst
                             tmp_insns.append(new_insn)
                             for op in new_insn.ops:
@@ -2653,6 +2706,8 @@ def reinsert_moves(insns):
         for use in insns[i].uses:
             if true_last_uses[use] == i:
                 insns[i].last_uses.add(use)
+    for insn in insns:
+        vvvprint(insn.to_str())
 
     for i in range(0, len(insns)):
         for j in range(0, len(insns[i].ops)):
@@ -2663,6 +2718,8 @@ def reinsert_moves(insns):
                 assert j == (len(insns[i].ops) - 1)
                 assert op.opt.proto_in.ssa_name in insns[i].last_uses
 
+
+#                assert op.opt.proto_in.ssa_name != "vec-70", "{} -> {}".format(insns[i].to_str(), "vec-70")
     return insns
 
 
@@ -2670,6 +2727,10 @@ class Colorer():
 
     def __init__(self, insns, liveness, fixed_map):
         global G_all_regs
+
+        vprint("Coloring!")
+        for insn in insns:
+            vvvprint(insn.to_str())
         color_sets = {}
         interferences = {}
         for reg in G_all_regs:
@@ -2778,12 +2839,15 @@ class Colorer():
 
         next_color = None
         if must_use is not None:
-            assert must_use in avail
+            assert must_use in avail, "{} -> {}".format(avail, must_use)
             next_color = must_use
+            vvvprint("Coloring2: {} -> {}".format(use, next_color))
         elif len(avail) == 0:
             next_color = self.get_new_color(use)
+            vvvprint("Coloring1: {} -> {}".format(use, next_color))
         else:
             next_color = min(avail)
+            vvvprint("Coloring0: {} -> {}".format(use, next_color))
 
         assert next_color in self.color_sets[tname][1]
         self.color_sets[tname][1].remove(next_color)
@@ -3313,8 +3377,8 @@ def optimize(insn_lines):
         for i in range(0, iter_cnt):
             insns = move_elim(insns)
             insns, init_regs = build_DAG(insns, strat)
-            insns = reinsert_moves(insns)
             insns = restore_needed(insns)
+            insns = reinsert_moves(insns)
             insns, liveness, fixed_map, max_liveness = build_liveness(
                 insns, init_regs)
             cost = len(insns) + max_liveness * 5
@@ -3343,8 +3407,9 @@ def optimize(insn_lines):
             tmp_insns = copy.deepcopy(init_insns)
             for j in range(0, i + 1):
                 tmp_insns, init_regs = build_DAG(tmp_insns, strat)
-            tmp_insns = reinsert_moves(tmp_insns)
             tmp_insns = restore_needed(tmp_insns)
+            tmp_insns = reinsert_moves(tmp_insns)
+
             tmp_insns, liveness, fixed_map, max_liveness = build_liveness(
                 tmp_insns, init_regs)
 
@@ -3414,8 +3479,11 @@ def output(insns, comments, labels):
 
 
 set_verbosity(0)
-assert len(sys.argv) > 2
+assert len(sys.argv) > 3
 G_isa_max = isa_str_to_enum(sys.argv[1])
+if len(sys.argv) > 4:
+    G_ret_reg = sys.argv[4]
+    
 assert G_isa_max is not None
 setup(sys.argv[2])
 insn_lines, comments, labels = split_lines(sys.argv[3])

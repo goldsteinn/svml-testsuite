@@ -178,6 +178,7 @@ L(SCALAR_MATH_CALL):
 	movl	%r12d, %r14d
 	vmovss	32(%rsp, %r14, 4), %xmm0
 	call	log10f@PLT
+    INC_FALLBACK0
 	# LOE rbx r14 r15 r12d r13d xmm0
 
 	vmovss	%xmm0, 64(%rsp, %r14, 4)

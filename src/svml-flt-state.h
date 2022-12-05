@@ -3,7 +3,7 @@
 #include <immintrin.h>
 #include "util/common.h"
 #include "util/random.h"
-
+#include "util/error-util.h"
 #include "svml-test-constants.h"
 typedef struct flt_state {
     __m512i  cnt_;
@@ -92,7 +92,7 @@ flt_state_next2(flt_state_t * flt_state,
                 uint8_t *     scratch1) {
     uint32_t i, state2;
     __m512i  cnt, incr, ncnt, nincr, cnt0, cnt1, incr0, incr1;
-
+    die();
     cnt  = flt_state->cnt_;
     ncnt = _mm512_sub_epi32(_mm512_set1_epi32(0), cnt);
 
