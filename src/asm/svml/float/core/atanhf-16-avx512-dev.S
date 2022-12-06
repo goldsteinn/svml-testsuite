@@ -42,24 +42,22 @@
 /* Offset into __svml_satanh_data_internal_avx512. 4-byte aligned as
    the memory is broadcast to {1to16}.  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define LOCAL_DATA_NAME	__svml_satanh_data_internal_avx512_al64
+#define LOCAL_DATA_NAME	__svml_satanh_data_internal
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
-#define AbsMask				0
 
-/* Offset into __svml_satanh_data_internal_avx512_al64. The full value
+/* Offset into __svml_satanh_data_internal. The full value
    is used here.  */
-#define One				0
-#define AddB5				64
-#define RcpBitMask			128
-#define Log_tbl_L_lo			192
-#define Log_tbl_L_hi			256
-#define Log_tbl_H_lo			320
-#define Log_tbl_H_hi			384
-#define L2H				448
-#define L2L				512
-#define poly_coeff3			576
-#define poly_coeff2			640
-#define poly_coeff1			704
+#define AddB5				0
+#define RcpBitMask			64
+#define Log_tbl_L_lo			128
+#define Log_tbl_L_hi			192
+#define Log_tbl_H_lo			256
+#define Log_tbl_H_hi			320
+#define L2H				384
+#define L2L				448
+#define poly_coeff3			512
+#define poly_coeff2			576
+#define poly_coeff1			640
 
 
 
@@ -154,7 +152,7 @@ ENTRY(atanhf_16_avx512_dev)
 	vmovaps	%zmm10, %zmm14
 	vfmadd231ps {rn-sae}, %zmm9, %zmm7, %zmm10
 	vfmadd231ps {rn-sae}, %zmm8, %zmm7, %zmm14
-	vmovups	LOCAL_DATA(poly_coeff1)(%rip), %zmm12
+	vmovups	COMMON_DATA(_Neg5F)(%rip), %zmm12
 	vfmadd213ps {rn-sae}, %zmm12, %zmm9, %zmm10
 	vfmadd213ps {rn-sae}, %zmm12, %zmm8, %zmm14
 	vfmadd213ps {rn-sae}, %zmm4, %zmm9, %zmm10
@@ -255,155 +253,85 @@ L(SPECIAL_VALUES_LOOP):
 	ret
 END(atanhf_16_avx512_dev)
 
-	.section .rodata, "a"
-	.align	4
-#ifdef __svml_satanh_data_internal_avx512_typedef
-typedef unsigned int VUINT32;
-typedef struct{
-	__declspec(align(4)) VUINT32 AbsMask[1][1];
-	__declspec(align(64)) VUINT32 One[16][1];
-	__declspec(align(64)) VUINT32 AddB5[16][1];
-	__declspec(align(64)) VUINT32 RcpBitMask[16][1];
-	__declspec(align(64)) VUINT32 Log_tbl_L_lo[16][1];
-	__declspec(align(64)) VUINT32 Log_tbl_L_hi[16][1];
-	__declspec(align(64)) VUINT32 Log_tbl_H_lo[16][1];
-	__declspec(align(64)) VUINT32 Log_tbl_H_hi[16][1];
-	__declspec(align(64)) VUINT32 L2H[16][1];
-	__declspec(align(64)) VUINT32 L2L[16][1];
-	__declspec(align(64)) VUINT32 poly_coeff3[16][1];
-	__declspec(align(64)) VUINT32 poly_coeff2[16][1];
-	__declspec(align(64)) VUINT32 poly_coeff1[16][1];
-} __svml_satanh_data_internal_avx512;
-#endif
-__svml_satanh_data_internal_avx512:
-	/* Leave this at front so we can potentially save space due to
-	   smaller alignment constraint.  */
-	.align	4
-    /* AbsMask */
-	.long	0x7fffffff
+	.section .rodata.evex512, "a"
 	.align	64
-__svml_satanh_data_internal_avx512_al64:
-	/* One */
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	/* AddB5 */
-	.align	64
-	.long	0x00020000, 0x00020000, 0x00020000, 0x00020000
-	.long	0x00020000, 0x00020000, 0x00020000, 0x00020000
-	.long	0x00020000, 0x00020000, 0x00020000, 0x00020000
-	.long	0x00020000, 0x00020000, 0x00020000, 0x00020000
-	/* RcpBitMask */
-	.align	64
-	.long	0xfffc0000, 0xfffc0000, 0xfffc0000, 0xfffc0000
-	.long	0xfffc0000, 0xfffc0000, 0xfffc0000, 0xfffc0000
-	.long	0xfffc0000, 0xfffc0000, 0xfffc0000, 0xfffc0000
-	.long	0xfffc0000, 0xfffc0000, 0xfffc0000, 0xfffc0000
-	/* Log_tbl_L_lo */
-	.align	64
-	.long	0x00000000
-	.long	0x3726c39e
-	.long	0x38a30c01
-	.long	0x37528ae5
-	.long	0x38e0edc5
-	.long	0xb8ab41f8
-	.long	0xb7cf8f58
-	.long	0x3896a73d
-	.long	0xb5838656
-	.long	0x380c36af
-	.long	0xb8235454
-	.long	0x3862bae1
-	.long	0x38c5e10e
-	.long	0x38dedfac
-	.long	0x38ebfb5e
-	.long	0xb8e63c9f
-	/* Log_tbl_L_hi */
-	.align	64
-	.long	0xb85c1340
-	.long	0x38777bcd
-	.long	0xb6038656
-	.long	0x37d40984
-	.long	0xb8b85028
-	.long	0xb8ad5a5a
-	.long	0x3865c84a
-	.long	0x38c3d2f5
-	.long	0x383ebce1
-	.long	0xb8a1ed76
-	.long	0xb7a332c4
-	.long	0xb779654f
-	.long	0xb8602f73
-	.long	0x38f85db0
-	.long	0x37b4996f
-	.long	0xb8bfb3ca
-	/* Log_tbl_H_lo */
-	.align	64
-	.long	0x00000000
-	.long	0x3cfc0000
-	.long	0x3d780000
-	.long	0x3db78000
-	.long	0x3df10000
-	.long	0x3e14c000
-	.long	0x3e300000
-	.long	0x3e4a8000
-	.long	0x3e648000
-	.long	0x3e7dc000
-	.long	0x3e8b4000
-	.long	0x3e974000
-	.long	0x3ea30000
-	.long	0x3eae8000
-	.long	0x3eb9c000
-	.long	0x3ec4e000
-	/* Log_tbl_H_hi */
-	.align	64
-	.long	0x3ecfa000
-	.long	0x3eda2000
-	.long	0x3ee48000
-	.long	0x3eeea000
-	.long	0x3ef8a000
-	.long	0x3f013000
-	.long	0x3f05f000
-	.long	0x3f0aa000
-	.long	0x3f0f4000
-	.long	0x3f13d000
-	.long	0x3f184000
-	.long	0x3f1ca000
-	.long	0x3f20f000
-	.long	0x3f252000
-	.long	0x3f295000
-	.long	0x3f2d7000
-	/* L2H = log(2)_high */
-	.align	64
-	.long	0x3f317000, 0x3f317000, 0x3f317000, 0x3f317000
-	.long	0x3f317000, 0x3f317000, 0x3f317000, 0x3f317000
-	.long	0x3f317000, 0x3f317000, 0x3f317000, 0x3f317000
-	.long	0x3f317000, 0x3f317000, 0x3f317000, 0x3f317000
-	/* L2L = log(2)_low */
-	.align	64
-	.long	0x3805fdf4, 0x3805fdf4, 0x3805fdf4, 0x3805fdf4
-	.long	0x3805fdf4, 0x3805fdf4, 0x3805fdf4, 0x3805fdf4
-	.long	0x3805fdf4, 0x3805fdf4, 0x3805fdf4, 0x3805fdf4
-	.long	0x3805fdf4, 0x3805fdf4, 0x3805fdf4, 0x3805fdf4
-	/* poly_coeff3 */
-	.align	64
-	.long	0xbe800810, 0xbe800810, 0xbe800810, 0xbe800810
-	.long	0xbe800810, 0xbe800810, 0xbe800810, 0xbe800810
-	.long	0xbe800810, 0xbe800810, 0xbe800810, 0xbe800810
-	.long	0xbe800810, 0xbe800810, 0xbe800810, 0xbe800810
-	/* poly_coeff2 */
-	.align	64
-	.long	0x3eaab11e, 0x3eaab11e, 0x3eaab11e, 0x3eaab11e
-	.long	0x3eaab11e, 0x3eaab11e, 0x3eaab11e, 0x3eaab11e
-	.long	0x3eaab11e, 0x3eaab11e, 0x3eaab11e, 0x3eaab11e
-	.long	0x3eaab11e, 0x3eaab11e, 0x3eaab11e, 0x3eaab11e
-	/* poly_coeff1 */
-	.align	64
-	.long	0xbf000000, 0xbf000000, 0xbf000000, 0xbf000000
-	.long	0xbf000000, 0xbf000000, 0xbf000000, 0xbf000000
-	.long	0xbf000000, 0xbf000000, 0xbf000000, 0xbf000000
-	.long	0xbf000000, 0xbf000000, 0xbf000000, 0xbf000000
-	.align	64
-	.type	__svml_satanh_data_internal_avx512_al64, @object
-	.size	__svml_satanh_data_internal_avx512_al64, .-__svml_satanh_data_internal_avx512_al64
-	.type	__svml_satanh_data_internal_avx512, @object
-	.size	__svml_satanh_data_internal_avx512, .-__svml_satanh_data_internal_avx512
+LOCAL_DATA_NAME:
+	DATA_VEC (LOCAL_DATA_NAME, AddB5, 0x00020000)
+	DATA_VEC (LOCAL_DATA_NAME, RcpBitMask, 0xfffc0000)
+
+	float_block (LOCAL_DATA_NAME, Log_tbl_L_lo,
+	0x00000000,
+	0x3726c39e,
+	0x38a30c01,
+	0x37528ae5,
+	0x38e0edc5,
+	0xb8ab41f8,
+	0xb7cf8f58,
+	0x3896a73d,
+	0xb5838656,
+	0x380c36af,
+	0xb8235454,
+	0x3862bae1,
+	0x38c5e10e,
+	0x38dedfac,
+	0x38ebfb5e,
+	0xb8e63c9f)
+	float_block (LOCAL_DATA_NAME, Log_tbl_L_hi,
+	0xb85c1340,
+	0x38777bcd,
+	0xb6038656,
+	0x37d40984,
+	0xb8b85028,
+	0xb8ad5a5a,
+	0x3865c84a,
+	0x38c3d2f5,
+	0x383ebce1,
+	0xb8a1ed76,
+	0xb7a332c4,
+	0xb779654f,
+	0xb8602f73,
+	0x38f85db0,
+	0x37b4996f,
+	0xb8bfb3ca)
+	float_block (LOCAL_DATA_NAME, Log_tbl_H_lo,
+	0x00000000,
+	0x3cfc0000,
+	0x3d780000,
+	0x3db78000,
+	0x3df10000,
+	0x3e14c000,
+	0x3e300000,
+	0x3e4a8000,
+	0x3e648000,
+	0x3e7dc000,
+	0x3e8b4000,
+	0x3e974000,
+	0x3ea30000,
+	0x3eae8000,
+	0x3eb9c000,
+	0x3ec4e000)
+	float_block (LOCAL_DATA_NAME, Log_tbl_H_hi,
+	0x3ecfa000,
+	0x3eda2000,
+	0x3ee48000,
+	0x3eeea000,
+	0x3ef8a000,
+	0x3f013000,
+	0x3f05f000,
+	0x3f0aa000,
+	0x3f0f4000,
+	0x3f13d000,
+	0x3f184000,
+	0x3f1ca000,
+	0x3f20f000,
+	0x3f252000,
+	0x3f295000,
+	0x3f2d7000)
+
+	DATA_VEC (LOCAL_DATA_NAME, L2H, 0x3f317000)
+	DATA_VEC (LOCAL_DATA_NAME, L2L, 0x3805fdf4)
+	DATA_VEC (LOCAL_DATA_NAME, poly_coeff3, 0xbe800810)
+	DATA_VEC (LOCAL_DATA_NAME, poly_coeff2, 0x3eaab11e)
+
+	.type	LOCAL_DATA_NAME, @object
+	.size	LOCAL_DATA_NAME, .-LOCAL_DATA_NAME

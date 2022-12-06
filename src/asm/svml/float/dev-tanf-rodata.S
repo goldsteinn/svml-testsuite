@@ -48,21 +48,21 @@
 	.align	32
 	.globl	dev_tanf_data_common_avx2
 dev_tanf_data_common_avx2:
-	DATA_VEC (dev_tanf_data_common_avx2, _sInvPi, 0x3F22F983)
-	DATA_VEC (dev_tanf_data_common_avx2, _sRShifter, 0x4B400000)
-	DATA_VEC (dev_tanf_data_common_avx2, _sQ2, 0x3C1F336B)
-	DATA_VEC (dev_tanf_data_common_avx2, _sP1, 0xBDC433B4)
-	DATA_VEC (dev_tanf_data_common_avx2, _sQ1, 0xBEDBB7AB)
-	DATA_VEC (dev_tanf_data_common_avx2, _sP0, 0x3F7FFFFC)
-	DATA_VEC (dev_tanf_data_common_avx2, _sRangeReductionVal, 0x46010000)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_2, 0x0000ffff)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_3, 0x47400000)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_4, 0x28800000)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_5, 0x0003ffff)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_6, 0x000001ff)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_7, 0x34000000)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_8, 0x40c90fdb)
-	DATA_VEC (dev_tanf_data_common_avx2, FLT_12, 0x0000007f)
+	DATA_VEC (LOCAL_DATA_NAME, _sInvPi, 0x3F22F983)
+	DATA_VEC (LOCAL_DATA_NAME, _sRShifter, 0x4B400000)
+	DATA_VEC (LOCAL_DATA_NAME, _sQ2, 0x3C1F336B)
+	DATA_VEC (LOCAL_DATA_NAME, _sP1, 0xBDC433B4)
+	DATA_VEC (LOCAL_DATA_NAME, _sQ1, 0xBEDBB7AB)
+	DATA_VEC (LOCAL_DATA_NAME, _sP0, 0x3F7FFFFC)
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeReductionVal, 0x46010000)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_2, 0x0000ffff)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_3, 0x47400000)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_4, 0x28800000)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_5, 0x0003ffff)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_6, 0x000001ff)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_7, 0x34000000)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_8, 0x40c90fdb)
+	DATA_VEC (LOCAL_DATA_NAME, FLT_11, 0x0000007f)
 	/* _Coeffs Breakpoint B = 0 * pi/128, function tan(B + x).  */
 	float_block (dev_tanf_data_common_avx2, _Coeffs,
 		0x3FC90FDB,	/* B' = pi/2 - B (high single). */

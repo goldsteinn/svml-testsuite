@@ -37,22 +37,38 @@
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #define LOCAL_DATA_NAME	__svml_stan_data_internal
+#define LOCAL_DATA_NAME_UNALIGNED	__svml_stan_data_internal_unaligned
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define _sInvPI_uisa	0
 #define _sRShifter	64
 #define _sPI1_uisa	128
 #define _sPI2_uisa	192
 #define _sPI3_uisa	256
-#define _sAbsMask	320 // dead
-#define _sRangeReductionVal_uisa	384
-#define _sPC5_uisa	448
-#define _sPC3_uisa	512
-#define Th_tbl_uisa	576
-#define _sOne	704 // dead
-#define _sRangeVal	768
+#define _sRangeReductionVal_uisa	320
+#define _sPC5_uisa	384
+#define _sPC3_uisa	448
+#define _Th_tbl_uisa_lo	512
+#define _Th_tbl_uisa_hi	576
+#define _sRangeVal	640
+#define FLT_27	704
+#define FLT_18	768
+#define FLT_31	832
+#define FLT_25	896
+#define FLT_24	960
+#define FLT_29	1024
+#define FLT_30	1088
+
+
+#define FLT_14	0
+#define FLT_20	4
+#define FLT_22	8
+
 
 #define zmmA	zmm1
 #define HIGH_PRECISION	0
+
+
+
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(tanf_16_avx512_dev)
@@ -87,8 +103,8 @@ ENTRY(tanf_16_avx512_dev)
 	vmovups	LOCAL_DATA(_sPC3_uisa)(%rip), %zmm11
 	vfmadd231ps {rn-sae}, %zmmA, %zmm4, %zmm11
 	vmulps	{rn-sae}, %zmm5, %zmmA, %zmm2
-	vmovups	LOCAL_DATA(Th_tbl_uisa)(%rip), %zmm3
-	vpermt2ps LOCAL_DATA(Th_tbl_uisa + 64)(%rip), %zmm10, %zmm3
+	vmovups	LOCAL_DATA(_Th_tbl_uisa_lo)(%rip), %zmm3
+	vpermt2ps LOCAL_DATA(_Th_tbl_uisa_hi)(%rip), %zmm10, %zmm3
 	vfmadd213ps {rn-sae}, %zmm5, %zmm2, %zmm11
 
 	/* * Computer Denominator: * sDenominator - sDlow ~=
@@ -178,8 +194,8 @@ L(AUX_BRANCH):
 	   integer bit is wrong for denorms! * To make this work for
 	   denorms we should do something slightly different.  */
 
-	/* zmm9 = zmm9 & (~zmm11) | .FLT_14(%rip).  */
-	vpternlogd $0xae, .FLT_14(%rip){1to16}, %zmm11, %zmm9
+	/* zmm9 = zmm9 & (~zmm11) | FLT_14(%rip).  */
+	vpternlogd $0xae, LOCAL_DATA_UNALIGNED(FLT_14)(%rip){1to16}, %zmm11, %zmm9
 
 	/* * Break the P_xxx and m into 16-bit chunks ready for * the
 	   long multiplication via 16x16->32 multiplications.  */
@@ -214,7 +230,7 @@ L(AUX_BRANCH):
 
 	/* Do this comparison while `zmm11` still contains abs(input).
 	 */
-	vmovups	.FLT_27(%rip), %zmm2
+	vmovups	LOCAL_DATA(FLT_27)(%rip), %zmm2
 	vcmpps	$22, {sae}, %zmm2, %zmm11, %k5
 
 	vpmulld	%zmm3, %zmm9, %zmm11
@@ -277,7 +293,7 @@ L(AUX_BRANCH):
 	vpblendmw %zmm4, %zmmA, %zmm3{%k2}
 	vmovdqu16 %zmm9, %zmm11{%k2}
 	vmovaps	COMMON_DATA(_OneF)(%rip), %zmm9
-	vmovups	.FLT_18(%rip), %zmm14
+	vmovups	LOCAL_DATA(FLT_18)(%rip), %zmm14
 	vpsrld	$9, %zmm3, %zmm2
 
 	/* * We want to incorporate the original sign now too. * Do it
@@ -301,12 +317,12 @@ L(AUX_BRANCH):
 	   * 2^-46 and 2^-23, respectively. * Put the original sign
 	   into all of them at this stage.  */
 
-	/* Save code size by microfusing vpord .FLT_20, %zmmA. This
+	/* Save code size by microfusing vpord FLT_20, %zmmA. This
 	   increase the dependency chain on computing `zmm13` (we could
 	   use vptern).  */
-	vpord	.FLT_20(%rip){1to16}, %zmmA, %zmm15
+	vpord	LOCAL_DATA_UNALIGNED(FLT_20)(%rip){1to16}, %zmmA, %zmm15
 	/* Don't need to full addition result.  */
-	vmovaps	.FLT_31(%rip), %zmm6
+	vmovaps	LOCAL_DATA(FLT_31)(%rip), %zmm6
 	vpandd	%zmm6, %zmm4, %zmm3
 	/* zmm13 = (zmm13 & ~_NotIOffExpoMask) | zmm15.  */
 	vpternlogd $0xdc, COMMON_DATA(_NotiOffExpoMask)(%rip){1to16}, %zmm15, %zmm13
@@ -314,7 +330,7 @@ L(AUX_BRANCH):
 	vsubps	{rn-sae}, %zmm15, %zmm13, %zmm8
 	vpsrld	$18, %zmm11, %zmm15
 
-	vpxord	.FLT_22(%rip){1to16}, %zmmA, %zmm14
+	vpxord	LOCAL_DATA_UNALIGNED(FLT_22)(%rip){1to16}, %zmmA, %zmm14
 	vpslld	$14, %zmm3, %zmmA
 
 	vpternlogd $0xfe, %zmm15, %zmm14, %zmmA
@@ -332,7 +348,7 @@ L(AUX_BRANCH):
 	   integer part is _VRES_IND * Set sRp2 = _VRES_R^2 and then
 	   resume the original code.  */
 	vaddps	{rn-sae}, %zmm8, %zmm15, %zmm15
-	vmovups	.FLT_25(%rip), %zmm8
+	vmovups	LOCAL_DATA(FLT_25)(%rip), %zmm8
 
 	/* Grab our final N value as an integer, appropriately masked
 	   mod 2^8.  */
@@ -341,7 +357,7 @@ L(AUX_BRANCH):
 	/* * Now multiply those numbers all by 2 pi, reasonably
 	   accurately. * (RHi + RLo) * (pi_lead + pi_trail) ~= * RHi *
 	   pi_lead + (RHi * pi_trail + RLo * pi_lead).  */
-	vmovups	.FLT_24(%rip), %zmm12
+	vmovups	LOCAL_DATA(FLT_24)(%rip), %zmm12
 	vmulps	{rn-sae}, %zmm12, %zmm13, %zmmA
 	vblendmps %zmmA, %zmm0, %zmm14{%k5}
 	vfmsub231ps {rn-sae}, %zmm12, %zmm13, %zmmA
@@ -361,19 +377,19 @@ L(AUX_BRANCH):
 	/* * End of large arguments path * * Merge results from main and
 	   large paths:.  */
 	vpsubd	%zmm11, %zmm6, %zmm6
-	vmovups	.FLT_29(%rip), %zmm11
+	vmovups	LOCAL_DATA(FLT_29)(%rip), %zmm11
 	vcvtdq2ps {rn-sae}, %zmm6, %zmmA
-	vmovups	.FLT_30(%rip), %zmm6
+	vmovups	LOCAL_DATA(FLT_30)(%rip), %zmm6
 	vfmadd231ps {rn-sae}, %zmmA, %zmm6, %zmm12
 	vaddps	{rn-sae}, %zmm14, %zmm12, %zmm5{%k6}
 	vfmadd231ps {rn-sae}, %zmmA, %zmm11, %zmm5{%k6}
 
 
 	/* Table lookup.  */
-	vmovups	LOCAL_DATA(Th_tbl_uisa)(%rip), %zmm3
+	vmovups	LOCAL_DATA(_Th_tbl_uisa_lo)(%rip), %zmm3
 	vmovups	LOCAL_DATA(_sPC3_uisa)(%rip), %zmm4
 	vmulps	{rn-sae}, %zmm5, %zmm5, %zmmA
-	vpermt2ps LOCAL_DATA(Th_tbl_uisa + 64)(%rip), %zmm10, %zmm3
+	vpermt2ps LOCAL_DATA(_Th_tbl_uisa_hi)(%rip), %zmm10, %zmm3
 	vmovups	LOCAL_DATA(_sPC5_uisa)(%rip), %zmm10
 	vfmadd231ps {rn-sae}, %zmmA, %zmm10, %zmm4
 	vmulps	{rn-sae}, %zmm5, %zmm4, %zmm15
@@ -499,185 +515,51 @@ END(tanf_16_avx512_dev)
 	/* Place the minimally aligned pieces at the begining so there
 	   is a chance they fit in aligning bytes.  */
 	.align	16
-.FLT_14:
-	.long	0x00800000
-	.type	.FLT_14, @object
-	.size	.FLT_14, 4
-	.align	4
-.FLT_20:
-	.long	0x28800000
-	.type	.FLT_20, @object
-	.size	.FLT_20, 4
-	.align	4
-.FLT_22:
-	.long	0x34000000
-	.type	.FLT_22, @object
-	.size	.FLT_22, 4
+LOCAL_DATA_NAME_UNALIGNED:
+	float_block (LOCAL_DATA_NAME_UNALIGNED, FLT_14, 0x00800000)
+	float_block (LOCAL_DATA_NAME_UNALIGNED, FLT_20, 0x28800000)
+	float_block (LOCAL_DATA_NAME_UNALIGNED, FLT_22, 0x34000000)
+
+	.type	LOCAL_DATA_NAME_UNALIGNED, @object
+	.size	LOCAL_DATA_NAME_UNALIGNED, .-LOCAL_DATA_NAME_UNALIGNED
 
 
 	/* UISA.  */
 	.align	64
-__svml_stan_data_internal:
-	/* _sInvPI_uisa.  */
-	.long	0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983
-	.long	0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983
-	.long	0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983
-	.long	0x4122f983, 0x4122f983, 0x4122f983, 0x4122f983
+LOCAL_DATA_NAME:
+	DATA_VEC (LOCAL_DATA_NAME, _sInvPI_uisa, 0x4122f983)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sRShifter, 0x4B400000)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sPI1_uisa, 0x3dc90fda)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sPI2_uisa, 0x31a22168)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sPI3_uisa, 0x25c234c5)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeReductionVal_uisa, 0x46010000)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sPC5_uisa, 0x3e08b888)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sPC3_uisa, 0x3eaaaaa6)	// AVX512
 
-	.align	64
-	/* _sRShifter.  */
-	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000
-	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000
-	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000
-	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000
+	float_block (LOCAL_DATA_NAME, _Th_tbl_uisa_lo,
+	0x80000000, 0x3dc9b5dc, 0x3e4bafaf, 0x3e9b5042,
+	0x3ed413cd, 0x3f08d5b9, 0x3f2b0dc1, 0x3f521801,
+	0x3f800000, 0x3f9bf7ec, 0x3fbf90c7, 0x3fef789e,
+	0x401a827a, 0x4052facf, 0x40a0dff7, 0x41227363)
 
-	.align	64
-	/* _sPI1_uisa.  */
-	.long	0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda
-	.long	0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda
-	.long	0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda
-	.long	0x3dc90fda, 0x3dc90fda, 0x3dc90fda, 0x3dc90fda
+	float_block (LOCAL_DATA_NAME, _Th_tbl_uisa_hi,
+	0xff7fffff, 0xc1227363, 0xc0a0dff7, 0xc052facf,
+	0xc01a827a, 0xbfef789e, 0xbfbf90c7, 0xbf9bf7ec,
+	0xbf800000, 0xbf521801, 0xbf2b0dc1, 0xbf08d5b9,
+	0xbed413cd, 0xbe9b5042, 0xbe4bafaf, 0xbdc9b5dc)
 
-	.align	64
-	/* _sPI2_uisa.  */
-	.long	0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168
-	.long	0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168
-	.long	0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168
-	.long	0x31a22168, 0x31a22168, 0x31a22168, 0x31a22168
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeVal, 0x7f800000)	// AVX512, AVX2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_27, 0x35800000)	// AVX512, AVX2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_18, 0x47400000)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_31, 0x000001ff)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_25, 0xb43bbd2e)	// AVX512, AVX2
+	DATA_VEC (LOCAL_DATA_NAME, FLT_24, 0x40c90fdb)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_29, 0x3cc90fdb)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, FLT_30, 0xb03bbd2e)	// AVX512
 
-	.align	64
-	/* _sPI3_uisa.  */
-	.long	0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5
-	.long	0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5
-	.long	0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5
-	.long	0x25c234c5, 0x25c234c5, 0x25c234c5, 0x25c234c5
 
-	.align	64
-	/* _sAbsMask.  */
-	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
-	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
-	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
-	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF
-
-	.align	64
-	/* _sRangeReductionVal_uisa.  */
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000
-
-	.align	64
-	/* _sPC5_uisa.  */
-	.long	0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888
-	.long	0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888
-	.long	0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888
-	.long	0x3e08b888, 0x3e08b888, 0x3e08b888, 0x3e08b888
-
-	.align	64
-	/* _sPC3_uisa.  */
-	.long	0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6
-	.long	0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6
-	.long	0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6
-	.long	0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6, 0x3eaaaaa6
-
-	/* Th_tbl_uisa for i from 0 to 31 do print
-	   single(tan(i*Pi/32));.  */
-	.align	64
-	.long	0x80000000, 0x3dc9b5dc, 0x3e4bafaf, 0x3e9b5042
-	.long	0x3ed413cd, 0x3f08d5b9, 0x3f2b0dc1, 0x3f521801
-	.long	0x3f800000, 0x3f9bf7ec, 0x3fbf90c7, 0x3fef789e
-	.long	0x401a827a, 0x4052facf, 0x40a0dff7, 0x41227363
-	.long	0xff7fffff, 0xc1227363, 0xc0a0dff7, 0xc052facf
-	.long	0xc01a827a, 0xbfef789e, 0xbfbf90c7, 0xbf9bf7ec
-	.long	0xbf800000, 0xbf521801, 0xbf2b0dc1, 0xbf08d5b9
-	.long	0xbed413cd, 0xbe9b5042, 0xbe4bafaf, 0xbdc9b5dc
-
-	.align	64
-	/* _sOne.  */
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000
-
-	.align	64
-	/* _sRangeVal.  */
-	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000
-	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000
-	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000
-	.long	0x7f800000, 0x7f800000, 0x7f800000, 0x7f800000
-
-	.type	__svml_stan_data_internal, @object
-	.size	__svml_stan_data_internal, .-__svml_stan_data_internal
-
-	.align	64
-.FLT_27:
-	.long	0x35800000, 0x35800000, 0x35800000, 0x35800000
-	.long	0x35800000, 0x35800000, 0x35800000, 0x35800000
-	.long	0x35800000, 0x35800000, 0x35800000, 0x35800000
-	.long	0x35800000, 0x35800000, 0x35800000, 0x35800000
-	.type	.FLT_27, @object
-	.size	.FLT_27, 64
-
-	.align	64
-.FLT_18:
-	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000
-	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000
-	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000
-	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000
-	.type	.FLT_18, @object
-	.size	.FLT_18, 64
-
-	.align	64
-.FLT_25:
-	.long	0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e
-	.long	0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e
-	.long	0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e
-	.long	0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e, 0xb43bbd2e
-	.type	.FLT_25, @object
-	.size	.FLT_25, 64
-
-	.align	64
-.FLT_24:
-	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb
-	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb
-	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb
-	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb
-	.type	.FLT_24, @object
-	.size	.FLT_24, 64
-
-	.align	64
-.FLT_29:
-	.long	0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb
-	.long	0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb
-	.long	0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb
-	.long	0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb, 0x3cc90fdb
-	.type	.FLT_29, @object
-	.size	.FLT_29, 64
-
-	.align	64
-.FLT_30:
-	.long	0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e
-	.long	0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e
-	.long	0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e
-	.long	0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e, 0xb03bbd2e
-	.type	.FLT_30, @object
-	.size	.FLT_30, 64
-	.align	64
-.FLT_32:
-	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
-	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
-	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
-	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000
-	.type	.FLT_32, @object
-	.size	.FLT_32, 64
-	.align	64
-.FLT_31:
-	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
-	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
-	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
-	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff
-	.type	.FLT_31, @object
-	.size	.FLT_31, 64
+	.type	LOCAL_DATA_NAME, @object
+	.size	LOCAL_DATA_NAME, .-LOCAL_DATA_NAME
 
 	.align	64
 #ifdef __svml_stan_reduction_data_internal_typedef

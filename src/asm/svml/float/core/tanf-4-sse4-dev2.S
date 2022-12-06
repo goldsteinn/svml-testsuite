@@ -51,33 +51,29 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #define LOCAL_DATA_NAME	__svml_stan_data_internal
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
-#define _sAbsMask	0
-#define _sInvPi	16
-#define _sRShifter	32
-#define _sPI1	48
-#define _sPI2	64
-#define _sPI3	80
-#define _sPI4	96
-#define _sQ2	112
-#define _sP1	128
-#define _sQ1	144
-#define _sP0	160
-#define _sRangeReductionVal	176
-#define _sRangeReductionVal_uisa	192
-#define _sRangeVal	208
-#define _sOne	224
-#define _Low16	240
-#define _Low9	256
+#define _sInvPi	0
+#define _sRShifter	16
+#define _sPI1	32
+#define _sPI2	48
+#define _sPI3	64
+#define _sPI4	80
+#define _sQ2	96
+#define _sP1	112
+#define _sQ1	128
+#define _sP0	144
+#define _sRangeReductionVal	160
+#define _Low16	176
+#define _sRangeVal	192
+#define FLT_6	208
+#define _Low9	224
+#define FLT_4	240
+#define FLT_5	256
 #define _Low18	272
-#define _Low7	288
-#define FLT_1	304
-#define FLT_2	320
-#define FLT_3	336
-#define _Sneg4096	352
-#define FLT_4	368
-#define FLT_5	384
-#define FLT_6	400
-#define _sCoeffs	416
+#define FLT_1	288
+#define FLT_2	304
+#define FLT_3	320
+#define _Low7	336
+#define _sCoeffs	352
 
 
 #define xmmA	xmm1
@@ -647,68 +643,29 @@ END(tanf_4_sse4_dev)
 	}__svml_stan_data_internal;
 #endif
 __svml_stan_data_internal:
-#if 0
-	_sPI1	, 0x3FC90000 // 102
-	_sPI2	, 0x39FDA000 // 103
-	_sPI3	, 0x33A22000 // 104
-	_sPI4	, 0x2C34611A // 105
-	_sRangeVal, 0x00800000 // 210
-    FLT_5	, 0xb795777a // 362
-	FLT_3	, 0x40c91000 // 391
-#endif
-	.align	16
-	.long	0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF, 0x7FFFFFFF	/* _sAbsMask */
-	.align	16
-	.long	0x3F22F983, 0x3F22F983, 0x3F22F983, 0x3F22F983	/* _sInvPi */
-	.align	16
-	.long	0x4B400000, 0x4B400000, 0x4B400000, 0x4B400000	/* _sRShifter */
-	.align	16
-	.long	0x3FC90000, 0x3FC90000, 0x3FC90000, 0x3FC90000	/* _sPI1 */
-	.align	16
-	.long	0x39FDA000, 0x39FDA000, 0x39FDA000, 0x39FDA000	/* _sPI2 */
-	.align	16
-	.long	0x33A22000, 0x33A22000, 0x33A22000, 0x33A22000	/* _sPI3 */
-	.align	16
-	.long	0x2C34611A, 0x2C34611A, 0x2C34611A, 0x2C34611A	/* _sPI4 */
-	.align	16
-	.long	0x3C1F336B, 0x3C1F336B, 0x3C1F336B, 0x3C1F336B	/* _sQ2 */
-	.align	16
-	.long	0xBDC433B4, 0xBDC433B4, 0xBDC433B4, 0xBDC433B4	/* _sP1 */
-	.align	16
-	.long	0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB, 0xBEDBB7AB	/* _sQ1 */
-	.align	16
-	.long	0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC, 0x3F7FFFFC	/* _sP0 */
-	.align	16
-	.long	0x46010000, 0x46010000, 0x46010000, 0x46010000	/* _sRangeReductionVal */
-	.align	16
-	.long	0xff800000, 0xff800000, 0xff800000, 0xff800000	/* _sRangeReductionVal_uisa */
-	.align	16
-	.long	0x00800000, 0x00800000, 0x00800000, 0x00800000	/* _sRangeVal */
-	.align	16
-	.long	0x3f800000, 0x3f800000, 0x3f800000, 0x3f800000	/* _sOne */
-	.align	16
-	.long	0x0000ffff, 0x0000ffff, 0x0000ffff, 0x0000ffff	/* _sLow16 */
-	.align	16
-	.long	0x000001ff, 0x000001ff, 0x000001ff, 0x000001ff	/* _sLow9 */
-	.align	16
-	.long	0x0003ffff, 0x0003ffff, 0x0003ffff, 0x0003ffff	/* _sLow18 */
-	.align	16
-	.long	0x0000007f, 0x0000007f, 0x0000007f, 0x0000007f	/* _sLow7 */
-	.align	16
-	.long	0x28800000, 0x28800000, 0x28800000, 0x28800000	/* _FLT_1 */
-	.align	16
-	.long	0x40c90fdb, 0x40c90fdb, 0x40c90fdb, 0x40c90fdb	/* _FLT_2 */
-	.align	16
-	.long	0x40c91000, 0x40c91000, 0x40c91000, 0x40c91000	/* FLT_3 */
-	.align	16
-	.long	0xfffff000, 0xfffff000, 0xfffff000, 0xfffff000	/* Sneg4096 */
-	.align	16
-	.long	0x34000000, 0x34000000, 0x34000000, 0x34000000	/* FLT_4 */
-	.align	16
-	.long	0xb795777a, 0xb795777a, 0xb795777a, 0xb795777a	/* FLT_5 */
-	.align	16
-	.long	0x47400000, 0x47400000, 0x47400000, 0x47400000	/* FLT_6 */
-	.align	16
+	DATA_VEC (LOCAL_DATA_NAME, _sInvPi, 0x3F22F983)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sRShifter, 0x4B400000)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sPI1, 0x3FC90000)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sPI2, 0x39FDA000)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sPI3, 0x33A22000)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sPI4, 0x2C34611A)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sQ2, 0x3C1F336B)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sP1, 0xBDC433B4)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sQ1, 0xBEDBB7AB)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sP0, 0x3F7FFFFC)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeReductionVal, 0x46010000)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _Low16, 0x0000ffff)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeVal, 0x00800000)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_6, 0x47400000)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _Low9, 0x000001ff)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_4, 0x34000000)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_5, 0xb795777a)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _Low18, 0x0003ffff)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_1, 0x28800000)	// AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_2, 0x40c90fdb)	// AVX512, AVX2, SSE4
+	DATA_VEC (LOCAL_DATA_NAME, FLT_3, 0x40c91000)	// SSE4
+	DATA_VEC (LOCAL_DATA_NAME, _Low7, 0x0000007f)	// AVX2, SSE4
+
 
 	// _sCoeffs Breakpoint B = 0 * pi/128, function tan(B + x)
 	.align	16

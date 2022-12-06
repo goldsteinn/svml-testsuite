@@ -5,9 +5,11 @@
 
 #define COMMON_DATA_NAME dev_common_data_evex512
 
-#define _OneF	0
-#define _AbsMask	64
-#define _NotiOffExpoMask	128
+#define _OneF            0
+#define _NotiOffExpoMask 64
+#define _Neg5F           128
+#define _AbsMask         192
+#define _SignMask        256
 
 
 #define COMMON_DATA(offset) ((offset) + (COMMON_DATA_NAME))
@@ -18,5 +20,8 @@
 # define LOCAL_DATA(offset) ((offset) + (LOCAL_DATA_NAME))
 #endif
 
+#ifdef LOCAL_DATA_NAME_UNALIGNED
+# define LOCAL_DATA_UNALIGNED(offset) ((offset) + (LOCAL_DATA_NAME_UNALIGNED))
 #endif
 
+#endif
