@@ -2,7 +2,7 @@
 #include "util/memory-util.h"
 #include "util/sched-util.h"
 typedef struct bench_result {
-    uint64_t time_;
+    double   time_;
     uint32_t idx_;
     uint32_t type_;
 } bench_result_t;
@@ -31,9 +31,10 @@ run_svml_benches(svml_op_t const *    svml_ops,
     i = 0;
     if (todo & k_bench_tput) {
         for (; i < num_svml_ops; ++i) {
+            vprint("Running: %s (tput)\n", svml_ops[i].name_);
             results[i].time_ = svml_ops[i].bench_tput_.run_bench(
-                trials, bench_conf->init_vals_[0], bench_conf->init_vals_[1],
-                bench_conf->init_vals_[2]);
+                trials, bench_conf->init_vals_[0].u64_,
+                bench_conf->init_vals_[1].u64_, bench_conf->init_vals_[2].u64_);
             results[i].idx_  = i;
             results[i].type_ = k_bench_tput;
         }
@@ -42,9 +43,10 @@ run_svml_benches(svml_op_t const *    svml_ops,
     if (todo & k_bench_lat) {
         offset = i;
         for (i = 0; i < num_svml_ops; ++i) {
+            vprint("Running: %s (lat)\n", svml_ops[i].name_);
             results[i + offset].time_ = svml_ops[i].bench_lat_.run_bench(
-                trials, bench_conf->init_vals_[0], bench_conf->init_vals_[1],
-                bench_conf->init_vals_[2]);
+                trials, bench_conf->init_vals_[0].u64_,
+                bench_conf->init_vals_[1].u64_, bench_conf->init_vals_[2].u64_);
             results[i].idx_  = i;
             results[i].type_ = k_bench_lat;
         }
@@ -52,7 +54,6 @@ run_svml_benches(svml_op_t const *    svml_ops,
 
     for (i = 0; i < num_results; ++i) {
         double time = (double)results[i].time_;
-        time /= (double)trials;
         print("%-32s (%-4s) -> %.3lf\n", svml_ops[results[i].idx_].name_,
               results[i].type_ == k_bench_lat ? "lat" : "tput", time);
     }

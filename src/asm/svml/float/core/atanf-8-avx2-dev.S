@@ -47,19 +47,17 @@
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(atanf_8_avx2_dev)
-	/* * 1) If x>1,      then r=-1/x, PIO2=Pi/2 * 2) If -1<=x<=1,
-	   then r=x,    PIO2=0 * 3) If x<-1,     then r=-1/x,
-	   PIO2=-Pi/2.  */
+	/* 1) If x>1,      then r=-1/x, PIO2=Pi/2
+	   2) If -1<=x<=1, then r=x,    PIO2=0
+	   3) If x<-1,     then r=-1/x, PIO2=-Pi/2.  */
 	vmovups	COMMON_DATA(_AbsMask)(%rip), %ymm7
 	vmovups	COMMON_DATA(_OneF)(%rip), %ymm2
 
 
-	/* * To use minps\maxps operations for argument reduction *
-	   uncomment _AT_USEMINMAX_ definition *  Declarations *
-	   Variables * Constants.  */
+	/* Use minps\maxps operations for argument reduction.  */
 	vandps	%ymm0, %ymm7, %ymm3
-	vmaxps	%ymm3, %ymm2, %ymm5
-	vminps	%ymm3, %ymm2, %ymm4
+	vpmaxud	%ymm3, %ymm2, %ymm5
+	vpminud	%ymm3, %ymm2, %ymm4
 
 	vdivps	%ymm5, %ymm4, %ymm4
 

@@ -31,15 +31,12 @@
  *
  */
 
-/* Offsets for data table __svml_satanh_data_internal_avx512. Ordered
-   by use in the function. On cold-starts this might help the
-   prefetcher. Possibly a better idea is to interleave start/end so
-   that the prefetcher is less likely to detect a stream and pull
-   irrelivant lines into cache.  */
+
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #define LOCAL_DATA_NAME	__svml_satanh_data_internal
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
 
+	/* Offsets for data table __svml_satanh_data_internal.  */
 #define _Poly_1	0
 #define _Poly_2	16
 #define _Poly_3	32
@@ -71,10 +68,11 @@ ENTRY(atanhf_4_sse4_dev)
 	movaps	%xmm11, %xmm9
 
 
-	/* * Compute V = 2 * X trivially, and UHi + U_lo = 1 - X in two
-	   pieces, * the upper part UHi being <= 12 bits long. Then we
-	   have * atanh(X) = 1/2 * log((1 + X) / (1 - X)) = 1/2 *
-	   log1p(V / (UHi + ULo)).  */
+	/* Compute V = 2 * X trivially, and UHi + U_lo = 1 - X in two
+	   pieces, the upper part UHi being <= 12 bits long. Then we
+	   have:   
+	    atanh(X) = 1/2 * log((1 + X) / (1 - X)) 
+	             = 1/2 * log1p(V / (UHi + ULo)).  */
 	movaps	%xmm0, %xmm6
 	mulps	%xmm5, %xmm3
 	subps	%xmm0, %xmm2
@@ -85,25 +83,25 @@ ENTRY(atanhf_4_sse4_dev)
 	andps	%xmm2, %xmm9
 
 
-	/* * Check whether |X| < 1, in which case we use the main
-	   function. * Otherwise set the rangemask so that the callout
-	   will get used. * Note that this will also use the callout
-	   for NaNs since not(NaN < 1).  */
+	/* Check whether |X| < 1, in which case we use the main
+	   function. Otherwise set the rangemask so that the callout
+	   will get used. Note that this will also use the callout for
+	   NaNs since not(NaN < 1).  */
 	rcpps	%xmm9, %xmm7
 	subps	%xmm9, %xmm2
 	andps	%xmm11, %xmm7
 
 
-	/* * Split V as well into upper 12 bits and lower part, so that
-	   we can get * a preliminary quotient estimate without
-	   rounding error.  */
+	/* Split V as well into upper 12 bits and lower part, so that we
+	   can get a preliminary quotient estimate without rounding
+	   error.  */
 	andps	%xmm6, %xmm11
 	mulps	%xmm7, %xmm9
 	addps	%xmm2, %xmm10
 	subps	%xmm11, %xmm6
 
-	/* Hence get initial quotient estimate QHi + QLo = R * VHi + R *
-	   VLo.  */
+	/* Hence get initial quotient estimate:
+	   QHi + QLo = R * VHi + R * VLo.  */
 	mulps	%xmm7, %xmm11
 	mulps	%xmm7, %xmm10
 	subps	%xmm9, %xmm14
@@ -119,8 +117,9 @@ ENTRY(atanhf_4_sse4_dev)
 	movdqu	COMMON_DATA(_IBrkValue)(%rip), %xmm9
 	addps	%xmm13, %xmm14
 
-	/* * Compute R * (VHi + VLo) * (1 + E + E^2) * = R *  (VHi +
-	   VLo) * (1 + D) * = QHi + (QHi * D + QLo + QLo * D).  */
+	/* Compute R * (VHi + VLo) * (1 + E + E^2)
+	   = R *  (VHi + VLo) * (1 + D)
+	   = QHi + (QHi * D + QLo + QLo * D).  */
 	movaps	%xmm14, %xmm2
 	mulps	%xmm7, %xmm14
 	mulps	%xmm11, %xmm2
@@ -131,10 +130,8 @@ ENTRY(atanhf_4_sse4_dev)
 	/* Record the sign for eventual reincorporation.  */
 	addps	%xmm7, %xmm2
 
-
-	/* * Now finally accumulate the high and low parts of the *
-	   argument to log1p, H + L, with a final compensated
-	   summation.  */
+	/* Now finally accumulate the high and low parts of the
+	   argument to log1p, H + L, with a final compensated summation.  */
 	movaps	%xmm2, %xmm6
 	andnps	%xmm5, %xmm1
 	movaps	%xmm4, %xmm7
@@ -166,7 +163,6 @@ ENTRY(atanhf_4_sse4_dev)
 	movups	LOCAL_DATA(_Poly_1)(%rip), %xmm7
 	addps	%xmm12, %xmm2
 	mulps	%xmm2, %xmm7
-
 
 	/* Finally, halve the result and reincorporate the sign.  */
 	addps	LOCAL_DATA(_Poly_2)(%rip), %xmm7
@@ -225,8 +221,7 @@ L(SPECIAL_VALUES_BRANCH):
 	movups	%xmm5, 40(%rsp)
 
 	/* Use rbx/rbp for callee save registers as they get short
-	   encoding for many instructions (as compared with r12/r13).
-	 */
+	   encoding for many instructions (as compared with r12/r13).  */
 	movq	%rbx, (%rsp)
 	cfi_offset (rbx, -64)
 	movq	%rbp, 8(%rsp)

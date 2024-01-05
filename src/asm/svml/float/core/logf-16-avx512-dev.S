@@ -18,12 +18,17 @@
    <https://www.gnu.org/licenses/>.  */
 
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define LOCAL_DATA_NAME	__svml_dev_slog_data_avx512
-#define LOCAL_DATA_NAME_UNALIGNED	__svml_dev_slog_data_avx512_unaligned
+#define LOCAL_DATA_NAME	__svml_slog_data_internal
+#define LOCAL_DATA_NAME_UNALIGNED	__svml_slog_data_internal_unaligned
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 
+
+	/* Offsets for data table __svml_slog_data_internal_unaligned.
+	   4 bytes each.  */
 #define _iLoRange	0
 
+	/* Offsets for data table __svml_slog_data_internal
+	   64 bytes each.  */
 #define _iBrkValue	0
 #define _sPoly_7	64
 #define _sPoly_6	128
@@ -36,20 +41,19 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/core/stubs/common-wrapper-dev.S"
 
 	.section .text.evex512, "ax", @progbits
-
 ENTRY(logf_16_avx512_dev)
-
-
-
-	/* ALGORITHM DESCRIPTION: log(x) = exponent_x*log(2) +
-	   log(mantissa_x),         if mantissa_x<4/3 log(x) =
-	   (exponent_x+1)*log(2) + log(0.5*mantissa_x), if
-	   mantissa_x>4/3 R = mantissa_x - 1,     if mantissa_x<4/3 R =
-	   0.5*mantissa_x - 1, if mantissa_x>4/3 |R|< 1/3 log(1+R) is
-	   approximated as a polynomial: degree 9 for 1-ulp, degree 7
-	   for 4-ulp, degree 3 for half-precision.  */
-
-
+	/* ALGORITHM DESCRIPTION:
+	   if mantissa_x<4/3
+        log(x) = exponent_x*log(2) + log(mantissa_x)
+	   if mantissa_x>4/3
+        log(x) = (exponent_x+1)*log(2) + log(0.5*mantissa_x)
+	   
+	   R = mantissa_x - 1,     if mantissa_x<4/3
+	   R = 0.5*mantissa_x - 1, if mantissa_x>4/3
+	   |R|< 1/3
+	   
+	   log(1+R) is approximated as a polynomial: degree 9 for
+	   1-ulp, degree 7 for 4-ulp, degree 3 for half-precision.  */
 	vmovups	LOCAL_DATA(_iBrkValue)(%rip), %zmm4
 	vmovups	LOCAL_DATA(_sPoly_7)(%rip), %zmm8
 
@@ -62,14 +66,13 @@ ENTRY(logf_16_avx512_dev)
 	vpsubd	%zmm4, %zmm0, %zmm2
 	vpcmpd	$2, LOCAL_DATA_UNALIGNED(_iLoRange)(%rip){1to16}, %zmm1, %k0
 
-	/* exponent_x (mantissa_x<4/3) or exponent_x+1 (mantissa_x>4/3).
-	 */
+	/* exponent_x (mantissa_x<4/3),
+	   or exponent_x+1 (mantissa_x>4/3).  */
 	vpsrad	$23, %zmm2, %zmm5
 	vpandnd	%zmm2, %zmm3, %zmm3
 
-
-	/* mantissa_x (mantissa_x<4/3), or 0.5*mantissa_x
-	   (mantissa_x>4/3).  */
+	/* mantissa_x (mantissa_x<4/3),
+	   or 0.5 mantissa_x (mantissa_x>4/3).  */
 	vpaddd	%zmm4, %zmm3, %zmm7
 
 	/* reduced argument R.  */
@@ -88,21 +91,20 @@ ENTRY(logf_16_avx512_dev)
 	vfmadd213ps %zmm9, %zmm9, %zmm10
 	vcvtdq2ps {rn-sae}, %zmm5, %zmm1
 	kmovw	%k0, %ecx
-	/* final reconstruction: add exponent_value*log2 to polynomial
-	   result.  */
+	/* final reconstruction: add exponent_value
+	   log2 to polynomial result.  */
 	vfmadd132ps LOCAL_DATA(_sLn2)(%rip), %zmm10, %zmm1
+	/* Branch to process special inputs.  */
 	testl	%ecx, %ecx
 	jne	L(SPECIAL_VALUES_BRANCH)
 
 	vmovaps	%zmm1, %zmm0
 	ret
 
-	/* Branch to process * special inputs.  */
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a tanf call. Optimize for code size
 	   moreso than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
-
 	/* Use r13 to save/restore the stack. This allows us to use rbp
 	   as callee save register saving code size.  */
 	pushq	%r13

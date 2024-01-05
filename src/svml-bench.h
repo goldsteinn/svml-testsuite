@@ -37,23 +37,28 @@
 #define bench_func_name(svml_func, ext) CAT(bench_, svml_func, _, ext)
 
 #define make_bench_func(svml_func, sz, init, run, ext)                         \
-    static uint64_t bench_func_name(svml_func, ext)(                           \
+    static double bench_func_name(svml_func, ext)(                             \
         uint32_t trials, uint64_t init0, uint64_t init1, uint64_t init2) {     \
-        uint64_t start, end;                                                   \
+        uint64_t start, end, dif = 0, total = 0;                               \
         bTYPE(sz) inp0, inp1, inp2;                                            \
         init(sz, inp0, inp1, inp2, init0, init1, init2);                       \
-        start = get_ll_time();                                                 \
-        compiler_code_align(64);                                               \
-        for (; trials; --trials) {                                             \
-            run(svml_func, inp0, inp1, inp2);                                  \
-        }                                                                      \
-        end = get_ll_time();                                                   \
-        return end - start;                                                    \
+        do {                                                                   \
+            uint32_t i;                                                        \
+            start = get_ll_time();                                             \
+            compiler_code_align(64);                                           \
+            for (i = trials; i; --i) {                                         \
+                run(svml_func, inp0, inp1, inp2);                              \
+            }                                                                  \
+            end = get_ll_time();                                               \
+            dif += (end - start);                                              \
+            total += trials;                                                   \
+        } while (UNLIKELY(dif < (1000UL * 1000UL * 1000UL)));                  \
+        return ((double)dif) / ((double)total);                                    \
     }
 
 
 #define I_make_bench_empty(svml_func, ext)                                     \
-    static uint64_t bench_func_name(svml_func, ext)(                           \
+    static double bench_func_name(svml_func, ext)(                             \
         uint32_t trials, uint64_t init0, uint64_t init1, uint64_t init2) {     \
         die("Unimplemented");                                                  \
         bench_make_unused(trials, init0, init1, init2);                        \

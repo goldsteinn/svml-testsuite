@@ -49,7 +49,6 @@
 #define ymmA	ymm1
 	.section .text.avx2, "ax", @progbits
 ENTRY(log10f_8_avx2_dev)
-
 	/* reduction: compute r, n.  */
 	vmovups	COMMON_DATA(_IBrkValue)(%rip), %ymm4
 	vpsubd	%ymm4, %ymm0, %ymmA
@@ -87,7 +86,6 @@ ENTRY(log10f_8_avx2_dev)
 
 	vfmadd132ps LOCAL_DATA(_L2H)(%rip), %ymm2, %ymmA
 	testl	%edx, %edx
-
 	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
 
@@ -95,7 +93,6 @@ ENTRY(log10f_8_avx2_dev)
 	/* Restore registers * and exit the function.  */
 	vmovaps	%ymmA, %ymm0
 	ret
-	/* Branch to process * special inputs.  */
 
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a atanhf call. Optimize for code size
@@ -177,7 +174,6 @@ END(log10f_8_avx2_dev)
 
 	.section .rodata.avx2, "a"
 	.align	32
-
 
 LOCAL_DATA_NAME:
 

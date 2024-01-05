@@ -33,12 +33,15 @@
  *
  */
 
-/* Offsets for data table __svml_stan_data_internal
- */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #define LOCAL_DATA_NAME	__svml_stan_data_internal
 #define LOCAL_DATA_NAME_UNALIGNED	__svml_stan_data_internal_unaligned
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
+
+#define AVX512_SHARED_TABLE
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanf-rodata.S"
+
+	/* Offsets for data table __svml_stan_data_internal.  */
 #define _sInvPI_uisa	0
 #define _sRShifter	64
 #define _sPI1_uisa	128
@@ -50,29 +53,56 @@
 #define _Th_tbl_uisa_lo	512
 #define _Th_tbl_uisa_hi	576
 #define _sRangeVal	640
-#define FLT_27	704
-#define FLT_18	768
-#define FLT_31	832
-#define FLT_25	896
-#define FLT_24	960
-#define FLT_29	1024
-#define FLT_30	1088
+#define _FLT_1	704
+#define _FLT_2	768
+#define _FLT_3	832
+#define _FLT_4	896
+#define _FLT_5	960
+#define _FLT_6	1024
+#define _FLT_7	1088
 
 
-#define FLT_14	0
-#define FLT_20	4
-#define FLT_22	8
+#define _FLT_1_1to16	0
+#define _FLT_2_1to16	4
+#define _FLT_3_1to16	8
 
 
 #define zmmA	zmm1
-#define HIGH_PRECISION	0
 
+/* 0, 1, or 2. The following values get the following ULP breakdowns:
+   PRECISION == 0:
+       ulp:
+	   0  :	 3374033104 (0.7856)
+	   1  :   893707604 (0.2081)
+	   2  :	   26831634 (0.0062)
+	   3  :      393466 (0.0001)
+	   4  :        1488 (0.0000)
+	   Avg: 0.2209
 
+   PRECISION == 1:
+       ulp:
+	   0  : 3677094430 (0.8561)
+	   1  :  609296734 (0.1419)
+	   2  :    8347192 (0.0019)
+	   3  :     228138 (0.0001)
+	   4  :        802 (0.0000)
+	   Avg: 0.1459
+	
+   PRECISION == 2:
+       ulp:
+	   error breakdown:
+	   0  :	 3722920128 (0.8668)
+	   1  :   566817724 (0.1320)
+	   2  :	    5022802 (0.0012)
+	   3  :      205902 (0.0000)
+	   4  :         740 (0.0000)
+	   Avg: 0.1345  */
+#define PRECISION	0
 
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(tanf_16_avx512_dev)
-	/* * Main path * * start arg. reduction.  */
+	/* Main path start arg. reduction.  */
 	vmovups	LOCAL_DATA(_sInvPI_uisa)(%rip), %zmm10
 	vmovups	LOCAL_DATA(_sRShifter)(%rip), %zmmA
 	vfmadd213ps {rn-sae}, %zmmA, %zmm0, %zmm10
@@ -83,6 +113,7 @@ ENTRY(tanf_16_avx512_dev)
 	vfnmadd231ps {rn-sae}, %zmm5, %zmm2, %zmm4
 	vmovups	LOCAL_DATA(_sPI3_uisa)(%rip), %zmm3
 	vfnmadd213ps {rn-sae}, %zmm4, %zmm3, %zmm5
+
 
 	/* Reused throughout in large case.  */
 	vmovaps	COMMON_DATA(_AbsMask)(%rip), %zmm7
@@ -107,23 +138,21 @@ ENTRY(tanf_16_avx512_dev)
 	vpermt2ps LOCAL_DATA(_Th_tbl_uisa_hi)(%rip), %zmm10, %zmm3
 	vfmadd213ps {rn-sae}, %zmm5, %zmm2, %zmm11
 
-	/* * Computer Denominator: * sDenominator - sDlow ~=
-	   1-(sTh+sTl)*(sP+sPlow).  */
+
+	/* Computer Denominator:
+	   sDenominator - sDlow ~= 1-(sTh+sTl) * (sP+sPlow).  */
 	vmulps	{rn-sae}, %zmm11, %zmm3, %zmm7
 
 
 	vmovups	COMMON_DATA(_OneF)(%rip), %zmm5
 
-	/* * Compute Numerator: * sNumerator + sNlow ~=
-	   sTh+sTl+sP+sPlow.  */
+	/* Compute Numerator:
+	   sNumerator + sNlow ~= sTh+sTl+sP+sPlow.  */
 	vaddps	{rn-sae}, %zmm3, %zmm11, %zmm8
 	vsubps	{rn-sae}, %zmm7, %zmm5, %zmm9
 
-#if HIGH_PRECISION == 1
-	/* * Highest Precision Version: * error breakdown: * 0  :
-	   3722920128 (0.8668) * 1  :  566817724 (0.1320) * 2  :
-	   5022802 (0.0012) * 3  :     205902 (0.0000) * 4  : 740
-	   (0.0000) * Avg: 0.134456.  */
+#if PRECISION >= 2
+	/* High Precision Version.  */
 	vrcp14ps %zmm9, %zmm14
 	vsubps	{rn-sae}, %zmm3, %zmm8, %zmm2
 
@@ -139,10 +168,7 @@ ENTRY(tanf_16_avx512_dev)
 
 	vfnmadd213ps {rn-sae}, %zmm15, %zmm14, %zmm0
 #else
-	/* * Highest Precision Version: * error breakdown: * 0  :
-	   3374033104 (0.7856) * 1  :  893707604 (0.2081) * 2  :
-	   26831634 (0.0062) * 3  :     393466 (0.0001) * 4  : 1488
-	   (0.0000) * Avg: 0.2209.  */
+	/* Low Precision Version.  */
 	vdivps	{rn-sae}, %zmm9, %zmm8, %zmm0
 #endif
 	ret
@@ -162,15 +188,15 @@ L(AUX_BRANCH):
 	   the gathers. As well this minimizes the total lines brought
 	   in. Its a judgement call but intuitively this will be better
 	   for applications. If someone has the time/inclination
-	   benchmarking this on some real applications may be worth it.
-	 */
+	   benchmarking this on some real applications may be worth it.  */
 	vpsrld	$23, %zmm11, %zmm8
 	vpaddd	%zmm8, %zmm8, %zmmA
 	vpaddd	%zmmA, %zmm8, %zmm14
 
-	/* * Get the (2^a / 2pi) mod 1 values from the table. * Because
+	/* Get the (2^a / 2pi) mod 1 values from the table.
+	   Because
 	   doesn't have I-type gather, we need a trivial cast.  */
-	lea	__svml_stan_reduction_data_internal(%rip), %rax
+	lea	AVX512_SHARED_DATA(_Reduction)(%rip), %rax
 
 	/* Offset 4 gather has the most work based on it so we want it
 	   to be finished first to keep the backend busy.  */
@@ -180,24 +206,29 @@ L(AUX_BRANCH):
 	vgatherdps 4(%rax, %zmm14, 4), %zmm4{%k2}
 
 
-	/* * If the magnitude of the input is <= 2^-20, then * just pass
-	   through the input, since no reduction will be needed and *
+	/* If the magnitude of the input is <= 2^-20, then
+	   just pass
+	   through the input, since no reduction will be needed and
 	   the main path will only work accurately if the reduced
-	   argument is * about >= 2^-40 (which it is for all large pi
+	   argument is
+	   about >= 2^-40 (which it is for all large pi
 	   multiples).  */
 	vmovups	LOCAL_DATA(_sRangeVal)(%rip), %zmm9
 	/* `zmm11` already has sign bit cast off. We are checking if the
 	   exp was 0xff so we can just use unsigned comparison.  */
 	vpcmpd	$5, %zmm9, %zmm11, %k1
 
-	/* * Also get the significand as an integer * NB: adding in the
-	   integer bit is wrong for denorms! * To make this work for
+	/* Also get the significand as an integer
+	   NB: adding in the
+	   integer bit is wrong for denorms!
+	   To make this work for
 	   denorms we should do something slightly different.  */
 
-	/* zmm9 = zmm9 & (~zmm11) | FLT_14(%rip).  */
-	vpternlogd $0xae, LOCAL_DATA_UNALIGNED(FLT_14)(%rip){1to16}, %zmm11, %zmm9
+	/* zmm9 = zmm9 & (~zmm11) | _FLT_1_1to16(%rip).  */
+	vpternlogd $0xae, LOCAL_DATA_UNALIGNED(_FLT_1_1to16)(%rip){1to16}, %zmm11, %zmm9
 
-	/* * Break the P_xxx and m into 16-bit chunks ready for * the
+	/* Break the P_xxx and m into 16-bit chunks ready for
+	   the
 	   long multiplication via 16x16->32 multiplications.  */
 	movl	$0x55555555, %ecx
 	kmovd	%ecx, %k2
@@ -228,9 +259,8 @@ L(AUX_BRANCH):
 	vmovdqu16 %zmm3, %zmm3{%k2}{z}
 
 
-	/* Do this comparison while `zmm11` still contains abs(input).
-	 */
-	vmovups	LOCAL_DATA(FLT_27)(%rip), %zmm2
+	/* Do this comparison while `zmm11` still contains abs(input).  */
+	vmovups	LOCAL_DATA(_FLT_1)(%rip), %zmm2
 	vcmpps	$22, {sae}, %zmm2, %zmm11, %k5
 
 	vpmulld	%zmm3, %zmm9, %zmm11
@@ -267,12 +297,17 @@ L(AUX_BRANCH):
 
 	vpaddd	%zmm14, %zmm12, %zmm8
 
-	/* * Now round at the 2^-8 bit position for reduction mod pi/2^7
-	   * instead of the original 2pi (but still with the same 2pi
-	   scaling). * Use a shifter of 2^15 + 2^14. * The N we get is
-	   our final version; it has an offset of * 2^8 because of the
-	   implicit integer bit, and anyway for negative * starting
-	   value it's a 2s complement thing. But we need to mask * off
+	/* Now round at the 2^-8 bit position for reduction mod pi/2^7
+	   instead of the original 2pi (but still with the same 2pi
+	   scaling).
+	   Use a shifter of 2^15 + 2^14.
+	   The N we get is
+	   our final version; it has an offset of
+	   2^8 because of the
+	   implicit integer bit, and anyway for negative
+	   starting
+	   value it's a 2s complement thing. But we need to mask
+	   off
 	   the exponent part anyway so it's fine.  */
 
 	/* We already truncated zmm2.  */
@@ -293,36 +328,45 @@ L(AUX_BRANCH):
 	vpblendmw %zmm4, %zmmA, %zmm3{%k2}
 	vmovdqu16 %zmm9, %zmm11{%k2}
 	vmovaps	COMMON_DATA(_OneF)(%rip), %zmm9
-	vmovups	LOCAL_DATA(FLT_18)(%rip), %zmm14
+	vmovups	LOCAL_DATA(_FLT_2)(%rip), %zmm14
 	vpsrld	$9, %zmm3, %zmm2
 
-	/* * We want to incorporate the original sign now too. * Do it
-	   here for convenience in getting the right N value, * though
-	   we could wait right to the end if we were prepared * to
-	   modify the sign of N later too. * So get the appropriate
+
+	/* We want to incorporate the original sign now too.
+	   Do it
+	   here for convenience in getting the right N value,
+	   though
+	   we could wait right to the end if we were prepared
+	   to
+	   modify the sign of N later too.
+	   So get the appropriate
 	   sign mask now (or sooner).  */
 	vpandnd	%zmm0, %zmm7, %zmmA
 	vpslld	$5, %zmm11, %zmm13
 
-	/* * Create floating-point high part, implicitly adding integer
-	   bit 1 * Incorporate overall sign at this stage too.  */
+	/* Create floating-point high part, implicitly adding integer
+	   bit 1
+	   Incorporate overall sign at this stage too.  */
 	vpternlogd $0xfe, %zmm9, %zmmA, %zmm2
 	vaddps	{rn-sae}, %zmm2, %zmm14, %zmm12
 	vsubps	{rn-sae}, %zmm14, %zmm12, %zmm15
 	vsubps	{rn-sae}, %zmm15, %zmm2, %zmm2
 
-	/* * Create floating-point low and medium parts, respectively *
-	   lo_17, ... lo_0, 0, ..., 0 * hi_8, ... hi_0, lo_31, ...,
-	   lo_18 * then subtract off the implicitly added integer bits,
-	   * 2^-46 and 2^-23, respectively. * Put the original sign
-	   into all of them at this stage.  */
+	/* Create floating-point low and medium parts, respectively
+	   lo_17, ... lo_0, 0, ..., 0
+	   hi_8, ... hi_0, lo_31, ...,
+	   lo_18
+	   then subtract off the implicitly added integer bits,
+	   2^-46 and 2^-23, respectively.
+	   Put the original sign into
+	   all of them at this stage.  */
 
-	/* Save code size by microfusing vpord FLT_20, %zmmA. This
+	/* Save code size by microfusing vpord _FLT_2_1to16, %zmmA. This
 	   increase the dependency chain on computing `zmm13` (we could
 	   use vptern).  */
-	vpord	LOCAL_DATA_UNALIGNED(FLT_20)(%rip){1to16}, %zmmA, %zmm15
+	vpord	LOCAL_DATA_UNALIGNED(_FLT_2_1to16)(%rip){1to16}, %zmmA, %zmm15
 	/* Don't need to full addition result.  */
-	vmovaps	LOCAL_DATA(FLT_31)(%rip), %zmm6
+	vmovaps	LOCAL_DATA(_FLT_3)(%rip), %zmm6
 	vpandd	%zmm6, %zmm4, %zmm3
 	/* zmm13 = (zmm13 & ~_NotIOffExpoMask) | zmm15.  */
 	vpternlogd $0xdc, COMMON_DATA(_NotiOffExpoMask)(%rip){1to16}, %zmm15, %zmm13
@@ -330,7 +374,7 @@ L(AUX_BRANCH):
 	vsubps	{rn-sae}, %zmm15, %zmm13, %zmm8
 	vpsrld	$18, %zmm11, %zmm15
 
-	vpxord	LOCAL_DATA_UNALIGNED(FLT_22)(%rip){1to16}, %zmmA, %zmm14
+	vpxord	LOCAL_DATA_UNALIGNED(_FLT_3_1to16)(%rip){1to16}, %zmmA, %zmm14
 	vpslld	$14, %zmm3, %zmmA
 
 	vpternlogd $0xfe, %zmm15, %zmm14, %zmmA
@@ -344,20 +388,28 @@ L(AUX_BRANCH):
 	   later on.  */
 	vaddps	{rn-sae}, %zmm2, %zmm11, %zmm15
 
-	/* * The output is _VRES_R (high) + _VRES_E (low), and the
-	   integer part is _VRES_IND * Set sRp2 = _VRES_R^2 and then
+	/*
+
+	   The output is _VRES_R (high) + _VRES_E (low), and the
+	   integer part is _VRES_IND
+	   Set sRp2 = _VRES_R^2 and then
 	   resume the original code.  */
 	vaddps	{rn-sae}, %zmm8, %zmm15, %zmm15
-	vmovups	LOCAL_DATA(FLT_25)(%rip), %zmm8
+	vmovups	LOCAL_DATA(_FLT_4)(%rip), %zmm8
 
 	/* Grab our final N value as an integer, appropriately masked
 	   mod 2^8.  */
 	vpandd	%zmm6, %zmm12, %zmm6
 
-	/* * Now multiply those numbers all by 2 pi, reasonably
-	   accurately. * (RHi + RLo) * (pi_lead + pi_trail) ~= * RHi *
-	   pi_lead + (RHi * pi_trail + RLo * pi_lead).  */
-	vmovups	LOCAL_DATA(FLT_24)(%rip), %zmm12
+	/* Now multiply those numbers all by 2 pi, reasonably
+	   accurately.
+	   (RHi + RLo)
+	   (pi_lead + pi_trail) ~=
+	   RHi
+	   pi_lead + (RHi
+	   pi_trail + RLo
+	   pi_lead).  */
+	vmovups	LOCAL_DATA(_FLT_5)(%rip), %zmm12
 	vmulps	{rn-sae}, %zmm12, %zmm13, %zmmA
 	vblendmps %zmmA, %zmm0, %zmm14{%k5}
 	vfmsub231ps {rn-sae}, %zmm12, %zmm13, %zmmA
@@ -374,12 +426,13 @@ L(AUX_BRANCH):
 	vpsrld	$2, %zmm2, %zmm10{%k6}
 	vpslld	$2, %zmm10, %zmm11
 
-	/* * End of large arguments path * * Merge results from main and
+	/* End of large arguments path
+	   Merge results from main and
 	   large paths:.  */
 	vpsubd	%zmm11, %zmm6, %zmm6
-	vmovups	LOCAL_DATA(FLT_29)(%rip), %zmm11
+	vmovups	LOCAL_DATA(_FLT_6)(%rip), %zmm11
 	vcvtdq2ps {rn-sae}, %zmm6, %zmmA
-	vmovups	LOCAL_DATA(FLT_30)(%rip), %zmm6
+	vmovups	LOCAL_DATA(_FLT_7)(%rip), %zmm6
 	vfmadd231ps {rn-sae}, %zmmA, %zmm6, %zmm12
 	vaddps	{rn-sae}, %zmm14, %zmm12, %zmm5{%k6}
 	vfmadd231ps {rn-sae}, %zmmA, %zmm11, %zmm5{%k6}
@@ -395,16 +448,17 @@ L(AUX_BRANCH):
 	vmulps	{rn-sae}, %zmm5, %zmm4, %zmm15
 	vfmadd213ps {rn-sae}, %zmm5, %zmmA, %zmm15
 
-	/* * Computer Denominator: * sDenominator - sDlow ~=
-	   1-(sTh+sTl)*(sP+sPlow).  */
+	/* Computer Denominator:
+	   sDenominator - sDlow ~= 1-(sTh+sTl) * (sP+sPlow).  */
 	vmulps	{rn-sae}, %zmm15, %zmm3, %zmm7
 
-	/* * Compute Numerator: * sNumerator + sNlow ~=
-	   sTh+sTl+sP+sPlow.  */
+	/* Compute Numerator:
+	   sNumerator + sNlow ~= sTh+sTl+sP+sPlow.  */
 	vaddps	{rn-sae}, %zmm3, %zmm15, %zmm8
 	vsubps	{rn-sae}, %zmm7, %zmm9, %zmm11
 
-#if HIGH_PRECISION == 1
+#if PRECISION >= 1
+	/* High Precision Version.  */
 	vrcp14ps %zmm11, %zmm14
 	vsubps	{rn-sae}, %zmm3, %zmm8, %zmm2
 	vsubps	{rn-sae}, %zmm9, %zmm11, %zmm6
@@ -423,13 +477,15 @@ L(AUX_BRANCH):
 	vsubps	{rn-sae}, %zmm13, %zmm12, %zmm0
 	vfnmadd213ps {rn-sae}, %zmm4, %zmm14, %zmm0
 #else
+	/* Low Precision Version.  */
 	kmovw	%k1, %edx
 	testl	%edx, %edx
 	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
 	vdivps	%zmm11, %zmm8, %zmm0
 #endif
-	/* Restore registers * and exit the function.  */
+	/* Restore registers
+	   and exit the function.  */
 	ret
 
 
@@ -450,7 +506,7 @@ L(SPECIAL_VALUES_BRANCH):
 	cfi_def_cfa (rsp, 32)
 	movq	%rsp, %r13
 	cfi_def_cfa (r13, 32)
-#if HIGH_PRECISION == 1
+#if PRECISION >= 1
 	vsubps	{rn-sae}, %zmm13, %zmm12, %zmm1
 	vfnmadd213ps {rn-sae}, %zmm4, %zmm1, %zmm14
 #else
@@ -495,7 +551,6 @@ L(SPECIAL_VALUES_LOOP):
 	blsrl	%ebx, %ebx
 	jnz	L(SPECIAL_VALUES_LOOP)
 
-
 	/* All results have been written to 64(%rsp).  */
 	vmovaps	(%rsp), %zmm0
 	/* Restore rsp.  */
@@ -516,25 +571,24 @@ END(tanf_16_avx512_dev)
 	   is a chance they fit in aligning bytes.  */
 	.align	16
 LOCAL_DATA_NAME_UNALIGNED:
-	float_block (LOCAL_DATA_NAME_UNALIGNED, FLT_14, 0x00800000)
-	float_block (LOCAL_DATA_NAME_UNALIGNED, FLT_20, 0x28800000)
-	float_block (LOCAL_DATA_NAME_UNALIGNED, FLT_22, 0x34000000)
+	float_block (LOCAL_DATA_NAME_UNALIGNED, _FLT_1_1to16, 0x00800000)
+	float_block (LOCAL_DATA_NAME_UNALIGNED, _FLT_2_1to16, 0x28800000)
+	float_block (LOCAL_DATA_NAME_UNALIGNED, _FLT_3_1to16, 0x34000000)
 
 	.type	LOCAL_DATA_NAME_UNALIGNED, @object
 	.size	LOCAL_DATA_NAME_UNALIGNED, .-LOCAL_DATA_NAME_UNALIGNED
 
 
-	/* UISA.  */
 	.align	64
 LOCAL_DATA_NAME:
-	DATA_VEC (LOCAL_DATA_NAME, _sInvPI_uisa, 0x4122f983)	// AVX512
-	DATA_VEC (LOCAL_DATA_NAME, _sRShifter, 0x4B400000)	// AVX512, AVX2, SSE4
-	DATA_VEC (LOCAL_DATA_NAME, _sPI1_uisa, 0x3dc90fda)	// AVX512
-	DATA_VEC (LOCAL_DATA_NAME, _sPI2_uisa, 0x31a22168)	// AVX512
-	DATA_VEC (LOCAL_DATA_NAME, _sPI3_uisa, 0x25c234c5)	// AVX512
-	DATA_VEC (LOCAL_DATA_NAME, _sRangeReductionVal_uisa, 0x46010000)	// AVX512, AVX2, SSE4
-	DATA_VEC (LOCAL_DATA_NAME, _sPC5_uisa, 0x3e08b888)	// AVX512
-	DATA_VEC (LOCAL_DATA_NAME, _sPC3_uisa, 0x3eaaaaa6)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sInvPI_uisa, 0x4122f983)
+	DATA_VEC (LOCAL_DATA_NAME, _sRShifter, 0x4B400000)
+	DATA_VEC (LOCAL_DATA_NAME, _sPI1_uisa, 0x3dc90fda)
+	DATA_VEC (LOCAL_DATA_NAME, _sPI2_uisa, 0x31a22168)
+	DATA_VEC (LOCAL_DATA_NAME, _sPI3_uisa, 0x25c234c5)
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeReductionVal_uisa, 0x46010000)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC5_uisa, 0x3e08b888)
+	DATA_VEC (LOCAL_DATA_NAME, _sPC3_uisa, 0x3eaaaaa6)
 
 	float_block (LOCAL_DATA_NAME, _Th_tbl_uisa_lo,
 	0x80000000, 0x3dc9b5dc, 0x3e4bafaf, 0x3e9b5042,
@@ -548,284 +602,15 @@ LOCAL_DATA_NAME:
 	0xbf800000, 0xbf521801, 0xbf2b0dc1, 0xbf08d5b9,
 	0xbed413cd, 0xbe9b5042, 0xbe4bafaf, 0xbdc9b5dc)
 
-	DATA_VEC (LOCAL_DATA_NAME, _sRangeVal, 0x7f800000)	// AVX512, AVX2
-	DATA_VEC (LOCAL_DATA_NAME, FLT_27, 0x35800000)	// AVX512, AVX2
-	DATA_VEC (LOCAL_DATA_NAME, FLT_18, 0x47400000)	// AVX512, AVX2, SSE4
-	DATA_VEC (LOCAL_DATA_NAME, FLT_31, 0x000001ff)	// AVX512, AVX2, SSE4
-	DATA_VEC (LOCAL_DATA_NAME, FLT_25, 0xb43bbd2e)	// AVX512, AVX2
-	DATA_VEC (LOCAL_DATA_NAME, FLT_24, 0x40c90fdb)	// AVX512, AVX2, SSE4
-	DATA_VEC (LOCAL_DATA_NAME, FLT_29, 0x3cc90fdb)	// AVX512
-	DATA_VEC (LOCAL_DATA_NAME, FLT_30, 0xb03bbd2e)	// AVX512
+	DATA_VEC (LOCAL_DATA_NAME, _sRangeVal, 0x7f800000)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_1, 0x35800000)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_2, 0x47400000)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_3, 0x000001ff)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_4, 0xb43bbd2e)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_5, 0x40c90fdb)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_6, 0x3cc90fdb)
+	DATA_VEC (LOCAL_DATA_NAME, _FLT_7, 0xb03bbd2e)
 
 
 	.type	LOCAL_DATA_NAME, @object
 	.size	LOCAL_DATA_NAME, .-LOCAL_DATA_NAME
-
-	.align	64
-#ifdef __svml_stan_reduction_data_internal_typedef
-	typedef	unsigned int VUINT32;
-	typedef	struct{
-	__declspec (align(64))VUINT32 _sPtable[256][3][1];
-	}__svml_stan_reduction_data_internal;
-#endif
-__svml_stan_reduction_data_internal:
-	/* P_hi         P_med       P_lo.  */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 0 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 1 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 2 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 3 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 4 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 5 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 6 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 7 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 8 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 9 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 10 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 11 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 12 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 13 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 14 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 15 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 16 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 17 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 18 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 19 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 20 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 21 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 22 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 23 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 24 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 25 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 26 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 27 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 28 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 29 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 30 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 31 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 32 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 33 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 34 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 35 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 36 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 37 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 38 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 39 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 40 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 41 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 42 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 43 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 44 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 45 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 46 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 47 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 48 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 49 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 50 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 51 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 52 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 53 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 54 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 55 */
-	.long	0x00000000, 0x00000000, 0x00000000	/* 56 */
-	.long	0x00000000, 0x00000000, 0x00000001	/* 57 */
-	.long	0x00000000, 0x00000000, 0x00000002	/* 58 */
-	.long	0x00000000, 0x00000000, 0x00000005	/* 59 */
-	.long	0x00000000, 0x00000000, 0x0000000A	/* 60 */
-	.long	0x00000000, 0x00000000, 0x00000014	/* 61 */
-	.long	0x00000000, 0x00000000, 0x00000028	/* 62 */
-	.long	0x00000000, 0x00000000, 0x00000051	/* 63 */
-	.long	0x00000000, 0x00000000, 0x000000A2	/* 64 */
-	.long	0x00000000, 0x00000000, 0x00000145	/* 65 */
-	.long	0x00000000, 0x00000000, 0x0000028B	/* 66 */
-	.long	0x00000000, 0x00000000, 0x00000517	/* 67 */
-	.long	0x00000000, 0x00000000, 0x00000A2F	/* 68 */
-	.long	0x00000000, 0x00000000, 0x0000145F	/* 69 */
-	.long	0x00000000, 0x00000000, 0x000028BE	/* 70 */
-	.long	0x00000000, 0x00000000, 0x0000517C	/* 71 */
-	.long	0x00000000, 0x00000000, 0x0000A2F9	/* 72 */
-	.long	0x00000000, 0x00000000, 0x000145F3	/* 73 */
-	.long	0x00000000, 0x00000000, 0x00028BE6	/* 74 */
-	.long	0x00000000, 0x00000000, 0x000517CC	/* 75 */
-	.long	0x00000000, 0x00000000, 0x000A2F98	/* 76 */
-	.long	0x00000000, 0x00000000, 0x00145F30	/* 77 */
-	.long	0x00000000, 0x00000000, 0x0028BE60	/* 78 */
-	.long	0x00000000, 0x00000000, 0x00517CC1	/* 79 */
-	.long	0x00000000, 0x00000000, 0x00A2F983	/* 80 */
-	.long	0x00000000, 0x00000000, 0x0145F306	/* 81 */
-	.long	0x00000000, 0x00000000, 0x028BE60D	/* 82 */
-	.long	0x00000000, 0x00000000, 0x0517CC1B	/* 83 */
-	.long	0x00000000, 0x00000000, 0x0A2F9836	/* 84 */
-	.long	0x00000000, 0x00000000, 0x145F306D	/* 85 */
-	.long	0x00000000, 0x00000000, 0x28BE60DB	/* 86 */
-	.long	0x00000000, 0x00000000, 0x517CC1B7	/* 87 */
-	.long	0x00000000, 0x00000000, 0xA2F9836E	/* 88 */
-	.long	0x00000000, 0x00000001, 0x45F306DC	/* 89 */
-	.long	0x00000000, 0x00000002, 0x8BE60DB9	/* 90 */
-	.long	0x00000000, 0x00000005, 0x17CC1B72	/* 91 */
-	.long	0x00000000, 0x0000000A, 0x2F9836E4	/* 92 */
-	.long	0x00000000, 0x00000014, 0x5F306DC9	/* 93 */
-	.long	0x00000000, 0x00000028, 0xBE60DB93	/* 94 */
-	.long	0x00000000, 0x00000051, 0x7CC1B727	/* 95 */
-	.long	0x00000000, 0x000000A2, 0xF9836E4E	/* 96 */
-	.long	0x00000000, 0x00000145, 0xF306DC9C	/* 97 */
-	.long	0x00000000, 0x0000028B, 0xE60DB939	/* 98 */
-	.long	0x00000000, 0x00000517, 0xCC1B7272	/* 99 */
-	.long	0x00000000, 0x00000A2F, 0x9836E4E4	/* 100 */
-	.long	0x00000000, 0x0000145F, 0x306DC9C8	/* 101 */
-	.long	0x00000000, 0x000028BE, 0x60DB9391	/* 102 */
-	.long	0x00000000, 0x0000517C, 0xC1B72722	/* 103 */
-	.long	0x00000000, 0x0000A2F9, 0x836E4E44	/* 104 */
-	.long	0x00000000, 0x000145F3, 0x06DC9C88	/* 105 */
-	.long	0x00000000, 0x00028BE6, 0x0DB93910	/* 106 */
-	.long	0x00000000, 0x000517CC, 0x1B727220	/* 107 */
-	.long	0x00000000, 0x000A2F98, 0x36E4E441	/* 108 */
-	.long	0x00000000, 0x00145F30, 0x6DC9C882	/* 109 */
-	.long	0x00000000, 0x0028BE60, 0xDB939105	/* 110 */
-	.long	0x00000000, 0x00517CC1, 0xB727220A	/* 111 */
-	.long	0x00000000, 0x00A2F983, 0x6E4E4415	/* 112 */
-	.long	0x00000000, 0x0145F306, 0xDC9C882A	/* 113 */
-	.long	0x00000000, 0x028BE60D, 0xB9391054	/* 114 */
-	.long	0x00000000, 0x0517CC1B, 0x727220A9	/* 115 */
-	.long	0x00000000, 0x0A2F9836, 0xE4E44152	/* 116 */
-	.long	0x00000000, 0x145F306D, 0xC9C882A5	/* 117 */
-	.long	0x00000000, 0x28BE60DB, 0x9391054A	/* 118 */
-	.long	0x00000000, 0x517CC1B7, 0x27220A94	/* 119 */
-	.long	0x00000000, 0xA2F9836E, 0x4E441529	/* 120 */
-	.long	0x00000001, 0x45F306DC, 0x9C882A53	/* 121 */
-	.long	0x00000002, 0x8BE60DB9, 0x391054A7	/* 122 */
-	.long	0x00000005, 0x17CC1B72, 0x7220A94F	/* 123 */
-	.long	0x0000000A, 0x2F9836E4, 0xE441529F	/* 124 */
-	.long	0x00000014, 0x5F306DC9, 0xC882A53F	/* 125 */
-	.long	0x00000028, 0xBE60DB93, 0x91054A7F	/* 126 */
-	.long	0x00000051, 0x7CC1B727, 0x220A94FE	/* 127 */
-	.long	0x000000A2, 0xF9836E4E, 0x441529FC	/* 128 */
-	.long	0x00000145, 0xF306DC9C, 0x882A53F8	/* 129 */
-	.long	0x0000028B, 0xE60DB939, 0x1054A7F0	/* 130 */
-	.long	0x00000517, 0xCC1B7272, 0x20A94FE1	/* 131 */
-	.long	0x00000A2F, 0x9836E4E4, 0x41529FC2	/* 132 */
-	.long	0x0000145F, 0x306DC9C8, 0x82A53F84	/* 133 */
-	.long	0x000028BE, 0x60DB9391, 0x054A7F09	/* 134 */
-	.long	0x0000517C, 0xC1B72722, 0x0A94FE13	/* 135 */
-	.long	0x0000A2F9, 0x836E4E44, 0x1529FC27	/* 136 */
-	.long	0x000145F3, 0x06DC9C88, 0x2A53F84E	/* 137 */
-	.long	0x00028BE6, 0x0DB93910, 0x54A7F09D	/* 138 */
-	.long	0x000517CC, 0x1B727220, 0xA94FE13A	/* 139 */
-	.long	0x000A2F98, 0x36E4E441, 0x529FC275	/* 140 */
-	.long	0x00145F30, 0x6DC9C882, 0xA53F84EA	/* 141 */
-	.long	0x0028BE60, 0xDB939105, 0x4A7F09D5	/* 142 */
-	.long	0x00517CC1, 0xB727220A, 0x94FE13AB	/* 143 */
-	.long	0x00A2F983, 0x6E4E4415, 0x29FC2757	/* 144 */
-	.long	0x0145F306, 0xDC9C882A, 0x53F84EAF	/* 145 */
-	.long	0x028BE60D, 0xB9391054, 0xA7F09D5F	/* 146 */
-	.long	0x0517CC1B, 0x727220A9, 0x4FE13ABE	/* 147 */
-	.long	0x0A2F9836, 0xE4E44152, 0x9FC2757D	/* 148 */
-	.long	0x145F306D, 0xC9C882A5, 0x3F84EAFA	/* 149 */
-	.long	0x28BE60DB, 0x9391054A, 0x7F09D5F4	/* 150 */
-	.long	0x517CC1B7, 0x27220A94, 0xFE13ABE8	/* 151 */
-	.long	0xA2F9836E, 0x4E441529, 0xFC2757D1	/* 152 */
-	.long	0x45F306DC, 0x9C882A53, 0xF84EAFA3	/* 153 */
-	.long	0x8BE60DB9, 0x391054A7, 0xF09D5F47	/* 154 */
-	.long	0x17CC1B72, 0x7220A94F, 0xE13ABE8F	/* 155 */
-	.long	0x2F9836E4, 0xE441529F, 0xC2757D1F	/* 156 */
-	.long	0x5F306DC9, 0xC882A53F, 0x84EAFA3E	/* 157 */
-	.long	0xBE60DB93, 0x91054A7F, 0x09D5F47D	/* 158 */
-	.long	0x7CC1B727, 0x220A94FE, 0x13ABE8FA	/* 159 */
-	.long	0xF9836E4E, 0x441529FC, 0x2757D1F5	/* 160 */
-	.long	0xF306DC9C, 0x882A53F8, 0x4EAFA3EA	/* 161 */
-	.long	0xE60DB939, 0x1054A7F0, 0x9D5F47D4	/* 162 */
-	.long	0xCC1B7272, 0x20A94FE1, 0x3ABE8FA9	/* 163 */
-	.long	0x9836E4E4, 0x41529FC2, 0x757D1F53	/* 164 */
-	.long	0x306DC9C8, 0x82A53F84, 0xEAFA3EA6	/* 165 */
-	.long	0x60DB9391, 0x054A7F09, 0xD5F47D4D	/* 166 */
-	.long	0xC1B72722, 0x0A94FE13, 0xABE8FA9A	/* 167 */
-	.long	0x836E4E44, 0x1529FC27, 0x57D1F534	/* 168 */
-	.long	0x06DC9C88, 0x2A53F84E, 0xAFA3EA69	/* 169 */
-	.long	0x0DB93910, 0x54A7F09D, 0x5F47D4D3	/* 170 */
-	.long	0x1B727220, 0xA94FE13A, 0xBE8FA9A6	/* 171 */
-	.long	0x36E4E441, 0x529FC275, 0x7D1F534D	/* 172 */
-	.long	0x6DC9C882, 0xA53F84EA, 0xFA3EA69B	/* 173 */
-	.long	0xDB939105, 0x4A7F09D5, 0xF47D4D37	/* 174 */
-	.long	0xB727220A, 0x94FE13AB, 0xE8FA9A6E	/* 175 */
-	.long	0x6E4E4415, 0x29FC2757, 0xD1F534DD	/* 176 */
-	.long	0xDC9C882A, 0x53F84EAF, 0xA3EA69BB	/* 177 */
-	.long	0xB9391054, 0xA7F09D5F, 0x47D4D377	/* 178 */
-	.long	0x727220A9, 0x4FE13ABE, 0x8FA9A6EE	/* 179 */
-	.long	0xE4E44152, 0x9FC2757D, 0x1F534DDC	/* 180 */
-	.long	0xC9C882A5, 0x3F84EAFA, 0x3EA69BB8	/* 181 */
-	.long	0x9391054A, 0x7F09D5F4, 0x7D4D3770	/* 182 */
-	.long	0x27220A94, 0xFE13ABE8, 0xFA9A6EE0	/* 183 */
-	.long	0x4E441529, 0xFC2757D1, 0xF534DDC0	/* 184 */
-	.long	0x9C882A53, 0xF84EAFA3, 0xEA69BB81	/* 185 */
-	.long	0x391054A7, 0xF09D5F47, 0xD4D37703	/* 186 */
-	.long	0x7220A94F, 0xE13ABE8F, 0xA9A6EE06	/* 187 */
-	.long	0xE441529F, 0xC2757D1F, 0x534DDC0D	/* 188 */
-	.long	0xC882A53F, 0x84EAFA3E, 0xA69BB81B	/* 189 */
-	.long	0x91054A7F, 0x09D5F47D, 0x4D377036	/* 190 */
-	.long	0x220A94FE, 0x13ABE8FA, 0x9A6EE06D	/* 191 */
-	.long	0x441529FC, 0x2757D1F5, 0x34DDC0DB	/* 192 */
-	.long	0x882A53F8, 0x4EAFA3EA, 0x69BB81B6	/* 193 */
-	.long	0x1054A7F0, 0x9D5F47D4, 0xD377036D	/* 194 */
-	.long	0x20A94FE1, 0x3ABE8FA9, 0xA6EE06DB	/* 195 */
-	.long	0x41529FC2, 0x757D1F53, 0x4DDC0DB6	/* 196 */
-	.long	0x82A53F84, 0xEAFA3EA6, 0x9BB81B6C	/* 197 */
-	.long	0x054A7F09, 0xD5F47D4D, 0x377036D8	/* 198 */
-	.long	0x0A94FE13, 0xABE8FA9A, 0x6EE06DB1	/* 199 */
-	.long	0x1529FC27, 0x57D1F534, 0xDDC0DB62	/* 200 */
-	.long	0x2A53F84E, 0xAFA3EA69, 0xBB81B6C5	/* 201 */
-	.long	0x54A7F09D, 0x5F47D4D3, 0x77036D8A	/* 202 */
-	.long	0xA94FE13A, 0xBE8FA9A6, 0xEE06DB14	/* 203 */
-	.long	0x529FC275, 0x7D1F534D, 0xDC0DB629	/* 204 */
-	.long	0xA53F84EA, 0xFA3EA69B, 0xB81B6C52	/* 205 */
-	.long	0x4A7F09D5, 0xF47D4D37, 0x7036D8A5	/* 206 */
-	.long	0x94FE13AB, 0xE8FA9A6E, 0xE06DB14A	/* 207 */
-	.long	0x29FC2757, 0xD1F534DD, 0xC0DB6295	/* 208 */
-	.long	0x53F84EAF, 0xA3EA69BB, 0x81B6C52B	/* 209 */
-	.long	0xA7F09D5F, 0x47D4D377, 0x036D8A56	/* 210 */
-	.long	0x4FE13ABE, 0x8FA9A6EE, 0x06DB14AC	/* 211 */
-	.long	0x9FC2757D, 0x1F534DDC, 0x0DB62959	/* 212 */
-	.long	0x3F84EAFA, 0x3EA69BB8, 0x1B6C52B3	/* 213 */
-	.long	0x7F09D5F4, 0x7D4D3770, 0x36D8A566	/* 214 */
-	.long	0xFE13ABE8, 0xFA9A6EE0, 0x6DB14ACC	/* 215 */
-	.long	0xFC2757D1, 0xF534DDC0, 0xDB629599	/* 216 */
-	.long	0xF84EAFA3, 0xEA69BB81, 0xB6C52B32	/* 217 */
-	.long	0xF09D5F47, 0xD4D37703, 0x6D8A5664	/* 218 */
-	.long	0xE13ABE8F, 0xA9A6EE06, 0xDB14ACC9	/* 219 */
-	.long	0xC2757D1F, 0x534DDC0D, 0xB6295993	/* 220 */
-	.long	0x84EAFA3E, 0xA69BB81B, 0x6C52B327	/* 221 */
-	.long	0x09D5F47D, 0x4D377036, 0xD8A5664F	/* 222 */
-	.long	0x13ABE8FA, 0x9A6EE06D, 0xB14ACC9E	/* 223 */
-	.long	0x2757D1F5, 0x34DDC0DB, 0x6295993C	/* 224 */
-	.long	0x4EAFA3EA, 0x69BB81B6, 0xC52B3278	/* 225 */
-	.long	0x9D5F47D4, 0xD377036D, 0x8A5664F1	/* 226 */
-	.long	0x3ABE8FA9, 0xA6EE06DB, 0x14ACC9E2	/* 227 */
-	.long	0x757D1F53, 0x4DDC0DB6, 0x295993C4	/* 228 */
-	.long	0xEAFA3EA6, 0x9BB81B6C, 0x52B32788	/* 229 */
-	.long	0xD5F47D4D, 0x377036D8, 0xA5664F10	/* 230 */
-	.long	0xABE8FA9A, 0x6EE06DB1, 0x4ACC9E21	/* 231 */
-	.long	0x57D1F534, 0xDDC0DB62, 0x95993C43	/* 232 */
-	.long	0xAFA3EA69, 0xBB81B6C5, 0x2B327887	/* 233 */
-	.long	0x5F47D4D3, 0x77036D8A, 0x5664F10E	/* 234 */
-	.long	0xBE8FA9A6, 0xEE06DB14, 0xACC9E21C	/* 235 */
-	.long	0x7D1F534D, 0xDC0DB629, 0x5993C439	/* 236 */
-	.long	0xFA3EA69B, 0xB81B6C52, 0xB3278872	/* 237 */
-	.long	0xF47D4D37, 0x7036D8A5, 0x664F10E4	/* 238 */
-	.long	0xE8FA9A6E, 0xE06DB14A, 0xCC9E21C8	/* 239 */
-	.long	0xD1F534DD, 0xC0DB6295, 0x993C4390	/* 240 */
-	.long	0xA3EA69BB, 0x81B6C52B, 0x32788720	/* 241 */
-	.long	0x47D4D377, 0x036D8A56, 0x64F10E41	/* 242 */
-	.long	0x8FA9A6EE, 0x06DB14AC, 0xC9E21C82	/* 243 */
-	.long	0x1F534DDC, 0x0DB62959, 0x93C43904	/* 244 */
-	.long	0x3EA69BB8, 0x1B6C52B3, 0x27887208	/* 245 */
-	.long	0x7D4D3770, 0x36D8A566, 0x4F10E410	/* 246 */
-	.long	0xFA9A6EE0, 0x6DB14ACC, 0x9E21C820	/* 247 */
-	.long	0xF534DDC0, 0xDB629599, 0x3C439041	/* 248 */
-	.long	0xEA69BB81, 0xB6C52B32, 0x78872083	/* 249 */
-	.long	0xD4D37703, 0x6D8A5664, 0xF10E4107	/* 250 */
-	.long	0xA9A6EE06, 0xDB14ACC9, 0xE21C820F	/* 251 */
-	.long	0x534DDC0D, 0xB6295993, 0xC439041F	/* 252 */
-	.long	0xA69BB81B, 0x6C52B327, 0x8872083F	/* 253 */
-	.long	0x4D377036, 0xD8A5664F, 0x10E4107F	/* 254 */
-	.long	0x9A6EE06D, 0xB14ACC9E, 0x21C820FF	/* 255 */
-	.align	64
-	.type	__svml_stan_reduction_data_internal, @object
-	.size	__svml_stan_reduction_data_internal, .-__svml_stan_reduction_data_internal

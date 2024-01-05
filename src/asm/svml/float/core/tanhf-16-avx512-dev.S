@@ -71,25 +71,30 @@
  *
  */
 
-/* Offsets for data table __svml_stanh_data_internal_avx512. Ordered
-   by use in the function. On cold-starts this might help the
-   prefetcher. Possibly a better idea is to interleave start/end so
-   that the prefetcher is less likely to detect a stream and pull
-   irrelivant lines into cache.  */
 
-/* Offsets for data table __svml_stanh_data_internal. 4 bytes each.
- */
+
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
+
+#define LOCAL_DATA_NAME	__svml_stanh_data_internal
+#define LOCAL_DATA_NAME_UNALIGNED	__svml_stanh_data_internal_unaligned
+#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
+
+
+	/* Offsets for data table __svml_stanh_data_internal. Ordered
+	   by use in the function. On cold-starts this might help the
+	   prefetcher. Possibly a better idea is to interleave start/end so
+	   that the prefetcher is less likely to detect a stream and pull
+	   irrelivant lines into cache.  */
+
+	/* Offsets for data table __svml_stanh_data_internal_unaligned.
+	   4 bytes each.  */
 #define _iExpMantMask_UISA	0
 #define _iMinIdxOfsMask_UISA	4
 #define _iMaxIdxMask_UISA	8
 #define _iExpMask	12
 
-	/* Offsets for data table __svml_stanh_data_internal_al64. 64
-	   bytes each.  */
-#define LOCAL_DATA_NAME	__svml_stanh_data_internal
-#define LOCAL_DATA_NAME_UNALIGNED	__svml_stanh_data_internal_unaligned
-#include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
+	/* Offsets for data table __svml_stanh_data_internal.
+	   64 bytes each.  */
 #define _sC_lo	0
 #define _sC_hi	64
 #define _sP7_lo	128

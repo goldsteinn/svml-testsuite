@@ -39,25 +39,22 @@
    less likely to detect a stream and pull irrelivant lines into
    cache.  */
 
-/* Offset into __svml_satanh_data_internal_avx512. 4-byte aligned as
-   the memory is broadcast to {1to16}.  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #define LOCAL_DATA_NAME	__svml_satanh_data_internal
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 
-/* Offset into __svml_satanh_data_internal. The full value
-   is used here.  */
-#define AddB5				0
-#define RcpBitMask			64
-#define Log_tbl_L_lo			128
-#define Log_tbl_L_hi			192
-#define Log_tbl_H_lo			256
-#define Log_tbl_H_hi			320
-#define L2H				384
-#define L2L				448
-#define poly_coeff3			512
-#define poly_coeff2			576
-#define poly_coeff1			640
+	/* Offset into __svml_satanh_data_internal.  64 bytes each.  */
+#define AddB5	0
+#define RcpBitMask	64
+#define Log_tbl_L_lo	128
+#define Log_tbl_L_hi	192
+#define Log_tbl_H_lo	256
+#define Log_tbl_H_hi	320
+#define L2H	384
+#define L2L	448
+#define poly_coeff3	512
+#define poly_coeff2	576
+#define poly_coeff1	640
 
 
 
@@ -67,66 +64,66 @@ ENTRY(atanhf_16_avx512_dev)
 	vandps	COMMON_DATA(_AbsMask)(%rip){1to16}, %zmm0, %zmm6
 	vmovups	COMMON_DATA(_OneF)(%rip), %zmm4
 
-	/* 1+y */
+	/* 1+y.  */
 	vaddps	{rn-sae}, %zmm4, %zmm6, %zmm9
 
-	/* 1-y */
+	/* 1-y.  */
 	vsubps	{rn-sae}, %zmm6, %zmm4, %zmm8
 
-	/* round reciprocals to 1+5b mantissas */
+	/* round reciprocals to 1+5b mantissas.  */
 	vmovups	LOCAL_DATA(AddB5)(%rip), %zmm14
 	vmovups	LOCAL_DATA(RcpBitMask)(%rip), %zmm1
 
-	/* RcpP ~ 1/Yp */
+	/* RcpP ~ 1/Yp.  */
 	vrcp14ps %zmm9, %zmm12
 
-	/* RcpM ~ 1/Ym */
+	/* RcpM ~ 1/Ym.  */
 	vrcp14ps %zmm8, %zmm13
 
-	/* Yp_high */
+	/* Yp_high.  */
 	vsubps	{rn-sae}, %zmm4, %zmm9, %zmm2
 
-	/* -Ym_high */
+	/* -Ym_high.  */
 	vsubps	{rn-sae}, %zmm4, %zmm8, %zmm5
 
 
-	/* input outside (-1, 1) ? */
+	/* input outside (-1, 1) ?  */
 	vpaddd	%zmm14, %zmm12, %zmm15
 	vpaddd	%zmm14, %zmm13, %zmm12
 
-	/* Yp_low */
+	/* Yp_low.  */
 	vsubps	{rn-sae}, %zmm2, %zmm6, %zmm3
 	vandps	%zmm1, %zmm15, %zmm7
 	vandps	%zmm1, %zmm12, %zmm12
 
-	/* Ym_low */
+	/* Ym_low.  */
 	vaddps	{rn-sae}, %zmm5, %zmm6, %zmm5
 
-	/* Reduced argument: Rp = (RcpP*Yp - 1)+RcpP*Yp_low */
+	/* Reduced argument: Rp = (RcpP*Yp - 1)+RcpP*Yp_low.  */
 	vfmsub213ps {rn-sae}, %zmm4, %zmm7, %zmm9
 
-	/* Reduced argument: Rm = (RcpM*Ym - 1)+RcpM*Ym_low */
+	/* Reduced argument: Rm = (RcpM*Ym - 1)+RcpM*Ym_low.  */
 	vfmsub213ps {rn-sae}, %zmm4, %zmm12, %zmm8
 
 	vmovups	LOCAL_DATA(Log_tbl_L_lo)(%rip), %zmm10
 	vmovups	LOCAL_DATA(Log_tbl_L_hi)(%rip), %zmm13
 
-	/* exponents */
+	/* exponents.  */
 	vfmadd231ps {rn-sae}, %zmm7, %zmm3, %zmm9
 	vgetexpps {sae}, %zmm7, %zmm15
 
 
-	/* Table lookups */
+	/* Table lookups.  */
 	vfnmadd231ps {rn-sae}, %zmm12, %zmm5, %zmm8
 	vgetexpps {sae}, %zmm12, %zmm14
 
 
-	/* Prepare table index */
+	/* Prepare table index.  */
 	vpsrld	$18, %zmm7, %zmm3
 	vpsrld	$18, %zmm12, %zmm2
 	vmovups	LOCAL_DATA(Log_tbl_H_lo)(%rip), %zmm11
 	vmovups	LOCAL_DATA(Log_tbl_H_hi)(%rip), %zmm7
-	/* Km-Kp */
+	/* Km-Kp.  */
 
 	vmovaps	%zmm3, %zmm5
 	vpermi2ps %zmm13, %zmm10, %zmm3
@@ -136,17 +133,17 @@ ENTRY(atanhf_16_avx512_dev)
 	vsubps	{rn-sae}, %zmm15, %zmm14, %zmm1
 	vsubps	{rn-sae}, %zmm3, %zmm10, %zmm7
 
-	/* K*L2H + Th */
+	/* K*L2H + Th.  */
 	vmovups	LOCAL_DATA(L2H)(%rip), %zmm2
 
-	/* K*L2L + Tl */
+	/* K*L2L + Tl.  */
 	vmovups	LOCAL_DATA(L2L)(%rip), %zmm3
 
-	/* table values */
+	/* table values.  */
 	vsubps	{rn-sae}, %zmm5, %zmm11, %zmm5
 	vfmadd231ps {rn-sae}, %zmm1, %zmm2, %zmm5
 	vfmadd213ps {rn-sae}, %zmm7, %zmm3, %zmm1
-	/* polynomials */
+	/* polynomials.  */
 	vmovups	LOCAL_DATA(poly_coeff3)(%rip), %zmm7
 	vmovups	LOCAL_DATA(poly_coeff2)(%rip), %zmm10
 	vmovaps	%zmm10, %zmm14
@@ -158,13 +155,13 @@ ENTRY(atanhf_16_avx512_dev)
 	vfmadd213ps {rn-sae}, %zmm4, %zmm9, %zmm10
 	vfmadd213ps {rn-sae}, %zmm4, %zmm8, %zmm14
 
-	/* (K*L2L + Tl) + Rp*PolyP */
+	/* (K*L2L + Tl) + Rp*PolyP.  */
 	vfmadd213ps {rn-sae}, %zmm1, %zmm9, %zmm10
 
 	/* zmm12 = zmm12 & (zmm4 | zmm0).  */
 	vpternlogq $0xe0, %zmm0, %zmm4, %zmm12
 
-	/* (K*L2L + Tl) + Rp*PolyP -Rm*PolyM */
+	/* (K*L2L + Tl) + Rp*PolyP -Rm*PolyM.  */
 	vfnmadd213ps {rn-sae}, %zmm5, %zmm8, %zmm14
 	vaddps	{rn-sae}, %zmm14, %zmm10, %zmm8
 
@@ -172,9 +169,9 @@ ENTRY(atanhf_16_avx512_dev)
 	kmovw	%k0, %edx
 	testl	%edx, %edx
 
-	/* Go to special inputs processing branch */
+	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
-	# LOE rbx r12 r13 r14 r15 zmm0 zmm8 zmm12
+
 	vmulps	{rn-sae}, %zmm12, %zmm8, %zmm0
 
 	/* No register to restore on fast path.  */
@@ -182,24 +179,24 @@ ENTRY(atanhf_16_avx512_dev)
 
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a atanhf call. Optimize for code size
-	   more so than speed here. */
+	   more so than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
-	# LOE rbx rdx r12 r13 r14 r15 zmm0 zmm8 zmm12
-    /* Use r13 to save/restore the stack. This allows us to use rbp as
-       callee save register saving code size. */
+
+	/* Use r13 to save/restore the stack. This allows us to use rbp as
+	   callee save register saving code size.  */
 	pushq	%r13
-	cfi_adjust_cfa_offset(8)
-	cfi_offset(r13, -16)
-	/* Need to callee save registers to preserve state across tanhf calls.
-	 */
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (r13, -16)
+	/* Need to callee save registers to preserve state across tanhf
+	   calls.  */
 	pushq	%rbx
-	cfi_adjust_cfa_offset(8)
-	cfi_offset(rbx, -24)
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (rbx, -24)
 	pushq	%rbp
-	cfi_adjust_cfa_offset(8)
-	cfi_offset(rbp, -32)
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (rbp, -32)
 	movq	%rsp, %r13
-	cfi_def_cfa_register(r13)
+	cfi_def_cfa_register (r13)
 
 	/* Align stack and make room for 2x zmm vectors.  */
 	andq	$-64, %rsp
@@ -209,16 +206,17 @@ L(SPECIAL_VALUES_BRANCH):
 	vmovaps	%zmm0, 64(%rsp)
 	vzeroupper
 
-	/* edx has 1s where there was a special value that needs to be handled
-	   by a atanhf call.  */
+	/* edx has 1s where there was a special value that needs to be
+	   handled by a atanhf call.  */
 	movl	%edx, %ebx
 L(SPECIAL_VALUES_LOOP):
-	# LOE rbx rbp r12 r13 r14 r15
-	/* use rbp as index for special value that is saved across calls to
-	   atanhf. We technically don't need a callee save register here as offset
-	   to rsp is always [0, 56] so we can restore rsp by realigning to 64.
-	   Essentially the tradeoff is 1 extra save/restore vs 2 extra instructions
-	   in the loop. Realigning also costs more code size.  */
+
+	/* use rbp as index for special value that is saved across calls
+	   to atanhf. We technically don't need a callee save register
+	   here as offset to rsp is always [0, 56] so we can restore
+	   rsp by realigning to 64. Essentially the tradeoff is 1 extra
+	   save/restore vs 2 extra instructions in the loop. Realigning
+	   also costs more code size.  */
 	xorl	%ebp, %ebp
 	tzcntl	%ebx, %ebp
 
@@ -231,25 +229,25 @@ L(SPECIAL_VALUES_LOOP):
 	   serialized stack/callee save restoration.  */
 	vmovss	%xmm0, (%rsp, %rbp, 4)
 
-	blsrl   %ebx, %ebx
+	blsrl	%ebx, %ebx
 	jnz	L(SPECIAL_VALUES_LOOP)
-	# LOE r12 r13 r14 r15
+
 
 	/* All results have been written to (%rsp).  */
 	vmovaps	(%rsp), %zmm0
 	/* Restore rsp.  */
 	movq	%r13, %rsp
-	cfi_def_cfa_register(rsp)
+	cfi_def_cfa_register (rsp)
 	/* Restore callee save registers.  */
 	popq	%rbp
-	cfi_adjust_cfa_offset(-8)
-	cfi_restore(rbp)
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (rbp)
 	popq	%rbx
-	cfi_adjust_cfa_offset(-8)
-	cfi_restore(rbp)
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (rbp)
 	popq	%r13
-	cfi_adjust_cfa_offset(-8)
-	cfi_restore(r13)
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (r13)
 	ret
 END(atanhf_16_avx512_dev)
 

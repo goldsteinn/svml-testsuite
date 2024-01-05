@@ -50,30 +50,31 @@
 
 	.section .text.sse4, "ax", @progbits
 ENTRY(atanf_4_sse4_dev)
-	// Code Out Begin
-	/* * 1) If x>1,      then r=-1/x, PIO2=Pi/2 * 2) If -1<=x<=1,
-	   PIO2=-Pi/2.  */
-	movups	COMMON_DATA(_OneF)(%rip), %xmmA
-	/* * To use minps\maxps operations for argument reduction *
-	   Variables * Constants.  */
+	/* 1) If x>1,      then r=-1/x, PIO2=Pi/2
+	   2) If -1<=x<=1, then r=x,    PIO2=0
+	   3) If x<-1,     then r=-1/x, PIO2=-Pi/2.  */
+	movups	COMMON_DATA(_OneF)(%rip), %xmm1
+	/* use minud\maxud operations for argument reduction.  */
 	movups	LOCAL_DATA(_SignMask)(%rip), %xmm5
 	movaps	%xmm5, %xmm6
 	andnps	%xmm0, %xmm5
 	andps	%xmm6, %xmm0
-	movaps	%xmm5, %xmm4
-	pcmpgtd	%xmmA, %xmm5
+	movaps	%xmm5, %xmm7
+    
+	movaps	%xmmA, %xmm4
+	pminud	%xmm5, %xmmA
+	pmaxud	%xmm4, %xmm7
+    pcmpgtd	%xmmA, %xmm5
+	divps	%xmm7, %xmmA
+    
 	andps	%xmm5, %xmm6
 	pxor	%xmm0, %xmm6
 	andps	LOCAL_DATA(_sPIO2)(%rip), %xmm5
 	pxor	%xmm0, %xmm5
-	movaps	%xmmA, %xmm0
-	minps	%xmm4, %xmmA
-	maxps	%xmm0, %xmm4
-	divps	%xmm4, %xmmA
 	pxor	%xmmA, %xmm6
 	/* Polynomial.  */
 	mulps	%xmmA, %xmmA
-	movaps	%xmmA, %xmm4
+	movaps	%xmmA, %xmm0
 	mulps	%xmmA, %xmmA
 	movups	LOCAL_DATA(_sPC7)(%rip), %xmm2
 	mulps	%xmmA, %xmm2
@@ -89,18 +90,14 @@ ENTRY(atanf_4_sse4_dev)
 	addps	LOCAL_DATA(_sPC4)(%rip), %xmm3
 	mulps	%xmmA, %xmm3
 	addps	LOCAL_DATA(_sPC2)(%rip), %xmm3
-	mulps	%xmm4, %xmm3
+	mulps	%xmm0, %xmm3
 	addps	%xmm3, %xmm2
-	mulps	%xmm2, %xmm4
+	mulps	%xmm2, %xmm0
 	addps	%xmm4, %xmm0
 	/* Reconstruction.  */
 	mulps	%xmm6, %xmm0
-	/* N.  */
-	addps	%xmm5, %xmm0	/* N. */
-	/* N.  */
-	/* N.  */
-	ret	/* N. */
-	// Code Out End
+	addps	%xmm5, %xmm0
+	ret
 END(atanf_4_sse4_dev)
 
 	.section .rodata.sse4, "a"

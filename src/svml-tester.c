@@ -281,8 +281,8 @@ clamp_parallel(uint32_t parallel) {
     if (parallel == 0) {
         parallel = 1;
     }
-    else if (parallel > get_num_cpus()) {
-        parallel = get_num_cpus();
+    else if (parallel > 2 * get_num_cpus()) {
+        parallel = 2 * get_num_cpus();
     }
     return parallel;
 }

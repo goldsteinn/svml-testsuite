@@ -28,8 +28,8 @@
 #define _CET_NOTRACK notrack
 
 // clang-format off
-#define INC_FALLBACK0 incq %fs:G_total_fallbacks0 @tpoff
-#define INC_FALLBACK1 incq %fs:G_total_fallbacks1 @tpoff
+#define INC_FALLBACK0 //incq %fs:G_total_fallbacks0 @tpoff
+#define INC_FALLBACK1 //incq %fs:G_total_fallbacks1 @tpoff
 // clang-format on
 
 #define weak_alias(...)

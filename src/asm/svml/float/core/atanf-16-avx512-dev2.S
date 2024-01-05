@@ -49,28 +49,28 @@
 
 	.section .text.evex512, "ax", @progbits
 ENTRY(atanf_16_avx512_dev)
-	/* * 1) If x>1,      then r=-1/x, PIO2=Pi/2 * 2) If -1<=x<=1,
-	   then r=x,    PIO2=0 * 3) If x<-1,     then r=-1/x,
-	   PIO2=-Pi/2.  */
-	vmovups	COMMON_DATA(_OneF)(%rip), %zmm2
+	/* 1) If x>1,
+            then r=-1/x, PIO2=Pi/2
+	   2) If -1<=x<=1,
+            then r=x,    PIO2=0
+	   3) If x<-1,
+            then r=-1/x, PIO2=-Pi/2.  */
+	vmovups	COMMON_DATA(_OneF)(%rip), %zmm2    
 	vmovups	COMMON_DATA(_SignMask)(%rip), %zmm7
 
 
-	/* * To use minps\maxps operations for argument reduction *
-	   uncomment _AT_USEMINMAX_ definition *  Declarations *
-	   Variables * Constants.  */
+	/* Use minps\maxps operations for argument reduction.  */
 	vandnps	%zmm0, %zmm7, %zmm3
 	vpcmpgtd %zmm2, %zmm3, %k1
+    
+	vpmaxud	%zmm3, %zmm2, %zmm4
+	vpminud	%zmm3, %zmm2, %zmm5
 
-	vmaxps	%zmm3, %zmm2, %zmm5
-	vminps	%zmm3, %zmm2, %zmm4
-
-	vdivps	%zmm5, %zmm4, %zmm4
-
+	vdivps	%zmm4, %zmm5, %zmm4
 
 	vandps	%zmm7, %zmm0, %zmm3
 	vmovdqa32 %zmm7, %zmm7{%k1}{z}
-
+    
 	vmulps	%zmm4, %zmm4, %zmm1
 	vpternlogq $0x96, %zmm3, %zmm4, %zmm7
 
@@ -78,7 +78,9 @@ ENTRY(atanf_16_avx512_dev)
 
 	vmovups	LOCAL_DATA(_sPC8)(%rip), %zmm0
 	vmovups	LOCAL_DATA(_sPC7)(%rip), %zmm4
+
 	vmulps	%zmm1, %zmm1, %zmm5
+
 	vfmadd213ps LOCAL_DATA(_sPC6)(%rip), %zmm5, %zmm0
 	vfmadd213ps LOCAL_DATA(_sPC5)(%rip), %zmm5, %zmm4
 	vfmadd213ps LOCAL_DATA(_sPC4)(%rip), %zmm5, %zmm0

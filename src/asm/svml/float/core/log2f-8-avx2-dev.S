@@ -48,10 +48,8 @@
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(log2f_8_avx2_dev)
-	INC_FALLBACK1
 	/* reduction: compute r, n.  */
 	vmovups	COMMON_DATA(_IBrkValue)(%rip), %ymm4
-
 
 
 	vpsubd	%ymm4, %ymm0, %ymm1
@@ -89,7 +87,6 @@ ENTRY(log2f_8_avx2_dev)
 	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
 
-	/* Restore registers * and exit the function.  */
 
 	vmovaps	%ymm1, %ymm0
 	ret
@@ -142,7 +139,7 @@ L(SPECIAL_VALUES_LOOP):
 	/* Scalar math fucntion call to process special input.  */
 	vmovss	32(%rsp, %rbp, 4), %xmm0
 	call	log2f@PLT
-	INC_FALLBACK0
+
 	/* No good way to avoid the store-forwarding fault this will
 	   cause on return. `lfence` avoids the SF fault but at greater
 	   cost as it serialized stack/callee save restoration.  */

@@ -4,8 +4,8 @@
 #include "util/common.h"
 #include "util/error-util.h"
 #include "util/memory-util.h"
-#include "util/verbosity.h"
 #include "util/string-util.h"
+#include "util/verbosity.h"
 
 #include "sys/sys-info.h"
 
@@ -23,7 +23,8 @@ static int32_t      list  = 0;
 static int32_t      gen   = 0;
 static char const * todo  = NULL;
 
-
+static int32_t      init_flt   = 0;
+static int32_t      init_dbl   = 0;
 static bench_conf_t bench_conf = { 0 };
 static uint32_t     bench_lat  = 0;
 static uint32_t     bench_tput = 0;
@@ -80,26 +81,64 @@ static arg_option_t args[]     = {
                 Integer,
                 "--init0",
                 0,
-                &(bench_conf.init_vals_[0]),
+                &(bench_conf.init_vals_[0].u64_),
                 "Hex value to init 0th vec with"),
     ADD_ARG(KindOption,
                 Integer,
                 "--init1",
                 0,
-                &(bench_conf.init_vals_[1]),
+                &(bench_conf.init_vals_[1].u64_),
                 "Hex value to init 1th vec with"),
     ADD_ARG(KindOption,
                 Integer,
                 "--init2",
                 0,
-                &(bench_conf.init_vals_[2]),
+                &(bench_conf.init_vals_[2].u64_),
                 "Hex value to init 2th vec with"),
+    ADD_ARG(KindOption,
+                Float,
+                "--init0f",
+                0,
+                &(bench_conf.init_vals_[0].f_[0]),
+                "Hex value to init 0th vec with"),
+    ADD_ARG(KindOption,
+                Float,
+                "--init1f",
+                0,
+                &(bench_conf.init_vals_[1].f_[0]),
+                "float value to init 1th vec with"),
+    ADD_ARG(KindOption,
+                Float,
+                "--init2f",
+                0,
+                &(bench_conf.init_vals_[2].f_[0]),
+                "float value to init 2th vec with"),
+    ADD_ARG(KindOption,
+                Float,
+                "--init0d",
+                0,
+                &(bench_conf.init_vals_[0].d_),
+                "Double value to init 0th vec with"),
+    ADD_ARG(KindOption,
+                Float,
+                "--init1d",
+                0,
+                &(bench_conf.init_vals_[1].d_),
+                "Double value to init 1th vec with"),
+    ADD_ARG(KindOption,
+                Float,
+                "--init2d",
+                0,
+                &(bench_conf.init_vals_[2].d_),
+                "Double value to init 2th vec with"),
     ADD_ARG(KindOption,
                 String,
                 ("--init-list", "--initl", "-i"),
                 0,
                 &init_list,
                 "CSV of hex values to init values 0-N with"),
+    ADD_ARG(KindOption, Set, ("--float"), 0, &init_flt, "Init as float"),
+    ADD_ARG(KindOption, Set, ("--double"), 0, &init_dbl, "Init as double"),
     ADD_ARG(KindOption,
                 String,
                 ("--todo", "--todo="),
@@ -178,21 +217,34 @@ main(int argc, char * argv[]) {
         char * next;
         next = (char *)(uintptr_t)init_list;
         for (i = 0; i < 3; ++i) {
-            uint64_t v;
+            bench_val_t v;
+            if (init_flt) {
+                v.f_[0] = strtof(init_list, &next);
+            }
+            else if (init_dbl) {
+                v.d_ = strtod(init_list, &next);
+            }
+            else {
+                v.u64_ = strtoull(init_list, &next, 16);
+            }
 
-            v = strtoull(init_list, &next, 16);
             if (next == init_list) {
                 break;
             }
             init_list = (char const *)next;
 
 
-            if (bench_conf.init_vals_[i] == 0) {
+            if (bench_conf.init_vals_[i].u64_ == 0) {
                 bench_conf.init_vals_[i] = v;
             }
             if (*init_list != ',') {
                 break;
             }
+        }
+    }
+    if (init_flt) {
+        for (i = 0; i < 3; ++i) {
+            bench_conf.init_vals_[i].f_[1] = bench_conf.init_vals_[i].f_[0];
         }
     }
 

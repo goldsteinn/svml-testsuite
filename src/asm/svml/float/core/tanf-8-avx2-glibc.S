@@ -745,7 +745,6 @@ L(AUX_BRANCH):
 	vaddps	%ymm1, %ymm3, %ymm6
     vptest  (_sSignMask + __svml_stan_data_internal)(%rip), %ymm1
     jz 1f
-    ud2
 1:  
     
 	/* *  The end of implementation (LA with huge args reduction) *

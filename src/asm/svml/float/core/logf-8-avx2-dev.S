@@ -37,13 +37,18 @@ ENTRY(logf_8_avx2_dev)
 
 	INC_FALLBACK1
 
-	/* ALGORITHM DESCRIPTION: log(x) = exponent_x*log(2) +
-	   log(mantissa_x),         if mantissa_x<4/3 log(x) =
-	   (exponent_x+1)*log(2) + log(0.5*mantissa_x), if
-	   mantissa_x>4/3 R = mantissa_x - 1,     if mantissa_x<4/3 R =
-	   0.5*mantissa_x - 1, if mantissa_x>4/3 |R|< 1/3 log(1+R) is
-	   approximated as a polynomial: degree 9 for 1-ulp, degree 7
-	   for 4-ulp, degree 3 for half-precision.  */
+	/* ALGORITHM DESCRIPTION:
+	   if mantissa_x<4/3
+        log(x) = exponent_x*log(2) + log(mantissa_x)
+	   if mantissa_x>4/3
+        log(x) = (exponent_x+1)*log(2) + log(0.5*mantissa_x)
+	   
+	   R = mantissa_x - 1,     if mantissa_x<4/3
+	   R = 0.5*mantissa_x - 1, if mantissa_x>4/3
+	   |R|< 1/3
+	   
+	   log(1+R) is approximated as a polynomial: degree 9 for
+	   1-ulp, degree 7 for 4-ulp, degree 3 for half-precision.  */
 	vmovups	COMMON_DATA(_IBrkValue)(%rip), %ymm6
 
 
@@ -52,15 +57,15 @@ ENTRY(logf_8_avx2_dev)
 	/* reduction: compute r,n.  */
 	vpsubd	%ymm6, %ymm0, %ymm4
 
-	/* exponent_x (mantissa_x<4/3) or exponent_x+1 (mantissa_x>4/3).
-	 */
+	/* exponent_x (mantissa_x<4/3) or
+	   exponent_x+1 (mantissa_x>4/3).  */
 	vpsrad	$23, %ymm4, %ymm3
 	vpandn	%ymm4, %ymm7, %ymm5
 	vmovups	LOCAL_DATA(_sPoly_7)(%rip), %ymm4
 	vcvtdq2ps %ymm3, %ymm2
 
-	/* mantissa_x (mantissa_x<4/3), or 0.5*mantissa_x
-	   (mantissa_x>4/3).  */
+	/* mantissa_x (mantissa_x<4/3),
+	   or 0.5*mantissa_x (mantissa_x>4/3).  */
 	vpaddd	%ymm6, %ymm5, %ymm3
 
 	/* reduced argument R.  */
@@ -91,10 +96,11 @@ ENTRY(logf_8_avx2_dev)
 	   result.  */
 	vfmadd132ps COMMON_DATA(_Ln2)(%rip), %ymm6, %ymm2
 	testl	%ecx, %ecx
+	/* Branch to process special inputs.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
 	vmovaps	%ymm2, %ymm0
 	ret
-	/* Branch to process * special inputs.  */
+
 
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a atanhf call. Optimize for code size

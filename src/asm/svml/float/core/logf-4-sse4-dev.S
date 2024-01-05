@@ -32,11 +32,20 @@
 #define xmmA	xmm1
 	.section .text.sse4, "ax", @progbits
 ENTRY(logf_4_sse4_dev)
-	// Code Out Begin
 	movdqu	COMMON_DATA(_ILoRange)(%rip), %xmmA
-	/* ALGORITHM DESCRIPTION: log(x) = exponent_x*log(2) + for
-	   4-ulp, degree 3 for half-precision.  */
-	/* reduction: compute r,n.  */
+	/* ALGORITHM DESCRIPTION:
+	   if mantissa_x<4/3
+        log(x) = exponent_x*log(2) + log(mantissa_x)
+	   if mantissa_x>4/3
+        log(x) = (exponent_x+1)*log(2) + log(0.5*mantissa_x)
+	   
+	   R = mantissa_x - 1,     if mantissa_x<4/3
+	   R = 0.5*mantissa_x - 1, if mantissa_x>4/3
+	   |R|< 1/3
+	   
+	   log(1+R) is approximated as a polynomial: degree 9 for
+	   1-ulp, degree 7 for 4-ulp, degree 3 for half-precision.  */
+
 	/* check for working range, set special argument mask
 	   (denormals/zero/Inf/NaN).  */
 	movdqu	COMMON_DATA(_NotiOffExpoMask)(%rip), %xmm2
@@ -52,13 +61,13 @@ ENTRY(logf_4_sse4_dev)
 	paddd	%xmmA, %xmm2
 	/* reduced argument R.  */
 	subps	COMMON_DATA(_OneF)(%rip), %xmm2
-	/* exponent_x (mantissa_x<4/3) or exponent_x+1 (mantissa_x>4/3).
-	 */
+	/* exponent_x (mantissa_x<4/3),
+	   or exponent_x+1 (mantissa_x>4/3).  */
 	psrad	$0x17, %xmm0
-	/* mantissa_x (mantissa_x<4/3), or 0.5*mantissa_x
-	   (mantissa_x>4/3).  */
+	/* mantissa_x (mantissa_x<4/3),
+	   or 0.5 mantissa_x (mantissa_x>4/3).  */
 	cvtdq2ps %xmm0, %xmm0
-	/* final reconstruction: add exponent_value*log2 to polynomial
+	/* final reconstruction: add exponent_value * log2 to polynomial
 	   result.  */
 	mulps	COMMON_DATA(_Ln2)(%rip), %xmm0
 	movups	LOCAL_DATA(_sPoly_7)(%rip), %xmmA
@@ -80,26 +89,21 @@ ENTRY(logf_4_sse4_dev)
 	mulps	%xmm2, %xmmA
 	addps	%xmmA, %xmm2
 	addps	%xmm2, %xmm0
-	testl	%eax, %eax	/* N. */
-	jne	L(SPECIAL_VALUES_BRANCH)	/* N. */
-	ret	/* N. */
+	testl	%eax, %eax
+	jne	L(SPECIAL_VALUES_BRANCH)
+	ret
+
 	/* Cold case. edx has 1s where there was a special value that
 	   more so than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
 	/* Stack coming in 16-byte aligned. Set 8-byte misaligned so on
 	   call entry will be 16-byte aligned.  */
-	/* N.  */
-	/* N.  */
-	subq	$0x38, %rsp	/* N. */
-	/* N.  */
-	movups	%xmm0, 24(%rsp)	/* N. */
-	/* N.  */
-	movups	%xmm3, 40(%rsp)	/* N. */
-	// Code Out End
+	subq	$0x38, %rsp
+	movups	%xmm0, 24(%rsp)
+	movups	%xmm3, 40(%rsp)
 
 	/* Use rbx/rbp for callee save registers as they get short
-	   encoding for many instructions (as compared with r12/r13).
-	 */
+	   encoding for many instructions (as compared with r12/r13).  */
 	movq	%rbx, (%rsp)
 	cfi_offset (rbx, -64)
 	movq	%rbp, 8(%rsp)
@@ -142,7 +146,7 @@ L(SPECIAL_VALUES_LOOP):
 END(logf_4_sse4_dev)
 
 	.section .rodata.sse4, "a"
-	.align	64
+	.align	16
 
 	/* Data table for vector implementations of function logf. The
 	   table may contain polynomial, reduction, lookup coefficients

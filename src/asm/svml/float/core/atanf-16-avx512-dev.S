@@ -73,7 +73,7 @@ ENTRY(atanf_16_avx512_dev)
 	vmovups	coeff_3 + __svml_satan_data_internal_avx512(%rip), %zmm5
 
 	/* if|X|>=MaxThreshold, set Y=X.  */
-	vminps	{sae}, %zmm7, %zmm6, %zmm8{%k1}
+	vpminud	%zmm7, %zmm6, %zmm8{%k1}
 
 	/* R+Rl = DiffX/Y.  */
 	vgetmantps $0, {sae}, %zmm9, %zmm12

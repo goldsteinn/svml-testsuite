@@ -51,8 +51,7 @@
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(atanhf_8_avx2_dev)
-	/* Strip off the sign, so treat X as positive until right at the
-	   end.  */
+	/* Strip off the sign, so treat X as positive until right at the end.  */
 	vmovaps	COMMON_DATA(_AbsMask)(%rip), %ymm2
 	vandps	%ymm2, %ymm0, %ymm3
 	/* Load constants including One = 1.  */
@@ -71,27 +70,26 @@ ENTRY(atanhf_8_avx2_dev)
 	vfmadd213ps %ymm0, %ymm0, %ymm0
 	vfnmadd231ps %ymm6, %ymm7, %ymm1
 
-	/* * Check whether |X| < 1, in which case we use the main
-	   function. * Otherwise set the rangemask so that the callout
-	   will get used. * Note that this will also use the callout
-	   for NaNs since not(NaN < 1).  */
+	/* Check whether |X| < 1, in which case we use the main
+	   function. Otherwise set the rangemask so that the callout
+	   will get used. Note that this will also use the callout for
+	   NaNs since not(NaN < 1).  */
 	vcmpnlt_uqps %ymm5, %ymm3, %ymm14
 	vcmplt_oqps LOCAL_DATA(_TinyRange)(%rip), %ymm3, %ymm15
 
-	/* * Compute V = 2 * X trivially, and UHi + U_lo = 1 - X in two
-	   pieces, * the upper part UHi being <= 12 bits long. Then we
-	   have * atanh(X) = 1/2 * log((1 + X) / (1 - X)) = 1/2 *
-	   log1p(V / (UHi + ULo)).  */
+	/* Compute V = 2 * X trivially, and UHi + U_lo = 1 - X in two
+	   pieces, the upper part UHi being <= 12 bits long. Then we
+	   have atanh(X) = 1/2 * log((1 + X) / (1 - X)) = 1/2 * log1p(V
+	   / (UHi + ULo)).  */
 	vaddps	%ymm3, %ymm3, %ymm3
 
-	/* * Split V as well into upper 12 bits and lower part, so that
-	   we can get * a preliminary quotient estimate without
-	   rounding error.  */
+	/* Split V as well into upper 12 bits and lower part, so that we
+	   can get a preliminary quotient estimate without rounding
+	   error.  */
 	vandps	%ymm4, %ymm3, %ymm4
 	vsubps	%ymm4, %ymm3, %ymm7
 
-	/* Hence get initial quotient estimate QHi + QLo = R * VHi + R *
-	   VLo.  */
+	/* Hence get initial quotient estimate QHi + QLo = R * VHi + R * VLo.  */
 	vmulps	%ymm4, %ymm6, %ymm4
 
 	/* Compute D = E + E^2.  */
@@ -105,26 +103,27 @@ ENTRY(atanhf_8_avx2_dev)
 	vorps	%ymm3, %ymm0, %ymm13
 	vmulps	%ymm7, %ymm6, %ymm2
 
-	/* * Compute R * (VHi + VLo) * (1 + E + E^2) * = R *  (VHi +
-	   VLo) * (1 + D) * = QHi + (QHi * D + QLo + QLo * D).  */
+	/* Compute R * (VHi + VLo) * (1 + E + E^2)
+	   = R *  (VHi + VLo) * (1 + D)
+	   = QHi + (QHi * D + QLo + QLo * D).  */
 
-	/* * If less precision is acceptable the `vmulps %ymm1, %ymm4,
-	   %ymm9; * vaddps %ymm1, %ymm9, %ymm1` can be replaced with *
+	/* If less precision is acceptable the:
+	   `vmulps %ymm1, %ymm4, %ymm6; vaddps %ymm1, %ymm9, %ymm1`
+	   can be replaced with:
 	   `vfmadd231ps %ymm1, %ymm4, %ymm4`.  */
 	vmulps	%ymm1, %ymm4, %ymm6
 	vfmadd213ps %ymm2, %ymm2, %ymm1
 	vaddps	%ymm1, %ymm6, %ymm1
 
-	/* * Now finally accumulate the high and low parts of the *
-	   argument to log1p, H + L, with a final compensated
-	   summation.  */
+	/* Now finally accumulate the high and low parts of the
+	   argument to log1p, H + L, with a final compensated summation.  */
 	vaddps	%ymm1, %ymm4, %ymm2
 
 	/* reduction: compute r, n.  */
 	vmovups	COMMON_DATA(_IBrkValue)(%rip), %ymm9
 
-	/* * Now we feed into the log1p code, using H in place of _VARG1
-	   and * later incorporating L into the reduced argument. *
+	/* Now we feed into the log1p code, using H in place of _VARG1 and
+	   later incorporating L into the reduced argument.
 	   compute 1+x as high, low parts.  */
 	vmaxps	%ymm2, %ymm5, %ymm0
 	vminps	%ymm2, %ymm5, %ymm6

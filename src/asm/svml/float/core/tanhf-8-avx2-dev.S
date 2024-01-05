@@ -73,41 +73,39 @@
 
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-avx2-rodata-offsets.h"
-
-/* tanhf data tables for avx2 and sse4 implementatins defined here.
- */
+#define AVX2_SHARED_TABLE
+	/* tanhf data tables for avx2 and sse4 implementatins defined here.  */
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanhf-rodata.S"
 
 	.section .text.avx2, "ax", @progbits
 ENTRY(tanhf_8_avx2_dev)
-	/* Here huge arguments, INF and NaNs are filtered out to callout. */
-	vpand	TANHF_DATA(_iExpMantMask)(%rip), %ymm0, %ymm4
-	vpsubd	TANHF_DATA(_iMinIdxOfsMask)(%rip), %ymm4, %ymm2
+	/* Here huge arguments, INF and NaNs are filtered out to callout.  */
+	vpand	AVX2_SHARED_DATA(_iExpMantMask)(%rip), %ymm0, %ymm4
+	vpsubd	AVX2_SHARED_DATA(_iMinIdxOfsMask)(%rip), %ymm4, %ymm2
 
 	/* Selection of arguments between [0, 0x04280000] into ymm2.  */
 	vpxor	%ymm3, %ymm3, %ymm3
 	vpmaxsd	%ymm3, %ymm2, %ymm2
-	vpminsd	TANHF_DATA(_iMaxIdxMask)(%rip), %ymm2, %ymm2
+	vpminsd	AVX2_SHARED_DATA(_iMaxIdxMask)(%rip), %ymm2, %ymm2
 
-	/*
-	 *  small table specific variables *
-	 *  Constant loading
-	 */
+	/* small table specific variables *
+	   Constant loading.  */
 	vpsrld	$14, %ymm2, %ymm1
 
 	/* We are splitting xmm1 into 8 GPRs. This may be faster to do with
 	   store/load as we can take advantage of store-forwarding.  */
 	vmovq	%xmm1, %r8
-	/* We have eliminated all negative values for ymm1 so no need to sign
-	   extend.  */
+	/* We have eliminated all negative values for ymm1 so no need to
+	   sign extend.  */
 	movl	%r8d, %r9d
 	shrq	$32, %r8
 
 	/* Store base of lookup table in rax.  */
-	leaq	TANHF_DATA(_lookupTable)(%rip), %rax
+	leaq	AVX2_SHARED_DATA(_lookupTable)(%rip), %rax
 
-	/* Instead of using cross-lane permutes on ymm vectors, use vpinsertf128
-	   with memory operand. This helps alleviate bottleneck on p5.  */
+	/* Instead of using cross-lane permutes on ymm vectors, use
+	   vpinsertf128 with memory operand. This helps alleviate
+	   bottleneck on p5.  */
 	vmovupd	16(%r9, %rax), %xmm5
 
 	vpextrq	$1, %xmm1, %rsi
@@ -142,7 +140,7 @@ ENTRY(tanhf_8_avx2_dev)
 
 	vmovaps	COMMON_DATA(_AbsMask)(%rip), %ymm11
 	/* Store special cases in ymm15.  */
-	vpcmpgtd TANHF_DATA(_iExpMask)(%rip), %ymm4, %ymm15
+	vpcmpgtd AVX2_SHARED_DATA(_iExpMask)(%rip), %ymm4, %ymm15
 
 	vandps	%ymm11, %ymm0, %ymm4
 
@@ -186,9 +184,9 @@ ENTRY(tanhf_8_avx2_dev)
 	vmovmskps %ymm15, %edx
 	vandnps	%ymm0, %ymm11, %ymm2
 	testl	%edx, %edx
-	/* Go to special inputs processing branch */
+	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
-	# LOE rbx r12 r13 r14 r15 ymm0 ymm1 ymm2
+
 	/* Wait until after branch of write over ymm0.  */
 	vorps	%ymm2, %ymm1, %ymm0
 	/* No stack restoration on the fastpath.  */
@@ -197,24 +195,24 @@ ENTRY(tanhf_8_avx2_dev)
 
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a tanhf call. Optimize for code size
-	   more so than speed here. */
+	   more so than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
-	# LOE rbx rdx r12 r13 r14 r15 ymm0 ymm1 ymm2
-    /* Use r13 to save/restore the stack. This allows us to use rbp as
-       callee save register saving code size. */
+
+	/* Use r13 to save/restore the stack. This allows us to use rbp as
+	   callee save register saving code size.  */
 	pushq	%r13
-	cfi_adjust_cfa_offset(8)
-	cfi_offset(r13, -16)
-	/* Need to callee save registers to preserve state across tanhf calls.
-	 */
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (r13, -16)
+	/* Need to callee save registers to preserve state across tanhf
+	   calls.  */
 	pushq	%rbx
-	cfi_adjust_cfa_offset(8)
-	cfi_offset(rbx, -24)
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (rbx, -24)
 	pushq	%rbp
-	cfi_adjust_cfa_offset(8)
-	cfi_offset(rbp, -32)
+	cfi_adjust_cfa_offset (8)
+	cfi_offset (rbp, -32)
 	movq	%rsp, %r13
-	cfi_def_cfa_register(r13)
+	cfi_def_cfa_register (r13)
 
 	/* Align stack and make room for 2x ymm vectors.  */
 	andq	$-32, %rsp
@@ -228,16 +226,17 @@ L(SPECIAL_VALUES_BRANCH):
 
 	vzeroupper
 
-	/* edx has 1s where there was a special value that needs to be handled
-	   by a tanhf call.  */
+	/* edx has 1s where there was a special value that needs to be
+	   handled by a tanhf call.  */
 	movl	%edx, %ebx
 L(SPECIAL_VALUES_LOOP):
-	# LOE rbx rbp r12 r13 r14 r15
-	/* use rbp as index for special value that is saved across calls to
-	   tanhf. We technically don't need a callee save register here as offset
-	   to rsp is always [0, 28] so we can restore rsp by realigning to 64.
-	   Essentially the tradeoff is 1 extra save/restore vs 2 extra instructions
-	   in the loop. Realigning also costs more code size.  */
+
+	/* use rbp as index for special value that is saved across calls
+	   to tanhf. We technically don't need a callee save register
+	   here as offset to rsp is always [0, 28] so we can restore
+	   rsp by realigning to 64. Essentially the tradeoff is 1 extra
+	   save/restore vs 2 extra instructions in the loop. Realigning
+	   also costs more code size.  */
 	xorl	%ebp, %ebp
 	tzcntl	%ebx, %ebp
 
@@ -250,25 +249,25 @@ L(SPECIAL_VALUES_LOOP):
 	   serialized stack/callee save restoration.  */
 	vmovss	%xmm0, (%rsp, %rbp, 4)
 
-	blsrl   %ebx, %ebx
+	blsrl	%ebx, %ebx
 	jnz	L(SPECIAL_VALUES_LOOP)
-	# LOE r12 r13 r14 r15
+
 
 
 	/* All results have been written to (%rsp).  */
 	vmovups	(%rsp), %ymm0
 	/* Restore rsp.  */
 	movq	%r13, %rsp
-	cfi_def_cfa_register(rsp)
+	cfi_def_cfa_register (rsp)
 	/* Restore callee save registers.  */
 	popq	%rbp
-	cfi_adjust_cfa_offset(-8)
-	cfi_restore(rbp)
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (rbp)
 	popq	%rbx
-	cfi_adjust_cfa_offset(-8)
-	cfi_restore(rbp)
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (rbp)
 	popq	%r13
-	cfi_adjust_cfa_offset(-8)
-	cfi_restore(r13)
+	cfi_adjust_cfa_offset (-8)
+	cfi_restore (r13)
 	ret
 END(tanhf_8_avx2_dev)

@@ -155,7 +155,7 @@ typedef union ref_func {
     ref_v_f_fp_fp__f run_ref_v_f_fp_fp;
 } ref_func_t;
 
-typedef uint64_t (*bench__f)(uint32_t, uint64_t, uint64_t, uint64_t);
+typedef double (*bench__f)(uint32_t, uint64_t, uint64_t, uint64_t);
 typedef union svml_bench_func {
     void *   p;
     bench__f run_bench;

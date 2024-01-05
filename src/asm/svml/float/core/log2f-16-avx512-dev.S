@@ -47,7 +47,6 @@ ENTRY(log2f_16_avx512_dev)
 	vmovups	COMMON_DATA(_OneF)(%rip), %zmm1
 	vgetexpps {sae}, %zmm0, %zmm5
 
-	/* x<=0?  */
 
 	vsubps	{rn-sae}, %zmm1, %zmm3, %zmm9
 	vpsrld	$19, %zmm3, %zmm7
@@ -57,7 +56,8 @@ ENTRY(log2f_16_avx512_dev)
 	vpermps	LOCAL_DATA(_Coeff_2)(%rip), %zmm7, %zmm4
 	vpermps	LOCAL_DATA(_Coeff_1)(%rip), %zmm7, %zmm8
 	vsubps	{rn-sae}, %zmm6, %zmm5, %zmm10
-	vfpclassps $94, %zmm0, %k0
+	/* x<=0?  */
+	vfpclassps $0x5e, %zmm0, %k0
 	vfmadd213ps {rn-sae}, %zmm2, %zmm9, %zmm1
 	kmovw	%k0, %edx
 	vfmadd213ps {rn-sae}, %zmm4, %zmm9, %zmm1

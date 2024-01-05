@@ -28,10 +28,10 @@
  *
  */
 
-/* Offsets for data table __svml_slog10_data_internal_avx512
+/* Offsets for data table __svml_slog10_data_internal
  */
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
-#define LOCAL_DATA_NAME	__svml_slog10_data_internal_avx512
+#define LOCAL_DATA_NAME	__svml_slog10_data_internal
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-evex512-rodata-offsets.h"
 #define _Coeff_4	0
 #define _Coeff_3	64
@@ -73,8 +73,6 @@ ENTRY(log10f_16_avx512_dev)
 	ret
 
 
-
-	/* Branch to process * special inputs.  */
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a tanf call. Optimize for code size
 	   moreso than speed here.  */
@@ -97,7 +95,7 @@ L(SPECIAL_VALUES_BRANCH):
 	andq	$-64, %rsp
 	addq	$-128, %rsp
 
-	/* Save origional input.  */
+	/* Save original input.  */
 	vmovaps	%zmm0, 64(%rsp)
 	/* Save all already computed inputs.  */
 	vmovaps	%zmm1, (%rsp)

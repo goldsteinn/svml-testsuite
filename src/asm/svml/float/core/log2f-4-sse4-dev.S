@@ -51,7 +51,6 @@
 #define xmmA	xmm1
 	.section .text.sse4, "ax", @progbits
 ENTRY(log2f_4_sse4_dev)
-	// Code Out Begin
 	movdqu	COMMON_DATA(_NotiOffExpoMask)(%rip), %xmmA
 	movaps	%xmm0, %xmm2
 	psubd	%xmmA, %xmm0
@@ -93,29 +92,22 @@ ENTRY(log2f_4_sse4_dev)
 	addps	LOCAL_DATA(_Coeff_1)(%rip), %xmm2
 	mulps	%xmm2, %xmm6
 	addps	%xmm6, %xmm0
-	testl	%eax, %eax	/* N. */
+	testl	%eax, %eax
 	/* Go to special inputs processing branch.  */
-	jne	L(SPECIAL_VALUES_BRANCH)	/* N. */
-	ret	/* N. */
-	/* Restore registers * and exit the function.  */
+	jne	L(SPECIAL_VALUES_BRANCH)
+	ret
+
 	/* Cold case. edx has 1s where there was a special value that
 	   more so than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
 	/* Stack coming in 16-byte aligned. Set 8-byte misaligned so on
 	   call entry will be 16-byte aligned.  */
-	/* N.  */
-	/* N.  */
-	subq	$0x38, %rsp	/* N. */
-	movups	%xmm0, 24(%rsp)	/* N. */
-	/* N.  */
-	movups	%xmm5, 40(%rsp)	/* N. */
-	// Code Out End
-
-	// Code Out End
+	subq	$0x38, %rsp
+	movups	%xmm0, 24(%rsp)
+	movups	%xmm5, 40(%rsp)
 
 	/* Use rbx/rbp for callee save registers as they get short
-	   encoding for many instructions (as compared with r12/r13).
-	 */
+	   encoding for many instructions (as compared with r12/r13).  */
 	movq	%rbx, (%rsp)
 	cfi_offset (rbx, -64)
 	movq	%rbp, 8(%rsp)

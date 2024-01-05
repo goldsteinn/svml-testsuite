@@ -75,9 +75,8 @@
 #include "/home/noah/programs/projects/svml-new/src/asm/libc-asm-common.h"
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-common-sse4-rodata-offsets.h"
 
-/* tanhf data tables for avx2 and sse4 implementatins defined here.
- */
-#define ONLY_DECL_OFFSET
+	/* tanhf data tables for avx2 and sse4 implementatins defined here.  */
+#define AVX2_SHARED_OFFSETS
 #include "/home/noah/programs/projects/svml-new/src/asm/svml/float/dev-tanhf-rodata.S"
 
 	.section .text.sse4, "ax", @progbits
@@ -85,8 +84,8 @@ ENTRY(tanhf_4_sse4_dev)
 	/* Save copy of input in xmm12.  */
 	movaps	%xmm0, %xmm12
 
-	/* Here huge arguments, INF and NaNs are filtered out to callout. */
-	movdqu	TANHF_DATA(_iExpMantMask)(%rip), %xmm3
+	/* Here huge arguments, INF and NaNs are filtered out to callout.  */
+	movdqu	AVX2_SHARED_DATA(_iExpMantMask)(%rip), %xmm3
 	pand	%xmm0, %xmm3
 
 
@@ -94,9 +93,9 @@ ENTRY(tanhf_4_sse4_dev)
 	pxor	%xmm7, %xmm7
 	/* Save xmm3 for special values check at end.  */
 	movdqa	%xmm3, %xmm8
-	psubd	TANHF_DATA(_iMinIdxOfsMask)(%rip), %xmm3
+	psubd	AVX2_SHARED_DATA(_iMinIdxOfsMask)(%rip), %xmm3
 	pmaxsd	%xmm7, %xmm3
-	pminsd	TANHF_DATA(_iMaxIdxMask)(%rip), %xmm3
+	pminsd	AVX2_SHARED_DATA(_iMaxIdxMask)(%rip), %xmm3
 	psrld	$14, %xmm3
 
 	movq	%xmm3, %rcx
@@ -111,14 +110,11 @@ ENTRY(tanhf_4_sse4_dev)
 	movaps	COMMON_DATA(_AbsMask)(%rip), %xmm1
 	andps	%xmm1, %xmm0
 
-	leaq	TANHF_DATA(_lookupTable)(%rip), %rax
+	/* small table specific variables Constant loading.  */
+	leaq	AVX2_SHARED_DATA(_lookupTable)(%rip), %rax
 	movups	(%rdx, %rax), %xmm2
 	movups	(%rcx, %rax), %xmm6
 
-	/*
-	 *  small table specific variables *
-	 *  Constant loading
-	 */
 	movaps	%xmm2, %xmm4
 	movlhps	%xmm6, %xmm4
 	unpckhpd %xmm6, %xmm2
@@ -177,45 +173,45 @@ ENTRY(tanhf_4_sse4_dev)
 	orps	%xmm1, %xmm0
 
 	/* xmm8 contains mask of special values.  */
-	pcmpgtd	TANHF_DATA(_iExpMask)(%rip), %xmm8
+	pcmpgtd	AVX2_SHARED_DATA(_iExpMask)(%rip), %xmm8
 
 	movmskps %xmm8, %edx
 	testl	%edx, %edx
 
-	/* Go to special inputs processing branch */
+	/* Go to special inputs processing branch.  */
 	jne	L(SPECIAL_VALUES_BRANCH)
-	# LOE rbx rbp r12 r13 r14 r15 xmm0
+
 	/* No stack restoration on the fastpath.  */
 	ret
 
 	/* Cold case. edx has 1s where there was a special value that
 	   needs to be handled by a tanhf call. Optimize for code size
-	   more so than speed here. */
+	   more so than speed here.  */
 L(SPECIAL_VALUES_BRANCH):
-	# LOE rbx rdx rbp r12 r13 r14 r15 xmm0 xmm12
+
 	/* Stack coming in 16-byte aligned. Set 8-byte misaligned so on
-       call entry will be 16-byte aligned. */
+	   call entry will be 16-byte aligned.  */
 	subq	$56, %rsp
-	cfi_def_cfa_offset(64)
+	cfi_def_cfa_offset (64)
 	movups	%xmm0, 24(%rsp)
 	movups	%xmm12, 40(%rsp)
 
 	/* Use rbx/rbp for callee save registers as they get short
-       encoding for many instructions (as compared with r12/r13). */
+	   encoding for many instructions (as compared with r12/r13).  */
 	movq	%rbx, (%rsp)
-	cfi_offset(rbx, -64)
+	cfi_offset (rbx, -64)
 	movq	%rbp, 8(%rsp)
-	cfi_offset(rbp, -56)
-	/* edx has 1s where there was a special value that needs to be handled
-	   by a tanhf call.  */
+	cfi_offset (rbp, -56)
+	/* edx has 1s where there was a special value that needs to be
+	   handled by a tanhf call.  */
 	movl	%edx, %ebx
 L(SPECIAL_VALUES_LOOP):
-	# LOE rbx rbp r12 r13 r14 r15
-	/* use rbp as index for special value that is saved across calls to
-	   tanhf. We technically don't need a callee save register here as offset
-	   to rsp is always [0, 12] so we can restore rsp by realigning to 64.
-	   Essentially the tradeoff is 1 extra save/restore vs 2 extra instructions
-	   in the loop.  */
+
+	/* use rbp as index for special value that is saved across calls
+	   to tanhf. We technically don't need a callee save register
+	   here as offset to rsp is always [0, 12] so we can restore
+	   rsp by realigning to 64. Essentially the tradeoff is 1 extra
+	   save/restore vs 2 extra instructions in the loop.  */
 	xorl	%ebp, %ebp
 	bsfl	%ebx, %ebp
 
@@ -230,14 +226,14 @@ L(SPECIAL_VALUES_LOOP):
 	leal	-1(%rbx), %eax
 	andl	%eax, %ebx
 	jnz	L(SPECIAL_VALUES_LOOP)
-	# LOE r12 r13 r14 r15
+
 	/* All results have been written to 24(%rsp).  */
 	movups	24(%rsp), %xmm0
 	movq	(%rsp), %rbx
-	cfi_restore(rbx)
+	cfi_restore (rbx)
 	movq	8(%rsp), %rbp
-	cfi_restore(rbp)
+	cfi_restore (rbp)
 	addq	$56, %rsp
-	cfi_def_cfa_offset(8)
+	cfi_def_cfa_offset (8)
 	ret
 END(tanhf_4_sse4_dev)

@@ -182,27 +182,48 @@ func_name(uint8_t const * scratch, int32_t max_ulp_i, uint8_t * hist) {
         }
 
 
-        res0 = mask_vfpclass(resneq, (vec_T)a0, k_positive_infinity);
-        res1 = mask_vfpclass(resneq, (vec_T)a1, k_positive_infinity);
+        res0 = mask_vfpclass(resneq, (vec_T)v0, k_positive_infinity);
+        res1 = mask_vfpclass(resneq, (vec_T)v1, k_positive_infinity);
         if (UNLIKELY(res0 != res1)) {
             FP_EQ_FAIL();
             return false;
         }
+
+        resneq ^= res0;
+
+        if (LIKELY(resneq == 0)) {
+            goto update_hist;
+        }
+
+        res0 = mask_vfpclass(resneq, (vec_T)v0, k_negative_infinity);
+        res1 = mask_vfpclass(resneq, (vec_T)v1, k_negative_infinity);
+        if (UNLIKELY(res0 != res1)) {
+            FP_EQ_FAIL();
+            return false;
+        }
+        
         if (UNLIKELY(resneq ^ res0)) {
             FP_EQ_FAIL();
             return false;
         }
     update_hist : {
         __m512i histv;
-        mask_T  hist_res;
+        mask_T  hist_res, hist_res_agr = 0;
         int32_t hist_i;
 
         die_assert(max_ulp_i <= k_max_ulp);
         for (hist_i = 0; hist_i <= max_ulp_i; ++hist_i) {
             hist_res = mask_vcmpeq(orig_resneq, tmpv0, vset1(hist_i));
+            hist_res_agr |= hist_res;
             __builtin_memcpy(&histv, hist + 64 * hist_i, 64);
             histv = vmask_sub(histv, hist_res, histv, vset1(NEG1));
             __builtin_memcpy(hist + 64 * hist_i, &histv, 64);
+        }
+        hist_res_agr ^= mask_full;
+        if (hist_res_agr) {
+            __builtin_memcpy(&histv, hist, 64);
+            histv = vmask_sub(histv, hist_res_agr, histv, vset1(NEG1));
+            __builtin_memcpy(hist, &histv, 64);
         }
     }
     }
